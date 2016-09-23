@@ -3,7 +3,7 @@
     "description": "Authentication for the middleware stack",
     "type": "cakephp-plugin",
     "require": {
-        "cakephp/cakephp": "^3.3"
+        "cakephp/cakephp": "dev-master as dev-3.next"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^2.1",

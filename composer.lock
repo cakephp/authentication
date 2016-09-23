@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "500db7ff8b6c6e78a67c41d06551b1dd",
-    "content-hash": "a9f8d9897b9e72cfb560283d3f5213a2",
+    "hash": "0503eacfad79022815e950873b8423a6",
+    "content-hash": "1999f1a2234f1d7c7a5a4c7a8dd14458",
     "packages": [
         {
             "name": "aura/installer-default",
@@ -128,16 +128,16 @@
         },
         {
             "name": "cakephp/cakephp",
-            "version": "3.3.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "bf501ef6e43f889f9c2fba09f0b6bb9481cb0b1d"
+                "reference": "471bb5456f56f9851cffb004abfcdb5dfc6429de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/bf501ef6e43f889f9c2fba09f0b6bb9481cb0b1d",
-                "reference": "bf501ef6e43f889f9c2fba09f0b6bb9481cb0b1d",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/471bb5456f56f9851cffb004abfcdb5dfc6429de",
+                "reference": "471bb5456f56f9851cffb004abfcdb5dfc6429de",
                 "shasum": ""
             },
             "require": {
@@ -197,7 +197,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-09-03 02:17:44"
+            "time": "2016-09-23 09:33:39"
         },
         {
             "name": "cakephp/chronos",
@@ -1641,12 +1641,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "7ede2651421d5e4c1e3ea0886322f9cdba305e89"
+                "reference": "84b88e0f5d283011012e67c50125c85c12a28d86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/7ede2651421d5e4c1e3ea0886322f9cdba305e89",
-                "reference": "7ede2651421d5e4c1e3ea0886322f9cdba305e89",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/84b88e0f5d283011012e67c50125c85c12a28d86",
+                "reference": "84b88e0f5d283011012e67c50125c85c12a28d86",
                 "shasum": ""
             },
             "require": {
@@ -1711,7 +1711,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2016-09-21 23:32:51"
+            "time": "2016-09-23 01:12:07"
         },
         {
             "name": "symfony/yaml",
@@ -1819,9 +1819,18 @@
             "time": "2016-08-18 09:30:53"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "dev-3.next",
+            "alias_normalized": "dev-3.next",
+            "version": "9999999-dev",
+            "package": "cakephp/cakephp"
+        }
+    ],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "cakephp/cakephp": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
