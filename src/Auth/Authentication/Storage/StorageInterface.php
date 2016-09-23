@@ -12,7 +12,7 @@
  * @since         3.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Routing\Middleware\Authentication\Storage;
+namespace MiddlewareAuth\Auth\Authentication\Storage;
 
 /**
  * Describes the methods that any class representing an Auth data storage should

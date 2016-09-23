@@ -8,20 +8,21 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         2.0.0
+ * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Routing\Middleware\Authentication;
+namespace MiddlewareAuth\Auth\Authentication;
 
-use Cake\Auth\PasswordHasherFactory;
 use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
+use MiddlewareAuth\Auth\PasswordHasherTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class AbstractAuthenticator {
+abstract class AbstractAuthenticator implements AuthenticateInterface {
 
 	use InstanceConfigTrait;
+    use PasswordHasherTrait;
 
 	/**
 	 * Default config for this object.
@@ -50,28 +51,6 @@ abstract class AbstractAuthenticator {
 		'contain' => null,
 		'passwordHasher' => 'Default'
 	];
-
-	/**
-	 * A Component registry, used to get more components.
-	 *
-	 * @var \Cake\Controller\ComponentRegistry
-	 */
-	protected $_registry;
-
-	/**
-	 * Password hasher instance.
-	 *
-	 * @var \Cake\Auth\AbstractPasswordHasher
-	 */
-	protected $_passwordHasher;
-
-	/**
-	 * Whether or not the user authenticated by this class
-	 * requires their password to be rehashed with another algorithm.
-	 *
-	 * @var bool
-	 */
-	protected $_needsPasswordRehash = false;
 
 	/**
 	 * Constructor
@@ -147,33 +126,6 @@ abstract class AbstractAuthenticator {
 		$query = $table->find($finder, $options);
 
 		return $query;
-	}
-
-	/**
-	 * Return password hasher object
-	 *
-	 * @return \Cake\Auth\AbstractPasswordHasher Password hasher instance
-	 * @throws \RuntimeException If password hasher class not found or
-	 *   it does not extend AbstractPasswordHasher
-	 */
-	public function passwordHasher() {
-		if ($this->_passwordHasher) {
-			return $this->_passwordHasher;
-		}
-
-		$passwordHasher = $this->_config['passwordHasher'];
-
-		return $this->_passwordHasher = PasswordHasherFactory::build($passwordHasher);
-	}
-
-	/**
-	 * Returns whether or not the password stored in the repository for the logged in user
-	 * requires to be rehashed with another algorithm
-	 *
-	 * @return bool
-	 */
-	public function needsPasswordRehash() {
-		return $this->_needsPasswordRehash;
 	}
 
 	/**

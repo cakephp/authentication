@@ -1,39 +1,23 @@
 <?php
 /**
- *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         2.0.0
+ * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Routing\Middleware\Authentication;
+namespace MiddlewareAuth\Auth\Authentication;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * An authentication adapter for AuthComponent. Provides the ability to authenticate using POST
- * data. Can be used by configuring AuthComponent to use it via the AuthComponent::$authenticate config.
  *
- * ```
- *  $this->Auth->authenticate = [
- *      'Form' => [
- *          'finder' => ['auth' => ['some_finder_option' => 'some_value']]
- *      ]
- *  ]
- * ```
- *
- * When configuring FormAuthenticate you can pass in config to which fields, model and additional conditions
- * are used. See FormAuthenticate::$_config for more information.
- *
- * @see \Cake\Controller\Component\AuthComponent::$authenticate
  */
 class FormAuthenticator extends AbstractAuthenticator
 {
@@ -77,9 +61,15 @@ class FormAuthenticator extends AbstractAuthenticator
 
         $body = $request->getParsedBody();
 
-        return $this->_findUser(
+        $user = $this->_findUser(
             $body[$fields['username']],
             $body[$fields['password']]
         );
+
+        if (empty($user)) {
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+        }
+
+        return new Result($user, Result::SUCCESS);
     }
 }

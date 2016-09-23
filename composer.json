@@ -1,29 +1,29 @@
 {
-  "name": "cakephp/middleware-authentication",
-  "description": "Authentication for the middleware stack",
-  "type": "cakephp-plugin",
-  "require": {
-    "cakephp/cakephp": "^3.3"
-  },
-  "require-dev": {
-    "cakephp/cakephp-codesniffer": "^2.1",
-    "phpunit/phpunit": "^5.5"
-  },
-  "license": "MIT",
-  "minimum-stability": "dev",
-  "autoload": {
-    "psr-4": {
-      "MiddlewareAuth\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "MiddlewareAuthTest\\": "tests/test_app/Plugin/MiddlewareAuthTest/src",
-      "MiddlewareAuth\\Test\\": "tests",
-      "MiddlewareAuth\\Test\\App\\": "tests/test_app/App",
-      "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
-      "TestApp\\": "./vendor/cakephp/cakephp/tests/test_app/TestApp"
-    }
-  },
-  "prefer-source": true
+    "name": "cakephp/middleware-authentication",
+    "description": "Authentication for the middleware stack",
+    "type": "cakephp-plugin",
+    "require": {
+        "cakephp/cakephp": "^3.3"
+    },
+    "require-dev": {
+        "cakephp/cakephp-codesniffer": "^2.1",
+        "phpunit/phpunit": "^5.5"
+    },
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "MiddlewareAuth\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MiddlewareAuthTest\\": "tests/test_app/Plugin/MiddlewareAuthTest/src",
+            "MiddlewareAuth\\Test\\": "tests",
+            "MiddlewareAuth\\Test\\App\\": "tests/test_app/App",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
+            "TestApp\\": "./vendor/cakephp/cakephp/tests/test_app/TestApp"
+        }
+    },
+    "prefer-source": true
 }
