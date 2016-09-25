@@ -49,13 +49,11 @@ class SessionStorage implements StorageInterface
      * Keys:
      *
      * - `key` - Session key used to store user record.
-     * - `redirect` - Session key used to store redirect URL.
      *
      * @var array
      */
     protected $_defaultConfig = [
         'key' => 'Auth.User',
-        'redirect' => 'Auth.redirect'
     ];
 
     /**
@@ -110,29 +108,11 @@ class SessionStorage implements StorageInterface
      *
      * @return void
      */
-    public function delete()
+    public function clear()
     {
         $this->_user = false;
 
         $this->_session->delete($this->_config['key']);
         $this->_session->renew();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function redirectUrl($url = null)
-    {
-        if ($url === null) {
-            return $this->_session->read($this->_config['redirect']);
-        }
-
-        if ($url === false) {
-            $this->_session->delete($this->_config['redirect']);
-
-            return null;
-        }
-
-        $this->_session->write($this->_config['redirect'], $url);
     }
 }
