@@ -2,6 +2,10 @@
     "name": "cakephp/middleware-authentication",
     "description": "Authentication for the middleware stack",
     "type": "cakephp-plugin",
+    "require": {
+        "cakephp/core": "^3.3.4",
+        "cakephp/orm": "^3.3.4"
+    },
     "require-dev": {
         "cakephp/cakephp": "dev-3.next",
         "cakephp/cakephp-codesniffer": "^2.1",

@@ -50,7 +50,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
         'scope' => [],
         'finder' => 'all',
         'contain' => null,
-        'passwordHasher' => 'Default'
+        'passwordHasher' => 'MiddlewareAuth.Default'
     ];
 
     /**
