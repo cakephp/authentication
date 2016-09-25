@@ -16,6 +16,7 @@ namespace MiddlewareAuth\Auth\Authentication;
 use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
 use MiddlewareAuth\Auth\PasswordHasherTrait;
+use MiddlewareAuth\Auth\PasswordHasher\DefaultPasswordHasher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -50,7 +51,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
         'scope' => [],
         'finder' => 'all',
         'contain' => null,
-        'passwordHasher' => 'MiddlewareAuth.Default'
+        'passwordHasher' => DefaultPasswordHasher::class
     ];
 
     /**

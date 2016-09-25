@@ -14,8 +14,7 @@
  */
 namespace MiddlewareAuth\Auth;
 
-use Cake\Core\App;
-use MiddlewareAuth\Auth\PasswordHasher\AbstractPasswordHasher;
+use MiddlewareAuth\Auth\PasswordHasher\PasswordHasherInterface;
 use RuntimeException;
 
 /**
@@ -44,14 +43,9 @@ class PasswordHasherFactory
             unset($config['className']);
         }
 
-        $className = App::className($class, 'Auth/PasswordHasher', 'PasswordHasher');
-        if ($className === false) {
-            throw new RuntimeException(sprintf('Password hasher class "%s" was not found.', $class));
-        }
-
-        $hasher = new $className($config);
-        if (!($hasher instanceof AbstractPasswordHasher)) {
-            throw new RuntimeException('Password hasher must extend AbstractPasswordHasher class.');
+        $hasher = new $class($config);
+        if (!($hasher instanceof PasswordHasherInterface)) {
+            throw new RuntimeException('Password hasher must implment PasswordHasherInterface.');
         }
 
         return $hasher;
