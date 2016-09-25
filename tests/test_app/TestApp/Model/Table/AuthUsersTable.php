@@ -49,7 +49,7 @@ class AuthUsersTable extends Table
     public function findUsername(Query $query, array $options)
     {
         if (empty($options['username'])) {
-            throw new Exception(__('Username not defined'));
+            throw new Exception('Username not defined');
         }
 
         $query = $this->find()
