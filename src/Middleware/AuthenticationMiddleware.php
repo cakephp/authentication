@@ -11,12 +11,12 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Routing\Middleware;
+namespace Auth\Middleware;
 
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
-use MiddlewareAuth\Auth\Authentication\AuthenticateInterface;
+use Auth\Authentication\AuthenticateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -164,7 +164,7 @@ class AuthenticationMiddleware
             return $class;
         }
 
-        $className = App::className($class, 'Auth/Authentication', 'Authenticator');
+        $className = App::className($class, 'Authentication', 'Authenticator');
         if (!class_exists($className)) {
             throw new Exception(sprintf('Authentication adapter "%s" was not found.', $className));
         }

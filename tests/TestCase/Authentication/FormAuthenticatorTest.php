@@ -1,14 +1,15 @@
 <?php
-namespace MiddlewareAuth\Test\TestCase\Routing\Middleware;
+namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use MiddlewareAuth\Routing\Middleware\AuthenticationMiddleware;
+use Auth\Authentication\FormAuthenticator;
+use Auth\Authentication\Result;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
-class AuthenticationMiddlewareTest extends TestCase
+class FormAuthenticatorTest extends TestCase
 {
 
     public $fixtures = [
@@ -32,7 +33,12 @@ class AuthenticationMiddlewareTest extends TestCase
         $AuthUsers->updateAll(['password' => $password], []);
     }
 
-    public function testAuthentication()
+    /**
+     * testAuthenticate
+     *
+     * @return void
+     */
+    public function testAuthenticate()
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -41,16 +47,10 @@ class AuthenticationMiddlewareTest extends TestCase
         );
         $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
 
-        $middleware = new AuthenticationMiddleware([
-            'authenticators' => [
-                'MiddlewareAuth.Form'
-            ]
-        ]);
+        $form = new FormAuthenticator();
+        $result = $form->authenticate($request, $response);
 
-        $callable = function () {
-        };
-
-        $result = $middleware($request, $response, $callable);
-        //debug($result);
+        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 }

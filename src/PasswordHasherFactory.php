@@ -12,9 +12,9 @@
  * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth;
+namespace Auth;
 
-use MiddlewareAuth\Auth\PasswordHasher\PasswordHasherInterface;
+use Auth\PasswordHasher\PasswordHasherInterface;
 use RuntimeException;
 
 /**

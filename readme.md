@@ -30,7 +30,7 @@ class Application extends BaseApplication {
         // Authentication
         $middleware = new AuthenticationMiddleware([
             'authenticators' => [
-                'MiddlewareAuth.Form'
+                'Auth.Form'
             ]
         ]);
 

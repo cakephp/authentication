@@ -12,32 +12,36 @@
  * @since         2.4.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth\PasswordHasher;
+namespace Auth\PasswordHasher;
+
+use Cake\Core\InstanceConfigTrait;
 
 /**
- * PasswordHasherInterface
+ * Abstract password hashing class
  */
-interface PasswordHasherInterface
+abstract class AbstractPasswordHasher implements PasswordHasherInterface
 {
 
-    /**
-     * Generates password hash.
-     *
-     * @param string|array $password Plain text password to hash or array of data
-     *   required to generate password hash.
-     * @return string Password hash
-     */
-    public function hash($password);
+    use InstanceConfigTrait;
 
     /**
-     * Check hash. Generate hash from user provided password string or data array
-     * and check against existing hash.
+     * Default config
      *
-     * @param string|array $password Plain text password to hash or data array.
-     * @param string $hashedPassword Existing hashed password.
-     * @return bool True if hashes match else false.
+     * These are merged with user-provided config when the object is used.
+     *
+     * @var array
      */
-    public function check($password, $hashedPassword);
+    protected $_defaultConfig = [];
+
+    /**
+     * Constructor
+     *
+     * @param array $config Array of config.
+     */
+    public function __construct(array $config = [])
+    {
+        $this->config($config);
+    }
 
     /**
      * Returns true if the password need to be rehashed, due to the password being
@@ -49,5 +53,8 @@ interface PasswordHasherInterface
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash($password);
+    public function needsRehash($password)
+    {
+        return password_needs_rehash($password, PASSWORD_DEFAULT);
+    }
 }

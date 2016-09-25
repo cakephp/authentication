@@ -1,5 +1,5 @@
 <?php
-namespace MiddlewareAuth\Auth;
+namespace Auth;
 
 trait PasswordHasherTrait
 {

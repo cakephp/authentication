@@ -54,6 +54,6 @@ if (!getenv('db_dsn')) {
 }
 ConnectionManager::config('test', ['url' => getenv('db_dsn')]);
 
-Plugin::load('MiddlewareAuth', [
+Plugin::load('Auth', [
     'path' => dirname(dirname(__FILE__)) . DS,
 ]);

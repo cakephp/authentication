@@ -12,42 +12,33 @@
  * @since         3.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth\Authentication\Storage;
+namespace Auth\Authentication\Storage;
 
 /**
- * Memory based non-persistent storage for authenticated user record.
+ * Describes the methods that any class representing an Auth data storage should
+ * comply with.
  */
-class MemoryStorage implements StorageInterface
+interface StorageInterface
 {
-
     /**
-     * User record.
+     * Read user record.
      *
-     * @var array|null
+     * @return array|null
      */
-    protected $_user;
+    public function read();
 
     /**
-     * {@inheritDoc}
+     * Write user record.
+     *
+     * @param array|\ArrayAccess $user User record.
+     * @return void
      */
-    public function read()
-    {
-        return $this->_user;
-    }
+    public function write($user);
 
     /**
-     * {@inheritDoc}
+     * Delete user record.
+     *
+     * @return void
      */
-    public function write($user)
-    {
-        $this->_user = $user;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function clear()
-    {
-        $this->_user = null;
-    }
+    public function clear();
 }

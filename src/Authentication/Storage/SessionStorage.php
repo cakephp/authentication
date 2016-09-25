@@ -12,7 +12,7 @@
  * @since         3.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth\Authentication\Storage;
+namespace Auth\Authentication\Storage;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Request;
