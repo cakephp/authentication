@@ -8,7 +8,8 @@ use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
-class AuthenticationMiddlewareTest extends TestCase {
+class AuthenticationMiddlewareTest extends TestCase
+{
 
     public $fixtures = [
         'core.auth_users',
@@ -52,5 +53,4 @@ class AuthenticationMiddlewareTest extends TestCase {
         $result = $middleware($request, $response, $callable);
         //debug($result);
     }
-
 }

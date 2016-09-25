@@ -9,7 +9,8 @@ use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
-class FormAuthenticatorTest extends TestCase {
+class FormAuthenticatorTest extends TestCase
+{
 
     public $fixtures = [
         'core.auth_users',

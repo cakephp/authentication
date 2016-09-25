@@ -15,4 +15,6 @@ namespace MiddlewareAuth\Auth;
 
 use Cake\Auth\PasswordHasherFactory as OldPasswordHasherFactory;
 
-class PasswordHasherFactory extends OldPasswordHasherFactory {};
+class PasswordHasherFactory extends OldPasswordHasherFactory
+{
+}

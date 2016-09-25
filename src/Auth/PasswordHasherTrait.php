@@ -1,7 +1,8 @@
 <?php
 namespace MiddlewareAuth\Auth;
 
-trait PasswordHasherTrait {
+trait PasswordHasherTrait
+{
 
     /**
      * Password hasher instance.

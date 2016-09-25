@@ -116,8 +116,7 @@ class AuthenticationMiddleware
      */
     public function loadAuthenticators()
     {
-        if (empty($this->_config['authenticators']))
-        {
+        if (empty($this->_config['authenticators'])) {
             return null;
         }
 
