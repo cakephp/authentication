@@ -56,7 +56,7 @@ class FormAuthenticator extends AbstractAuthenticator
     {
         $fields = $this->_config['fields'];
         if (!$this->_checkFields($request, $fields)) {
-            return false;
+            return new Result(null, Result::FAILURE_OTHER);
         }
 
         $body = $request->getParsedBody();
