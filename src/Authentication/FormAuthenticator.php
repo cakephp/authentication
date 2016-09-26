@@ -11,7 +11,7 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth\Authentication;
+namespace Auth\Authentication;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,7 +56,7 @@ class FormAuthenticator extends AbstractAuthenticator
     {
         $fields = $this->_config['fields'];
         if (!$this->_checkFields($request, $fields)) {
-            return false;
+            return new Result(null, Result::FAILURE_OTHER);
         }
 
         $body = $request->getParsedBody();

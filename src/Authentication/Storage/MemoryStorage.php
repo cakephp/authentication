@@ -12,7 +12,7 @@
  * @since         3.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth\Authentication\Storage;
+namespace Auth\Authentication\Storage;
 
 /**
  * Memory based non-persistent storage for authenticated user record.
@@ -26,13 +26,6 @@ class MemoryStorage implements StorageInterface
      * @var array|null
      */
     protected $_user;
-
-    /**
-     * Redirect url.
-     *
-     * @var string
-     */
-    protected $_redirectUrl;
 
     /**
      * {@inheritDoc}
@@ -53,26 +46,8 @@ class MemoryStorage implements StorageInterface
     /**
      * {@inheritDoc}
      */
-    public function delete()
+    public function clear()
     {
         $this->_user = null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function redirectUrl($url = null)
-    {
-        if ($url === null) {
-            return $this->_redirectUrl;
-        }
-
-        if ($url === false) {
-            $this->_redirectUrl = null;
-
-            return null;
-        }
-
-        $this->_redirectUrl = $url;
     }
 }

@@ -1,14 +1,15 @@
 <?php
-namespace MiddlewareAuth\Test\TestCase\Routing\Middleware;
+namespace Auth\Test\TestCase\Middleware;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use MiddlewareAuth\Routing\Middleware\AuthenticationMiddleware;
+use Auth\Middleware\AuthenticationMiddleware;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
-class AuthenticationMiddlewareTest extends TestCase {
+class AuthenticationMiddlewareTest extends TestCase
+{
 
     public $fixtures = [
         'core.auth_users',
@@ -42,7 +43,7 @@ class AuthenticationMiddlewareTest extends TestCase {
 
         $middleware = new AuthenticationMiddleware([
             'authenticators' => [
-                'MiddlewareAuth.Form'
+                'Auth.Form'
             ]
         ]);
 
@@ -52,5 +53,4 @@ class AuthenticationMiddlewareTest extends TestCase {
         $result = $middleware($request, $response, $callable);
         //debug($result);
     }
-
 }

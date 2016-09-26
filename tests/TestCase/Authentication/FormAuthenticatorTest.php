@@ -1,15 +1,16 @@
 <?php
-namespace MiddlewareAuth\Test\TestCase\Routing\Middleware\Authentication;
+namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use MiddlewareAuth\Auth\Authentication\FormAuthenticator;
-use MiddlewareAuth\Auth\Authentication\Result;
+use Auth\Authentication\FormAuthenticator;
+use Auth\Authentication\Result;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
-class FormAuthenticatorTest extends TestCase {
+class FormAuthenticatorTest extends TestCase
+{
 
     public $fixtures = [
         'core.auth_users',
@@ -49,7 +50,7 @@ class FormAuthenticatorTest extends TestCase {
         $form = new FormAuthenticator();
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\MiddlewareAuth\Auth\Authentication\Result', $result);
+        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 }

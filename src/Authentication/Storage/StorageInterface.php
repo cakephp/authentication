@@ -12,7 +12,7 @@
  * @since         3.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth\Authentication\Storage;
+namespace Auth\Authentication\Storage;
 
 /**
  * Describes the methods that any class representing an Auth data storage should
@@ -40,14 +40,5 @@ interface StorageInterface
      *
      * @return void
      */
-    public function delete();
-
-    /**
-     * Get/set redirect URL.
-     *
-     * @param mixed $url Redirect URL. If `null` returns current URL. If `false`
-     *   deletes currently set URL.
-     * @return mixed
-     */
-    public function redirectUrl($url = null);
+    public function clear();
 }

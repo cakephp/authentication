@@ -11,8 +11,19 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace MiddlewareAuth\Auth;
+namespace Auth\Authentication;
 
-use Cake\Auth\PasswordHasherFactory as OldPasswordHasherFactory;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class PasswordHasherFactory extends OldPasswordHasherFactory {};
+interface AuthenticateInterface
+{
+    /**
+     * Authenticate user.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Psr\Http\Message\ResponseInterface $response The response.
+     * @return \Cake\Auth\Result
+     */
+    public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+}
