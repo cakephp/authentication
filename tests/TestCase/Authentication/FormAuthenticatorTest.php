@@ -5,7 +5,6 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Auth\Authentication\FormAuthenticator;
 use Auth\Authentication\Result;
-use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 

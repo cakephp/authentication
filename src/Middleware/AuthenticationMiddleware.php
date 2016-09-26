@@ -13,10 +13,6 @@
  */
 namespace Auth\Middleware;
 
-use Cake\Core\App;
-use Cake\Core\Exception\Exception;
-use Cake\Core\InstanceConfigTrait;
-use Auth\Authentication\AuthenticateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -25,151 +21,17 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AuthenticationMiddleware
 {
-    use InstanceConfigTrait;
 
     /**
-     * Authenticator objects
-     *
-     * @var array
+     * Authentication Service
      */
-    protected $_authenticators = [];
-
-    /**
-     * Default configuration
-    /**
-     * Default config
-     *
-     * - `authenticate` - An array of authentication objects to use for authenticating users.
-     *   You can configure multiple adapters and they will be checked sequentially
-     *   when users are identified.
-     *
-     *   ```
-     *   $this->Auth->config('authenticate', [
-     *      'Form' => [
-     *         'userModel' => 'Users.Users'
-     *      ]
-     *   ]);
-     *   ```
-     *
-     *   Using the class name without 'Authenticate' as the key, you can pass in an
-     *   array of config for each authentication object. Additionally you can define
-     *   config that should be set to all authentications objects using the 'all' key:
-     *
-     *   ```
-     *   $this->Auth->config('authenticate', [
-     *       AuthComponent::ALL => [
-     *          'userModel' => 'Users.Users',
-     *          'scope' => ['Users.active' => 1]
-     *      ],
-     *     'Form',
-     *     'Basic'
-     *   ]);
-     *   ```
-     *
-     * - `authorize` - An array of authorization objects to use for authorizing users.
-     *   You can configure multiple adapters and they will be checked sequentially
-     *   when authorization checks are done.
-     *
-     *   ```
-     *   $this->Auth->config('authorize', [
-     *      'Crud' => [
-     *          'actionPath' => 'controllers/'
-     *      ]
-     *   ]);
-     *   ```
-     *
-     *   Using the class name without 'Authorize' as the key, you can pass in an array
-     *   of config for each authorization object. Additionally you can define config
-     *   that should be set to all authorization objects using the AuthComponent::ALL key:
-     *
-     *   ```
-     *   $this->Auth->config('authorize', [
-     *      AuthComponent::ALL => [
-     *          'actionPath' => 'controllers/'
-     *      ],
-     *      'Crud',
-     *      'CustomAuth'
-     *   ]);
-     *   ```
-     *
-     * @var array
-     */
-    protected $_defaultConfig = [
-        'authenticators'
-    ];
+    protected $_authenticationService;
 
     /**
      * Constructor
-     *
-     * @var array $config Configuration options.
      */
-    public function __construct(array $config = [])
-    {
-        $this->config($config);
-        $this->loadAuthenticators();
-    }
-
-    /**
-     * Loads all configured authenticators.
-     *
-     * @return void
-     */
-    public function loadAuthenticators()
-    {
-        if (empty($this->_config['authenticators'])) {
-            return null;
-        }
-
-        foreach ($this->_config['authenticators'] as $name => $config) {
-            if (is_int($name) && is_string($config)) {
-                $name = $config;
-                $config = [];
-            }
-            $this->loadAuthenticator($name, $config);
-        }
-    }
-
-    /**
-     * Loads an authenticator.
-     *
-     * @param string $name Name or class name.
-     * @param array $config Authenticator configuration.
-     */
-    public function loadAuthenticator($name, array $config = [])
-    {
-        $className = $this->_getAuthenticatorClass($name, $config);
-        $authenticator = new $className($config);
-
-        if (!$authenticator instanceof AuthenticateInterface) {
-            throw new Exception('Authenticator must implement AuthenticateInterface.');
-        }
-
-        if (isset($this->_authenticators)) {
-            $this->_authenticators[$name] = $authenticator;
-        }
-
-        return $authenticator;
-    }
-
-    protected function _getAuthenticatorClass($name, $config)
-    {
-        if (!empty($config['className'])) {
-            $class = $config['className'];
-            unset($config['className']);
-        } else {
-            $class = $name;
-        }
-
-        if (class_exists($class)) {
-            return $class;
-        }
-
-        $className = App::className($class, 'Authentication', 'Authenticator');
-        if (!class_exists($className)) {
-            throw new Exception(sprintf('Authentication adapter "%s" was not found.', $className));
-        }
-
-        return $className;
+    public function __construct($authenticationService) {
+        $this->_authenticationService = $authenticationService;
     }
 
     /**
@@ -182,14 +44,7 @@ class AuthenticationMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        foreach ($this->_authenticators as $authenticator) {
-            $user = $authenticator->authenticate($request, $response);
-            if ($user) {
-                // @todo pass it somehow to the request
-                // debug($user);
-                break;
-            }
-        }
+        $this->_authenticationService->authenticate($request, $response);
 
         return $next($request, $response);
     }
