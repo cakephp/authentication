@@ -44,7 +44,8 @@ class AuthenticationMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        $this->_authenticationService->authenticate($request, $response);
+        $result = $this->_authenticationService->authenticate($request, $response);
+        $request->withAttribute('identity', $result);
 
         return $next($request, $response);
     }
