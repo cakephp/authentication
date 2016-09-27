@@ -17,7 +17,19 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
+ * Form Authenticator
  *
+ * Authenticates an identity based on the POST data of the request.
+ *
+ * ```
+ *  new FormAuthenticator([
+ *      'finder' => ['auth' => ['some_finder_option' => 'some_value']]
+ *  ]);
+ * ```
+ *
+ * When configuring FormAuthenticate you can pass in config to which fields,
+ * model and additional conditions are used. See FormAuthenticator::$_config
+ * for more information.
  */
 class FormAuthenticator extends AbstractAuthenticator
 {
@@ -25,7 +37,7 @@ class FormAuthenticator extends AbstractAuthenticator
     /**
      * Checks the fields to ensure they are supplied.
      *
-     * @param \Cake\Network\Request $request The request that contains login information.
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param array $fields The fields to be checked.
      * @return bool False if the fields have not been supplied. True if they exist.
      */
@@ -48,8 +60,8 @@ class FormAuthenticator extends AbstractAuthenticator
      * to find POST data that is used to find a matching record in the `config.userModel`. Will return false if
      * there is no post data, either username or password is missing, or if the scope conditions have not been met.
      *
-     * @param \Cake\Network\Request $request The request that contains login information.
-     * @param \Cake\Network\Response $response Unused response object.
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
      * @return mixed False on login failure.  An array of User data on success.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
