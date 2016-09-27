@@ -64,7 +64,7 @@ class Result
      *
      * @var array
      */
-    protected $messages;
+    protected $messages = [];
 
     /**
      * Sets the result code, identity, and failure messages
@@ -75,6 +75,10 @@ class Result
      */
     public function __construct($identity, $code, array $messages = [])
     {
+        if (empty($identity) && $code === self::SUCCESS) {
+            throw new \RuntimeException('Identity can no be empty with status success.');
+        }
+
         $this->code = (int)$code;
         $this->identity = $identity;
         $this->messages = $messages;
