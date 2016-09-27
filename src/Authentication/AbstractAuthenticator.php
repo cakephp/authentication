@@ -143,18 +143,6 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     abstract public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
 
     /**
-     * Get a user based on information in the request. Primarily used by stateless authentication
-     * systems like basic and digest auth.
-     *
-     * @param \Cake\Network\Request $request Request object.
-     * @return mixed Either false or an array of user information
-     */
-    public function getUser(Request $request)
-    {
-        return false;
-    }
-
-    /**
      * Handle unauthenticated access attempt. In implementation valid return values
      * can be:
      * - Null - No action taken, AuthComponent should return appropriate response.
@@ -167,23 +155,5 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      */
     public function unauthenticated(ResponseInterface $request, ServerRequestInterface $response)
     {
-    }
-
-    /**
-     * Returns a list of all events that this authenticate class will listen to.
-     * An authenticate class can listen to following events fired by AuthComponent:
-     * - `Auth.afterIdentify` - Fired after a user has been identified using one of
-     *   configured authenticate class. The callback function should have signature
-     *   like `afterIdentify(Event $event, array $user)` when `$user` is the
-     *   identified user record.
-     * - `Auth.logout` - Fired when AuthComponent::logout() is called. The callback
-     *   function should have signature like `logout(Event $event, array $user)`
-     *   where `$user` is the user about to be logged out.
-     *
-     * @return array List of events this class listens to. Defaults to `[]`.
-     */
-    public function implementedEvents()
-    {
-        return [];
     }
 }
