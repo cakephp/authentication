@@ -164,8 +164,7 @@ class AuthenticationService
         foreach ($this->_authenticators as $authenticator) {
             $user = $authenticator->authenticate($request, $response);
             if ($user) {
-                // @todo pass it somehow to the request
-                // debug($user);
+
                 break;
             }
         }

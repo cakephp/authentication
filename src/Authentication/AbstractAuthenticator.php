@@ -136,8 +136,8 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Authenticate a user based on the request information.
      *
-     * @param \Cake\Network\Request $request Request to get authentication information from.
-     * @param \Cake\Network\Response $response A response object that can have headers added.
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request to get authentication information from.
+     * @param \Psr\Http\Message\ResponseInterface $response A response object that can have headers added.
      * @return mixed Either false on failure, or an array of user data on success.
      */
     abstract public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
@@ -149,11 +149,11 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      * - Cake\Network\Response - A response object, which will cause AuthComponent to
      *   simply return that response.
      *
-     * @param \Cake\Network\Request $request A request object.
-     * @param \Cake\Network\Response $response A response object.
+     * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
+     * @param \Psr\Http\Message\ResponseInterface $response A response object.
      * @return void
      */
-    public function unauthenticated(ResponseInterface $request, ServerRequestInterface $response)
+    public function unauthenticated(ServerRequestInterface $request, ResponseInterface $response)
     {
     }
 }
