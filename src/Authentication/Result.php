@@ -16,7 +16,7 @@ namespace Auth\Authentication;
 /**
  * Authentication result object
  */
-class Result
+class Result implements ResultInterface
 {
     /**
      * General Failure
