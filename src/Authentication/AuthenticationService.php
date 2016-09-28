@@ -152,21 +152,24 @@ class AuthenticationService
     }
 
     /**
-     * Callable implementation for the middleware stack.
+     * Authenticate the request against the configured authentication adapters.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @param callable $next The next middleware to call.
-     * @return \Psr\Http\Message\ResponseInterface A response.
+     * @return \Auth\Authentication\ResultInterface A result object. If none of
+     * the adapters was a success the last failed result is returned.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
+        $result = null;
         foreach ($this->_authenticators as $authenticator) {
-            $user = $authenticator->authenticate($request, $response);
-            if ($user) {
-
-                break;
+            $result = $authenticator->authenticate($request, $response);
+            if ($result->isValid()) {
+                return $result;
             }
         }
+
+        return $result;
     }
 }
