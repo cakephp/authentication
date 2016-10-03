@@ -5,6 +5,20 @@
 
 **Work in progress!**
 
-This is a proof of concept to implement a middle ware based authentication.
+This is a proof of concept to implement a middle ware based authentication. It's experimental - it will change and it will break.
 
-It's experimental - it will change and it will break. Development has just started.
+## Quick Start
+
+See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use a middleware.
+
+```php
+// Instantiate the authentication service and configure authenticators
+$service = new AuthenticationService([
+    'authenticators' => [
+        'Auth.Form'
+    ]
+]);
+
+// Add it to the authentication middleware
+$middleware = new AuthenticationMiddleware($service);
+```
