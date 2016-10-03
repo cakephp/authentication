@@ -32,18 +32,18 @@ class PasswordHasherFactoryTest extends TestCase
     public function testBuild()
     {
         $hasher = PasswordHasherFactory::build('Auth.Default');
-        $this->assertInstanceof('\Auth\PasswordHasher\DefaultPasswordHasher', $hasher);
+        $this->assertInstanceof('Auth\PasswordHasher\DefaultPasswordHasher', $hasher);
 
         $hasher = PasswordHasherFactory::build([
             'className' => 'Auth.Default',
             'hashOptions' => ['foo' => 'bar']
         ]);
-        $this->assertInstanceof('\Auth\PasswordHasher\DefaultPasswordHasher', $hasher);
+        $this->assertInstanceof('Auth\PasswordHasher\DefaultPasswordHasher', $hasher);
         $this->assertEquals(['foo' => 'bar'], $hasher->config('hashOptions'));
 
         Plugin::load('TestPlugin');
         $hasher = PasswordHasherFactory::build('TestPlugin.Legacy');
-        $this->assertInstanceof('TestPlugin\Auth\LegacyPasswordHasher', $hasher);
+        $this->assertInstanceof('TestPlugin\PasswordHasher\LegacyPasswordHasher', $hasher);
     }
 
     /**
