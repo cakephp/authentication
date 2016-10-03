@@ -13,10 +13,9 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
 use Auth\Authentication\FormAuthenticator;
 use Auth\Authentication\Result;
+use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -32,27 +31,6 @@ class FormAuthenticatorTest extends TestCase
         'core.auth_users',
         'core.users'
     ];
-
-    /**
-     * setUp
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $password = password_hash('password', PASSWORD_DEFAULT);
-        TableRegistry::clear();
-
-        $Users = TableRegistry::get('Users');
-        $Users->updateAll(['password' => $password], []);
-
-        $AuthUsers = TableRegistry::get('AuthUsers', [
-            'className' => 'TestApp\Model\Table\AuthUsersTable'
-        ]);
-        $AuthUsers->updateAll(['password' => $password], []);
-    }
 
     /**
      * testAuthenticate

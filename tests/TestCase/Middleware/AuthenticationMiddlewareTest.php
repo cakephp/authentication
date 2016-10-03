@@ -14,8 +14,7 @@
 namespace Auth\Test\TestCase\Middleware;
 
 use Auth\Authentication\AuthenticationService;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
+use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Auth\Middleware\AuthenticationMiddleware;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
@@ -30,27 +29,6 @@ class AuthenticationMiddlewareTest extends TestCase
         'core.auth_users',
         'core.users'
     ];
-
-    /**
-     * setUp
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $password = password_hash('password', PASSWORD_DEFAULT);
-        TableRegistry::clear();
-
-        $Users = TableRegistry::get('Users');
-        $Users->updateAll(['password' => $password], []);
-
-        $AuthUsers = TableRegistry::get('AuthUsers', [
-            'className' => 'TestApp\Model\Table\AuthUsersTable'
-        ]);
-        $AuthUsers->updateAll(['password' => $password], []);
-    }
 
     /**
      * testAuthentication

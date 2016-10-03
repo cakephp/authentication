@@ -77,6 +77,10 @@ class BasicAuthenticator extends AbstractAuthenticator
     public function getUser(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
+        if (!isset($server['PHP_AUTH_USER'])) {
+            return false;
+        }
+
         $username = $server['PHP_AUTH_USER'];
         $pass = $server['PHP_AUTH_USER'];
 

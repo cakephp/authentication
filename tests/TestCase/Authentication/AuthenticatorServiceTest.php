@@ -13,9 +13,44 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Cake\TestSuite\TestCase;
+use Auth\Authentication\AuthenticationService;
+use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequestFactory;
 
 class AuthenticatorServiceTest extends TestCase
 {
 
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'core.auth_users',
+        'core.users'
+    ];
+
+    /**
+     * testAuthenticate
+     *
+     * @return void
+     */
+    public function testAuthenticate() {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Auth.Form'
+            ]
+        ]);
+
+        $result = $service->authenticate($request, $response);
+        $this->assertTrue($result->isValid());
+    }
 }

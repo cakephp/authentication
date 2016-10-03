@@ -59,7 +59,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * `User.password` would store the password hash for use with other methods like
  * Basic or Form.
  */
-class DigestAuthenticator extends AbstractAuthenticator
+class DigestAuthenticator extends BasicAuthenticator
 {
 
     /**
@@ -99,30 +99,29 @@ class DigestAuthenticator extends AbstractAuthenticator
     {
         $digest = $this->_getDigest($request);
         if (empty($digest)) {
-            return false;
+            return new Result(null, Result::FAILURE_OTHER);
         }
 
         $user = $this->_findUser($digest['username']);
         if (empty($user)) {
-            return false;
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
         $field = $this->_config['fields']['password'];
         $password = $user[$field];
         unset($user[$field]);
 
-        // @todo not sure if this is right
         $server = $request->getServerParams();
-        if (empty($server['ORIGINAL_REQUEST_METHOD'])) {
-            return false;
+        if (!isset($server['ORIGINAL_REQUEST_METHOD'])) {
+            $server['ORIGINAL_REQUEST_METHOD'] = $server['REQUEST_METHOD'];
         }
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
         if ($digest['response'] === $hash) {
-            return $user;
+            return new Result($user, Result::FAILURE_CREDENTIAL_INVALID);
         }
 
-        return false;
+        return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
     }
 
     /**

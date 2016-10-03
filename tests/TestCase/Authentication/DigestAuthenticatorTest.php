@@ -88,15 +88,13 @@ class DigestAuthenticatorTest extends TestCase
      */
     public function testAuthenticateNoData()
     {
-        //$request = new Request('posts/index');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/posts/index']
         );
 
-        $this->response->expects($this->never())
-            ->method('header');
-
-        $this->assertFalse($this->auth->authenticate($request, $this->response));
+        $result = $this->auth->authenticate($request, $this->response);
+        $this->assertInstanceOf('Auth\Authentication\Result', $result);
+        $this->assertFalse($result->isValid());
     }
 
     /**
@@ -161,13 +159,6 @@ DIGEST;
      */
     public function testAuthenticateSuccess()
     {
-        /*
-        $request = new Request([
-            'url' => 'posts/index',
-            'environment' => ['REQUEST_METHOD' => 'GET']
-        ]);
-        $request->addParams(['pass' => []]);
-        */
         $digest = <<<DIGEST
 Digest username="mariano",
 realm="localhost",
@@ -182,20 +173,24 @@ DIGEST;
 
         $request = ServerRequestFactory::fromGlobals(
             [
-                'REQUEST_URI' => '/posts/index',
+                'SERVER_NAME' => 'localhost',
+                'REQUEST_URI' => '/dir/index.html',
                 'REQUEST_METHOD' => 'GET',
                 'PHP_AUTH_DIGEST' => $digest
             ]
         );
 
         $result = $this->auth->authenticate($request, $this->response);
+
         $expected = [
             'id' => 1,
             'username' => 'mariano',
             'created' => new Time('2007-03-17 01:16:23'),
             'updated' => new Time('2007-03-17 01:18:31')
         ];
-        $this->assertEquals($expected, $result);
+        $this->assertInstanceOf('Auth\Authentication\Result', $result);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals($expected, $result->getIdentity());
     }
 
     /**
@@ -232,7 +227,9 @@ DIGEST;
             'created' => new Time('2007-03-17 01:16:23'),
             'updated' => new Time('2007-03-17 01:18:31')
         ];
-        $this->assertEquals($expected, $result);
+        $this->assertInstanceOf('Auth\Authentication\Result', $result);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals($expected, $result->getIdentity());
     }
 
     /**
