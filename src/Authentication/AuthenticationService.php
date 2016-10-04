@@ -16,7 +16,6 @@ namespace Auth\Authentication;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
-use Auth\Authentication\AuthenticateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -73,7 +72,7 @@ class AuthenticationService
     /**
      * Constructor
      *
-     * @var array $config Configuration options.
+     * @param array $config Configuration options.
      */
     public function __construct(array $config = [])
     {
@@ -89,7 +88,7 @@ class AuthenticationService
     public function loadAuthenticators()
     {
         if (empty($this->_config['authenticators'])) {
-            return null;
+            return;
         }
 
         foreach ($this->_config['authenticators'] as $name => $config) {
@@ -106,6 +105,7 @@ class AuthenticationService
      *
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
+     * @return \Auth\Authentication\AuthenticateInterface
      */
     public function loadAuthenticator($name, array $config = [])
     {
@@ -156,7 +156,6 @@ class AuthenticationService
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param callable $next The next middleware to call.
      * @return \Auth\Authentication\ResultInterface A result object. If none of
      * the adapters was a success the last failed result is returned.
      */

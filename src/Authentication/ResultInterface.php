@@ -44,5 +44,4 @@ interface ResultInterface
      * @return array
      */
     public function getMessages();
-
 }

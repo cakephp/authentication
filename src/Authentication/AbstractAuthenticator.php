@@ -13,10 +13,10 @@
  */
 namespace Auth\Authentication;
 
-use Cake\Core\InstanceConfigTrait;
-use Cake\ORM\TableRegistry;
 use Auth\PasswordHasherTrait;
 use Auth\PasswordHasher\DefaultPasswordHasher;
+use Cake\Core\InstanceConfigTrait;
+use Cake\ORM\TableRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -57,7 +57,6 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Constructor
      *
-     * @param \Cake\Controller\ComponentRegistry $config The Component registry used on this request.
      * @param array $config Array of config to use.
      */
     public function __construct(array $config = [])

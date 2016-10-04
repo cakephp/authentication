@@ -24,7 +24,6 @@ use RuntimeException;
  */
 class PasswordHasherFactory
 {
-
     /**
      * Returns password hasher object out of a hasher name or a configuration array
      *

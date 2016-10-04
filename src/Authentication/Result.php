@@ -69,9 +69,9 @@ class Result implements ResultInterface
     /**
      * Sets the result code, identity, and failure messages
      *
-     * @param mixed $identity
-     * @param int $code
-     * @param array $messages
+     * @param mixed $identity The identity data
+     * @param int $code Error code.
+     * @param array $messages Messages.
      */
     public function __construct($identity, $code, array $messages = [])
     {
