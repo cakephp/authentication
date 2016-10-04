@@ -118,7 +118,7 @@ class DigestAuthenticator extends BasicAuthenticator
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
         if ($digest['response'] === $hash) {
-            return new Result($user, Result::FAILURE_CREDENTIAL_INVALID);
+            return new Result($user, Result::SUCCESS);
         }
 
         return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);

@@ -14,8 +14,11 @@
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Auth\Authentication\BasicAuthenticator;
+use Cake\Network\Exception\UnauthorizedException;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\I18n\Time;
+use Cake\ORM\TableRegistry;
+use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -139,24 +142,34 @@ class BasicAuthenticatorTest extends TestCase {
      */
     public function testAuthenticateUsernameZero()
     {
-//        $User = TableRegistry::get('Users');
-//        $User->updateAll(['username' => '0'], ['username' => 'mariano']);
-//
-//        $request = new Request('posts/index');
-//        $request->data = ['User' => [
-//            'user' => '0',
-//            'password' => 'password'
-//        ]];
-//        $_SERVER['PHP_AUTH_USER'] = '0';
-//        $_SERVER['PHP_AUTH_PW'] = 'password';
-//
-//        $expected = [
-//            'id' => 1,
-//            'username' => '0',
-//            'created' => new Time('2007-03-17 01:16:23'),
-//            'updated' => new Time('2007-03-17 01:18:31'),
-//        ];
-//        $this->assertEquals($expected, $this->auth->authenticate($request, $this->response));
+        $User = TableRegistry::get('Users');
+        $User->updateAll(['username' => '0'], ['username' => 'mariano']);
+
+        $_SERVER['PHP_AUTH_USER'] = '0';
+        $_SERVER['PHP_AUTH_PW'] = 'password';
+
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/posts/index',
+                'SERVER_NAME' => 'localhost',
+                'PHP_AUTH_USER' => '0',
+                'PHP_AUTH_PW' => 'password'
+            ],
+            [
+                'user' => '0',
+                'password' => 'password'
+            ]
+        );
+
+        $expected = [
+            'id' => 1,
+            'username' => '0',
+            'created' => new Time('2007-03-17 01:16:23'),
+            'updated' => new Time('2007-03-17 01:18:31'),
+        ];
+        $result = $this->auth->authenticate($request, $this->response);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals($expected, $result->getIdentity());
     }
 
     /**
@@ -169,6 +182,7 @@ class BasicAuthenticatorTest extends TestCase {
         $request = ServerRequestFactory::fromGlobals(
             [
                 'REQUEST_URI' => '/posts/index',
+                'SERVER_NAME' => 'localhost',
             ]
         );
 
@@ -205,7 +219,9 @@ class BasicAuthenticatorTest extends TestCase {
             'created' => new Time('2007-03-17 01:16:23'),
             'updated' => new Time('2007-03-17 01:18:31')
         ];
-        $this->assertEquals($expected, $result);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEquals($expected, $result->getIdentity());
     }
 
     /**
@@ -223,7 +239,8 @@ class BasicAuthenticatorTest extends TestCase {
             [
                 'REQUEST_URI' => '/posts/index',
                 'PHP_AUTH_USER' => 'mariano',
-                'PHP_AUTH_PW' => 'password'
+                'PHP_AUTH_PW' => 'password',
+                'SERVER_NAME' => 'localhost',
             ]
         );
 

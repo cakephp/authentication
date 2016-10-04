@@ -214,6 +214,7 @@ DIGEST;
 
         $request = ServerRequestFactory::fromGlobals(
             [
+                'SERVER_NAME' => 'localhost',
                 'REQUEST_URI' => '/posts/index',
                 'REQUEST_METHOD' => 'GET',
                 'PHP_AUTH_DIGEST' => $digest
