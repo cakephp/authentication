@@ -16,8 +16,8 @@ namespace Auth\Test\TestCase\Middleware\Authentication;
 use Auth\Authentication\FormAuthenticator;
 use Auth\Authentication\Result;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
 
 class FormAuthenticatorTest extends TestCase
 {

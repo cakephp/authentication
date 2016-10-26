@@ -19,13 +19,19 @@ namespace Auth\Authentication\Storage;
  */
 class MemoryStorage implements StorageInterface
 {
-
     /**
      * User record.
      *
      * @var array|null
      */
     protected $_user;
+
+    /**
+     * Redirect url.
+     *
+     * @var string
+     */
+    protected $_redirectUrl;
 
     /**
      * {@inheritDoc}
@@ -46,8 +52,26 @@ class MemoryStorage implements StorageInterface
     /**
      * {@inheritDoc}
      */
-    public function clear()
+    public function delete()
     {
         $this->_user = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function redirectUrl($url = null)
+    {
+        if ($url === null) {
+            return $this->_redirectUrl;
+        }
+
+        if ($url === false) {
+            $this->_redirectUrl = null;
+
+            return null;
+        }
+
+        $this->_redirectUrl = $url;
     }
 }

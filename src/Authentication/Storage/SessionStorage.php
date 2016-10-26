@@ -15,15 +15,15 @@
 namespace Auth\Authentication\Storage;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Network\Session;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Session based persistent storage for authenticated user record.
  */
 class SessionStorage implements StorageInterface
 {
-
     use InstanceConfigTrait;
 
     /**
@@ -49,11 +49,13 @@ class SessionStorage implements StorageInterface
      * Keys:
      *
      * - `key` - Session key used to store user record.
+     * - `redirect` - Session key used to store redirect URL.
      *
      * @var array
      */
     protected $_defaultConfig = [
         'key' => 'Auth.User',
+        'redirect' => 'Auth.redirect'
     ];
 
     /**
@@ -63,9 +65,17 @@ class SessionStorage implements StorageInterface
      * @param \Cake\Network\Response $response Response instance.
      * @param array $config Configuration list.
      */
-    public function __construct(Request $request, Response $response, array $config = [])
+    public function __construct(ServerRequestInterface $request, ResponseInterface $response, array $config = [])
     {
-        $this->_session = $request->session();
+        $this->_session = $request->getAttribute('session');
+        if (!$this->_session instanceof Session) {
+            if (is_object($this->_session)) {
+                $message = sprintf('Invalid session object of type `%s` passed', get_class($this->_session));
+            } else {
+                $message = sprintf('Invalid session value of type `%s` passed', gettype($this->_session));
+            }
+            throw new \RuntimeException($message);
+        }
         $this->config($config);
     }
 
@@ -108,11 +118,29 @@ class SessionStorage implements StorageInterface
      *
      * @return void
      */
-    public function clear()
+    public function delete()
     {
         $this->_user = false;
 
         $this->_session->delete($this->_config['key']);
         $this->_session->renew();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function redirectUrl($url = null)
+    {
+        if ($url === null) {
+            return $this->_session->read($this->_config['redirect']);
+        }
+
+        if ($url === false) {
+            $this->_session->delete($this->_config['redirect']);
+
+            return null;
+        }
+
+        $this->_session->write($this->_config['redirect'], $url);
     }
 }

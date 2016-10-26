@@ -13,6 +13,7 @@
  */
 namespace Auth\Authentication;
 
+use Auth\Authentication\Storage\StorageInterface;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
@@ -34,9 +35,16 @@ class AuthenticationService
     protected $_authenticators = [];
 
     /**
+     * Identity storage object.
+     *
+     * @var \Auth\Authentication\Storage\StorageInterface
+     */
+    protected $_storage;
+
+    /**
      * Default configuration
      *
-     * - `authenticate` - An array of authentication objects to use for authenticating users.
+     * - `authenticators` - An array of authentication objects to use for authenticating users.
      *   You can configure multiple adapters and they will be checked sequentially
      *   when users are identified.
      *
@@ -48,25 +56,11 @@ class AuthenticationService
      *   ]);
      *   ```
      *
-     *   Using the class name without 'Authenticate' as the key, you can pass in an
-     *   array of config for each authentication object. Additionally you can define
-     *   config that should be set to all authentications objects using the 'all' key:
-     *
-     *   ```
-     *   $service->config('authenticate', [
-     *       AuthComponent::ALL => [
-     *          'userModel' => 'Users.Users',
-     *          'scope' => ['Users.active' => 1]
-     *      ],
-     *     'Form',
-     *     'Basic'
-     *   ]);
-     *   ```
-     *
      * @var array
      */
     protected $_defaultConfig = [
-        'authenticators'
+        'authenticators' => [],
+        'storage' => 'Auth.Session'
     ];
 
     /**
@@ -78,6 +72,55 @@ class AuthenticationService
     {
         $this->config($config);
         $this->loadAuthenticators();
+    }
+
+    /**
+     * Loads a storage object based on the service configuration.
+     *
+     * @param \Cake\Auth\Storage\StorageInterface|null $storage Sets provided
+     *   object as storage or if null returns configured storage object.
+     * @return \Cake\Auth\Storage\StorageInterface|null
+     */
+    public function loadStorageFromConfig(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $config = $this->_config['storage'];
+        if (is_string($config)) {
+            $class = $config;
+            $config = [];
+        } else {
+            $class = $config['className'];
+            unset($config['className']);
+        }
+
+        $className = App::className($class, 'Authentication/Storage', 'Storage');
+        if (!class_exists($className)) {
+            throw new Exception(sprintf('Auth storage adapter "%s" was not found.', $class));
+        }
+
+        $storage = new $className($request, $response, $config);
+        $this->setStorage($storage);
+        return $storage;
+    }
+
+    /**
+     * Set an identity storage object.
+     *
+     * @param \Auth\Authentication\Storage\StorageInterface $storage An identity storage object.
+     * @return void
+     */
+    public function setStorage(StorageInterface $storage)
+    {
+        $this->_storage = $storage;
+    }
+
+    /**
+     * Returns the identity storage object.
+     *
+     * @return \Auth\Authentication\Storage\StorageInterface
+     */
+    public function getStorage()
+    {
+        return $this->_storage;
     }
 
     /**
@@ -165,10 +208,43 @@ class AuthenticationService
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
+                $this->loadStorageFromConfig($request, $response);
+                $this->getStorage()->write($result->getIdentity());
                 return $result;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Sets an identity.
+     *
+     * @param array|\ArrayAccess $identity Identity data to set.
+     * @return void
+     */
+    public function setIdentity($identity)
+    {
+        $this->getStorage()->write($identity);
+    }
+
+    /**
+     * Gets the identity data.
+     *
+     * @param string|null $key Key to get from the identity array if present.
+     * @return mixed
+     */
+    public function getIdentity($key = null)
+    {
+        $identity = $this->getStorage()->read();
+        if (!$identity) {
+            return null;
+        }
+
+        if ($key === null) {
+            return $identity;
+        }
+
+        return Hash::get($identity, $key);
     }
 }

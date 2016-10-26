@@ -16,6 +16,7 @@ namespace Auth\Test\TestCase\Middleware;
 use Auth\Authentication\AuthenticationService;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Auth\Middleware\AuthenticationMiddleware;
+use Cake\Network\Session;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -31,6 +32,15 @@ class AuthenticationMiddlewareTest extends TestCase
     ];
 
     /**
+     * @inheritdoc
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->session = $this->getMockBuilder(Session::class)->getMock();
+    }
+
+    /**
      * testAuthentication
      *
      * @return void
@@ -42,6 +52,8 @@ class AuthenticationMiddlewareTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
+        $request = $request->withAttribute('session', $this->session);
+
         $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
 
         $service = new AuthenticationService([

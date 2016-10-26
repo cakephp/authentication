@@ -40,5 +40,5 @@ interface StorageInterface
      *
      * @return void
      */
-    public function clear();
+    public function delete();
 }

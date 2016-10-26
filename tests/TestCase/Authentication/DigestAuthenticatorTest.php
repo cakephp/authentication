@@ -18,12 +18,10 @@ namespace Auth\Test\TestCase\Authentication;
 
 use Auth\Authentication\DigestAuthenticator;
 use Cake\I18n\Time;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
+use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Request;
-use Zend\Diactoros\ServerRequestFactory;
 
 /**
  * Test case for DigestAuthentication

@@ -18,9 +18,8 @@ use Cake\Network\Exception\UnauthorizedException;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
-use Zend\Diactoros\Request;
+use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
 
 class BasicAuthenticatorTest extends TestCase {
 

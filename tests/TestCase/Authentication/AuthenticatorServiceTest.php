@@ -15,8 +15,8 @@ namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Auth\Authentication\AuthenticationService;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
 
 class AuthenticatorServiceTest extends TestCase
 {
@@ -42,7 +42,8 @@ class AuthenticatorServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $response = new Response();
+
 
         $service = new AuthenticationService([
             'authenticators' => [
