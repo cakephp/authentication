@@ -163,18 +163,19 @@ class AuthenticationService
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
                 $this->_identity = new Identity($result->getIdentity());
+
                 return $result;
             }
         }
 
         $this->_identity = null;
+
         return $result;
     }
 
     /**
      * Gets the identity data.
      *
-     * @param string|null $key Key to get from the identity array if present.
      * @return mixed
      */
     public function getIdentity()

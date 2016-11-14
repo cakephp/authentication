@@ -19,7 +19,28 @@ use Psr\Http\Message\ServerRequestInterface;
 interface IdentityInterface
 {
 
-    public function set($name, $value);
-    public function get($name);
-    public function has($name);
+    /**
+     * Sets a value to the identity
+     *
+     * @param string $key Key name.
+     * @param mixed $value Value to set.
+     * @return void
+     */
+    public function set($key, $value);
+
+    /**
+     * Gets a value from the identity data.
+     *
+     * @param string $key Key name.
+     * @return mixed
+     */
+    public function get($key);
+
+    /**
+     * Checks if the identity has a key.
+     *
+     * @param string $key Key to check.
+     * @return bool
+     */
+    public function has($key);
 }

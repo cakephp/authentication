@@ -1,7 +1,8 @@
 <?php
 namespace Auth\Authentication;
 
-class Identity implements IdentityInterface {
+class Identity implements IdentityInterface
+{
 
     /**
      * Identity data
@@ -11,7 +12,9 @@ class Identity implements IdentityInterface {
     protected $_identity;
 
     /**
-     * array|\ArrayAccess
+     * Constructor
+     *
+     * @param array|\ArrayAccess $identity The identity data.
      */
     public function __construct($identity)
     {
@@ -22,11 +25,17 @@ class Identity implements IdentityInterface {
         $this->_identity = $identity;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function set($path, $value)
     {
         Hash::insert($this->_identity, $path, $value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function get($path = null)
     {
         if ($path === null) {
@@ -36,9 +45,11 @@ class Identity implements IdentityInterface {
         return Hash::get($this->_identity, $path);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function has($path)
     {
         return (bool)Hash::get($this->_identity, $path);
     }
-
 }

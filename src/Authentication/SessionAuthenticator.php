@@ -24,8 +24,14 @@ use Psr\Http\Message\ServerRequestInterface;
 class SessionAuthenticator extends AbstractAuthenticator
 {
 
-    public function __construct(array $config = []) {
-        $this->config('sessionKey', 'Auth');
+    /**
+     * Constructor
+     *
+     * @param array $config Array of config to use.
+     */
+    public function __construct(array $config = [])
+    {
+        $this->_defaultConfig['sessionKey'] = 'Auth';
         parent::__construct($config);
     }
 
@@ -46,7 +52,7 @@ class SessionAuthenticator extends AbstractAuthenticator
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
-        if ($this->config('verifyByDatabase')) {
+        if ($this->config('verifyByDatabase') === true) {
             $user = $this->_findUser(
                 $user[$this->config('fields')['username']],
                 $user[$this->config('fields')['password']]
