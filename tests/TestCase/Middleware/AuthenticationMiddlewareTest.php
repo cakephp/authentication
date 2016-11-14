@@ -63,10 +63,10 @@ class AuthenticationMiddlewareTest extends TestCase
         ]);
         $middleware = new AuthenticationMiddleware($service);
 
-        $callable = function () {
+        $callable = function ($request, $response) {
+            return $response;
         };
 
-        $result = $middleware($request, $response, $callable);
-        //debug($result);
+        $middleware($request, $response, $callable);
     }
 }
