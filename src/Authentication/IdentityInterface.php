@@ -16,7 +16,7 @@ namespace Auth\Authentication;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface Identity
+interface IdentityInterface
 {
 
     public function set($name, $value);

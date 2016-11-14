@@ -1,7 +1,7 @@
 <?php
 namespace Auth\Authentication;
 
-class Identity {
+class Identity implements IdentityInterface {
 
     /**
      * Identity data
