@@ -13,10 +13,11 @@
  */
 namespace Auth\Authentication;
 
-use Auth\Authentication\Storage\StorageInterface;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Event\EventDispatcherTrait;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -25,6 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AuthenticationService
 {
+    use EventDispatcherTrait;
     use InstanceConfigTrait;
 
     /**
@@ -35,11 +37,11 @@ class AuthenticationService
     protected $_authenticators = [];
 
     /**
-     * Identity storage object.
+     * Identity object
      *
-     * @var \Auth\Authentication\Storage\StorageInterface
+     * @var \Auth\Authentication\Identity
      */
-    protected $_storage;
+    protected $_identity;
 
     /**
      * Default configuration
@@ -72,55 +74,6 @@ class AuthenticationService
     {
         $this->config($config);
         $this->loadAuthenticators();
-    }
-
-    /**
-     * Loads a storage object based on the service configuration.
-     *
-     * @param \Cake\Auth\Storage\StorageInterface|null $storage Sets provided
-     *   object as storage or if null returns configured storage object.
-     * @return \Cake\Auth\Storage\StorageInterface|null
-     */
-    public function loadStorageFromConfig(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        $config = $this->_config['storage'];
-        if (is_string($config)) {
-            $class = $config;
-            $config = [];
-        } else {
-            $class = $config['className'];
-            unset($config['className']);
-        }
-
-        $className = App::className($class, 'Authentication/Storage', 'Storage');
-        if (!class_exists($className)) {
-            throw new Exception(sprintf('Auth storage adapter "%s" was not found.', $class));
-        }
-
-        $storage = new $className($request, $response, $config);
-        $this->setStorage($storage);
-        return $storage;
-    }
-
-    /**
-     * Set an identity storage object.
-     *
-     * @param \Auth\Authentication\Storage\StorageInterface $storage An identity storage object.
-     * @return void
-     */
-    public function setStorage(StorageInterface $storage)
-    {
-        $this->_storage = $storage;
-    }
-
-    /**
-     * Returns the identity storage object.
-     *
-     * @return \Auth\Authentication\Storage\StorageInterface
-     */
-    public function getStorage()
-    {
-        return $this->_storage;
     }
 
     /**
@@ -205,27 +158,17 @@ class AuthenticationService
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $result = null;
+
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
-                $this->loadStorageFromConfig($request, $response);
-                $this->getStorage()->write($result->getIdentity());
+                $this->_identity = new Identity($result->getIdentity());
                 return $result;
             }
         }
 
+        $this->_identity = null;
         return $result;
-    }
-
-    /**
-     * Sets an identity.
-     *
-     * @param array|\ArrayAccess $identity Identity data to set.
-     * @return void
-     */
-    public function setIdentity($identity)
-    {
-        $this->getStorage()->write($identity);
     }
 
     /**
@@ -234,17 +177,12 @@ class AuthenticationService
      * @param string|null $key Key to get from the identity array if present.
      * @return mixed
      */
-    public function getIdentity($key = null)
+    public function getIdentity()
     {
-        $identity = $this->getStorage()->read();
-        if (!$identity) {
+        if (empty($this->_identity)) {
             return null;
         }
 
-        if ($key === null) {
-            return $identity;
-        }
-
-        return Hash::get($identity, $key);
+        return $this->_identity;
     }
 }

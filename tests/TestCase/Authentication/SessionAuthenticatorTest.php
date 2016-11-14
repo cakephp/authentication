@@ -19,7 +19,7 @@ use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
-class FormAuthenticatorTest extends TestCase {
+class SessionAuthenticatorTest extends TestCase {
 
     /**
      * Fixtures
