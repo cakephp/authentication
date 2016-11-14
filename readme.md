@@ -36,5 +36,5 @@ If you're not yet familiar with request attributes [check the PSR7 documentation
 
 ```php
 $authentication = $request->getAttribute('authentication');
-$user = authentication->getIdentity();
+$user = $authentication->getIdentity();
 ```
