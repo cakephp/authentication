@@ -14,9 +14,9 @@
  */
 namespace Auth\Test\TestCase\PasswordHasher;
 
-use Cake\Auth\DefaultPasswordHasher;
-use Cake\Auth\FallbackPasswordHasher;
-use Cake\Auth\WeakPasswordHasher;
+use Auth\PasswordHasher\DefaultPasswordHasher;
+use Auth\PasswordHasher\FallbackPasswordHasher;
+use Auth\PasswordHasher\WeakPasswordHasher;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -32,12 +32,12 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testHash()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Weak', 'Default']]);
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Auth.Weak', 'Auth.Default']]);
         $weak = new WeakPasswordHasher();
         $this->assertSame($weak->hash('foo'), $hasher->hash('foo'));
 
         $simple = new DefaultPasswordHasher();
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Weak', 'Default']]);
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Auth.Weak', 'Auth.Default']]);
         $this->assertSame($weak->hash('foo'), $hasher->hash('foo'));
     }
 
@@ -49,7 +49,7 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testCheck()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Weak', 'Default']]);
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Auth.Weak', 'Auth.Default']]);
         $weak = new WeakPasswordHasher();
         $simple = new DefaultPasswordHasher();
 
@@ -67,7 +67,7 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testCheckWithConfigs()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Default', 'Weak' => ['hashType' => 'md5']]]);
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Auth.Default', 'Auth.Weak' => ['hashType' => 'md5']]]);
         $legacy = new WeakPasswordHasher(['hashType' => 'md5']);
         $simple = new DefaultPasswordHasher();
 
@@ -85,7 +85,7 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testNeedsRehash()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Default', 'Weak']]);
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Auth.Default', 'Auth.Weak']]);
         $weak = new WeakPasswordHasher();
         $otherHash = $weak->hash('foo');
         $this->assertTrue($hasher->needsRehash($otherHash));
