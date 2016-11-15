@@ -27,5 +27,17 @@
             "TestApp\\": "tests/test_app/TestApp",
             "TestPlugin\\": "tests/test_app/Plugin/TestPlugin/src"
         }
-    }
+    },
+    "authors": [
+        {
+            "name": "Florian Krämer",
+            "homepage": "http://florian-kraemer.net",
+            "role": "Developer"
+        },
+        {
+            "name": "Admad",
+            "homepage": "http://github.com/admad",
+            "role": "Developer"
+        }
+    ]
 }

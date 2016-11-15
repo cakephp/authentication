@@ -1,13 +1,16 @@
 # CakePHP Middleware Authentication
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/?branch=master)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/?branch=master) 
 [![Code Coverage](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/?branch=master)
 
-This is a proof of concept to implement a middleware based authentication. **It's still work in progress, don't use it in production!**
+[PSR7](http://www.php-fig.org/psr/psr-7/) Middleware authentication stack for the CakePHP framework.
+
+Don't know what a middleware is? [Check the CakePHP documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html) and additionally [read this.](https://philsturgeon.uk/php/2016/05/31/why-care-about-php-middleware/)
 
 ## Quick Start
 
-See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use a middleware.
+Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use a middleware if you don't know what it is or how to work with it.
 
 ```php
 class Application extends BaseApplication
@@ -17,7 +20,8 @@ class Application extends BaseApplication
         // Instantiate the authentication service and configure authenticators
         $service = new AuthenticationService([
             'authenticators' => [
-                'Auth.Form'
+                'Auth.Form',
+                'Auth.Session'
             ]
         ]);
         
@@ -34,7 +38,25 @@ If one of the configured authenticators was able to validate the credentials the
 
 If you're not yet familiar with request attributes [check the PSR7 documentation](http://www.php-fig.org/psr/psr-7/).
 
+You can get the authenticated user credentials from the request by doing this:
+
 ```php
 $authentication = $request->getAttribute('authentication');
 $user = $authentication->getIdentity();
 ```
+
+## Differences and similarities to the AuthComponent
+
+### Differences
+
+* There is no automatic checking of the session. To get the actual user data from the session you'll have to use the `Auth.Session` authenticator. It will check the session if there is data in the configured session key and put it into the identity object.
+* The user data is no longer available  through the auth component but accessible via a request attribute and encapsulated in an identity object: `$request->getAttribute('authentication')->getIdentity();`
+
+### Similarities
+
+* All the existing authentication adapters, Form, Basic, Digest still use the same configuration options as they do in the old implementation for the AuthComponent.
+
+## Migration from the AuthComponent
+
+* Remove authentication from the Auth component and put the middleware in place like shown above and configure your authenticators the same way as you did for the Auth component before.
+* Change your code to use the identity object instead of using `$this->Auth->user()`;
