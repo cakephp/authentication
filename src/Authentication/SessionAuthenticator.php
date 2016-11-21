@@ -54,10 +54,10 @@ class SessionAuthenticator extends AbstractAuthenticator
         }
 
         if ($this->config('verifyByDatabase') === true) {
-            $user = $this->_findUser(
-                $user[$this->config('fields')['username']],
-                $user[$this->config('fields')['password']]
-            );
+            $user = $this->identifiers()->identify([
+                'username' => $user[$this->config('fields')['username']],
+                'password' => $user[$this->config('fields')['password']]
+            ]);
 
             if (empty($user)) {
                 return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);

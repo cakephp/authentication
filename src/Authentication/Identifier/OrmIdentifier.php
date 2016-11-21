@@ -23,11 +23,16 @@ class OrmIdentifier extends AbstractIdentifier {
 
     public function identify($data) {
         $fields = $this->config('fields');
-        if (!isset($data[$fields['username']]) || !isset($data[$fields['password']])) {
+        if (!isset($data[$fields['username']])) {
             return false;
         }
 
-        return $this->_findUser($data[$fields['username']], $data[$fields['password']]);
+        $password = null;
+        if (!empty($data[$fields['password']])) {
+            $password = $data[$fields['password']];
+        }
+
+        return $this->_findUser($data[$fields['username']], $password);
     }
 
     /**

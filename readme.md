@@ -19,6 +19,9 @@ class Application extends BaseApplication
     {
         // Instantiate the authentication service and configure authenticators
         $service = new AuthenticationService([
+            'identifiers' => [
+                'Auth.Orm'
+            ],
             'authenticators' => [
                 'Auth.Form',
                 'Auth.Session'
@@ -51,6 +54,7 @@ $user = $authentication->getIdentity();
 
 * There is no automatic checking of the session. To get the actual user data from the session you'll have to use the `Auth.Session` authenticator. It will check the session if there is data in the configured session key and put it into the identity object.
 * The user data is no longer available  through the auth component but accessible via a request attribute and encapsulated in an identity object: `$request->getAttribute('authentication')->getIdentity();`
+* The logic of the authentication process has been split into authenticators and identifiers. An authenticator will extract the credentials and check them againts a set of identifiers to actually verify and identify the request.
 
 ### Similarities
 

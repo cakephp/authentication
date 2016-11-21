@@ -194,7 +194,7 @@ DIGEST;
         ];
         $this->assertInstanceOf('Auth\Authentication\Result', $result);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity());
+        $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
 
     /**
@@ -234,7 +234,7 @@ DIGEST;
         ];
         $this->assertInstanceOf('Auth\Authentication\Result', $result);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity());
+        $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
 
     /**
