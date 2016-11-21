@@ -30,11 +30,14 @@ class LdapIdentifier extends AbstractIdentifier {
     protected $ldapConnection;
 
     /**
-     * Log Errors
+     * Default configuration
      *
-     * @var boolean
+     * @var array
      */
-    public $logErrors = false;
+    protected $_defaultConfig = [
+        'logErrors' => false,
+        'port' => null,
+    ];
 
     /**
      * Constructor
@@ -52,18 +55,16 @@ class LdapIdentifier extends AbstractIdentifier {
         if (empty($config['host'])) {
             throw new InternalErrorException('LDAP Server not specified!');
         }
-        if (empty($config['port'])) {
-            $config['port'] = null;
-        }
-        if (isset($config['logErrors']) && $config['logErrors'] === true) {
-            $this->logErrors = true;
-        }
 
         parent::__construct($config);
-
         $this->_connectLdap();
     }
 
+    /**
+     * Initializes the Ldap connection
+     *
+     * @return void
+     */
     protected function _connectLdap()
     {
         $config = $this->config();
@@ -123,23 +124,10 @@ class LdapIdentifier extends AbstractIdentifier {
                 return ldap_get_attributes($this->ldapConnection, $entry);
             }
         } catch (ErrorException $e) {
-            if ($this->logErrors === true) {
+            if ($this->_config['logErrors'] === true) {
                 $this->log($e->getMessage());
             }
-            if (ldap_get_option($this->ldapConnection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extendedError)) {
-                if (!empty($extendedError)) {
-                    foreach ($this->_config['errors'] as $error => $errorMessage) {
-                        if (strpos($extendedError, $error) !== false) {
-                            $messages[] = [
-                                'message' => $errorMessage,
-                                'key' => $this->_config['flash']['key'],
-                                'element' => $this->_config['flash']['element'],
-                                'params' => $this->_config['flash']['params'],
-                            ];
-                        }
-                    }
-                }
-            }
+            $this->_handleLdapError();
         }
 
         restore_error_handler();
@@ -148,6 +136,29 @@ class LdapIdentifier extends AbstractIdentifier {
         }
 
         return false;
+    }
+
+    /**
+     * Handles an Ldap error
+     *
+     * @return void
+     */
+    protected function _handleLdapError()
+    {
+        if (ldap_get_option($this->ldapConnection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extendedError)) {
+            if (!empty($extendedError)) {
+                foreach ($this->_config['errors'] as $error => $errorMessage) {
+                    if (strpos($extendedError, $error) !== false) {
+                        $messages[] = [
+                            'message' => $errorMessage,
+                            'key' => $this->_config['flash']['key'],
+                            'element' => $this->_config['flash']['element'],
+                            'params' => $this->_config['flash']['params'],
+                        ];
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -21,8 +21,18 @@ abstract class AbstractIdentifier implements IdentifierInterface {
     use InstanceConfigTrait;
     use LogTrait;
 
+    /**
+     * Default configuration
+     *
+     * @var array
+     */
     protected $_defaultConfig = [];
 
+    /**
+     * Constructor
+     *
+     * @var array $config Configuration
+     */
     public function __construct(array $config = [])
     {
         $this->config($config);
