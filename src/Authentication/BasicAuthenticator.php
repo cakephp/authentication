@@ -82,13 +82,16 @@ class BasicAuthenticator extends AbstractAuthenticator
         }
 
         $username = $server['PHP_AUTH_USER'];
-        $pass = $server['PHP_AUTH_PW'];
+        $password = $server['PHP_AUTH_PW'];
 
-        if (!is_string($username) || $username === '' || !is_string($pass) || $pass === '') {
+        if (!is_string($username) || $username === '' || !is_string($password) || $password === '') {
             return false;
         }
 
-        return $this->_findUser($username, $pass);
+        return $this->identifiers()->identify([
+            'username' => $username,
+            'password' => $password
+        ]);
     }
 
     /**

@@ -44,8 +44,10 @@ class AuthenticatorServiceTest extends TestCase
         );
         $response = new Response();
 
-
         $service = new AuthenticationService([
+            'identifiers' => [
+                'Auth.Orm'
+            ],
             'authenticators' => [
                 'Auth.Form'
             ]

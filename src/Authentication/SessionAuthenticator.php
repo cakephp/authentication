@@ -15,6 +15,7 @@
 namespace Auth\Authentication;
 
 use Cake\Network\Exception\UnauthorizedException;
+use Auth\Authentication\Identifier\IdentifierCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -29,10 +30,10 @@ class SessionAuthenticator extends AbstractAuthenticator
      *
      * @param array $config Array of config to use.
      */
-    public function __construct(array $config = [])
+    public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
         $this->_defaultConfig['sessionKey'] = 'Auth';
-        parent::__construct($config);
+        parent::__construct($identifiers, $config);
     }
 
     /**

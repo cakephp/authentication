@@ -14,7 +14,6 @@
 namespace Auth\Authentication\Identifier;
 
 use Cake\Core\Exception\Exception;
-use Cake\Log\LogTrait;
 use Cake\Network\Exception\InternalErrorException;
 use ErrorException;
 
@@ -23,14 +22,12 @@ use ErrorException;
  */
 class LdapIdentifier extends AbstractIdentifier {
 
-    use LogTrait;
-
     /**
      * LDAP Object
      *
      * @var object
      */
-    private $ldapConnection;
+    protected $ldapConnection;
 
     /**
      * Log Errors
@@ -62,6 +59,15 @@ class LdapIdentifier extends AbstractIdentifier {
             $this->logErrors = true;
         }
 
+        parent::__construct($config);
+
+        $this->_connectLdap();
+    }
+
+    protected function _connectLdap()
+    {
+        $config = $this->config();
+
         try {
             $this->ldapConnection = ldap_connect($config['host'], $config['port']);
             if (isset($config['options']) && is_array($config['options'])) {
@@ -76,9 +82,18 @@ class LdapIdentifier extends AbstractIdentifier {
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function identify($data)
     {
-        // TODO: Implement identify() method.
+        $fields = $this->config('fields');
+
+        if (isset($data[$fields['username']]) && isset($data[$fields['password']])) {
+            $this->_findUser($data[$fields['username']], $data[$fields['password']]);
+        }
+
+        return false;
     }
 
     /**

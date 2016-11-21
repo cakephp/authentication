@@ -1,19 +1,41 @@
 <?php
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @since         4.0.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 namespace Auth\Authentication\Identifier;
 
-use ArrayAccess;
 use Cake\Core\App;
 use Cake\Core\InstanceConfigTrait;
 
-class IdentifierCollection implements ArrayAccess {
+class IdentifierCollection {
 
     use InstanceConfigTrait;
 
+    /**
+     * A list of identifier instances
+     *
+     * @var array
+     */
     protected $_identifiers = [];
 
+    /**
+     * Config array.
+     *
+     * @var array
+     */
     protected $_defaultConfig = [];
 
-    public function __construct(array $config = []) {
+    public function __construct(array $config = [])
+    {
         $this->config($config);
 
         foreach ($config as $key => $value) {
@@ -28,9 +50,9 @@ class IdentifierCollection implements ArrayAccess {
     /**
      * Returns password hasher object out of a hasher name or a configuration array
      *
-     * @param string|array $passwordHasher Name of the password hasher or an array with
+     * @param string|array $identifier Name of the identifier
      * at least the key `className` set to the name of the class to use
-     * @return \Cake\Auth\AbstractPasswordHasher Password hasher instance
+     * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
      * @throws \RuntimeException If password hasher class not found or
      *   it does not extend Cake\Auth\AbstractPasswordHasher
      */
@@ -40,10 +62,46 @@ class IdentifierCollection implements ArrayAccess {
             return $this->_identifiers[$identifier];
         }
 
-        $this->_identifiers[$identifier] = $this->load($identifier, $config);
-        return $this->_identifiers[$identifier];
+        return $this->_identifiers[$identifier] = $this->load($identifier, $config);
     }
 
+    /**
+     * Identifies an user or service by the passed credentials
+     *
+     * @var mixed $credentials Authentication credentials
+     * @return mixed
+     */
+    public function identify($credentials)
+    {
+        foreach ($this->_identifiers as $identifier) {
+            $result = $identifier->identify($credentials);
+            if ($result) {
+                return $result;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get all loaded identifiers
+     *
+     * @return array
+     */
+    public function getAll()
+    {
+        return $this->_identifiers;
+    }
+
+    /**
+     * Returns identifier object out of a identifier name or a configuration array
+     *
+     * @param string|array $identifier Name of the identifier
+     * at least the key `className` set to the name of the class to use
+     * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
+     * @throws \RuntimeException If password hasher class not found or
+     *   it does not extend Cake\Auth\AbstractPasswordHasher
+     */
     public function load($class, array $config = [])
     {
         $className = App::className($class, 'Authentication/Identifier', 'Identifier');
@@ -57,77 +115,10 @@ class IdentifierCollection implements ArrayAccess {
             throw new RuntimeException('Identifier must implement \Auth\Authentication\IdentifierInterface');
         }
 
-        return $identifier;
-    }
-
-    /**
-     * Whether a offset exists
-     *
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     * @param mixed $offset <p>
-     * An offset to check for.
-     * </p>
-     * @return boolean true on success or false on failure.
-     * </p>
-     * <p>
-     * The return value will be casted to boolean if non-boolean was returned.
-     * @since 5.0.0
-     */
-    public function offsetExists($offset)
-    {
-        isset($this->_identifiers[$offset]);
-    }
-
-    /**
-     * Offset to retrieve
-     *
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     * @param mixed $offset <p>
-     * The offset to retrieve.
-     * </p>
-     * @return mixed Can return all value types.
-     * @since 5.0.0
-     */
-    public function offsetGet($offset)
-    {
-        if (isset($this->_identifiers[$offset])) {
-            return $this->_identifiers[$offset];
+        if (isset($config['alias'])) {
+            $class = $config['alias'];
         }
 
-        return null;
+        return $this->_identifiers[$class] = $identifier;
     }
-
-    /**
-     * Offset to set
-     *
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     * @param mixed $offset <p>
-     * The offset to assign the value to.
-     * </p>
-     * @param mixed $value <p>
-     * The value to set.
-     * </p>
-     * @return void
-     * @since 5.0.0
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->_identifiers[$offset] = $value;
-    }
-
-    /**
-     * Offset to unset
-     *
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     * @param mixed $offset <p>
-     * The offset to unset.
-     * </p>
-     * @return void
-     * @since 5.0.0
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->_identifiers[$offset]);
-    }
-
 }

@@ -72,11 +72,7 @@ class FormAuthenticator extends AbstractAuthenticator
         }
 
         $body = $request->getParsedBody();
-
-        $user = $this->_findUser(
-            $body[$fields['username']],
-            $body[$fields['password']]
-        );
+        $user = $this->identifiers()->identify($body);
 
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);

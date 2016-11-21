@@ -39,4 +39,23 @@ class IdentifierCollectionTest extends TestCase
         $result = $collection->load('Auth.Orm');
         $this->assertInstanceOf('\Auth\Authentication\Identifier\OrmIdentifier', $result);
     }
+
+    /**
+     * testIdentify
+     *
+     * @return void
+     */
+    public function testIdentify()
+    {
+        $collection = new IdentifierCollection([
+            'Auth.Orm'
+        ]);
+
+        $result = $collection->identify([
+            'username' => 'mariano',
+            'password' => 'password'
+        ]);
+
+        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+    }
 }

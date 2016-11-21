@@ -14,6 +14,7 @@
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Auth\Authentication\BasicAuthenticator;
+use Auth\Authentication\Identifier\IdentifierCollection;
 use Cake\Network\Exception\UnauthorizedException;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\I18n\Time;
@@ -39,7 +40,12 @@ class BasicAuthenticatorTest extends TestCase {
     public function setUp()
     {
         parent::setUp();
-        $this->auth = new BasicAuthenticator();
+
+        $this->identifiers = new IdentifierCollection([
+           'Auth.Orm'
+        ]);
+
+        $this->auth = new BasicAuthenticator($this->identifiers);
         $this->response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
     }
 
@@ -50,7 +56,7 @@ class BasicAuthenticatorTest extends TestCase {
      */
     public function testConstructor()
     {
-        $object = new BasicAuthenticator([
+        $object = new BasicAuthenticator($this->identifiers, [
             'userModel' => 'AuthUser',
             'fields' => [
                 'username' => 'user',
@@ -168,7 +174,7 @@ class BasicAuthenticatorTest extends TestCase {
         ];
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity());
+        $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
 
     /**
@@ -220,7 +226,7 @@ class BasicAuthenticatorTest extends TestCase {
         ];
 
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity());
+        $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
 
     /**

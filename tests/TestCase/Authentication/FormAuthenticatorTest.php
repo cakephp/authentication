@@ -14,6 +14,7 @@
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Auth\Authentication\FormAuthenticator;
+use Auth\Authentication\Identifier\IdentifierCollection;
 use Auth\Authentication\Result;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
@@ -39,6 +40,10 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testAuthenticate()
     {
+        $identifiers = new IdentifierCollection([
+           'Auth.Orm'
+        ]);
+
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
@@ -46,7 +51,7 @@ class FormAuthenticatorTest extends TestCase
         );
         $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
 
-        $form = new FormAuthenticator();
+        $form = new FormAuthenticator($identifiers);
         $result = $form->authenticate($request, $response);
 
         $this->assertInstanceOf('\Auth\Authentication\Result', $result);
