@@ -95,7 +95,12 @@ class AuthenticationService
         $this->loadAuthenticators();
     }
 
-    public function getIdentifers()
+    /**
+     * Access the identifier collection
+     *
+     * @return \Auth\Authentication\Identifier\IdentifierCollection
+     */
+    public function identifiers()
     {
         return $this->_identifiers;
     }

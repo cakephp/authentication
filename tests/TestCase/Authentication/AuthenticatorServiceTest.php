@@ -56,4 +56,37 @@ class AuthenticatorServiceTest extends TestCase
         $result = $service->authenticate($request, $response);
         $this->assertTrue($result->isValid());
     }
+
+    /**
+     * testLoadAuthenticatorException
+     *
+     * @expectedException \Cake\Core\Exception\Exception
+     */
+    public function testLoadAuthenticatorException()
+    {
+        $service = new AuthenticationService();
+        $service->loadAuthenticator('does-not-exist');
+    }
+
+    /**
+     * testIdentifiers
+     *
+     * @return void
+     */
+    public function testIdentifiers()
+    {
+        $service = new AuthenticationService();
+        $result = $service->identifiers();
+        $this->assertInstanceOf('\Auth\Authentication\Identifier\IdentifierCollection', $result);
+    }
+
+    /**
+     * testGetIdentity
+     */
+    public function testGetIdentity()
+    {
+        $service = new AuthenticationService();
+        $result = $service->getIdentity();
+        $this->assertNull($result);
+    }
 }

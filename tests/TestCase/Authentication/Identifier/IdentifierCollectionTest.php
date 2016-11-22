@@ -41,6 +41,28 @@ class IdentifierCollectionTest extends TestCase
     }
 
     /**
+     * @expectedException \RuntimeException
+     */
+    public function testLoadException()
+    {
+        $collection = new IdentifierCollection();
+        $collection->load('Does-not-exist');
+    }
+
+    /**
+     * testGetAll
+     *
+     * @return void
+     */
+    public function testGetAll()
+    {
+        $collection = new IdentifierCollection();
+        $collection->load('Auth.Orm');
+        $result = $collection->getAll();
+        $this->assertInternalType('array', $result);
+    }
+
+    /**
      * testIdentify
      *
      * @return void

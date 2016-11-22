@@ -15,6 +15,7 @@ namespace Auth\Authentication\Identifier;
 
 use Cake\Core\App;
 use Cake\Core\InstanceConfigTrait;
+use RuntimeException;
 
 class IdentifierCollection {
 
@@ -99,8 +100,8 @@ class IdentifierCollection {
      * @param string|array $identifier Name of the identifier
      * at least the key `className` set to the name of the class to use
      * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
-     * @throws \RuntimeException If password hasher class not found or
-     *   it does not extend Cake\Auth\AbstractPasswordHasher
+     * @throws \RuntimeException If identifier class not found or
+     *   it does not extend Auth\Authentication\Identifier\IdentifierInterface
      */
     public function load($class, array $config = [])
     {

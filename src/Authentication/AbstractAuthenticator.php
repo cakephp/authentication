@@ -95,8 +95,9 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Handle unauthenticated access attempt. In implementation valid return values
      * can be:
-     * - Null - No action taken, AuthComponent should return appropriate response.
-     * - Cake\Network\Response - A response object, which will cause AuthComponent to
+     *
+     * - Null - No action taken, should return appropriate response.
+     * - Psr\Http\Message\ResponseInterface - A response object, which will cause to
      *   simply return that response.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
@@ -105,5 +106,6 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      */
     public function unauthenticated(ServerRequestInterface $request, ResponseInterface $response)
     {
+        return null;
     }
 }
