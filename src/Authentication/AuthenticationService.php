@@ -91,7 +91,7 @@ class AuthenticationService
     public function __construct(array $config = [])
     {
         $this->config($config);
-        $this->_identifiers = new IdentifierCollection($this->config('identifiers'));
+        $this->_identifiers = new IdentifierCollection((array)$this->config('identifiers'));
         $this->loadAuthenticators();
     }
 

@@ -16,9 +16,8 @@ namespace Auth\Test\TestCase\Middleware;
 use Auth\Authentication\AuthenticationService;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Auth\Middleware\AuthenticationMiddleware;
-use Cake\Network\Session;
+use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
@@ -37,36 +36,36 @@ class AuthenticationMiddlewareTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->session = $this->getMockBuilder(Session::class)->getMock();
+        $this->service = $this->getMockBuilder(AuthenticationService::class)->getMock();
     }
 
     /**
-     * testAuthentication
+     * testInvoke
      *
      * @return void
      */
-    public function testAuthentication()
+    public function testInvoke()
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $request = $request->withAttribute('session', $this->session);
+        $response = new Response('php://memory');
 
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $middleware = new AuthenticationMiddleware($this->service);
 
-        $service = new AuthenticationService([
-            'authenticators' => [
-                'Auth.Form'
-            ]
-        ]);
-        $middleware = new AuthenticationMiddleware($service);
+        $this->service->expects($this->once())
+            ->method('getIdentity')
+            ->will($this->returnValue(false));
 
-        $callable = function ($request, $response) {
+        $this->service->expects($this->once())
+            ->method('authenticate');
+
+        $next = function($request, $response) {
             return $response;
         };
 
-        $middleware($request, $response, $callable);
+        $middleware($request, $response, $next);
     }
 }
