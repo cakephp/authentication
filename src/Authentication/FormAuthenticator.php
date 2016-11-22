@@ -20,16 +20,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * Form Authenticator
  *
  * Authenticates an identity based on the POST data of the request.
- *
- * ```
- *  new FormAuthenticator([
- *      'finder' => ['auth' => ['some_finder_option' => 'some_value']]
- *  ]);
- * ```
- *
- * When configuring FormAuthenticate you can pass in config to which fields,
- * model and additional conditions are used. See FormAuthenticator::$_config
- * for more information.
  */
 class FormAuthenticator extends AbstractAuthenticator
 {

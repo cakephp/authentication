@@ -3,24 +3,49 @@ namespace Auth\Authentication\Identifier;
 
 use Auth\PasswordHasher\DefaultPasswordHasher;
 use Auth\PasswordHasherTrait;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 
+/**
+ * CakePHP ORM Identifier
+ *
+ * Identifies authentication credentials using the CakePHP ORM.
+ *
+ * ```
+ *  new OrmIdentifier([
+ *      'finder' => ['auth' => ['some_finder_option' => 'some_value']]
+ *  ]);
+ * ```
+ *
+ * When configuring OrmIdentifier you can pass in config to which fields,
+ * model and additional conditions are used. See FormAuthenticator::$_config
+ * for more information.
+ */
 class OrmIdentifier extends AbstractIdentifier {
 
     use PasswordHasherTrait;
 
+    /**
+     * Default configuration
+     *
+     * @var array
+     */
     protected $_defaultConfig = [
         'fields' => [
             'username' => 'username',
             'password' => 'password'
         ],
         'userModel' => 'Users',
-        'scope' => [],
         'finder' => 'all',
-        'contain' => null,
         'passwordHasher' => DefaultPasswordHasher::class
     ];
 
+    /**
+     * Identify
+     *
+     * @param array $data Authentication credentials
+     * @return null|EntityInterface
+     */
     public function identify($data) {
         $fields = $this->config('fields');
         if (!isset($data[$fields['username']])) {
@@ -79,13 +104,6 @@ class OrmIdentifier extends AbstractIdentifier {
         $options = [
             'conditions' => [$table->aliasField($config['fields']['username']) => $username]
         ];
-
-        if (!empty($config['scope'])) {
-            $options['conditions'] = array_merge($options['conditions'], $config['scope']);
-        }
-        if (!empty($config['contain'])) {
-            $options['contain'] = $config['contain'];
-        }
 
         $finder = $config['finder'];
         if (is_array($finder)) {

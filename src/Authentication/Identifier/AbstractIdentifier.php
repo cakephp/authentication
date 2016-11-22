@@ -37,5 +37,4 @@ abstract class AbstractIdentifier implements IdentifierInterface {
     {
         $this->config($config);
     }
-
 }

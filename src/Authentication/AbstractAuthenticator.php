@@ -38,8 +38,6 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      * - `passwordHasher` Password hasher class. Can be a string specifying class name
      *    or an array containing `className` key, any other keys will be passed as
      *    config to the class. Defaults to 'Default'.
-     * - Options `scope` and `contain` have been deprecated since 3.1. Use custom
-     *   finder instead to modify the query to fetch user record.
      *
      * @var array
      */
@@ -49,9 +47,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
             'password' => 'password'
         ],
         'userModel' => 'Users',
-        'scope' => [],
         'finder' => 'all',
-        'contain' => null,
         'passwordHasher' => DefaultPasswordHasher::class
     ];
 

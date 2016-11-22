@@ -104,7 +104,6 @@ class DigestAuthenticator extends BasicAuthenticator
             return new Result(null, Result::FAILURE_OTHER);
         }
 
-        //$user = $this->_findUser($digest['username']);
         $user = $this->identifiers()->identify([
             'username' => $digest['username'],
         ]);
