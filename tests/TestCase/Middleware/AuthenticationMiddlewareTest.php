@@ -47,11 +47,11 @@ class AuthenticationMiddlewareTest extends TestCase
     }
 
     /**
-     * testInvoke
+     * testSuccessfulAuthentication
      *
      * @return void
      */
-    public function testInvoke()
+    public function testSuccessfulAuthentication()
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -73,5 +73,34 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $identity);
         $this->assertInstanceOf('\Auth\Authentication\Result', $result);
         $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * testNonSuccessfulAuthentication
+     *
+     * @return void
+     */
+    public function testNonSuccessfulAuthentication()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'invalid', 'password' => 'invalid']
+        );
+        $response = new Response('php://memory');
+
+        $middleware = new AuthenticationMiddleware($this->service);
+
+        $next = function($request, $response) {
+            return $request;
+        };
+
+        $request = $middleware($request, $response, $next);
+        $identity = $request->getAttribute('identity');
+        $result = $request->getAttribute('authentication');
+
+        $this->assertNull($identity);
+        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertFalse($result->isValid());
     }
 }

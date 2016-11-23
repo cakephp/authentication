@@ -138,4 +138,13 @@ class IdentifierCollection
 
         return $this->_identifiers[$class] = $identifier;
     }
+
+    /**
+     * Get errors
+     *
+     * @return array
+     */
+    public function getErrors() {
+        return $this->_errors;
+    }
 }
