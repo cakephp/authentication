@@ -91,10 +91,22 @@ If you want to implement your own identifiers, your identifier must implement th
 
 Remove authentication from the AuthComponent and put the middleware in place like shown above. Then configure your authenticators the same way as you did for the AuthComponent before.
 
-Change your code to use the identity object instead of using `$this->Auth->user()`;
+Change your code to use the identity data from the `identity` request attribute instead of using `$this->Auth->user();`. The returned value is null if no identity was found or the identification of the provided credentials failed.
 
 ```php
 $user = $request->getAttribute('identity');
+```
+
+For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible as `authentication` attribute.
+
+```php
+$auth = $request->getAttribute('authentication');
+// Bool if the result is valid
+debug($auth->isValid());
+// A status code
+debug($auth->getCode());
+// An array of error messages or data if the identifier provided any
+debug($auth->getError());
 ```
 
 The huge config array from the AuthComponent needs to be split into identifiers and authenticators when configuring the service. So when you had your AuthComponent configured this way
@@ -115,20 +127,20 @@ $this->loadComponent('Auth', [
 you'll now have to configure it this way.
 
 ```php
-      $service = new AuthenticationService([
-            'identifiers' => [
-                'Auth.Orm' => [
-                    'fields' => [
-                        'username' => 'email',
-                        'password' => 'password'
-                    ]
-                ]
-            ],
-            'authenticators' => [
-                'Auth.Form',
-                'Auth.Session'
+$service = new AuthenticationService([
+    'identifiers' => [
+        'Auth.Orm' => [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
             ]
-        ]);
+        ]
+    ],
+    'authenticators' => [
+        'Auth.Form',
+        'Auth.Session'
+    ]
+]);
 ```
 
 While this seems to be a little more to write, the benefit is a greater flexibility and better separation of concerns.
