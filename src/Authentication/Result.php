@@ -13,6 +13,8 @@
  */
 namespace Auth\Authentication;
 
+use RuntimeException;
+
 /**
  * Authentication result object
  */
@@ -64,7 +66,7 @@ class Result implements ResultInterface
      *
      * @var array
      */
-    protected $messages = [];
+    protected $errors = [];
 
     /**
      * Sets the result code, identity, and failure messages
@@ -76,12 +78,12 @@ class Result implements ResultInterface
     public function __construct($identity, $code, array $messages = [])
     {
         if (empty($identity) && $code === self::SUCCESS) {
-            throw new \RuntimeException('Identity can no be empty with status success.');
+            throw new RuntimeException('Identity can no be empty with status success.');
         }
 
         $this->code = (int)$code;
         $this->identity = $identity;
-        $this->messages = $messages;
+        $this->errors = $messages;
     }
 
     /**
@@ -121,8 +123,8 @@ class Result implements ResultInterface
      *
      * @return array
      */
-    public function getMessages()
+    public function getErrors()
     {
-        return $this->messages;
+        return $this->errors;
     }
 }

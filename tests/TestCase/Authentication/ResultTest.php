@@ -70,13 +70,13 @@ class ResultTest extends TestCase
      *
      * @return void
      */
-    public function testGetMessages()
+    public function testGetErrors()
     {
         $messages = [
             'Out of coffee!',
             'Out of beer!'
         ];
         $result = new Result(['user' => 'florian'], Result::FAILURE, $messages);
-        $this->assertEquals($messages, $result->getMessages());
+        $this->assertEquals($messages, $result->getErrors());
     }
 }

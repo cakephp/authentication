@@ -43,5 +43,5 @@ interface ResultInterface
      *
      * @return array
      */
-    public function getMessages();
+    public function getErrors();
 }
