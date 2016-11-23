@@ -11,33 +11,22 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Auth\Test\TestCase\Middleware\Authentication;
 
-interface IdentityInterface
+use Auth\Authentication\Identifier\LdapIdentifier;
+use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+
+class LdapIdentifierTest extends TestCase
 {
 
     /**
-     * Sets a value to the identity
+     * testIdentify
      *
-     * @param string $key Key name.
-     * @param mixed $value Value to set.
      * @return void
      */
-    public function set($key, $value);
-
-    /**
-     * Gets a value from the identity data.
-     *
-     * @param string $key Key name.
-     * @return mixed
-     */
-    public function get($key);
-
-    /**
-     * Checks if the identity has a key.
-     *
-     * @param string $key Key to check.
-     * @return bool
-     */
-    public function has($key);
+    public function testIdentify()
+    {
+        $this->skipIf(!function_exists('ldap_connect'), 'LDAP php extension is not installed.');
+        $this->markTestSkipped('Need to find a way to test the LDAP functions.');
+    }
 }

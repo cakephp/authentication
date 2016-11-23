@@ -11,37 +11,47 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Auth\Authentication\Identifier;
 
-interface ResultInterface
+use Cake\Core\InstanceConfigTrait;
+use Cake\Log\LogTrait;
+
+abstract class AbstractIdentifier implements IdentifierInterface
 {
-    /**
-     * Returns whether the result represents a successful authentication attempt.
-     *
-     * @return bool
-     */
-    public function isValid();
+
+    use InstanceConfigTrait;
+    use LogTrait;
 
     /**
-     * Get the result code for this authentication attempt.
+     * Default configuration
      *
-     * @return int
+     * @var array
      */
-    public function getCode();
+    protected $_defaultConfig = [];
 
     /**
-     * Returns the identity used in the authentication attempt.
+     * Errors
      *
-     * @return mixed
+     * @var array
      */
-    public function getIdentity();
+    protected $_errors = [];
 
     /**
-     * Returns an array of string reasons why the authentication attempt was unsuccessful.
+     * Constructor
      *
-     * If authentication was successful, this method returns an empty array.
+     * @param array $config Configuration
+     */
+    public function __construct(array $config = [])
+    {
+        $this->config($config);
+    }
+
+    /**
+     * Returns errors
      *
      * @return array
      */
-    public function getErrors();
+    public function getErrors() {
+        return $this->_errors;
+    }
 }

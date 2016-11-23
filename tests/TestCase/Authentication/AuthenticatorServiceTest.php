@@ -44,8 +44,10 @@ class AuthenticatorServiceTest extends TestCase
         );
         $response = new Response();
 
-
         $service = new AuthenticationService([
+            'identifiers' => [
+                'Auth.Orm'
+            ],
             'authenticators' => [
                 'Auth.Form'
             ]
@@ -53,5 +55,28 @@ class AuthenticatorServiceTest extends TestCase
 
         $result = $service->authenticate($request, $response);
         $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * testLoadAuthenticatorException
+     *
+     * @expectedException \Cake\Core\Exception\Exception
+     */
+    public function testLoadAuthenticatorException()
+    {
+        $service = new AuthenticationService();
+        $service->loadAuthenticator('does-not-exist');
+    }
+
+    /**
+     * testIdentifiers
+     *
+     * @return void
+     */
+    public function testIdentifiers()
+    {
+        $service = new AuthenticationService();
+        $result = $service->identifiers();
+        $this->assertInstanceOf('\Auth\Authentication\Identifier\IdentifierCollection', $result);
     }
 }
