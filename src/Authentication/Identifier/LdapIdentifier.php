@@ -59,7 +59,7 @@ class LdapIdentifier extends AbstractIdentifier
             $config['host'] = $config['host']();
         }
         if (empty($config['host'])) {
-            throw new InternalErrorException('LDAP Server not specified!');
+            throw new InternalErrorException('LDAP Server not specified');
         }
 
         parent::__construct($config);
@@ -163,12 +163,7 @@ class LdapIdentifier extends AbstractIdentifier
             if (!empty($extendedError)) {
                 foreach ($this->_config['errors'] as $error => $errorMessage) {
                     if (strpos($extendedError, $error) !== false) {
-                        $this->_errors[] = [
-                            'message' => $errorMessage,
-                            'key' => $this->_config['flash']['key'],
-                            'element' => $this->_config['flash']['element'],
-                            'params' => $this->_config['flash']['params'],
-                        ];
+                        $this->_errors[] = $errorMessage;
                     }
                 }
             }

@@ -79,14 +79,4 @@ class AuthenticatorServiceTest extends TestCase
         $result = $service->identifiers();
         $this->assertInstanceOf('\Auth\Authentication\Identifier\IdentifierCollection', $result);
     }
-
-    /**
-     * testGetIdentity
-     */
-    public function testGetIdentity()
-    {
-        $service = new AuthenticationService();
-        $result = $service->getIdentity();
-        $this->assertNull($result);
-    }
 }

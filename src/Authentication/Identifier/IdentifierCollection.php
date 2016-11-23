@@ -37,6 +37,13 @@ class IdentifierCollection
     protected $_defaultConfig = [];
 
     /**
+     * Errors
+     *
+     * @var array
+     */
+    protected $_errors = [];
+
+    /**
      * Constructor
      *
      * @param array $config Configuration
@@ -81,11 +88,12 @@ class IdentifierCollection
      */
     public function identify($credentials)
     {
-        foreach ($this->_identifiers as $identifier) {
+        foreach ($this->_identifiers as $name => $identifier) {
             $result = $identifier->identify($credentials);
             if ($result) {
                 return $result;
             }
+            $this->_errors[$name] = $identifier->getErrors();
         }
 
         return false;
@@ -129,5 +137,14 @@ class IdentifierCollection
         }
 
         return $this->_identifiers[$class] = $identifier;
+    }
+
+    /**
+     * Get errors
+     *
+     * @return array
+     */
+    public function getErrors() {
+        return $this->_errors;
     }
 }

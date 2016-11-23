@@ -23,4 +23,11 @@ interface IdentifierInterface
      * @return mixed
      */
     public function identify($credentials);
+
+    /**
+     * Gets a list of errors happened in the identification process
+     *
+     * @return array
+     */
+    public function getErrors();
 }

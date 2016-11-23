@@ -19,4 +19,14 @@ use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 class LdapIdentifierTest extends TestCase
 {
 
+    /**
+     * testIdentify
+     *
+     * @return void
+     */
+    public function testIdentify()
+    {
+        $this->skipIf(!function_exists('ldap_connect'), 'LDAP php extension is not installed.');
+        $this->markTestSkipped('Need to find a way to test the LDAP functions.');
+    }
 }
