@@ -32,7 +32,7 @@ abstract class AbstractIdentifier implements IdentifierInterface
     /**
      * Constructor
      *
-     * @var array $config Configuration
+     * @param array $config Configuration
      */
     public function __construct(array $config = [])
     {

@@ -36,6 +36,11 @@ class IdentifierCollection
      */
     protected $_defaultConfig = [];
 
+    /**
+     * Constructor
+     *
+     * @param array $config Configuration
+     */
     public function __construct(array $config = [])
     {
         $this->config($config);
@@ -53,6 +58,7 @@ class IdentifierCollection
      * Returns password hasher object out of a hasher name or a configuration array
      *
      * @param string|array $identifier Name of the identifier
+     * @param array $config Configuration settings
      * at least the key `className` set to the name of the class to use
      * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
      * @throws \RuntimeException If password hasher class not found or
@@ -70,7 +76,7 @@ class IdentifierCollection
     /**
      * Identifies an user or service by the passed credentials
      *
-     * @var mixed $credentials Authentication credentials
+     * @param mixed $credentials Authentication credentials
      * @return mixed
      */
     public function identify($credentials)
@@ -100,6 +106,7 @@ class IdentifierCollection
      *
      * @param array $class Name of the identifier
      * at least the key `className` set to the name of the class to use
+     * @param array $config Configuration settings
      * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
      * @throws \RuntimeException If identifier class not found or
      *   it does not extend Auth\Authentication\Identifier\IdentifierInterface

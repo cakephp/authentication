@@ -75,7 +75,9 @@ class DigestAuthenticator extends BasicAuthenticator
      * - `opaque` A string that must be returned unchanged by clients.
      *    Defaults to `md5($config['realm'])`
      *
-     * @param array $identifiers Array of config to use.
+     *
+     * @param \Auth\Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param array $config Configuration settings.
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {

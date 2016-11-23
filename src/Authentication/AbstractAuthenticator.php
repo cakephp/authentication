@@ -61,7 +61,8 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Constructor
      *
-     * @param array $identifiers Array of config to use.
+     * @param \Auth\Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param array $config Configuration settings.
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
@@ -93,12 +94,12 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      * can be:
      *
      * - Null - No action taken, should return appropriate response.
-     * - Psr\Http\Message\ResponseInterface - A response object, which will cause to
+     * - \Psr\Http\Message\ResponseInterface - A response object, which will cause to
      *   simply return that response.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
      * @param \Psr\Http\Message\ResponseInterface $response A response object.
-     * @return void
+     * @return null|\Psr\Http\Message\ResponseInterface
      */
     public function unauthenticated(ServerRequestInterface $request, ResponseInterface $response)
     {

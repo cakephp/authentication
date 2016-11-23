@@ -41,9 +41,7 @@ class LdapIdentifier extends AbstractIdentifier
     ];
 
     /**
-     * Constructor
-     *
-     * @param array $config Array of config to use.
+     * {@inheritDoc}
      */
     public function __construct(array $config = [])
     {
@@ -85,7 +83,7 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public function identify($data)
     {
@@ -134,7 +132,7 @@ class LdapIdentifier extends AbstractIdentifier
 
         restore_error_handler();
         if (!empty($messages)) {
-            // @todo how to handle errors?
+            // how to handle errors?
         }
 
         return false;

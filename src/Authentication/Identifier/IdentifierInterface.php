@@ -19,7 +19,7 @@ interface IdentifierInterface
     /**
      * Identifies an user or service by the passed credentials
      *
-     * @var mixed $credentials Authentication credentials
+     * @param mixed $credentials Authentication credentials
      * @return mixed
      */
     public function identify($credentials);
