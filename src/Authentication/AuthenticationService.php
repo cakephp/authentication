@@ -46,13 +46,6 @@ class AuthenticationService
     protected $_identifiers;
 
     /**
-     * Identity object
-     *
-     * @var \Auth\Authentication\Identity
-     */
-    protected $_identity;
-
-    /**
      * Default configuration
      *
      * - `authenticators` - An array of authentication objects to use for authenticating users.
@@ -186,8 +179,6 @@ class AuthenticationService
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $result = null;
-
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
@@ -197,22 +188,6 @@ class AuthenticationService
             }
         }
 
-        $this->_identity = null;
-
-        return $result;
-    }
-
-    /**
-     * Gets the identity data.
-     *
-     * @return mixed
-     */
-    public function getIdentity()
-    {
-        if (empty($this->_identity)) {
-            return null;
-        }
-
-        return $this->_identity;
+        return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
     }
 }

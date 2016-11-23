@@ -30,6 +30,13 @@ abstract class AbstractIdentifier implements IdentifierInterface
     protected $_defaultConfig = [];
 
     /**
+     * Errors
+     *
+     * @var array
+     */
+    protected $_errors = [];
+
+    /**
      * Constructor
      *
      * @param array $config Configuration
@@ -37,5 +44,14 @@ abstract class AbstractIdentifier implements IdentifierInterface
     public function __construct(array $config = [])
     {
         $this->config($config);
+    }
+
+    /**
+     * Returns errors
+     *
+     * @return array
+     */
+    public function getErrors() {
+        return $this->_errors;
     }
 }

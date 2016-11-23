@@ -36,7 +36,14 @@ class AuthenticationMiddlewareTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->service = $this->getMockBuilder(AuthenticationService::class)->getMock();
+        $this->service = new AuthenticationService([
+            'identifiers' => [
+                'Auth.Orm'
+            ],
+            'authenticators' => [
+                'Auth.Form'
+            ]
+        ]);
     }
 
     /**
@@ -55,17 +62,16 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $middleware = new AuthenticationMiddleware($this->service);
 
-        $this->service->expects($this->once())
-            ->method('getIdentity')
-            ->will($this->returnValue(false));
-
-        $this->service->expects($this->once())
-            ->method('authenticate');
-
         $next = function($request, $response) {
-            return $response;
+            return $request;
         };
 
-        $middleware($request, $response, $next);
+        $request = $middleware($request, $response, $next);
+        $identity = $request->getAttribute('identity');
+        $result = $request->getAttribute('authentication');
+
+        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $identity);
+        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertTrue($result->isValid());
     }
 }
