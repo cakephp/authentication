@@ -49,8 +49,19 @@ If you're not yet familiar with request attributes [check the PSR7 documentation
 You can get the authenticated user credentials from the request by doing this:
 
 ```php
-$authentication = $request->getAttribute('authentication');
-$user = $authentication->getIdentity();
+$user = $request->getAttribute('identity');
+```
+
+You can check if the authentication process was successful by accessing the result object of the authentication process that comes as well as a request attribute:
+
+```php
+$auth = $request->getAttribute('authentication');
+if ($auth->isValid()) {
+    $user = $request->getAttribute('identity');
+} else {
+    $this->log($auth->getCode());
+    $this->log($auth->getErrors());
+}
 ```
 
 ## Migration from the AuthComponent
@@ -83,6 +94,41 @@ Remove authentication from the Auth component and put the middleware in place li
 Change your code to use the identity object instead of using `$this->Auth->user()`;
 
 ```php
-$authentication = $request->getAttribute('authentication');
-$user = $authentication->getIdentity();
+$user = $request->getAttribute('identity');
 ```
+
+The huge config array from the AuthComponent needs to be split into identifiers and authenticators when configuring the service. So when you had your AuthComponent configured this way
+
+```php
+$this->loadComponent('Auth', [
+    'authentication' => [
+        'Form' => [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
+            ]
+        ]
+    ]
+]);
+```
+
+you'll now have to configure it this way.
+
+```php
+      $service = new AuthenticationService([
+            'identifiers' => [
+                'Auth.Orm' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password'
+                    ]
+                ]
+            ],
+            'authenticators' => [
+                'Auth.Form',
+                'Auth.Session'
+            ]
+        ]);
+```
+
+While this seems to be a little more to write, the benefit is a greater flexibility and better separation of concerns.
