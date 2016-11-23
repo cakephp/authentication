@@ -19,6 +19,14 @@ class Application extends BaseApplication
     {
         // Instantiate the authentication service and configure authenticators
         $service = new AuthenticationService([
+            'identifiers' => [
+                'Auth.Orm' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password'
+                    ]
+                ]
+            ],
             'authenticators' => [
                 'Auth.Form',
                 'Auth.Session'
@@ -45,18 +53,36 @@ $authentication = $request->getAttribute('authentication');
 $user = $authentication->getIdentity();
 ```
 
-## Differences and similarities to the AuthComponent
+## Migration from the AuthComponent
 
 ### Differences
 
 * There is no automatic checking of the session. To get the actual user data from the session you'll have to use the `Auth.Session` authenticator. It will check the session if there is data in the configured session key and put it into the identity object.
 * The user data is no longer available  through the auth component but accessible via a request attribute and encapsulated in an identity object: `$request->getAttribute('authentication')->getIdentity();`
+* The logic of the authentication process has been split into authenticators and identifiers. An authenticator will extract the credentials and check them against a set of identifiers to actually verify and identify the request.
 
 ### Similarities
 
-* All the existing authentication adapters, Form, Basic, Digest still use the same configuration options as they do in the old implementation for the AuthComponent.
+* All the existing authentication adapters, Form, Basic, Digest are still there but have been refactored into so called authenticators.
 
-## Migration from the AuthComponent
+### Identifiers and authenticators
 
-* Remove authentication from the Auth component and put the middleware in place like shown above and configure your authenticators the same way as you did for the Auth component before.
-* Change your code to use the identity object instead of using `$this->Auth->user()`;
+Following the principle of separation of concerns the former monolithic authentication objects were split into two separate objects, identifiers and authenticators.
+ 
+* **Authenticators** take the incoming request and try to get identification credentials from it which they then pass to a collection of identifiers. Fort that reason authenticators take an IdentifierCollection as first constructor argument.
+* **Identifiers** are objects that try to verify identification credentials against a system and return identity data. 
+
+This makes it easy to change the identification logic as needed or add several methods of identifying credentials.
+
+If you want to implement your own identifiers, your identifier must implement the IdentifierInterface.
+
+### Migrating your authentication setup
+
+Remove authentication from the Auth component and put the middleware in place like shown above and configure your authenticators the same way as you did for the Auth component before.
+
+Change your code to use the identity object instead of using `$this->Auth->user()`;
+
+```php
+$authentication = $request->getAttribute('authentication');
+$user = $authentication->getIdentity();
+```

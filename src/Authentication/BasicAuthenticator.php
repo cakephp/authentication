@@ -21,17 +21,9 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Basic Authenticator
  *
- * Provides Basic HTTP authentication support. Basic Auth will
- * authenticate users against the configured userModel and verify the username
- * and passwords match.
+ * Provides Basic HTTP authentication support.
  *
  * ### Using Basic auth
- *
- * ```
- *  new BasicAuthenticator([
- *      'authenticate' => ['Basic']
- *  ]);
- * ```
  *
  * You should also set `AuthComponent::$sessionKey = false;` in your AppController's
  * beforeFilter() to prevent CakePHP from sending a session cookie to the client.
@@ -82,13 +74,16 @@ class BasicAuthenticator extends AbstractAuthenticator
         }
 
         $username = $server['PHP_AUTH_USER'];
-        $pass = $server['PHP_AUTH_PW'];
+        $password = $server['PHP_AUTH_PW'];
 
-        if (!is_string($username) || $username === '' || !is_string($pass) || $pass === '') {
+        if (!is_string($username) || $username === '' || !is_string($password) || $password === '') {
             return false;
         }
 
-        return $this->_findUser($username, $pass);
+        return $this->identifiers()->identify([
+            'username' => $username,
+            'password' => $password
+        ]);
     }
 
     /**

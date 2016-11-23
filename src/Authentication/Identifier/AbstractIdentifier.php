@@ -11,33 +11,31 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Auth\Authentication\Identifier;
 
-interface IdentityInterface
+use Cake\Core\InstanceConfigTrait;
+use Cake\Log\LogTrait;
+
+abstract class AbstractIdentifier implements IdentifierInterface
 {
 
-    /**
-     * Sets a value to the identity
-     *
-     * @param string $key Key name.
-     * @param mixed $value Value to set.
-     * @return void
-     */
-    public function set($key, $value);
+    use InstanceConfigTrait;
+    use LogTrait;
 
     /**
-     * Gets a value from the identity data.
+     * Default configuration
      *
-     * @param string $key Key name.
-     * @return mixed
+     * @var array
      */
-    public function get($key);
+    protected $_defaultConfig = [];
 
     /**
-     * Checks if the identity has a key.
+     * Constructor
      *
-     * @param string $key Key to check.
-     * @return bool
+     * @param array $config Configuration
      */
-    public function has($key);
+    public function __construct(array $config = [])
+    {
+        $this->config($config);
+    }
 }

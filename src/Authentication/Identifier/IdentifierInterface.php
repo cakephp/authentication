@@ -11,33 +11,16 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Auth\Authentication\Identifier;
 
-interface IdentityInterface
+interface IdentifierInterface
 {
 
     /**
-     * Sets a value to the identity
+     * Identifies an user or service by the passed credentials
      *
-     * @param string $key Key name.
-     * @param mixed $value Value to set.
-     * @return void
-     */
-    public function set($key, $value);
-
-    /**
-     * Gets a value from the identity data.
-     *
-     * @param string $key Key name.
+     * @param mixed $credentials Authentication credentials
      * @return mixed
      */
-    public function get($key);
-
-    /**
-     * Checks if the identity has a key.
-     *
-     * @param string $key Key to check.
-     * @return bool
-     */
-    public function has($key);
+    public function identify($credentials);
 }

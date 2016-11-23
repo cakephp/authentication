@@ -13,6 +13,8 @@
  */
 namespace Auth\Authentication;
 
+use Auth\Authentication\Identifier\IdentifierCollection;
+use Auth\Authentication\Identifier\IdentifierInterface;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
@@ -37,6 +39,13 @@ class AuthenticationService
     protected $_authenticators = [];
 
     /**
+     * Identifier collection
+     *
+     * @var array
+     */
+    protected $_identifiers;
+
+    /**
      * Identity object
      *
      * @var \Auth\Authentication\Identity
@@ -49,11 +58,19 @@ class AuthenticationService
      * - `authenticators` - An array of authentication objects to use for authenticating users.
      *   You can configure multiple adapters and they will be checked sequentially
      *   when users are identified.
+     * - `identifiers` - An array of identifiers. The identifiers are constructed by the service
+     *   and then passed to the authenticators that will pass the credentials to them and get the
+     *   user data.
      *
      *   ```
      *   $service = new AuthenticationService([
-     *      'Form' => [
-     *         'userModel' => 'Users.Users'
+     *      'authenticators' => [
+     *          'Auth.Form
+     *      ],
+     *      'identifiers' => [
+     *          'Auth.Orm' => [
+     *              'userModel' => 'Users.Users'
+     *          ]
      *      ]
      *   ]);
      *   ```
@@ -62,6 +79,7 @@ class AuthenticationService
      */
     protected $_defaultConfig = [
         'authenticators' => [],
+        'identifiers' => [],
         'storage' => 'Auth.Session'
     ];
 
@@ -73,7 +91,18 @@ class AuthenticationService
     public function __construct(array $config = [])
     {
         $this->config($config);
+        $this->_identifiers = new IdentifierCollection((array)$this->config('identifiers'));
         $this->loadAuthenticators();
+    }
+
+    /**
+     * Access the identifier collection
+     *
+     * @return \Auth\Authentication\Identifier\IdentifierCollection
+     */
+    public function identifiers()
+    {
+        return $this->_identifiers;
     }
 
     /**
@@ -106,7 +135,7 @@ class AuthenticationService
     public function loadAuthenticator($name, array $config = [])
     {
         $className = $this->_getAuthenticatorClass($name, $config);
-        $authenticator = new $className($config);
+        $authenticator = new $className($this->_identifiers, $config);
 
         if (!$authenticator instanceof AuthenticateInterface) {
             throw new Exception('Authenticator must implement AuthenticateInterface.');

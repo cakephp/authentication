@@ -13,6 +13,7 @@
  */
 namespace Auth\Authentication;
 
+use Auth\Authentication\Identifier\IdentifierCollection;
 use Auth\PasswordHasherTrait;
 use Auth\PasswordHasher\DefaultPasswordHasher;
 use Cake\Core\InstanceConfigTrait;
@@ -37,8 +38,6 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      * - `passwordHasher` Password hasher class. Can be a string specifying class name
      *    or an array containing `className` key, any other keys will be passed as
      *    config to the class. Defaults to 'Default'.
-     * - Options `scope` and `contain` have been deprecated since 3.1. Use custom
-     *   finder instead to modify the query to fetch user record.
      *
      * @var array
      */
@@ -48,88 +47,37 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
             'password' => 'password'
         ],
         'userModel' => 'Users',
-        'scope' => [],
         'finder' => 'all',
-        'contain' => null,
         'passwordHasher' => DefaultPasswordHasher::class
     ];
 
     /**
+     * Identifier collection
+     *
+     * @var \Auth\Authentication\Identifier\IdentifierCollection
+     */
+    protected $_identifiers;
+
+    /**
      * Constructor
      *
-     * @param array $config Array of config to use.
+     * @param \Auth\Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param array $config Configuration settings.
      */
-    public function __construct(array $config = [])
+    public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
         $this->config($config);
+        $this->_identifiers = $identifiers;
     }
 
     /**
-     * Find a user record using the username and password provided.
-     * Input passwords will be hashed even when a user doesn't exist. This
-     * helps mitigate timing attacks that are attempting to find valid usernames.
+     * Gets the identifier collection
      *
-     * @param string $username The username/identifier.
-     * @param string|null $password The password, if not provided password checking is skipped
-     *   and result of find is returned.
-     * @return bool|array Either false on failure, or an array of user data.
+     * @return \Auth\Authentication\Identifier\IdentifierCollection
      */
-    protected function _findUser($username, $password = null)
+    public function identifiers()
     {
-        $result = $this->_query($username)->first();
-        if (empty($result)) {
-            return false;
-        }
-
-        if ($password !== null) {
-            $hasher = $this->passwordHasher();
-            $hashedPassword = $result->get($this->_config['fields']['password']);
-            if (!$hasher->check($password, $hashedPassword)) {
-                return false;
-            }
-
-            $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
-            $result->unsetProperty($this->_config['fields']['password']);
-        }
-
-        return $result->toArray();
-    }
-
-    /**
-     * Get query object for fetching user from database.
-     *
-     * @param string $username The username/identifier.
-     * @return \Cake\ORM\Query
-     */
-    protected function _query($username)
-    {
-        $config = $this->_config;
-        $table = TableRegistry::get($config['userModel']);
-
-        $options = [
-            'conditions' => [$table->aliasField($config['fields']['username']) => $username]
-        ];
-
-        if (!empty($config['scope'])) {
-            $options['conditions'] = array_merge($options['conditions'], $config['scope']);
-        }
-        if (!empty($config['contain'])) {
-            $options['contain'] = $config['contain'];
-        }
-
-        $finder = $config['finder'];
-        if (is_array($finder)) {
-            $options += current($finder);
-            $finder = key($finder);
-        }
-
-        if (!isset($options['username'])) {
-            $options['username'] = $username;
-        }
-
-        $query = $table->find($finder, $options);
-
-        return $query;
+        return $this->_identifiers;
     }
 
     /**
@@ -144,15 +92,17 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Handle unauthenticated access attempt. In implementation valid return values
      * can be:
-     * - Null - No action taken, AuthComponent should return appropriate response.
-     * - Cake\Network\Response - A response object, which will cause AuthComponent to
+     *
+     * - Null - No action taken, should return appropriate response.
+     * - \Psr\Http\Message\ResponseInterface - A response object, which will cause to
      *   simply return that response.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
      * @param \Psr\Http\Message\ResponseInterface $response A response object.
-     * @return void
+     * @return null|\Psr\Http\Message\ResponseInterface
      */
     public function unauthenticated(ServerRequestInterface $request, ResponseInterface $response)
     {
+        return null;
     }
 }

@@ -14,6 +14,7 @@
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Auth\Authentication\SessionAuthenticator;
+use Auth\Authentication\Identifier\IdentifierCollection;
 use Auth\Authentication\Result;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
@@ -36,6 +37,10 @@ class SessionAuthenticatorTest extends TestCase {
      */
     public function setUp() {
         parent::setUp();
+
+        $this->identifiers = new IdentifierCollection([
+           'Auth.Orm'
+        ]);
 
         $this->sessionMock = $this->getMockBuilder('\Cake\Network\Session')
             ->disableOriginalConstructor()
@@ -62,7 +67,7 @@ class SessionAuthenticatorTest extends TestCase {
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator();
+        $authenticator = new SessionAuthenticator($this->identifiers);
         $result = $authenticator->authenticate($request, $response);
 
         $this->assertInstanceOf('\Auth\Authentication\Result', $result);
@@ -75,7 +80,7 @@ class SessionAuthenticatorTest extends TestCase {
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator();
+        $authenticator = new SessionAuthenticator($this->identifiers);
         $result = $authenticator->authenticate($request, $response);
 
         $this->assertInstanceOf('\Auth\Authentication\Result', $result);
@@ -102,7 +107,7 @@ class SessionAuthenticatorTest extends TestCase {
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator([
+        $authenticator = new SessionAuthenticator($this->identifiers, [
             'verifyByDatabase' => true
         ]);
         $result = $authenticator->authenticate($request, $response);
@@ -120,7 +125,7 @@ class SessionAuthenticatorTest extends TestCase {
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator([
+        $authenticator = new SessionAuthenticator($this->identifiers, [
             'verifyByDatabase' => true
         ]);
         $result = $authenticator->authenticate($request, $response);
