@@ -41,6 +41,13 @@ class LdapIdentifier extends AbstractIdentifier
     ];
 
     /**
+     * List of errors
+     *
+     * @var array
+     */
+    protected $_errors = [];
+
+    /**
      * {@inheritDoc}
      */
     public function __construct(array $config = [])
@@ -131,17 +138,24 @@ class LdapIdentifier extends AbstractIdentifier
         }
 
         restore_error_handler();
-        if (!empty($messages)) {
-            // how to handle errors?
-        }
 
         return false;
     }
 
     /**
+     * Gets the errors that happened
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->_errors;
+    }
+
+    /**
      * Handles an Ldap error
      *
-     * @return void
+     * @return array Array of error messages
      */
     protected function _handleLdapError()
     {
@@ -149,7 +163,7 @@ class LdapIdentifier extends AbstractIdentifier
             if (!empty($extendedError)) {
                 foreach ($this->_config['errors'] as $error => $errorMessage) {
                     if (strpos($extendedError, $error) !== false) {
-                        $messages[] = [
+                        $this->_errors[] = [
                             'message' => $errorMessage,
                             'key' => $this->_config['flash']['key'],
                             'element' => $this->_config['flash']['element'],
