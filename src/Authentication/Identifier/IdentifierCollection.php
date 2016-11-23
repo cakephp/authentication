@@ -17,7 +17,8 @@ use Cake\Core\App;
 use Cake\Core\InstanceConfigTrait;
 use RuntimeException;
 
-class IdentifierCollection {
+class IdentifierCollection
+{
 
     use InstanceConfigTrait;
 
@@ -97,7 +98,7 @@ class IdentifierCollection {
     /**
      * Returns identifier object out of a identifier name or a configuration array
      *
-     * @param string|array $identifier Name of the identifier
+     * @param array $class Name of the identifier
      * at least the key `className` set to the name of the class to use
      * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
      * @throws \RuntimeException If identifier class not found or

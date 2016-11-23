@@ -13,7 +13,8 @@
  */
 namespace Auth\Authentication\Identifier;
 
-interface IdentifierInterface {
+interface IdentifierInterface
+{
 
     /**
      * Identifies an user or service by the passed credentials
@@ -22,5 +23,4 @@ interface IdentifierInterface {
      * @return mixed
      */
     public function identify($credentials);
-
 }

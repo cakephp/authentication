@@ -61,7 +61,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Constructor
      *
-     * @param array $config Array of config to use.
+     * @param array $identifiers Array of config to use.
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {

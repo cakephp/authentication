@@ -21,7 +21,8 @@ use Cake\ORM\TableRegistry;
  * model and additional conditions are used. See FormAuthenticator::$_config
  * for more information.
  */
-class OrmIdentifier extends AbstractIdentifier {
+class OrmIdentifier extends AbstractIdentifier
+{
 
     use PasswordHasherTrait;
 
@@ -46,7 +47,8 @@ class OrmIdentifier extends AbstractIdentifier {
      * @param array $data Authentication credentials
      * @return null|EntityInterface
      */
-    public function identify($data) {
+    public function identify($data)
+    {
         $fields = $this->config('fields');
         if (!isset($data[$fields['username']])) {
             return false;
@@ -97,7 +99,8 @@ class OrmIdentifier extends AbstractIdentifier {
      * @param string $username The username/identifier.
      * @return \Cake\ORM\Query
      */
-    protected function _query($username) {
+    protected function _query($username)
+    {
         $config = $this->_config;
         $table = TableRegistry::get($config['userModel']);
 

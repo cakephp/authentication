@@ -20,7 +20,8 @@ use ErrorException;
 /**
  * @link https://github.com/QueenCityCodeFactory/LDAP
  */
-class LdapIdentifier extends AbstractIdentifier {
+class LdapIdentifier extends AbstractIdentifier
+{
 
     /**
      * LDAP Object
@@ -121,6 +122,7 @@ class LdapIdentifier extends AbstractIdentifier {
             if ($ldapBind === true) {
                 $searchResults = ldap_search($this->ldapConnection, $this->_config['baseDN']($username, $this->_config['domain']), '(' . $this->_config['search'] . '=' . $username . ')');
                 $entry = ldap_first_entry($this->ldapConnection, $searchResults);
+
                 return ldap_get_attributes($this->ldapConnection, $entry);
             }
         } catch (ErrorException $e) {
