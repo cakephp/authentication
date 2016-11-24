@@ -16,9 +16,36 @@ namespace Auth\Test\TestCase\Middleware\Authentication;
 use Auth\Authentication\Result;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 class ResultTest extends TestCase
 {
+
+    /**
+     * testConstructor
+     *
+     * @return void
+     */
+    public function testConstructor()
+    {
+        try {
+            new Result(null, Result::SUCCESS);
+            $this->fail('InvalidArgumentException not thrown!');
+        } catch (InvalidArgumentException $e) {
+            $result = $e->getMessage();
+            $expected = 'Identity can no be empty with status success.';
+            $this->assertEquals($expected, $result);
+        }
+
+        try {
+            new Result([], Result::FAILURE_CREDENTIAL_INVALID);
+            $this->fail('InvalidArgumentException not thrown!');
+        } catch (InvalidArgumentException $e) {
+            $result = $e->getMessage();
+            $expected = 'Identity must be NULL or an object implementing \Cake\Datasource\EntityInterface';
+            $this->assertEquals($expected, $result);
+        }
+    }
 
     /**
      * testIsValid

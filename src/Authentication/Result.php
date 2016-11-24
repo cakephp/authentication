@@ -56,7 +56,7 @@ class Result implements ResultInterface
     /**
      * The identity used in the authentication attempt
      *
-     * @var mixed
+     * @var null|\Cake\Datasource\EntityInterface
      */
     protected $identity;
 
@@ -72,7 +72,7 @@ class Result implements ResultInterface
     /**
      * Sets the result code, identity, and failure messages
      *
-     * @param mixed $identity The identity data
+     * @param null|\Cake\Datasource\EntityInterface $identity The identity data
      * @param int $code Error code.
      * @param array $messages Messages.
      */
@@ -113,7 +113,7 @@ class Result implements ResultInterface
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @return mixed
+     * @var null|\Cake\Datasource\EntityInterface
      */
     public function getIdentity()
     {
