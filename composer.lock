@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1cb5401040d2ab213692a4302efc2139",
+    "hash": "eeb98b45b80fe8930d635295f4106bf5",
     "content-hash": "a927e4d75f8f5e06c1fcd875c730d1cd",
     "packages": [
         {
@@ -132,12 +132,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "8081b720d11489bdaa3f24553170fd7ebcc8e8a6"
+                "reference": "327554278a84552cf350f1809f928ad06c1c1416"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/8081b720d11489bdaa3f24553170fd7ebcc8e8a6",
-                "reference": "8081b720d11489bdaa3f24553170fd7ebcc8e8a6",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/327554278a84552cf350f1809f928ad06c1c1416",
+                "reference": "327554278a84552cf350f1809f928ad06c1c1416",
                 "shasum": ""
             },
             "require": {
@@ -198,7 +198,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-11-20 13:24:04"
+            "time": "2016-11-23 02:33:20"
         },
         {
             "name": "cakephp/chronos",
@@ -1643,12 +1643,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "aeeade9b38be8d2d64f0ca4e42d32ae34b353b07"
+                "reference": "158ee422085dea9b649107bca4e47eb9695e970c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/aeeade9b38be8d2d64f0ca4e42d32ae34b353b07",
-                "reference": "aeeade9b38be8d2d64f0ca4e42d32ae34b353b07",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/158ee422085dea9b649107bca4e47eb9695e970c",
+                "reference": "158ee422085dea9b649107bca4e47eb9695e970c",
                 "shasum": ""
             },
             "require": {
@@ -1713,7 +1713,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2016-10-30 23:38:16"
+            "time": "2016-11-24 00:31:56"
         },
         {
             "name": "symfony/yaml",
@@ -1776,12 +1776,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "c0c92082a2ffef8fab7941d4f6fd6a6a72ed627c"
+                "reference": "4a8bf11547e139e77b651365113fc12850c43d9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/c0c92082a2ffef8fab7941d4f6fd6a6a72ed627c",
-                "reference": "c0c92082a2ffef8fab7941d4f6fd6a6a72ed627c",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/4a8bf11547e139e77b651365113fc12850c43d9a",
+                "reference": "4a8bf11547e139e77b651365113fc12850c43d9a",
                 "shasum": ""
             },
             "require": {
@@ -1794,7 +1794,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "1.3-dev"
                 }
             },
             "autoload": {
@@ -1818,7 +1818,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2016-10-17 06:50:33"
+            "time": "2016-11-23 20:04:41"
         }
     ],
     "aliases": [],

@@ -13,7 +13,8 @@
  */
 namespace Auth\Authentication;
 
-use RuntimeException;
+use Cake\Datasource\EntityInterface;
+use InvalidArgumentException;
 
 /**
  * Authentication result object
@@ -55,7 +56,7 @@ class Result implements ResultInterface
     /**
      * The identity used in the authentication attempt
      *
-     * @var mixed
+     * @var null|\Cake\Datasource\EntityInterface
      */
     protected $identity;
 
@@ -71,14 +72,17 @@ class Result implements ResultInterface
     /**
      * Sets the result code, identity, and failure messages
      *
-     * @param mixed $identity The identity data
+     * @param null|\Cake\Datasource\EntityInterface $identity The identity data
      * @param int $code Error code.
      * @param array $messages Messages.
      */
     public function __construct($identity, $code, array $messages = [])
     {
         if (empty($identity) && $code === self::SUCCESS) {
-            throw new RuntimeException('Identity can no be empty with status success.');
+            throw new InvalidArgumentException('Identity can no be empty with status success.');
+        }
+        if ($identity !== null && !$identity instanceof EntityInterface) {
+            throw new InvalidArgumentException('Identity must be NULL or an object implementing \Cake\Datasource\EntityInterface');
         }
 
         $this->code = (int)$code;
@@ -109,7 +113,7 @@ class Result implements ResultInterface
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @return mixed
+     * @var null|\Cake\Datasource\EntityInterface
      */
     public function getIdentity()
     {

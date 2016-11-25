@@ -45,7 +45,7 @@ class OrmIdentifier extends AbstractIdentifier
      * Identify
      *
      * @param array $data Authentication credentials
-     * @return null|EntityInterface
+     * @return false|EntityInterface
      */
     public function identify($data)
     {
@@ -118,8 +118,6 @@ class OrmIdentifier extends AbstractIdentifier
             $options['username'] = $username;
         }
 
-        $query = $table->find($finder, $options);
-
-        return $query;
+        return $table->find($finder, $options);
     }
 }
