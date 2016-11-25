@@ -23,12 +23,7 @@ use ErrorException;
 class LdapIdentifier extends AbstractIdentifier
 {
 
-    /**
-     * LDAP Object
-     *
-     * @var object
-     */
-    protected $ldapConnection;
+    use LdapOopTrait;
 
     /**
      * Default configuration
@@ -76,13 +71,13 @@ class LdapIdentifier extends AbstractIdentifier
         $config = $this->config();
 
         try {
-            $this->ldapConnection = ldap_connect($config['host'], $config['port']);
+            $this->ldapConnection = $this->ldapConnect($config['host'], $config['port']);
             if (isset($config['options']) && is_array($config['options'])) {
                 foreach ($config['options'] as $option => $value) {
-                    ldap_set_option($this->ldapConnection, $option, $value);
+                    $this->ldapSetOption($option, $value);
                 }
             } else {
-                ldap_set_option($this->ldapConnection, LDAP_OPT_NETWORK_TIMEOUT, 5);
+                $this->ldapSetOption(LDAP_OPT_NETWORK_TIMEOUT, 5);
             }
         } catch (Exception $e) {
             throw new InternalErrorException('Unable to connect to specified LDAP Server(s)');
@@ -115,6 +110,7 @@ class LdapIdentifier extends AbstractIdentifier
         if (!empty($this->_config['domain']) && !empty($username) && strpos($username, '@') === false) {
             $username .= '@' . $this->_config['domain'];
         }
+
         set_error_handler(
             function ($errorNumber, $errorText, $errorFile, $errorLine) {
                 throw new ErrorException($errorText, 0, $errorNumber, $errorFile, $errorLine);
@@ -123,12 +119,9 @@ class LdapIdentifier extends AbstractIdentifier
         );
 
         try {
-            $ldapBind = ldap_bind($this->ldapConnection, isset($this->_config['bindDN']) ? $this->_config['bindDN']($username, $this->_config['domain']) : $username, $password);
+            $ldapBind = $this->ldapBind(isset($this->_config['bindDN']) ? $this->_config['bindDN']($username, $this->_config['domain']) : $username, $password);
             if ($ldapBind === true) {
-                $searchResults = ldap_search($this->ldapConnection, $this->_config['baseDN']($username, $this->_config['domain']), '(' . $this->_config['search'] . '=' . $username . ')');
-                $entry = ldap_first_entry($this->ldapConnection, $searchResults);
-
-                return ldap_get_attributes($this->ldapConnection, $entry);
+                return $this->_getUserFromLdap($username);
             }
         } catch (ErrorException $e) {
             if ($this->_config['logErrors'] === true) {
@@ -140,6 +133,17 @@ class LdapIdentifier extends AbstractIdentifier
         restore_error_handler();
 
         return false;
+    }
+
+    protected function _getUserFromLdap($username)
+    {
+        $searchResults = $this->ldapSearch(
+            $this->_config['baseDN']($username, $this->_config['domain']),
+            '(' . $this->_config['search'] . '=' . $username . ')'
+        );
+        $entry = $this->ldapFirstEntry($this->ldapConnection, $searchResults);
+
+        return $this->ldapGetAttributes($entry);
     }
 
     /**
@@ -159,12 +163,11 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _handleLdapError()
     {
-        if (ldap_get_option($this->ldapConnection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extendedError)) {
-            if (!empty($extendedError)) {
-                foreach ($this->_config['errors'] as $error => $errorMessage) {
-                    if (strpos($extendedError, $error) !== false) {
-                        $this->_errors[] = $errorMessage;
-                    }
+        $extendedError = $this->ldapGetOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
+        if (!empty($extendedError)) {
+            foreach ($this->_config['errors'] as $error => $errorMessage) {
+                if (strpos($extendedError, $error) !== false) {
+                    $this->_errors[] = $errorMessage;
                 }
             }
         }
@@ -183,17 +186,18 @@ class LdapIdentifier extends AbstractIdentifier
         );
 
         try {
-            ldap_unbind($this->ldapConnection);
+            $this->ldapClose();
         } catch (ErrorException $e) {
             // Do Nothing
         }
 
         try {
-            ldap_close($this->ldapConnection);
+            $this->ldapClose();
         } catch (ErrorException $e) {
             // Do Nothing
         }
 
         restore_error_handler();
     }
+
 }
