@@ -129,7 +129,7 @@ class IdentifierCollection
 
         $identifier = new $className($config);
         if (!($identifier instanceof IdentifierInterface)) {
-            throw new RuntimeException('Identifier must implement \Auth\Authentication\IdentifierInterface');
+            throw new RuntimeException(sprintf('Identifier class "%s" must implement \Auth\Authentication\IdentifierInterface', $className));
         }
 
         if (isset($config['alias'])) {

@@ -14,10 +14,38 @@
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Auth\Authentication\Result;
+use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 class ResultTest extends TestCase
 {
+
+    /**
+     * testConstructor
+     *
+     * @return void
+     */
+    public function testConstructor()
+    {
+        try {
+            new Result(null, Result::SUCCESS);
+            $this->fail('InvalidArgumentException not thrown!');
+        } catch (InvalidArgumentException $e) {
+            $result = $e->getMessage();
+            $expected = 'Identity can no be empty with status success.';
+            $this->assertEquals($expected, $result);
+        }
+
+        try {
+            new Result([], Result::FAILURE_CREDENTIAL_INVALID);
+            $this->fail('InvalidArgumentException not thrown!');
+        } catch (InvalidArgumentException $e) {
+            $result = $e->getMessage();
+            $expected = 'Identity must be NULL or an object implementing \Cake\Datasource\EntityInterface';
+            $this->assertEquals($expected, $result);
+        }
+    }
 
     /**
      * testIsValid
@@ -35,7 +63,8 @@ class ResultTest extends TestCase
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         $this->assertFalse($result->isValid());
 
-        $result = new Result(['user' => 'florian'], Result::SUCCESS);
+        $entity = new Entity(['user' => 'florian']);
+        $result = new Result($entity, Result::SUCCESS);
         $this->assertTrue($result->isValid());
     }
 
@@ -46,9 +75,9 @@ class ResultTest extends TestCase
      */
     public function testGetIdentity()
     {
-        $identity = ['user' => 'florian'];
-        $result = new Result($identity, Result::SUCCESS);
-        $this->assertEquals($identity, $result->getIdentity());
+        $entity = new Entity(['user' => 'florian']);
+        $result = new Result($entity, Result::SUCCESS);
+        $this->assertEquals($entity, $result->getIdentity());
     }
 
     /**
@@ -61,7 +90,8 @@ class ResultTest extends TestCase
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
 
-        $result = new Result(['user' => 'florian'], Result::SUCCESS);
+        $entity = new Entity(['user' => 'florian']);
+        $result = new Result($entity, Result::SUCCESS);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 
@@ -76,7 +106,8 @@ class ResultTest extends TestCase
             'Out of coffee!',
             'Out of beer!'
         ];
-        $result = new Result(['user' => 'florian'], Result::FAILURE, $messages);
+        $entity = new Entity(['user' => 'florian']);
+        $result = new Result($entity, Result::FAILURE, $messages);
         $this->assertEquals($messages, $result->getErrors());
     }
 }

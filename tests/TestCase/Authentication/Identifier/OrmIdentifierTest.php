@@ -28,6 +28,7 @@ class OrmIdentifierTest extends TestCase
     {
         $identifier = new OrmIdentifier();
 
+        // Valid user
         $result = $identifier->identify([
             'username' => 'mariano',
             'password' => 'password'
@@ -35,11 +36,48 @@ class OrmIdentifierTest extends TestCase
 
         $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
 
+        // Invalid user and password
         $result = $identifier->identify([
             'username' => 'does-not',
             'password' => 'exist'
         ]);
 
         $this->assertFalse($result);
+
+        $result = $identifier->identify([
+            'password' => 'password'
+        ]);
+
+        $this->assertFalse($result);
+
+        // Valid user but invalid password
+        $result = $identifier->identify([
+            'username' => 'mariano',
+            'password' => 'invalid-password'
+        ]);
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * testFinderArrayConfig
+     *
+     * @return void
+     */
+    public function testFinderArrayConfig()
+    {
+        $identifier = new OrmIdentifier([
+            'userModel' => 'AuthUsers',
+            'finder' => [
+                'auth' => ['return_created' => true]
+            ]
+        ]);
+
+        $result = $identifier->identify([
+            'username' => 'mariano',
+            'password' => 'password'
+        ]);
+
+        $this->assertNotEmpty($result->created);
     }
 }

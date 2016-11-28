@@ -15,6 +15,8 @@
 namespace Auth\Authentication;
 
 use Auth\Authentication\Identifier\IdentifierCollection;
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Entity;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -62,6 +64,10 @@ class SessionAuthenticator extends AbstractAuthenticator
             if (empty($user)) {
                 return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
             }
+        }
+
+        if (!$user instanceof EntityInterface) {
+            $user = new Entity($user);
         }
 
         return new Result($user, Result::SUCCESS);
