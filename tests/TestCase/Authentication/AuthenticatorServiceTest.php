@@ -36,7 +36,8 @@ class AuthenticatorServiceTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticate() {
+    public function testAuthenticate()
+    {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],

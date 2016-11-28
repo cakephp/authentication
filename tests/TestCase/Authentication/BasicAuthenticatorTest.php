@@ -22,7 +22,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
-class BasicAuthenticatorTest extends TestCase {
+class BasicAuthenticatorTest extends TestCase
+{
 
     /**
      * Fixtures

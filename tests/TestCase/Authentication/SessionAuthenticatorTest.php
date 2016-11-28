@@ -20,7 +20,8 @@ use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
-class SessionAuthenticatorTest extends TestCase {
+class SessionAuthenticatorTest extends TestCase
+{
 
     /**
      * Fixtures
@@ -35,7 +36,8 @@ class SessionAuthenticatorTest extends TestCase {
     /**
      * @inheritdoc
      */
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
@@ -53,7 +55,8 @@ class SessionAuthenticatorTest extends TestCase {
      *
      * @return void
      */
-    public function testAuthenticate() {
+    public function testAuthenticate()
+    {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
 

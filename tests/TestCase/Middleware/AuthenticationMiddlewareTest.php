@@ -62,7 +62,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $middleware = new AuthenticationMiddleware($this->service);
 
-        $next = function($request, $response) {
+        $next = function ($request, $response) {
             return $request;
         };
 
@@ -91,7 +91,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $middleware = new AuthenticationMiddleware($this->service);
 
-        $next = function($request, $response) {
+        $next = function ($request, $response) {
             return $request;
         };
 

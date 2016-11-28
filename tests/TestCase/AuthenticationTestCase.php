@@ -32,7 +32,8 @@ class AuthenticationTestCase extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         $this->_setupUsersAndPasswords();
     }

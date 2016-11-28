@@ -182,7 +182,6 @@ class AuthenticationService
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
-
                 return $result;
             }
         }
