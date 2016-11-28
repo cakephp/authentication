@@ -11,35 +11,21 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Auth\Authentication\Identifier;
 
-interface ResultInterface
+interface IdentifierInterface
 {
-    /**
-     * Returns whether the result represents a successful authentication attempt.
-     *
-     * @return bool
-     */
-    public function isValid();
 
     /**
-     * Get the result code for this authentication attempt.
+     * Identifies an user or service by the passed credentials
      *
-     * @return int
-     */
-    public function getCode();
-
-    /**
-     * Returns the identity used in the authentication attempt.
-     *
+     * @param mixed $credentials Authentication credentials
      * @return mixed
      */
-    public function getIdentity();
+    public function identify($credentials);
 
     /**
-     * Returns an array of string reasons why the authentication attempt was unsuccessful.
-     *
-     * If authentication was successful, this method returns an empty array.
+     * Gets a list of errors happened in the identification process
      *
      * @return array
      */

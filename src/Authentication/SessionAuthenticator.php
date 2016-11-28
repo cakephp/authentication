@@ -14,7 +14,9 @@
  */
 namespace Auth\Authentication;
 
-use Cake\Network\Exception\UnauthorizedException;
+use Auth\Authentication\Identifier\IdentifierCollection;
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Entity;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -24,9 +26,16 @@ use Psr\Http\Message\ServerRequestInterface;
 class SessionAuthenticator extends AbstractAuthenticator
 {
 
-    public function __construct(array $config = []) {
-        $this->config('sessionKey', 'Auth');
-        parent::__construct($config);
+    /**
+     * Constructor
+     *
+     * @param array $identifiers Array of config to use.
+     * @param array $config Configuration settings.
+     */
+    public function __construct(IdentifierCollection $identifiers, array $config = [])
+    {
+        $this->_defaultConfig['sessionKey'] = 'Auth';
+        parent::__construct($identifiers, $config);
     }
 
     /**
@@ -46,15 +55,19 @@ class SessionAuthenticator extends AbstractAuthenticator
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
-        if ($this->config('verifyByDatabase')) {
-            $user = $this->_findUser(
-                $user[$this->config('fields')['username']],
-                $user[$this->config('fields')['password']]
-            );
+        if ($this->config('verifyByDatabase') === true) {
+            $user = $this->identifiers()->identify([
+                'username' => $user[$this->config('fields')['username']],
+                'password' => $user[$this->config('fields')['password']]
+            ]);
 
             if (empty($user)) {
                 return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
             }
+        }
+
+        if (!$user instanceof EntityInterface) {
+            $user = new Entity($user);
         }
 
         return new Result($user, Result::SUCCESS);

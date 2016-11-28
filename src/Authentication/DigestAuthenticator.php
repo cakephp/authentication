@@ -14,6 +14,7 @@
  */
 namespace Auth\Authentication;
 
+use Auth\Authentication\Identifier\IdentifierCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -74,9 +75,11 @@ class DigestAuthenticator extends BasicAuthenticator
      * - `opaque` A string that must be returned unchanged by clients.
      *    Defaults to `md5($config['realm'])`
      *
-     * @param array $config Array of config to use.
+     *
+     * @param \Auth\Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param array $config Configuration settings.
      */
-    public function __construct(array $config = [])
+    public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
         $this->config([
             'realm' => null,
@@ -86,6 +89,7 @@ class DigestAuthenticator extends BasicAuthenticator
         ]);
 
         $this->config($config);
+        parent::__construct($identifiers, $config);
     }
 
     /**
@@ -102,7 +106,10 @@ class DigestAuthenticator extends BasicAuthenticator
             return new Result(null, Result::FAILURE_OTHER);
         }
 
-        $user = $this->_findUser($digest['username']);
+        $user = $this->identifiers()->identify([
+            'username' => $digest['username'],
+        ]);
+
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }

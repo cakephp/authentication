@@ -16,9 +16,8 @@ namespace Auth\Test\TestCase\Middleware;
 use Auth\Authentication\AuthenticationService;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Auth\Middleware\AuthenticationMiddleware;
-use Cake\Network\Session;
+use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
@@ -37,36 +36,71 @@ class AuthenticationMiddlewareTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->session = $this->getMockBuilder(Session::class)->getMock();
+        $this->service = new AuthenticationService([
+            'identifiers' => [
+                'Auth.Orm'
+            ],
+            'authenticators' => [
+                'Auth.Form'
+            ]
+        ]);
     }
 
     /**
-     * testAuthentication
+     * testSuccessfulAuthentication
      *
      * @return void
      */
-    public function testAuthentication()
+    public function testSuccessfulAuthentication()
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $request = $request->withAttribute('session', $this->session);
+        $response = new Response('php://memory');
 
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $middleware = new AuthenticationMiddleware($this->service);
 
-        $service = new AuthenticationService([
-            'authenticators' => [
-                'Auth.Form'
-            ]
-        ]);
-        $middleware = new AuthenticationMiddleware($service);
-
-        $callable = function ($request, $response) {
-            return $response;
+        $next = function($request, $response) {
+            return $request;
         };
 
-        $middleware($request, $response, $callable);
+        $request = $middleware($request, $response, $next);
+        $identity = $request->getAttribute('identity');
+        $result = $request->getAttribute('authentication');
+
+        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $identity);
+        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * testNonSuccessfulAuthentication
+     *
+     * @return void
+     */
+    public function testNonSuccessfulAuthentication()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'invalid', 'password' => 'invalid']
+        );
+        $response = new Response('php://memory');
+
+        $middleware = new AuthenticationMiddleware($this->service);
+
+        $next = function($request, $response) {
+            return $request;
+        };
+
+        $request = $middleware($request, $response, $next);
+        $identity = $request->getAttribute('identity');
+        $result = $request->getAttribute('authentication');
+
+        $this->assertNull($identity);
+        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertFalse($result->isValid());
     }
 }

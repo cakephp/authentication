@@ -11,15 +11,22 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Auth\Authentication\Identifier\LdapIdentifier;
+use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 
-interface Identity
+class LdapIdentifierTest extends TestCase
 {
 
-    public function set($name, $value);
-    public function get($name);
-    public function has($name);
+    /**
+     * testIdentify
+     *
+     * @return void
+     */
+    public function testIdentify()
+    {
+        $this->skipIf(!function_exists('ldap_connect'), 'LDAP php extension is not installed.');
+        $this->markTestSkipped('Need to find a way to test the LDAP functions.');
+    }
 }

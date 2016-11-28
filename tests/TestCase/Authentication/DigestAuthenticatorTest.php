@@ -17,6 +17,7 @@
 namespace Auth\Test\TestCase\Authentication;
 
 use Auth\Authentication\DigestAuthenticator;
+use Auth\Authentication\Identifier\IdentifierCollection;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Http\ServerRequestFactory;
@@ -48,7 +49,11 @@ class DigestAuthenticatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->auth = new DigestAuthenticator([
+        $this->identifiers = new IdentifierCollection([
+           'Auth.Orm'
+        ]);
+
+        $this->auth = new DigestAuthenticator($this->identifiers, [
             'realm' => 'localhost',
             'nonce' => 123,
             'opaque' => '123abc'
@@ -68,11 +73,12 @@ class DigestAuthenticatorTest extends TestCase
      */
     public function testConstructor()
     {
-        $object = new DigestAuthenticator([
+        $object = new DigestAuthenticator($this->identifiers, [
             'userModel' => 'AuthUser',
             'fields' => ['username' => 'user', 'password' => 'pass'],
             'nonce' => 123456
         ]);
+
         $this->assertEquals('AuthUser', $object->config('userModel'));
         $this->assertEquals(['username' => 'user', 'password' => 'pass'], $object->config('fields'));
         $this->assertEquals(123456, $object->config('nonce'));
@@ -188,7 +194,7 @@ DIGEST;
         ];
         $this->assertInstanceOf('Auth\Authentication\Result', $result);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity());
+        $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
 
     /**
@@ -228,7 +234,7 @@ DIGEST;
         ];
         $this->assertInstanceOf('Auth\Authentication\Result', $result);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity());
+        $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
 
     /**
@@ -281,7 +287,7 @@ DIGEST;
             ]
         );
 
-        $this->auth = new DigestAuthenticator([
+        $this->auth = new DigestAuthenticator($this->identifiers, [
             'realm' => 'localhost',
             'nonce' => '123'
         ]);
