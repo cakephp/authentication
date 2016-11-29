@@ -111,7 +111,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers, [
-            'verifyByDatabase' => true
+            'identify' => true
         ]);
         $result = $authenticator->authenticate($request, $response);
 
@@ -129,7 +129,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers, [
-            'verifyByDatabase' => true
+            'identify' => true
         ]);
         $result = $authenticator->authenticate($request, $response);
 
