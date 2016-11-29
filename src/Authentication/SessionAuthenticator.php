@@ -55,7 +55,7 @@ class SessionAuthenticator extends AbstractAuthenticator
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
-        if ($this->config('verifyByDatabase') === true) {
+        if ($this->config('identify') === true) {
             $user = $this->identifiers()->identify([
                 'username' => $user[$this->config('fields')['username']],
                 'password' => $user[$this->config('fields')['password']]
