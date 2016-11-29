@@ -137,8 +137,8 @@ $service = new AuthenticationService([
         ]
     ],
     'authenticators' => [
-        'Auth.Form',
-        'Auth.Session'
+        'Auth.Session',
+        'Auth.Form'
     ]
 ]);
 ```
