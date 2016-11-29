@@ -4,7 +4,9 @@
     "type": "cakephp-plugin",
     "require": {
         "cakephp/core": "dev-3.next",
-        "cakephp/orm": "dev-3.next"
+        "cakephp/event": "dev-3.next",
+        "cakephp/orm": "dev-3.next",
+        "psr/http-message": "~1.0"
     },
     "require-dev": {
         "cakephp/cakephp": "dev-3.next",
