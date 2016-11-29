@@ -1,8 +1,8 @@
 # CakePHP Middleware Authentication
 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt) 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/?branch=master) 
-[![Code Coverage](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/burzum/cakephp-middleware-auth/?branch=master)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
+[![Build Status](https://img.shields.io/travis/cakephp/authentication/master.svg?style=flat-square)](https://travis-ci.org/cakephp/authentication)
+[![Coverage Status](https://img.shields.io/codecov/c/github/cakephp/authentication.svg?style=flat-square)](https://codecov.io/github/cakephp/authentication)
 
 [PSR7](http://www.php-fig.org/psr/psr-7/) Middleware authentication stack for the CakePHP framework.
 
@@ -32,10 +32,10 @@ class Application extends BaseApplication
                 'Auth.Session'
             ]
         ]);
-        
+
         // Add it to the authentication middleware
         $authentication = new AuthenticationMiddleware($service);
-        
+
         // Add the middleware to the middleware stack
         $middleware->add($authentication);
     }
