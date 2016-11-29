@@ -15,11 +15,11 @@ namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Auth\Authentication\BasicAuthenticator;
 use Auth\Authentication\Identifier\IdentifierCollection;
-use Cake\Network\Exception\UnauthorizedException;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\I18n\Time;
-use Cake\ORM\TableRegistry;
 use Cake\Http\ServerRequestFactory;
+use Cake\I18n\Time;
+use Cake\Network\Exception\UnauthorizedException;
+use Cake\ORM\TableRegistry;
 use Zend\Diactoros\Response;
 
 class BasicAuthenticatorTest extends TestCase

@@ -13,9 +13,9 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Auth\Authentication\SessionAuthenticator;
 use Auth\Authentication\Identifier\IdentifierCollection;
 use Auth\Authentication\Result;
+use Auth\Authentication\SessionAuthenticator;
 use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;

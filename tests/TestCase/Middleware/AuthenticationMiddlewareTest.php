@@ -14,8 +14,8 @@
 namespace Auth\Test\TestCase\Middleware;
 
 use Auth\Authentication\AuthenticationService;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Auth\Middleware\AuthenticationMiddleware;
+use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 

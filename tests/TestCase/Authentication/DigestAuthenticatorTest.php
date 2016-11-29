@@ -18,9 +18,9 @@ namespace Auth\Test\TestCase\Authentication;
 
 use Auth\Authentication\DigestAuthenticator;
 use Auth\Authentication\Identifier\IdentifierCollection;
+use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
-use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use Zend\Diactoros\Response;
 
