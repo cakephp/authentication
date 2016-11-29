@@ -14,7 +14,7 @@
  */
 namespace Auth\PasswordHasher;
 
-use Auth\PasswordHasherFactory;
+use Auth\PasswordHasher\PasswordHasherFactory;
 
 /**
  * A password hasher that can use multiple different hashes where only

@@ -14,10 +14,9 @@
 namespace Auth\Authentication;
 
 use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\PasswordHasherTrait;
 use Auth\PasswordHasher\DefaultPasswordHasher;
+use Auth\PasswordHasher\PasswordHasherTrait;
 use Cake\Core\InstanceConfigTrait;
-use Cake\ORM\TableRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

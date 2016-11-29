@@ -113,7 +113,7 @@ class Result implements ResultInterface
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @var null|\Cake\Datasource\EntityInterface
+     * @return null|\Cake\Datasource\EntityInterface
      */
     public function getIdentity()
     {

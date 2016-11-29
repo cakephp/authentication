@@ -14,7 +14,7 @@
  */
 namespace Auth\Test\TestCase\PasswordHasher;
 
-use Auth\PasswordHasherFactory;
+use Auth\PasswordHasher\PasswordHasherFactory;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
 
