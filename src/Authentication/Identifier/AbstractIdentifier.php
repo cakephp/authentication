@@ -14,13 +14,11 @@
 namespace Auth\Authentication\Identifier;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\Log\LogTrait;
 
 abstract class AbstractIdentifier implements IdentifierInterface
 {
 
     use InstanceConfigTrait;
-    use LogTrait;
 
     /**
      * Default configuration
