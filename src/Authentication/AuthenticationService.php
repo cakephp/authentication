@@ -72,8 +72,7 @@ class AuthenticationService
      */
     protected $_defaultConfig = [
         'authenticators' => [],
-        'identifiers' => [],
-        'storage' => 'Auth.Session'
+        'identifiers' => []
     ];
 
     /**
