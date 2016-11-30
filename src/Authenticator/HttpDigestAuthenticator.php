@@ -12,7 +12,7 @@
  * @since         2.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Adapter;
+namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;

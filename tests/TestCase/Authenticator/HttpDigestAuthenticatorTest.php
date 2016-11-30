@@ -16,7 +16,7 @@
  */
 namespace Authentication\Test\TestCase\Authentication;
 
-use Authentication\Adapter\HttpDigestAuthenticator;
+use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;

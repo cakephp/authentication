@@ -11,7 +11,7 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Adapter;
+namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Result;
 use Cake\ORM\Entity;
