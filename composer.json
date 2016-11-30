@@ -1,6 +1,12 @@
 {
-    "name": "cakephp/middleware-authentication",
-    "description": "Authentication for the middleware stack",
+    "name": "cakephp/authentication",
+    "description": "Authentication plugin for CakePHP",
+    "keywords": [
+        "auth",
+        "authentication",
+        "cakephp",
+        "middleware"
+    ],
     "type": "cakephp-plugin",
     "require": {
         "cakephp/core": "dev-3.next as 3.4",
