@@ -20,14 +20,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Digest Authentication adapter for AuthComponent.
+ * HttpDigest Authentication adapter for AuthComponent.
  *
  * Provides Digest HTTP authentication support for AuthComponent.
  *
  * ### Using Digest auth
  *
  * ```
- *  $authenticator = new DigestAuthenticator();
+ *  $authenticator = new HttpDigestAuthenticator();
  *  $result = $authenticator->authenticate($request);
  *  if ($result->isValid()) {
  *      // Do something with the result
@@ -49,10 +49,10 @@ use Psr\Http\Message\ServerRequestInterface;
  * ### Generating passwords compatible with Digest authentication.
  *
  * DigestAuthenticate requires a special password hash that conforms to RFC2617.
- * You can generate this password using `DigestAuthenticate::password()`
+ * You can generate this password using `HttpDigestAuthenticate::password()`
  *
  * ```
- * $digestPass = DigestAuthenticator::password($username, $password, env('SERVER_NAME'));
+ * $digestPass = HttpDigestAuthenticator::password($username, $password, env('SERVER_NAME'));
  * ```
  *
  * If you wish to use digest authentication alongside other authentication methods,
@@ -61,14 +61,14 @@ use Psr\Http\Message\ServerRequestInterface;
  * `User.password` would store the password hash for use with other methods like
  * Basic or Form.
  */
-class DigestAuthenticator extends BasicAuthenticator
+class HttpDigestAuthenticator extends HttpBasicAuthenticator
 {
 
     /**
      * Constructor
      *
      * Besides the keys specified in AbstractAuthenticator::$_defaultConfig,
-     * DigestAuthenticate uses the following extra keys:
+     * HttpDigestAuthenticate uses the following extra keys:
      *
      * - `realm` The realm authentication is for, Defaults to the servername.
      * - `nonce` A nonce used for authentication. Defaults to `uniqid()`.
@@ -185,8 +185,8 @@ class DigestAuthenticator extends BasicAuthenticator
     /**
      * Generate the response hash for a given digest array.
      *
-     * @param array $digest Digest information containing data from DigestAuthenticate::parseAuthData().
-     * @param string $password The digest hash password generated with DigestAuthenticate::password()
+     * @param array $digest Digest information containing data from HttpDigestAuthenticate::parseAuthData().
+     * @param string $password The digest hash password generated with HttpDigestAuthenticate::password()
      * @param string $method Request method
      * @return string Response hash
      */

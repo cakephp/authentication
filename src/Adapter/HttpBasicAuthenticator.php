@@ -20,7 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Basic Authenticator
+ * HttpBasic Authenticator
  *
  * Provides Basic HTTP authentication support.
  *
@@ -39,7 +39,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * `AuthComponent::$loginAction`, or '/'. If unauthorizedRedirect is set to
  * false, a ForbiddenException exception is thrown instead of redirecting.
  */
-class BasicAuthenticator extends AbstractAuthenticator
+class HttpBasicAuthenticator extends AbstractAuthenticator
 {
 
     /**

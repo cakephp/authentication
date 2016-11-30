@@ -13,7 +13,7 @@
  */
 namespace Authentication\Test\TestCase\Adapter;
 
-use Authentication\Adapter\BasicAuthenticator;
+use Authentication\Adapter\HttpBasicAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
@@ -22,7 +22,7 @@ use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Zend\Diactoros\Response;
 
-class BasicAuthenticatorTest extends TestCase
+class HttpBasicAuthenticatorTest extends TestCase
 {
 
     /**
@@ -46,7 +46,7 @@ class BasicAuthenticatorTest extends TestCase
            'Authentication.Orm'
         ]);
 
-        $this->auth = new BasicAuthenticator($this->identifiers);
+        $this->auth = new HttpBasicAuthenticator($this->identifiers);
         $this->response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
     }
 
@@ -57,7 +57,7 @@ class BasicAuthenticatorTest extends TestCase
      */
     public function testConstructor()
     {
-        $object = new BasicAuthenticator($this->identifiers, [
+        $object = new HttpBasicAuthenticator($this->identifiers, [
             'userModel' => 'AuthUser',
             'fields' => [
                 'username' => 'user',
