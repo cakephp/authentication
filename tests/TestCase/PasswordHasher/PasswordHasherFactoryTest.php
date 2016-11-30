@@ -12,7 +12,7 @@
  * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\PasswordHasher;
+namespace Authentication\Test\TestCase\PasswordHasher;
 
 use Authentication\PasswordHasher\PasswordHasherFactory;
 use Cake\Core\Plugin;

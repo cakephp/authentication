@@ -14,7 +14,7 @@
  * @since         2.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Authentication;
+namespace Authentication\Test\TestCase\Authentication;
 
 use Authentication\Adapter\DigestAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
