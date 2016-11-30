@@ -3,18 +3,18 @@
     "description": "Authentication for the middleware stack",
     "type": "cakephp-plugin",
     "require": {
-        "cakephp/core": "dev-3.next",
-        "cakephp/event": "dev-3.next",
-        "cakephp/orm": "dev-3.next",
+        "cakephp/core": "dev-3.next as 3.4",
+        "cakephp/event": "dev-3.next as 3.4",
+        "cakephp/orm": "dev-3.next as 3.4",
         "psr/http-message": "~1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "dev-3.next",
+        "cakephp/cakephp": "dev-3.next as 3.4",
         "cakephp/cakephp-codesniffer": "^2.1",
         "phpunit/phpunit": "@stable"
     },
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "Authentication\\": "src"
