@@ -57,4 +57,33 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
+
+    /**
+     * testAuthenticateLoginUrl
+     *
+     * @return void
+     */
+    public function testAuthenticateLoginUrl()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/users/login'
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
+        $this->assertEquals([0 => 'Login URL /users/does-not-match did not match /users/login'], $result->getErrors());
+    }
 }

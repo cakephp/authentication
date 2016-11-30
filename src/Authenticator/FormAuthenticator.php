@@ -14,6 +14,7 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Result;
+use Cake\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -57,9 +58,17 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
+        if (!$this->_checkLoginUrl($request)) {
+            $errors = [sprintf('Login URL %s did not match %s', $request->getUri()->getPath(), $this->config('loginUrl'))];
+
+            return new Result(null, Result::FAILURE_OTHER, $errors);
+        }
+
         $fields = $this->_config['fields'];
         if (!$this->_checkFields($request, $fields)) {
-            return new Result(null, Result::FAILURE_OTHER);
+            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
+                'Login Credentials not found'
+            ]);
         }
 
         $body = $request->getParsedBody();
@@ -70,5 +79,27 @@ class FormAuthenticator extends AbstractAuthenticator
         }
 
         return new Result($user, Result::SUCCESS);
+    }
+
+    /**
+     * Checks the requests if it is the configured login action
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @return bool
+     */
+    protected function _checkLoginUrl(ServerRequestInterface $request)
+    {
+        $loginUrl = $this->config('loginUrl');
+
+        if (!empty($loginUrl)) {
+            if (is_array($loginUrl)) {
+                $loginUrl = Router::url($loginUrl);
+                $this->config('loginUrl', $loginUrl);
+            }
+
+            return $request->getUri()->getPath() === $loginUrl;
+        }
+
+        return true;
     }
 }
