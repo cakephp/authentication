@@ -13,9 +13,9 @@
  */
 namespace Auth\Test\TestCase\Middleware;
 
-use Auth\Authentication\AuthenticationService;
-use Auth\Middleware\AuthenticationMiddleware;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\AuthenticationService;
+use Authentication\Middleware\AuthenticationMiddleware;
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
@@ -38,10 +38,10 @@ class AuthenticationMiddlewareTest extends TestCase
         parent::setUp();
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Auth.Orm'
+                'Authentication.Orm'
             ],
             'authenticators' => [
-                'Auth.Form'
+                'Authentication.Form'
             ]
         ]);
     }
@@ -71,7 +71,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $result = $request->getAttribute('authentication');
 
         $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $identity);
-        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertTrue($result->isValid());
     }
 
@@ -100,7 +100,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $result = $request->getAttribute('authentication');
 
         $this->assertNull($identity);
-        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertFalse($result->isValid());
     }
 }

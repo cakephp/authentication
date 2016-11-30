@@ -1,5 +1,5 @@
 <?php
-namespace Auth\PasswordHasher;
+namespace Authentication\PasswordHasher;
 
 trait PasswordHasherTrait
 {

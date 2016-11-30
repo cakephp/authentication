@@ -11,12 +11,12 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Middleware\Authentication;
+namespace Auth\Test\TestCase\Adapter;
 
-use Auth\Authentication\FormAuthenticator;
-use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\Authentication\Result;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\Adapter\FormAuthenticator;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Result;
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
@@ -41,7 +41,7 @@ class FormAuthenticatorTest extends TestCase
     public function testAuthenticate()
     {
         $identifiers = new IdentifierCollection([
-           'Auth.Orm'
+           'Authentication.Orm'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -54,7 +54,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers);
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 }

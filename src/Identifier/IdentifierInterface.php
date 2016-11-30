@@ -11,48 +11,23 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication\Identifier;
+namespace Authentication\Identifier;
 
-use Cake\Core\InstanceConfigTrait;
-use Cake\Log\LogTrait;
-
-abstract class AbstractIdentifier implements IdentifierInterface
+interface IdentifierInterface
 {
 
-    use InstanceConfigTrait;
-    use LogTrait;
-
     /**
-     * Default configuration
+     * Identifies an user or service by the passed credentials
      *
-     * @var array
+     * @param mixed $credentials Authentication credentials
+     * @return mixed
      */
-    protected $_defaultConfig = [];
+    public function identify($credentials);
 
     /**
-     * Errors
-     *
-     * @var array
-     */
-    protected $_errors = [];
-
-    /**
-     * Constructor
-     *
-     * @param array $config Configuration
-     */
-    public function __construct(array $config = [])
-    {
-        $this->config($config);
-    }
-
-    /**
-     * Returns errors
+     * Gets a list of errors happened in the identification process
      *
      * @return array
      */
-    public function getErrors()
-    {
-        return $this->_errors;
-    }
+    public function getErrors();
 }

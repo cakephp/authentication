@@ -15,7 +15,7 @@
 
 namespace TestPlugin\PasswordHasher;
 
-use Auth\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 
 class LegacyPasswordHasher extends DefaultPasswordHasher
 {

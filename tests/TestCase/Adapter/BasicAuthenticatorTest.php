@@ -11,11 +11,11 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Middleware\Authentication;
+namespace Auth\Test\TestCase\Adapter;
 
-use Auth\Authentication\BasicAuthenticator;
-use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\Adapter\BasicAuthenticator;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\Network\Exception\UnauthorizedException;
@@ -43,7 +43,7 @@ class BasicAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Auth.Orm'
+           'Authentication.Orm'
         ]);
 
         $this->auth = new BasicAuthenticator($this->identifiers);

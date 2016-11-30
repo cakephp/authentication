@@ -11,7 +11,7 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication\Identifier;
+namespace Authentication\Identifier;
 
 use Cake\Core\App;
 use Cake\Core\InstanceConfigTrait;
@@ -121,7 +121,7 @@ class IdentifierCollection
      */
     public function load($class, array $config = [])
     {
-        $className = App::className($class, 'Authentication/Identifier', 'Identifier');
+        $className = App::className($class, 'Identifier', 'Identifier');
 
         if ($className === false) {
             throw new RuntimeException(sprintf('Identifier class "%s" was not found.', $class));

@@ -11,15 +11,14 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Authentication;
 
-use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\Authentication\Identifier\IdentifierInterface;
+use Authentication\Adapter\AuthenticateInterface;
+use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -58,10 +57,10 @@ class AuthenticationService
      *   ```
      *   $service = new AuthenticationService([
      *      'authenticators' => [
-     *          'Auth.Form
+     *          'Authentication.Form
      *      ],
      *      'identifiers' => [
-     *          'Auth.Orm' => [
+     *          'Authentication.Orm' => [
      *              'userModel' => 'Users.Users'
      *          ]
      *      ]
@@ -90,7 +89,7 @@ class AuthenticationService
     /**
      * Access the identifier collection
      *
-     * @return \Auth\Authentication\Identifier\IdentifierCollection
+     * @return \Authentication\Identifier\IdentifierCollection
      */
     public function identifiers()
     {
@@ -122,7 +121,7 @@ class AuthenticationService
      *
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
-     * @return \Auth\Authentication\AuthenticateInterface
+     * @return \Authentication\Adapter\AuthenticateInterface
      */
     public function loadAuthenticator($name, array $config = [])
     {
@@ -160,7 +159,7 @@ class AuthenticationService
             return $class;
         }
 
-        $className = App::className($class, 'Authentication', 'Authenticator');
+        $className = App::className($class, 'Adapter', 'Authenticator');
         if (!class_exists($className)) {
             throw new Exception(sprintf('Authentication adapter "%s" was not found.', $className));
         }
@@ -173,7 +172,7 @@ class AuthenticationService
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Auth\Authentication\ResultInterface A result object. If none of
+     * @return \Authentication\ResultInterface A result object. If none of
      * the adapters was a success the last failed result is returned.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)

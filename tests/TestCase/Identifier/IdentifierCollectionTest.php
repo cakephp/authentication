@@ -11,10 +11,10 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Middleware\Authentication;
+namespace Auth\Test\TestCase\Identifier;
 
-use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
 class IdentifierCollectionTest extends TestCase
 {
@@ -22,10 +22,10 @@ class IdentifierCollectionTest extends TestCase
     public function testConstruct()
     {
         $collection = new IdentifierCollection([
-            'Auth.Orm'
+            'Authentication.Orm'
         ]);
-        $result = $collection->get('Auth.Orm');
-        $this->assertInstanceOf('\Auth\Authentication\Identifier\OrmIdentifier', $result);
+        $result = $collection->get('Authentication.Orm');
+        $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
     }
 
     /**
@@ -36,8 +36,8 @@ class IdentifierCollectionTest extends TestCase
     public function testLoad()
     {
         $collection = new IdentifierCollection();
-        $result = $collection->load('Auth.Orm');
-        $this->assertInstanceOf('\Auth\Authentication\Identifier\OrmIdentifier', $result);
+        $result = $collection->load('Authentication.Orm');
+        $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
     }
 
     /**
@@ -57,7 +57,7 @@ class IdentifierCollectionTest extends TestCase
     public function testGetAll()
     {
         $collection = new IdentifierCollection();
-        $collection->load('Auth.Orm');
+        $collection->load('Authentication.Orm');
         $result = $collection->getAll();
         $this->assertInternalType('array', $result);
     }
@@ -70,7 +70,7 @@ class IdentifierCollectionTest extends TestCase
     public function testIdentify()
     {
         $collection = new IdentifierCollection([
-            'Auth.Orm'
+            'Authentication.Orm'
         ]);
 
         $result = $collection->identify([

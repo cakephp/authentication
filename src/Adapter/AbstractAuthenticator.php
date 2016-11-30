@@ -11,11 +11,11 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Authentication\Adapter;
 
-use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\PasswordHasher\DefaultPasswordHasher;
-use Auth\PasswordHasher\PasswordHasherTrait;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -53,14 +53,14 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Identifier collection
      *
-     * @var \Auth\Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierCollection
      */
     protected $_identifiers;
 
     /**
      * Constructor
      *
-     * @param \Auth\Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param \Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
      * @param array $config Configuration settings.
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
@@ -72,7 +72,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Gets the identifier collection
      *
-     * @return \Auth\Authentication\Identifier\IdentifierCollection
+     * @return \Authentication\Identifier\IdentifierCollection
      */
     public function identifiers()
     {
