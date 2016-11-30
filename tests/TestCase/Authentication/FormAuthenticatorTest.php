@@ -13,10 +13,10 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Auth\Authentication\FormAuthenticator;
-use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\Authentication\Result;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\Authentication\FormAuthenticator;
+use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\Authentication\Result;
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
@@ -41,7 +41,7 @@ class FormAuthenticatorTest extends TestCase
     public function testAuthenticate()
     {
         $identifiers = new IdentifierCollection([
-           'Auth.Orm'
+           'Authentication.Orm'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -54,7 +54,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers);
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Auth\Authentication\Result', $result);
+        $this->assertInstanceOf('\Authentication\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 }

@@ -14,7 +14,7 @@
  */
 namespace Auth\Test\TestCase\PasswordHasher;
 
-use Auth\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\TestSuite\TestCase;
 
 /**

@@ -13,8 +13,8 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Auth\Authentication\Identifier\OrmIdentifier;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\Authentication\Identifier\OrmIdentifier;
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
 class OrmIdentifierTest extends TestCase
 {

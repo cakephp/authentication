@@ -13,7 +13,7 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Auth\Authentication\Result;
+use Authentication\Authentication\Result;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;

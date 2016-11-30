@@ -12,7 +12,7 @@
  * @since         2.4.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\PasswordHasher;
+namespace Authentication\PasswordHasher;
 
 use Cake\Core\InstanceConfigTrait;
 

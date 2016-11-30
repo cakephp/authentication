@@ -1,8 +1,8 @@
 <?php
-namespace Auth\Authentication\Identifier;
+namespace Authentication\Authentication\Identifier;
 
-use Auth\PasswordHasher\DefaultPasswordHasher;
-use Auth\PasswordHasher\PasswordHasherTrait;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 

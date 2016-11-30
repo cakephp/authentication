@@ -13,8 +13,8 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Auth\Authentication\AuthenticationService;
-use Auth\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\Authentication\AuthenticationService;
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
@@ -47,10 +47,10 @@ class AuthenticatorServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Auth.Orm'
+                'Authentication.Orm'
             ],
             'authenticators' => [
-                'Auth.Form'
+                'Authentication.Form'
             ]
         ]);
 
@@ -78,6 +78,6 @@ class AuthenticatorServiceTest extends TestCase
     {
         $service = new AuthenticationService();
         $result = $service->identifiers();
-        $this->assertInstanceOf('\Auth\Authentication\Identifier\IdentifierCollection', $result);
+        $this->assertInstanceOf('\Authentication\Authentication\Identifier\IdentifierCollection', $result);
     }
 }

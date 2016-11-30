@@ -12,9 +12,9 @@
  * @since         2.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Authentication\Authentication;
 
-use Auth\Authentication\Identifier\IdentifierCollection;
+use Authentication\Authentication\Identifier\IdentifierCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

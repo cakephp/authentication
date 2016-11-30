@@ -12,9 +12,7 @@
  * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\PasswordHasher;
-
-use Auth\PasswordHasher\PasswordHasherFactory;
+namespace Authentication\PasswordHasher;
 
 /**
  * A password hasher that can use multiple different hashes where only

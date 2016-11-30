@@ -11,11 +11,11 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Authentication;
+namespace Authentication\Authentication;
 
-use Auth\Authentication\Identifier\IdentifierCollection;
-use Auth\PasswordHasher\DefaultPasswordHasher;
-use Auth\PasswordHasher\PasswordHasherTrait;
+use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
