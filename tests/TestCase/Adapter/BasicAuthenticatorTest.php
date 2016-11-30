@@ -11,9 +11,9 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Middleware\Authentication;
+namespace Auth\Test\TestCase\Adapter;
 
-use Authentication\Authentication\BasicAuthenticator;
+use Authentication\Adapter\BasicAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;

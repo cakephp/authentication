@@ -129,7 +129,7 @@ you'll now have to configure it this way.
 ```php
 $service = new AuthenticationService([
     'identifiers' => [
-        'Auth.Orm' => [
+        'Authentication.Orm' => [
             'fields' => [
                 'username' => 'email',
                 'password' => 'password'
@@ -137,8 +137,8 @@ $service = new AuthenticationService([
         ]
     ],
     'authenticators' => [
-        'Auth.Session',
-        'Auth.Form'
+        'Authentication.Session',
+        'Authentication.Form'
     ]
 ]);
 ```

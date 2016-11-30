@@ -11,9 +11,9 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Middleware\Authentication;
+namespace Auth\Test\TestCase\Adapter;
 
-use Authentication\Authentication\AuthenticationService;
+use Authentication\Adapter\AuthenticationService;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;

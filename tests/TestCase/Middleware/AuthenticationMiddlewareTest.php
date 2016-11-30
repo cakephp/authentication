@@ -13,7 +13,7 @@
  */
 namespace Auth\Test\TestCase\Middleware;
 
-use Authentication\Authentication\AuthenticationService;
+use Authentication\Adapter\AuthenticationService;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
@@ -71,7 +71,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $result = $request->getAttribute('authentication');
 
         $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $identity);
-        $this->assertInstanceOf('\Authentication\Authentication\Result', $result);
+        $this->assertInstanceOf('\Authentication\Adapter\Result', $result);
         $this->assertTrue($result->isValid());
     }
 
@@ -100,7 +100,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $result = $request->getAttribute('authentication');
 
         $this->assertNull($identity);
-        $this->assertInstanceOf('\Authentication\Authentication\Result', $result);
+        $this->assertInstanceOf('\Authentication\Adapter\Result', $result);
         $this->assertFalse($result->isValid());
     }
 }
