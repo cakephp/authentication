@@ -1,6 +1,6 @@
 <?php
 /**
- * DigestAuthenticatorTest file
+ * HttpDigestAuthenticatorTest file
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -16,7 +16,7 @@
  */
 namespace Authentication\Test\TestCase\Authentication;
 
-use Authentication\Adapter\DigestAuthenticator;
+use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
@@ -25,9 +25,9 @@ use Cake\TestSuite\TestCase;
 use Zend\Diactoros\Response;
 
 /**
- * Test case for DigestAuthentication
+ * Test case for HttpDigestAuthentication
  */
-class DigestAuthenticatorTest extends TestCase
+class HttpDigestAuthenticatorTest extends TestCase
 {
 
     /**
@@ -53,13 +53,13 @@ class DigestAuthenticatorTest extends TestCase
            'Authentication.Orm'
         ]);
 
-        $this->auth = new DigestAuthenticator($this->identifiers, [
+        $this->auth = new HttpDigestAuthenticator($this->identifiers, [
             'realm' => 'localhost',
             'nonce' => 123,
             'opaque' => '123abc'
         ]);
 
-        $password = DigestAuthenticator::password('mariano', 'cake', 'localhost');
+        $password = HttpDigestAuthenticator::password('mariano', 'cake', 'localhost');
         $User = TableRegistry::get('Users');
         $User->updateAll(['password' => $password], []);
 
@@ -73,7 +73,7 @@ class DigestAuthenticatorTest extends TestCase
      */
     public function testConstructor()
     {
-        $object = new DigestAuthenticator($this->identifiers, [
+        $object = new HttpDigestAuthenticator($this->identifiers, [
             'userModel' => 'AuthUser',
             'fields' => ['username' => 'user', 'password' => 'pass'],
             'nonce' => 123456
@@ -287,7 +287,7 @@ DIGEST;
             ]
         );
 
-        $this->auth = new DigestAuthenticator($this->identifiers, [
+        $this->auth = new HttpDigestAuthenticator($this->identifiers, [
             'realm' => 'localhost',
             'nonce' => '123'
         ]);
@@ -396,7 +396,7 @@ DIGEST;
      */
     public function testPassword()
     {
-        $result = DigestAuthenticator::password('mark', 'password', 'localhost');
+        $result = HttpDigestAuthenticator::password('mark', 'password', 'localhost');
         $expected = md5('mark:localhost:password');
         $this->assertEquals($expected, $result);
     }

@@ -13,7 +13,7 @@
  */
 namespace Authentication;
 
-use Authentication\Adapter\AuthenticateInterface;
+use Authentication\Authenticator\AuthenticateInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
@@ -121,7 +121,7 @@ class AuthenticationService
      *
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
-     * @return \Authentication\Adapter\AuthenticateInterface
+     * @return \Authentication\Authenticator\AuthenticateInterface
      */
     public function loadAuthenticator($name, array $config = [])
     {
@@ -159,9 +159,9 @@ class AuthenticationService
             return $class;
         }
 
-        $className = App::className($class, 'Adapter', 'Authenticator');
+        $className = App::className($class, 'Authenticator', 'Authenticator');
         if (!class_exists($className)) {
-            throw new Exception(sprintf('Authentication adapter "%s" was not found.', $className));
+            throw new Exception(sprintf('Authenticator "%s" was not found.', $className));
         }
 
         return $className;

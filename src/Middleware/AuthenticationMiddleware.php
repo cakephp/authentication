@@ -31,7 +31,7 @@ class AuthenticationMiddleware
     /**
      * Constructor
      *
-     * @param \Auth\Authentication\AdapterService $authenticationService Authentication service instance.
+     * @param \Auth\Authentication\AuthenticatorService $authenticationService Authentication service instance.
      */
     public function __construct(AuthenticationService $authenticationService)
     {
