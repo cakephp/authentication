@@ -13,7 +13,7 @@
  */
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
-use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\Authentication\Result;
 use Authentication\Authentication\SessionAuthenticator;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;

@@ -14,7 +14,7 @@
  */
 namespace Authentication\Authentication;
 
-use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierCollection;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Entity;
 use Psr\Http\Message\ResponseInterface;

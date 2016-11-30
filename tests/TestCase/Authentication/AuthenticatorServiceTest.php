@@ -78,6 +78,6 @@ class AuthenticatorServiceTest extends TestCase
     {
         $service = new AuthenticationService();
         $result = $service->identifiers();
-        $this->assertInstanceOf('\Authentication\Authentication\Identifier\IdentifierCollection', $result);
+        $this->assertInstanceOf('\Authentication\Identifier\IdentifierCollection', $result);
     }
 }

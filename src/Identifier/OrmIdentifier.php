@@ -1,5 +1,5 @@
 <?php
-namespace Authentication\Authentication\Identifier;
+namespace Authentication\Identifier;
 
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherTrait;

@@ -14,7 +14,7 @@
 namespace Auth\Test\TestCase\Middleware\Authentication;
 
 use Authentication\Authentication\BasicAuthenticator;
-use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;

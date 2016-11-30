@@ -11,9 +11,9 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Middleware\Authentication;
+namespace Auth\Test\TestCase\Identifier;
 
-use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
 class IdentifierCollectionTest extends TestCase
@@ -25,7 +25,7 @@ class IdentifierCollectionTest extends TestCase
             'Authentication.Orm'
         ]);
         $result = $collection->get('Authentication.Orm');
-        $this->assertInstanceOf('\Authentication\Authentication\Identifier\OrmIdentifier', $result);
+        $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
     }
 
     /**
@@ -37,7 +37,7 @@ class IdentifierCollectionTest extends TestCase
     {
         $collection = new IdentifierCollection();
         $result = $collection->load('Authentication.Orm');
-        $this->assertInstanceOf('\Authentication\Authentication\Identifier\OrmIdentifier', $result);
+        $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
     }
 
     /**

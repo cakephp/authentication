@@ -17,7 +17,7 @@
 namespace Auth\Test\TestCase\Authentication;
 
 use Authentication\Authentication\DigestAuthenticator;
-use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;

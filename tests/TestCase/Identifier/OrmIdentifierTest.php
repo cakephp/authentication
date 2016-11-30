@@ -11,9 +11,9 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Auth\Test\TestCase\Middleware\Authentication;
+namespace Auth\Test\TestCase\Identifier;
 
-use Authentication\Authentication\Identifier\OrmIdentifier;
+use Authentication\Identifier\OrmIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
 class OrmIdentifierTest extends TestCase

@@ -13,8 +13,8 @@
  */
 namespace Authentication\Authentication;
 
-use Authentication\Authentication\Identifier\IdentifierCollection;
-use Authentication\Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;

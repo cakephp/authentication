@@ -13,7 +13,7 @@
  */
 namespace Authentication\Authentication;
 
-use Authentication\Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Core\InstanceConfigTrait;
