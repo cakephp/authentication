@@ -20,7 +20,7 @@ class Application extends BaseApplication
         // Instantiate the authentication service and configure authenticators
         $service = new AuthenticationService([
             'identifiers' => [
-                'Auth.Orm' => [
+                'Authentication.Orm' => [
                     'fields' => [
                         'username' => 'email',
                         'password' => 'password'
@@ -28,8 +28,8 @@ class Application extends BaseApplication
                 ]
             ],
             'authenticators' => [
-                'Auth.Form',
-                'Auth.Session'
+                'Authentication.Form',
+                'Authentication.Session'
             ]
         ]);
 
