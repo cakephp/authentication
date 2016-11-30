@@ -13,7 +13,7 @@
  */
 namespace Auth\Test\TestCase\Adapter;
 
-use Authentication\Adapter\AuthenticationService;
+use Authentication\AuthenticationService;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;

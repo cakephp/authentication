@@ -13,7 +13,7 @@
  */
 namespace Authentication\Middleware;
 
-use Authentication\Adapter\AuthenticationService;
+use Authentication\AuthenticationService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

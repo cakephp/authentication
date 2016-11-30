@@ -14,6 +14,7 @@
  */
 namespace Authentication\Adapter;
 
+use Authentication\Result;
 use Cake\Network\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

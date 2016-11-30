@@ -15,7 +15,7 @@ namespace Auth\Test\TestCase\Adapter;
 
 use Authentication\Adapter\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Adapter\Result;
+use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
@@ -54,7 +54,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers);
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Adapter\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 }

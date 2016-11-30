@@ -11,15 +11,14 @@
  * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Adapter;
+namespace Authentication;
 
+use Authentication\Adapter\AuthenticateInterface;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

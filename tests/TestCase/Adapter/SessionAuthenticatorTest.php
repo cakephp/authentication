@@ -13,9 +13,9 @@
  */
 namespace Auth\Test\TestCase\Adapter;
 
-use Authentication\Identifier\IdentifierCollection;
-use Authentication\Adapter\Result;
 use Authentication\Adapter\SessionAuthenticator;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
@@ -73,7 +73,7 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Adapter\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
 
         $this->sessionMock->expects($this->at(0))
@@ -86,7 +86,7 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Adapter\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
     }
 
@@ -115,7 +115,7 @@ class SessionAuthenticatorTest extends TestCase
         ]);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Adapter\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
 
         $this->sessionMock->expects($this->at(0))
@@ -133,7 +133,7 @@ class SessionAuthenticatorTest extends TestCase
         ]);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Adapter\Result', $result);
+        $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
     }
 }
