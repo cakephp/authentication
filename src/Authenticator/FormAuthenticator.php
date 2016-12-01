@@ -97,7 +97,7 @@ class FormAuthenticator extends AbstractAuthenticator
                 $this->config('loginUrl', $loginUrl);
             }
 
-            return $request->getUri()->getPath() === $loginUrl;
+            return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;
         }
 
         return true;
