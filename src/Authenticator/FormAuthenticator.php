@@ -38,6 +38,10 @@ class FormAuthenticator extends AbstractAuthenticator
         $body = $request->getParsedBody();
 
         foreach ([$fields['username'], $fields['password']] as $field) {
+            if (!isset($body[$field])) {
+                return false;
+            }
+
             $value = $body[$field];
             if (empty($value) || !is_string($value)) {
                 return false;
@@ -67,7 +71,7 @@ class FormAuthenticator extends AbstractAuthenticator
         $fields = $this->_config['fields'];
         if (!$this->_checkFields($request, $fields)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
-                'Login Credentials not found'
+                'Login credentials not found'
             ]);
         }
 

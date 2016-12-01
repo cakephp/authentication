@@ -71,6 +71,33 @@ class FormAuthenticatorTest extends TestCase
     }
 
     /**
+     * testCredentialsNotPresent
+     *
+     * @return void
+     */
+    public function testCredentialsNotPresent()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match'],
+            [],
+            []
+        );
+        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+
+        $form = new FormAuthenticator($identifiers);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
+        $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
+    }
+
+    /**
      * testAuthenticateLoginUrl
      *
      * @return void
