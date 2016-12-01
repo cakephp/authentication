@@ -76,8 +76,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * - `opaque` A string that must be returned unchanged by clients.
      *    Defaults to `md5($config['realm'])`
      *
-     *
-     * @param \Auth\Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param \Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
      * @param array $config Configuration settings.
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])

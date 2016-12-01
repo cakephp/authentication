@@ -39,6 +39,7 @@ require_once 'vendor/autoload.php';
 define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
+define('CONFIG', ROOT . DS . 'config'. DS);
 
 Configure::write('debug', true);
 Configure::write('App', [

@@ -18,6 +18,7 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
+use Cake\Routing\Router;
 use Zend\Diactoros\Response;
 
 class FormAuthenticatorTest extends TestCase
@@ -32,6 +33,17 @@ class FormAuthenticatorTest extends TestCase
         'core.auth_users',
         'core.users'
     ];
+
+    public function setUp()
+    {
+        parent::setUp();
+        Router::reload();
+        Router::scope('/', function ($routes) {
+            $routes->connect('/', ['controller' => 'pages', 'action' => 'display', 'home']);
+            $routes->connect('/some_alias', ['controller' => 'tests_apps', 'action' => 'some_method']);
+            $routes->fallbacks();
+        });
+    }
 
     /**
      * testAuthenticate
@@ -56,5 +68,93 @@ class FormAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
+    }
+
+    /**
+     * testCredentialsNotPresent
+     *
+     * @return void
+     */
+    public function testCredentialsNotPresent()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match'],
+            [],
+            []
+        );
+        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+
+        $form = new FormAuthenticator($identifiers);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
+        $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
+    }
+
+    /**
+     * testAuthenticateLoginUrl
+     *
+     * @return void
+     */
+    public function testAuthenticateLoginUrl()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/users/login'
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
+        $this->assertEquals([0 => 'Login URL /users/does-not-match did not match /users/login'], $result->getErrors());
+    }
+
+    /**
+     * testArrayLoginUrl
+     *
+     * @return void
+     */
+    public function testArrayLoginUrl()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/Users/login'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ]
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals([], $result->getErrors());
     }
 }
