@@ -15,6 +15,7 @@ namespace Authentication\Identifier;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -52,12 +53,40 @@ class TokenIdentifier extends AbstractIdentifier
             return $tokenVerification($data, $this->config());
         }
 
+        $this->_checkTokenVerification($tokenVerification);
+
+        return $this->_dispatchTokenVerification($tokenVerification, $data['token']);
+    }
+
+    /**
+     * Checks that the token verification option is a string
+     *
+     * @throws \InvalidArgumentException When the token is not a string
+     * @param mixed $tokenVerification Token verification string.
+     * @return void
+     */
+    protected function _checkTokenVerification($tokenVerification)
+    {
+        if (!is_string($tokenVerification)) {
+            throw new InvalidArgumentException('The `tokenVerification` option is not a string or callable');
+        }
+    }
+
+    /**
+     * Calls the internal token verification method based on the tokenVerification string
+     *
+     * @param string $tokenVerification Token verification method string.
+     * @param string $token Token string.
+     * @return false|\Cake\Datasource\EntityInterface
+     */
+    protected function _dispatchTokenVerification($tokenVerification, $token)
+    {
         $method = '_' . $tokenVerification;
         if (!method_exists($this, $method)) {
             throw new RuntimeException(sprintf('Token verification method `%s` does not exist', __CLASS__ . '::' . $method . '()'));
         }
 
-        return $this->{$method}($data['token']);
+        return $this->{$method}($token);
     }
 
     /**

@@ -40,7 +40,7 @@ class TokenAuthenticator extends AbstractAuthenticator
 
         $param = $this->config('queryParam');
         $queryParams = $request->getQueryParams();
-        if (!empty($queryParams[$param])) {
+        if (isset($queryParams[$param])) {
             return $queryParams[$param];
         }
 

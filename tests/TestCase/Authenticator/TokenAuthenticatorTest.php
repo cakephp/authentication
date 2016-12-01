@@ -34,58 +34,74 @@ class TokenAuthenticatorTest extends TestCase
     ];
 
     /**
-     * testAuthenticate
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    public function testAuthenticate()
+    public function setUp()
     {
-        $identifiers = new IdentifierCollection([
+        parent::setUp();
+
+        $this->identifiers = new IdentifierCollection([
            'Authentication.Token' => [
                'tokenField' => 'username'
            ]
         ]);
 
-        // Prepare request and response
-        $request = ServerRequestFactory::fromGlobals(
+        $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
 
+        $this->response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+    }
+
+    /**
+     * testAuthenticate
+     *
+     * @return void
+     */
+    public function testAuthenticateViaHeaderToken()
+    {
         // Test without token
-        $tokenAuth = new TokenAuthenticator($identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'queryParam' => 'token'
         ]);
-        $result = $tokenAuth->authenticate($request, $response);
+        $result = $tokenAuth->authenticate($this->request, $this->response);
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
 
         // Test header token
-        $requestWithHeaders = $request->withAddedHeader('Token', 'mariano');
-        $tokenAuth = new TokenAuthenticator($identifiers, [
+        $requestWithHeaders = $this->request->withAddedHeader('Token', 'mariano');
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'header' => 'Token'
         ]);
-        $result = $tokenAuth->authenticate($requestWithHeaders, $response);
+        $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
+    }
 
+    /**
+     * testViaQueryParamToken
+     *
+     * @return void
+     */
+    public function testViaQueryParamToken()
+    {
         // Test with query param token
-        $requestWithParams = $request->withQueryParams(['token' => 'mariano']);
-        $tokenAuth = new TokenAuthenticator($identifiers, [
+        $requestWithParams = $this->request->withQueryParams(['token' => 'mariano']);
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'queryParam' => 'token'
         ]);
-        $result = $tokenAuth->authenticate($requestWithParams, $response);
+        $result = $tokenAuth->authenticate($requestWithParams, $this->response);
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
 
         // Test with valid query param but invalid token
-        $requestWithParams = $request->withQueryParams(['token' => 'does-not-exist']);
-        $tokenAuth = new TokenAuthenticator($identifiers, [
+        $requestWithParams = $this->request->withQueryParams(['token' => 'does-not-exist']);
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'queryParam' => 'token'
         ]);
-        $result = $tokenAuth->authenticate($requestWithParams, $response);
+        $result = $tokenAuth->authenticate($requestWithParams, $this->response);
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
     }
