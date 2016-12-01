@@ -74,6 +74,8 @@ if ($auth->isValid()) {
 * There is no automatic checking of the session. To get the actual user data from the session you'll have to use the `SessionAuthenticator`. It will check the session if there is data in the configured session key and put it into the identity object.
 * The user data is no longer available through the AuthComponent but is accessible via a request attribute and encapsulated in an identity object: `$request->getAttribute('authentication')->getIdentity();`
 * The logic of the authentication process has been split into authenticators and identifiers. An authenticator will extract the credentials from the request, while identifiers verify the credentials and find the matching user.
+* DigestAuthenticate has been renamed to HttpDigestAuthenticator
+* BasicAuthenticate has been renamed to HttpBasicAuthenticator
 
 ### Similarities
 
@@ -146,4 +148,51 @@ $service = new AuthenticationService([
 ]);
 ```
 
-While this seems to be a little more to write, the benefit is a greater flexibility and better separation of concerns.
+While this seems to be a little more to write, the benefit is a greater flexibility and better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
+
+## Authenticators
+
+### Token
+
+The token authenticator can authenticate a request based on a token that comes along with the request in the headers or in the request parameters.
+
+Configuration options:
+
+* **queryParam**: Name of the query parameter. Configure it if you want to get the token from the query parameters.
+* **header**: Name of the header. Configure it if you want to get the token from the header.
+
+### Session
+
+This authenticator will check the session if it contains user data or credentials
+
+Configuration options:
+
+* **sessionKey**: The session key for the user data, default is `Auth` 
+
+### Form
+
+Looks up the data in the request body, usually when a form submit happens via POST / PUT.
+
+Configuration options:
+
+* **fields**: Array that maps `username` and `password` to the specified fields.
+* **passwordHasher**: Password hasher class, defaults to `DefaultPasswordHasher::class`
+
+### HttpBasic
+
+See https://en.wikipedia.org/wiki/Basic_access_authentication
+
+Configuration options:
+
+* **realm**: Default is `$_SERVER['SERVER_NAME']` override it as needed.
+
+### HttpDigest
+
+See https://en.wikipedia.org/wiki/Digest_access_authentication
+
+Configuration options:
+
+* **realm**: Default is `null` 
+* **qop**: Default is `auth`
+* **nonce**: Default is `uniqid(''),`
+* **opaque**: Default is `null`
