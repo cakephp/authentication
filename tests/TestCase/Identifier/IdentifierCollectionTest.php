@@ -15,6 +15,7 @@ namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use TestApp\Authentication\Identifier\InvalidIdentifier;
 
 class IdentifierCollectionTest extends TestCase
 {
@@ -42,11 +43,22 @@ class IdentifierCollectionTest extends TestCase
 
     /**
      * @expectedException \RuntimeException
+     * @expectedExceptionMessage Identifier class "Does-not-exist" was not found.
      */
     public function testLoadException()
     {
         $collection = new IdentifierCollection();
         $collection->load('Does-not-exist');
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Identifier class "TestApp\Authentication\Identifier\InvalidIdentifier
+     */
+    public function testLoadExceptionInterfaceNotImplemented()
+    {
+        $collection = new IdentifierCollection();
+        $collection->load(InvalidIdentifier::class);
     }
 
     /**
