@@ -57,14 +57,14 @@ class Result implements ResultInterface
      *
      * @var int
      */
-    protected $code;
+    protected $_code;
 
     /**
      * The identity used in the authentication attempt
      *
      * @var null|\Cake\Datasource\EntityInterface
      */
-    protected $identity;
+    protected $_identity;
 
     /**
      * An array of string reasons why the authentication attempt was unsuccessful
@@ -73,7 +73,7 @@ class Result implements ResultInterface
      *
      * @var array
      */
-    protected $errors = [];
+    protected $_errors = [];
 
     /**
      * Sets the result code, identity, and failure messages
@@ -91,9 +91,9 @@ class Result implements ResultInterface
             throw new InvalidArgumentException('Identity must be NULL or an object implementing \Cake\Datasource\EntityInterface');
         }
 
-        $this->code = (int)$code;
-        $this->identity = $identity;
-        $this->errors = $messages;
+        $this->_code = (int)$code;
+        $this->_identity = $identity;
+        $this->_errors = $messages;
     }
 
     /**
@@ -103,7 +103,7 @@ class Result implements ResultInterface
      */
     public function isValid()
     {
-        return $this->code > 0;
+        return $this->_code > 0;
     }
 
     /**
@@ -113,7 +113,7 @@ class Result implements ResultInterface
      */
     public function getCode()
     {
-        return $this->code;
+        return $this->_code;
     }
 
     /**
@@ -123,7 +123,7 @@ class Result implements ResultInterface
      */
     public function getIdentity()
     {
-        return $this->identity;
+        return $this->_identity;
     }
 
     /**
@@ -135,6 +135,6 @@ class Result implements ResultInterface
      */
     public function getErrors()
     {
-        return $this->errors;
+        return $this->_errors;
     }
 }
