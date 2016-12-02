@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\PasswordHasher;
@@ -29,7 +28,7 @@ class PasswordHasherFactory
      *
      * @param string|array $passwordHasher Name of the password hasher or an array with
      * at least the key `className` set to the name of the class to use
-     * @return \Cake\Auth\AbstractPasswordHasher Password hasher instance
+     * @return \Authentication\PasswordHasher\AbstractPasswordHasher Password hasher instance
      * @throws \RuntimeException If password hasher class not found or
      *   it does not extend Cake\Auth\AbstractPasswordHasher
      */

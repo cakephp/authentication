@@ -8,7 +8,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Identifier;
@@ -67,7 +66,7 @@ class IdentifierCollection
      * @param string|array $identifier Name of the identifier
      * @param array $config Configuration settings
      * at least the key `className` set to the name of the class to use
-     * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
+     * @return \Authentication\Identifier\IdentifierInterface Identifier instance
      * @throws \RuntimeException If password hasher class not found or
      *   it does not extend Cake\Auth\AbstractPasswordHasher
      */
@@ -115,7 +114,7 @@ class IdentifierCollection
      * @param array $class Name of the identifier
      * at least the key `className` set to the name of the class to use
      * @param array $config Configuration settings
-     * @return \Auth\Authentication\Identifier\IdentifierInterface Identifier instance
+     * @return \Authentication\Identifier\IdentifierInterface Identifier instance
      * @throws \RuntimeException If identifier class not found or
      *   it does not extend Auth\Authentication\Identifier\IdentifierInterface
      */

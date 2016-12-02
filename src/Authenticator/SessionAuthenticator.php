@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Authenticator;
@@ -44,7 +43,7 @@ class SessionAuthenticator extends AbstractAuthenticator
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
      * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
-     * @return mixed Either false on failure, or an array of user data on success.
+     * @return \Authentication\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {

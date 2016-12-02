@@ -18,8 +18,7 @@ use Cake\ORM\TableRegistry;
  * ```
  *
  * When configuring OrmIdentifier you can pass in config to which fields,
- * model and additional conditions are used. See FormAuthenticator::$_config
- * for more information.
+ * model and additional conditions are used.
  */
 class OrmIdentifier extends AbstractIdentifier
 {
@@ -45,7 +44,7 @@ class OrmIdentifier extends AbstractIdentifier
      * Identify
      *
      * @param array $data Authentication credentials
-     * @return false|EntityInterface
+     * @return false|\Cake\Datsource\EntityInterface
      */
     public function identify($data)
     {
@@ -70,7 +69,7 @@ class OrmIdentifier extends AbstractIdentifier
      * @param string $username The username/identifier.
      * @param string|null $password The password, if not provided password checking is skipped
      *   and result of find is returned.
-     * @return bool|array Either false on failure, or an array of user data.
+     * @return bool|\Cake\Datsource\EntityInterface Either false on failure, or user data entity.
      */
     protected function _findUser($username, $password = null)
     {

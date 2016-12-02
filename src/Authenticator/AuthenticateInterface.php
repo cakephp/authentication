@@ -8,7 +8,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Authenticator;
@@ -23,7 +22,7 @@ interface AuthenticateInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Cake\Auth\Result
+     * @return \Authentication\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
 }

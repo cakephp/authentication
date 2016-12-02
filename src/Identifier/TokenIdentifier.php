@@ -8,7 +8,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Identifier;
@@ -93,7 +92,7 @@ class TokenIdentifier extends AbstractIdentifier
      * Lookup the token in the ORM
      *
      * @param string $token The token string.
-     * @return \Cake\ORM\Query
+     * @return bool|\Cake\Datasource\EntityInterface
      */
     protected function _orm($token)
     {

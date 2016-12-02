@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Authenticator;
@@ -23,21 +22,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * HttpBasic Authenticator
  *
  * Provides Basic HTTP authentication support.
- *
- * ### Using Basic auth
- *
- * You should also set `AuthComponent::$sessionKey = false;` in your AppController's
- * beforeFilter() to prevent CakePHP from sending a session cookie to the client.
- *
- * Since HTTP Basic Authentication is stateless you don't need a login() action
- * in your controller. The user credentials will be checked on each request. If
- * valid credentials are not provided, required authentication headers will be sent
- * by this authentication provider which triggers the login dialog in the browser/client.
- *
- * You may also want to use `$this->Auth->unauthorizedRedirect = false;`.
- * By default, unauthorized users are redirected to the referrer URL,
- * `AuthComponent::$loginAction`, or '/'. If unauthorizedRedirect is set to
- * false, a ForbiddenException exception is thrown instead of redirecting.
  */
 class HttpBasicAuthenticator extends AbstractAuthenticator
 {
@@ -48,7 +32,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
      * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
-     * @return mixed Either false on failure, or an array of user data on success.
+     * @return \Authentication\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -65,7 +49,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator
      * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
-     * @return mixed Either false or an array of user information
+     * @return bool|\Cake\Datasource\EntityInterface Either false or user entity.
      */
     public function getUser(ServerRequestInterface $request)
     {

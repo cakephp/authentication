@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         2.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Authenticator;
@@ -20,31 +19,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * HttpDigest Authentication adapter for AuthComponent.
+ * HttpDigest Authenticator
  *
- * Provides Digest HTTP authentication support for AuthComponent.
- *
- * ### Using Digest auth
- *
- * ```
- *  $authenticator = new HttpDigestAuthenticator();
- *  $result = $authenticator->authenticate($request);
- *  if ($result->isValid()) {
- *      // Do something with the result
- *  }
- * ```
- *
- * You should also set `AuthComponent::$sessionKey = false;` in your AppController's
- * beforeFilter() to prevent CakePHP from sending a session cookie to the client.
- *
- * Since HTTP Digest Authentication is stateless you don't need a login() action
- * in your controller. The user credentials will be checked on each request. If
- * valid credentials are not provided, required authentication headers will be sent
- * by this authentication provider which triggers the login dialog in the browser/client.
- *
- * You may also want to use `$this->Auth->unauthorizedRedirect = false;`.
- * This causes AuthComponent to throw a ForbiddenException exception instead of
- * redirecting to another page.
+ * Provides Digest HTTP authentication support.
  *
  * ### Generating passwords compatible with Digest authentication.
  *
@@ -59,7 +36,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * it's recommended that you store the digest authentication separately. For
  * example `User.digest_pass` could be used for a digest password, while
  * `User.password` would store the password hash for use with other methods like
- * Basic or Form.
+ * BasicHttp or Form.
  */
 class HttpDigestAuthenticator extends HttpBasicAuthenticator
 {
@@ -97,7 +74,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
-     * @return mixed False on login failure.  An array of User data on success.
+     * @return \Authentication\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
