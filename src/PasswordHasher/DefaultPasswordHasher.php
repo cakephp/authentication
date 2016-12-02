@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\PasswordHasher;
@@ -41,8 +40,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * Generates password hash.
      *
      * @param string $password Plain text password to hash.
-     * @return bool|string Password hash or false on failure
-     * @link http://book.cakephp.org/3.0/en/core-libraries/components/authentication.html#hashing-passwords
+     * @return bool|string Password hash or false on failure.
      */
     public function hash($password)
     {

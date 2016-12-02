@@ -8,7 +8,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Authenticator;
@@ -54,7 +53,7 @@ class TokenAuthenticator extends AbstractAuthenticator
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
-     * @return mixed False on login failure.  An array of User data on success.
+     * @return \Authentication\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
