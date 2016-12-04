@@ -200,7 +200,7 @@ class AuthenticationService
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
-     * @return \Authentication\Authenticator\\AuthenticateInterface
+     * @return \Authentication\Authenticator\AuthenticateInterface|null
      */
     public function getAuthenticationProvider()
     {
