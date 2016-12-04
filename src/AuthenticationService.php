@@ -81,8 +81,6 @@ class AuthenticationService
     public function __construct(array $config = [])
     {
         $this->config($config);
-        $this->_identifiers = new IdentifierCollection((array)$this->config('identifiers'));
-        $this->loadAuthenticators();
     }
 
     /**
@@ -92,6 +90,10 @@ class AuthenticationService
      */
     public function identifiers()
     {
+        if (!$this->_identifiers) {
+            $this->_identifiers = new IdentifierCollection($this->config('identifiers'));
+        }
+
         return $this->_identifiers;
     }
 
@@ -102,7 +104,9 @@ class AuthenticationService
      */
     public function loadAuthenticators()
     {
-        if (empty($this->_config['authenticators'])) {
+        if (empty($this->_config['authenticators'])
+            || !empty($this->_authenticators)
+        ) {
             return;
         }
 
@@ -125,7 +129,7 @@ class AuthenticationService
     public function loadAuthenticator($name, array $config = [])
     {
         $className = $this->_getAuthenticatorClass($name, $config);
-        $authenticator = new $className($this->_identifiers, $config);
+        $authenticator = new $className($this->identifiers(), $config);
 
         if (!$authenticator instanceof AuthenticateInterface) {
             throw new Exception('Authenticator must implement AuthenticateInterface.');
@@ -176,6 +180,8 @@ class AuthenticationService
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
+        $this->loadAuthenticators();
+
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
