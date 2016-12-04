@@ -30,10 +30,15 @@ class AuthenticationMiddleware
     /**
      * Constructor
      *
-     * @param \Auth\Authentication\AuthenticatorService $authenticationService Authentication service instance.
+     * @param \Auth\Authentication\AuthenticatorService|array $authenticationService Authentication service
+     *   instance or config array used to create service instance.
      */
-    public function __construct(AuthenticationService $authenticationService)
+    public function __construct($authenticationService)
     {
+        if (is_array($authenticationService)) {
+            $authenticationService = new AuthenticationService($authenticationService);
+        }
+
         $this->_authenticationService = $authenticationService;
     }
 

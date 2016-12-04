@@ -47,6 +47,29 @@ class AuthenticationMiddlewareTest extends TestCase
     }
 
     /**
+     * testInstanceCreation
+     *
+     * @return void
+     */
+    public function testInstanceCreation()
+    {
+        $middleware = new AuthenticationMiddleware([
+            'identifiers' => [
+                'Authentication.Orm'
+            ],
+            'authenticators' => [
+                'Authentication.Form'
+            ]
+        ]);
+
+        $this->assertAttributeInstanceOf(
+            AuthenticationService::class,
+            '_authenticationService',
+            $middleware
+        );
+    }
+
+    /**
      * testSuccessfulAuthentication
      *
      * @return void
