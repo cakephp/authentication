@@ -14,6 +14,8 @@
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\AuthenticationService;
+use Authentication\Authenticator\FormAuthenticator;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
@@ -56,6 +58,9 @@ class AuthenticatorServiceTest extends TestCase
 
         $result = $service->authenticate($request, $response);
         $this->assertTrue($result->isValid());
+
+        $result = $service->getAuthenticationProvider();
+        $this->assertInstanceOf(FormAuthenticator::class, $result);
     }
 
     /**
@@ -78,6 +83,6 @@ class AuthenticatorServiceTest extends TestCase
     {
         $service = new AuthenticationService();
         $result = $service->identifiers();
-        $this->assertInstanceOf('\Authentication\Identifier\IdentifierCollection', $result);
+        $this->assertInstanceOf(IdentifierCollection::class, $result);
     }
 }

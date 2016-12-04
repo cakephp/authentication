@@ -44,6 +44,13 @@ class AuthenticationService
     protected $_identifiers;
 
     /**
+     * Authenticator that successfully authenticated the identity.
+     *
+     * @param \Authentication\Authenticator\AuthenticatorInterface
+     */
+    protected $_successfulAuthenticator;
+
+    /**
      * Default configuration
      *
      * - `authenticators` - An array of authentication objects to use for authenticating users.
@@ -179,10 +186,24 @@ class AuthenticationService
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
+                $this->_successfulAuthenticator = $authenticator;
+
                 return $result;
             }
         }
 
+        $this->_successfulAuthenticator = null;
+
         return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+    }
+
+    /**
+     * Gets the successful authenticator instance if one was successful after calling authenticate
+     *
+     * @return \Authentication\Authenticator\\AuthenticateInterface
+     */
+    public function getAuthenticationProvider()
+    {
+        return $this->_successfulAuthenticator;
     }
 }
