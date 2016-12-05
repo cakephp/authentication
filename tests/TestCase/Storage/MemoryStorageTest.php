@@ -68,20 +68,4 @@ class MemoryStorageTest extends TestCase
 
         $this->assertNull($this->storage->read());
     }
-
-    /**
-     * Test redirectUrl.
-     *
-     * @return void
-     */
-    public function testRedirectUrl()
-    {
-        $this->assertNull($this->storage->redirectUrl());
-
-        $this->storage->redirectUrl('/posts/the-gummy-lizards');
-        $this->assertSame('/posts/the-gummy-lizards', $this->storage->redirectUrl());
-
-        $this->assertNull($this->storage->redirectUrl(false));
-        $this->assertNull($this->storage->redirectUrl());
-    }
 }

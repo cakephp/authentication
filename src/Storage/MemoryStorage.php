@@ -57,22 +57,4 @@ class MemoryStorage implements StorageInterface
     {
         $this->_user = null;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function redirectUrl($url = null)
-    {
-        if ($url === null) {
-            return $this->_redirectUrl;
-        }
-
-        if ($url === false) {
-            $this->_redirectUrl = null;
-
-            return null;
-        }
-
-        $this->_redirectUrl = $url;
-    }
 }
