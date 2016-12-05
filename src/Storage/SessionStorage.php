@@ -1,0 +1,117 @@
+<?php
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+namespace Authentication\Storage;
+
+use Cake\Core\InstanceConfigTrait;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+/**
+ * Session based persistent storage for authenticated user record.
+ */
+class SessionStorage implements StorageInterface
+{
+
+    use InstanceConfigTrait;
+
+    /**
+     * User record.
+     *
+     * Stores user record array if fetched from session or false if session
+     * does not have user record.
+     *
+     * @var mixed
+     */
+    protected $_user;
+
+    /**
+     * Session object.
+     *
+     * @var \Cake\Network\Session
+     */
+    protected $_session;
+
+    /**
+     * Default configuration for this class.
+     *
+     * Keys:
+     *
+     * - `key` - Session key used to store user record.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'key' => 'Auth.User',
+    ];
+
+    /**
+     * Constructor.
+     *
+     * @param \Cake\Http\ServerRequest $request Request instance.
+     * @param \Psr\Http\Message\ResponseInterface $response A response object.
+     * @param array $config Configuration list.
+     */
+    public function __construct(ServerRequestInterface $request, ResponseInterface $response, array $config = [])
+    {
+        $this->_session = $request->getAttribute('session');
+        $this->config($config);
+    }
+
+    /**
+     * Read user record from session.
+     *
+     * @return array|null User record if available else null.
+     */
+    public function read()
+    {
+        if ($this->_user !== null) {
+            return $this->_user ?: null;
+        }
+
+        $this->_user = $this->_session->read($this->_config['key']) ?: false;
+
+        return $this->_user;
+    }
+
+    /**
+     * Write user record to session.
+     *
+     * The session id is also renewed to help mitigate issues with session replays.
+     *
+     * @param mixed $user User record.
+     * @return void
+     */
+    public function write($user)
+    {
+        $this->_user = $user;
+
+        $this->_session->renew();
+        $this->_session->write($this->_config['key'], $user);
+    }
+
+    /**
+     * Delete user record from session.
+     *
+     * The session id is also renewed to help mitigate issues with session replays.
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $this->_user = false;
+
+        $this->_session->delete($this->_config['key']);
+        $this->_session->renew();
+    }
+}
