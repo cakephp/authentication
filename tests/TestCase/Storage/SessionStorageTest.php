@@ -15,8 +15,8 @@
 namespace Authentication\Test\TestCase\Auth\Storage;
 
 use Authentication\Storage\SessionStorage;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\ServerRequestFactory;
+use Zend\Diactoros\Response;
 use Cake\Network\Session;
 use Cake\TestSuite\TestCase;
 
@@ -36,7 +36,8 @@ class SessionStorageTest extends TestCase
         parent::setUp();
 
         $this->session = $this->getMockBuilder(Session::class)->getMock();
-        $this->request = new Request(['session' => $this->session]);
+        $this->request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $this->request = $this->request->withAttribute('session', $this->session);
         $this->response = new Response();
         $this->storage = new SessionStorage($this->request, $this->response, ['key' => 'Auth.AuthUser']);
         $this->user = ['id' => 1];

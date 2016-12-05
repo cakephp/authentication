@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Storage;
@@ -23,14 +22,14 @@ interface StorageInterface
     /**
      * Read user record.
      *
-     * @return array|null
+     * @return mixed
      */
     public function read();
 
     /**
      * Write user record.
      *
-     * @param array|\ArrayAccess $user User record.
+     * @param mixed $user User record.
      * @return void
      */
     public function write($user);

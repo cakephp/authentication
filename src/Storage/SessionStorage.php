@@ -9,14 +9,13 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Storage;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\Http\ServerRequest;
-use Cake\Network\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Session based persistent storage for authenticated user record.
@@ -32,7 +31,7 @@ class SessionStorage implements StorageInterface
      * Stores user record array if fetched from session or false if session
      * does not have user record.
      *
-     * @var array|bool
+     * @var mixed
      */
     protected $_user;
 
@@ -49,25 +48,23 @@ class SessionStorage implements StorageInterface
      * Keys:
      *
      * - `key` - Session key used to store user record.
-     * - `redirect` - Session key used to store redirect URL.
      *
      * @var array
      */
     protected $_defaultConfig = [
         'key' => 'Auth.User',
-        'redirect' => 'Auth.redirect'
     ];
 
     /**
      * Constructor.
      *
      * @param \Cake\Http\ServerRequest $request Request instance.
-     * @param \Cake\Network\Response $response Response instance.
+     * @param \Psr\Http\Message\ResponseInterface $response A response object.
      * @param array $config Configuration list.
      */
-    public function __construct(ServerRequest $request, Response $response, array $config = [])
+    public function __construct(ServerRequestInterface $request, ResponseInterface $response, array $config = [])
     {
-        $this->_session = $request->session();
+        $this->_session = $request->getAttribute('session');
         $this->config($config);
     }
 
@@ -92,7 +89,7 @@ class SessionStorage implements StorageInterface
      *
      * The session id is also renewed to help mitigate issues with session replays.
      *
-     * @param array|\ArrayAccess $user User record.
+     * @param mixed $user User record.
      * @return void
      */
     public function write($user)
