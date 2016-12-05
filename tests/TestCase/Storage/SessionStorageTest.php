@@ -16,9 +16,9 @@ namespace Authentication\Test\TestCase\Auth\Storage;
 
 use Authentication\Storage\SessionStorage;
 use Cake\Http\ServerRequestFactory;
-use Zend\Diactoros\Response;
 use Cake\Network\Session;
 use Cake\TestSuite\TestCase;
+use Zend\Diactoros\Response;
 
 /**
  * Test case for SessionStorage
