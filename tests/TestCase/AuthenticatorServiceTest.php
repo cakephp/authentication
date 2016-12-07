@@ -85,4 +85,32 @@ class AuthenticatorServiceTest extends TestCase
         $result = $service->identifiers();
         $this->assertInstanceOf(IdentifierCollection::class, $result);
     }
+
+    /**
+     * testClearIdentity
+     *
+     * @return void
+     */
+    public function testClearIdentity()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Orm'
+            ],
+            'authenticators' => [
+                'Authentication.Form'
+            ]
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            [],
+            []
+        );
+
+        $request = $request->withAttribute('identity', ['username' => 'florian']);
+        $this->assertNotEmpty($request->getAttribute('identity'));
+        $request = $service->clearIdentity($request);
+        $this->assertNull($request->getAttribute('identity'));
+    }
 }

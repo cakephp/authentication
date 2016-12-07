@@ -208,13 +208,25 @@ class AuthenticationService
         return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
     }
 
-    public function clearIdentity(ServerRequestInterface $request)
+    /**
+     * Clears the identity from authenticators that store them and the request
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function clearIdentity(ServerRequestInterface $request, $requestAttribute = 'identity')
     {
         foreach ($this->_authenticators as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
                 $authenticator->clearIdentity($request);
             }
         }
+
+        if (!empty($requestAttribute)) {
+            return $request->withoutAttribute($requestAttribute);
+        }
+
+        return $request;
     }
 
     /**
