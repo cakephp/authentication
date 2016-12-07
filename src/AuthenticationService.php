@@ -13,6 +13,7 @@
 namespace Authentication;
 
 use Authentication\Authenticator\AuthenticateInterface;
+use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
@@ -192,6 +193,10 @@ class AuthenticationService
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
+                if ($authenticator instanceof PersistenceInterface) {
+                    $authenticator->persistIdentity($request, $result->getIdentity());
+                }
+
                 $this->_successfulAuthenticator = $authenticator;
 
                 return $result;
@@ -201,6 +206,15 @@ class AuthenticationService
         $this->_successfulAuthenticator = null;
 
         return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+    }
+
+    public function clearIdentity(ServerRequestInterface $request)
+    {
+        foreach ($this->_authenticators as $authenticator) {
+            if ($authenticator instanceof PersistenceInterface) {
+                $authenticator->clearIdentity($request);
+            }
+        }
     }
 
     /**

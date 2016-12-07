@@ -23,7 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Session Authenticator
  */
-class SessionAuthenticator extends AbstractAuthenticator
+class SessionAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {
 
     /**
@@ -71,5 +71,17 @@ class SessionAuthenticator extends AbstractAuthenticator
         }
 
         return new Result($user, Result::SUCCESS);
+    }
+
+    public function persistIdentity(ServerRequestInterface $request, $identity)
+    {
+        $sessionKey = $this->config('sessionKey');
+        $request->getAttribute('session')->write($sessionKey, $identity);
+    }
+
+    public function clearIdentity(ServerRequestInterface $request)
+    {
+        $sessionKey = $this->config('sessionKey');
+        $request->getAttribute('session')->delete($sessionKey);
     }
 }
