@@ -18,6 +18,7 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
+use Cake\Network\Session;
 use Zend\Diactoros\Response;
 
 class SessionAuthenticatorTest extends TestCase
@@ -46,7 +47,7 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->sessionMock = $this->getMockBuilder('\Cake\Network\Session')
             ->disableOriginalConstructor()
-            ->setMethods(['read', 'write'])
+            ->setMethods(['read', 'write', 'delete'])
             ->getMock();
     }
 
@@ -135,5 +136,41 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
+    }
+
+    /**
+     * testPersistIdentity
+     *
+     * @return void
+     */
+    public function testPersistIdentity()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request = $request->withAttribute('session', $this->sessionMock);
+        $authenticator = new SessionAuthenticator($this->identifiers);
+
+        $this->sessionMock->expects($this->at(0))
+            ->method('write')
+            ->with('Auth', ['username' => 'florian']);
+
+        $authenticator->persistIdentity($request, ['username' => 'florian']);
+    }
+
+    /**
+     * testClearIdentity
+     *
+     * @return void
+     */
+    public function testClearIdentity()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request = $request->withAttribute('session', $this->sessionMock);
+        $authenticator = new SessionAuthenticator($this->identifiers);
+
+        $this->sessionMock->expects($this->at(0))
+            ->method('delete')
+            ->with('Auth');
+
+        $authenticator->clearIdentity($request);
     }
 }
