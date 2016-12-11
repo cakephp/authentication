@@ -107,10 +107,11 @@ class AuthenticatorServiceTest extends TestCase
             [],
             []
         );
+        $response = new Response();
 
         $request = $request->withAttribute('identity', ['username' => 'florian']);
         $this->assertNotEmpty($request->getAttribute('identity'));
-        $request = $service->clearIdentity($request);
+        $request = $service->clearIdentity($request, $response);
         $this->assertNull($request->getAttribute('identity'));
     }
 }

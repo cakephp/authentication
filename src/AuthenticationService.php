@@ -220,9 +220,10 @@ class AuthenticationService
      * Clears the identity from authenticators that store them and the request
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Psr\Http\Message\ResponseInterface The response.
      * @return \Psr\Http\Message\ServerRequestInterface
      */
-    public function clearIdentity(ServerRequestInterface $request, $requestAttribute = 'identity')
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
         foreach ($this->_authenticators as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
@@ -230,11 +231,7 @@ class AuthenticationService
             }
         }
 
-        if (!empty($requestAttribute)) {
-            return $request->withoutAttribute($requestAttribute);
-        }
-
-        return $request;
+        return $request->withoutAttribute('identity');
     }
 
     /**

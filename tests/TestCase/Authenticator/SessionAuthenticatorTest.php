@@ -165,12 +165,14 @@ class SessionAuthenticatorTest extends TestCase
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+        $response = new Response();
+
         $authenticator = new SessionAuthenticator($this->identifiers);
 
         $this->sessionMock->expects($this->at(0))
             ->method('delete')
             ->with('Auth');
 
-        $authenticator->clearIdentity($request);
+        $authenticator->clearIdentity($request, $response);
     }
 }

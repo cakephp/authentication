@@ -12,6 +12,7 @@
  */
 namespace Authentication\Authenticator;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface PersistenceInterface
@@ -31,5 +32,5 @@ interface PersistenceInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
      * @return void
      */
-    public function clearIdentity(ServerRequestInterface $request);
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response);
 }
