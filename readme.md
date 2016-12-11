@@ -15,6 +15,10 @@ If your application existed before (<= CakePHP 3.2), please make sure it is adju
 
 Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use a middleware if you don't know what it is or how to work with it.
 
+### Configuration
+
+Example of configuring the authentication middleware.
+
 ```php
 class Application extends BaseApplication
 {
@@ -48,10 +52,15 @@ If one of the configured authenticators was able to validate the credentials, th
 
 If you're not yet familiar with request attributes [check the PSR7 documentation](http://www.php-fig.org/psr/psr-7/).
 
+### Accessing the user / identity data
+
 You can get the authenticated identity data from the request by doing this:
 
 ```php
 $user = $request->getAttribute('identity');
+
+### Checking the login status
+
 ```
 
 You can check if the authentication process was successful by accessing the result object of the authentication process that comes as well as a request attribute:
@@ -65,6 +74,8 @@ if ($result->isValid()) {
     $this->log($result->getErrors());
 }
 ```
+
+### Clearing the identity / logging the user out
 
 To log an identity out just call the services clearIdentity() method:
 
