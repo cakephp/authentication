@@ -15,26 +15,29 @@ If your application existed before (<= CakePHP 3.2), please make sure it is adju
 
 Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use a middleware if you don't know what it is or how to work with it.
 
+### Configuration
+
+Example of configuring the authentication middleware.
+
 ```php
 class Application extends BaseApplication
 {
     public function middleware($middleware)
     {
-        // Instantiate the authentication service and configure authenticators
-        $service = new AuthenticationService([
-            'identifiers' => [
-                'Authentication.Orm' => [
-                    'fields' => [
-                        'username' => 'email',
-                        'password' => 'password'
-                    ]
-                ]
-            ],
-            'authenticators' => [
-                'Authentication.Form',
-                'Authentication.Session'
+        // Instantiate the service
+        $service = new AuthenticationService();
+        
+        // Load identifiers
+        $service->identifiers()->load('Authentication.Orm', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
             ]
         ]);
+
+        // Load the authenticators, you want session first
+        $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Form');
 
         // Add it to the authentication middleware
         $authentication = new AuthenticationMiddleware($service);
@@ -49,22 +52,35 @@ If one of the configured authenticators was able to validate the credentials, th
 
 If you're not yet familiar with request attributes [check the PSR7 documentation](http://www.php-fig.org/psr/psr-7/).
 
-You can get the authenticated user credentials from the request by doing this:
+### Accessing the user / identity data
+
+You can get the authenticated identity data from the request by doing this:
 
 ```php
 $user = $request->getAttribute('identity');
+
+### Checking the login status
+
 ```
 
 You can check if the authentication process was successful by accessing the result object of the authentication process that comes as well as a request attribute:
 
 ```php
-$auth = $request->getAttribute('authentication');
-if ($auth->isValid()) {
+$result = $request->getAttribute('authentication')->getResult();
+if ($result->isValid()) {
     $user = $request->getAttribute('identity');
 } else {
-    $this->log($auth->getCode());
-    $this->log($auth->getErrors());
+    $this->log($result->getCode());
+    $this->log($result->getErrors());
 }
+```
+
+### Clearing the identity / logging the user out
+
+To log an identity out just call the services clearIdentity() method:
+
+```php
+$request->getAttribute('authentication')->clearIdentity();
 ```
 
 ## Migration from the AuthComponent
@@ -132,20 +148,20 @@ $this->loadComponent('Auth', [
 you'll now have to configure it this way.
 
 ```php
-$service = new AuthenticationService([
-    'identifiers' => [
-        'Authentication.Orm' => [
-            'fields' => [
-                'username' => 'email',
-                'password' => 'password'
-            ]
-        ]
-    ],
-    'authenticators' => [
-        'Authentication.Session',
-        'Authentication.Form'
+// Instantiate the service
+$service = new AuthenticationService();
+
+// Load identifiers
+$service->identifiers()->load('Authentication.Orm', [
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password'
     ]
 ]);
+
+// Load the authenticators
+$service->loadAuthenticator('Authentication.Session');
+$service->loadAuthenticator('Authentication.Form');
 ```
 
 While this seems to be a little more to write, the benefit is a greater flexibility and better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).

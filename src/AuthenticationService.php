@@ -13,6 +13,7 @@
 namespace Authentication;
 
 use Authentication\Authenticator\AuthenticateInterface;
+use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
@@ -49,6 +50,13 @@ class AuthenticationService
      * @param \Authentication\Authenticator\AuthenticatorInterface
      */
     protected $_successfulAuthenticator;
+
+    /**
+     * Result of the last authenticate() call.
+     *
+     * @var \Authentication\Result|null
+     */
+    protected $_result;
 
     /**
      * Default configuration
@@ -192,15 +200,38 @@ class AuthenticationService
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
+                if ($authenticator instanceof PersistenceInterface) {
+                    $authenticator->persistIdentity($request, $result->getIdentity());
+                }
+
                 $this->_successfulAuthenticator = $authenticator;
 
-                return $result;
+                return $this->_result = $result;
             }
         }
 
         $this->_successfulAuthenticator = null;
+        $this->_result = $result;
 
-        return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+        return $this->_result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+    }
+
+    /**
+     * Clears the identity from authenticators that store them and the request
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Psr\Http\Message\ResponseInterface $response The response.
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        foreach ($this->_authenticators as $authenticator) {
+            if ($authenticator instanceof PersistenceInterface) {
+                $authenticator->clearIdentity($request);
+            }
+        }
+
+        return $request->withoutAttribute('identity');
     }
 
     /**
@@ -211,5 +242,15 @@ class AuthenticationService
     public function getAuthenticationProvider()
     {
         return $this->_successfulAuthenticator;
+    }
+
+    /**
+     * Gets the result of the last authenticate() call.
+     *
+     * @return \Authentication\Result Authentication result interface
+     */
+    public function getResult()
+    {
+        return $this->_result;
     }
 }

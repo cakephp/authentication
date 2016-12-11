@@ -30,7 +30,7 @@ class AuthenticationMiddleware
     /**
      * Constructor
      *
-     * @param \Auth\Authentication\AuthenticatorService $authenticationService Authentication service instance.
+     * @param \Authentication\AuthenticatorService $authenticationService Authentication service instance.
      */
     public function __construct(AuthenticationService $authenticationService)
     {
@@ -49,7 +49,8 @@ class AuthenticationMiddleware
     {
         $result = $this->_authenticationService->authenticate($request, $response);
         $request = $request->withAttribute('identity', $result->getIdentity());
-        $request = $request->withAttribute('authentication', $result);
+        $request = $request->withAttribute('authentication', $this->_authenticationService);
+        $request = $request->withAttribute('authenticationResult', $result);
 
         return $next($request, $response);
     }

@@ -33,7 +33,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param array $fields The fields to be checked.
      * @return bool False if the fields have not been supplied. True if they exist.
      */
-    protected function _checkFields(ServerRequestInterface $request, array $fields)
+    protected function _checkBody(ServerRequestInterface $request, array $fields)
     {
         $body = $request->getParsedBody();
 
@@ -69,7 +69,7 @@ class FormAuthenticator extends AbstractAuthenticator
         }
 
         $fields = $this->_config['fields'];
-        if (!$this->_checkFields($request, $fields)) {
+        if (!$this->_checkBody($request, $fields)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
                 'Login credentials not found'
             ]);
