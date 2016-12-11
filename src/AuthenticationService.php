@@ -220,7 +220,7 @@ class AuthenticationService
      * Clears the identity from authenticators that store them and the request
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface The response.
+     * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return \Psr\Http\Message\ServerRequestInterface
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
