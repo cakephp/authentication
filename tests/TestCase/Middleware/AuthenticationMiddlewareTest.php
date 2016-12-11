@@ -16,6 +16,7 @@ namespace Authentication\Test\TestCase\Middleware;
 use Authentication\AuthenticationService;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequestFactory;
 use Zend\Diactoros\Response;
 
@@ -68,11 +69,11 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $request = $middleware($request, $response, $next);
         $identity = $request->getAttribute('identity');
-        $result = $request->getAttribute('authentication');
+        $service = $request->getAttribute('authentication');
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $identity);
-        $this->assertInstanceOf('\Authentication\Result', $result);
-        $this->assertTrue($result->isValid());
+        $this->assertInstanceOf(EntityInterface::class, $identity);
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+        $this->assertTrue($service->getResult()->isValid());
     }
 
     /**
@@ -97,10 +98,10 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $request = $middleware($request, $response, $next);
         $identity = $request->getAttribute('identity');
-        $result = $request->getAttribute('authentication');
+        $service = $request->getAttribute('authentication');
 
         $this->assertNull($identity);
-        $this->assertInstanceOf('\Authentication\Result', $result);
-        $this->assertFalse($result->isValid());
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+        $this->assertFalse($service->getResult()->isValid());
     }
 }

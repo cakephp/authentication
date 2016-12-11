@@ -52,6 +52,13 @@ class AuthenticationService
     protected $_successfulAuthenticator;
 
     /**
+     * Result of the last authenticate() call.
+     *
+     * @var \Authentication\Result|null
+     */
+    protected $_result;
+
+    /**
      * Default configuration
      *
      * - `authenticators` - An array of authentication objects to use for authenticating users.
@@ -199,13 +206,14 @@ class AuthenticationService
 
                 $this->_successfulAuthenticator = $authenticator;
 
-                return $result;
+                return $this->_result = $result;
             }
         }
 
         $this->_successfulAuthenticator = null;
+        $this->_result = $result;
 
-        return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+        return $this->_result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
     }
 
     /**
@@ -237,5 +245,15 @@ class AuthenticationService
     public function getAuthenticationProvider()
     {
         return $this->_successfulAuthenticator;
+    }
+
+    /**
+     * Gets the result of the last authenticate() call.
+     *
+     * @return \Authentication\Result Authentication result interface
+     */
+    public function getResult()
+    {
+        return $this->_result;
     }
 }
