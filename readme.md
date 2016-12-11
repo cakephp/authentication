@@ -49,7 +49,7 @@ If one of the configured authenticators was able to validate the credentials, th
 
 If you're not yet familiar with request attributes [check the PSR7 documentation](http://www.php-fig.org/psr/psr-7/).
 
-You can get the authenticated user credentials from the request by doing this:
+You can get the authenticated identity data from the request by doing this:
 
 ```php
 $user = $request->getAttribute('identity');
@@ -58,13 +58,19 @@ $user = $request->getAttribute('identity');
 You can check if the authentication process was successful by accessing the result object of the authentication process that comes as well as a request attribute:
 
 ```php
-$auth = $request->getAttribute('authentication');
-if ($auth->isValid()) {
+$result = $request->getAttribute('authentication')->getResult();
+if ($result->isValid()) {
     $user = $request->getAttribute('identity');
 } else {
-    $this->log($auth->getCode());
-    $this->log($auth->getErrors());
+    $this->log($result->getCode());
+    $this->log($result->getErrors());
 }
+```
+
+To log an identity out just call the services clearIdentity() method:
+
+```php
+$request->getAttribute('authentication')->clearIdentity();
 ```
 
 ## Migration from the AuthComponent
@@ -132,20 +138,20 @@ $this->loadComponent('Auth', [
 you'll now have to configure it this way.
 
 ```php
-$service = new AuthenticationService([
-    'identifiers' => [
-        'Authentication.Orm' => [
-            'fields' => [
-                'username' => 'email',
-                'password' => 'password'
-            ]
-        ]
-    ],
-    'authenticators' => [
-        'Authentication.Session',
-        'Authentication.Form'
+// Instantiate the service
+$service = new AuthenticationService();
+
+// Load identifiers
+$service->identifiers()->load('Authentication.Orm', [
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password'
     ]
 ]);
+
+// Load the authenticators
+$service->loadAuthenticator('Authentication.Session');
+$service->loadAuthenticator('Authentication.Form');
 ```
 
 While this seems to be a little more to write, the benefit is a greater flexibility and better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
