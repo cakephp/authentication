@@ -20,21 +20,20 @@ class Application extends BaseApplication
 {
     public function middleware($middleware)
     {
-        // Instantiate the authentication service and configure authenticators
-        $service = new AuthenticationService([
-            'identifiers' => [
-                'Authentication.Orm' => [
-                    'fields' => [
-                        'username' => 'email',
-                        'password' => 'password'
-                    ]
-                ]
-            ],
-            'authenticators' => [
-                'Authentication.Form',
-                'Authentication.Session'
+        // Instantiate the service
+        $service = new AuthenticationService();
+        
+        // Load identifiers
+        $service->identifiers()->load('Authentication.Orm', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
             ]
         ]);
+
+        // Load the authenticators, you want session first
+        $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Form');
 
         // Add it to the authentication middleware
         $authentication = new AuthenticationMiddleware($service);
