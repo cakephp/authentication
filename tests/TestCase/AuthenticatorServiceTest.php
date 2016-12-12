@@ -18,6 +18,8 @@ use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
 class AuthenticatorServiceTest extends TestCase
@@ -111,7 +113,10 @@ class AuthenticatorServiceTest extends TestCase
 
         $request = $request->withAttribute('identity', ['username' => 'florian']);
         $this->assertNotEmpty($request->getAttribute('identity'));
-        $request = $service->clearIdentity($request, $response);
-        $this->assertNull($request->getAttribute('identity'));
+        $result = $service->clearIdentity($request, $response);
+        $this->assertInternalType('array', $result);
+        $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertNull($result['request']->getAttribute('identity'));
     }
 }
