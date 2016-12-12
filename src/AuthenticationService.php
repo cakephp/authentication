@@ -227,7 +227,7 @@ class AuthenticationService
     {
         foreach ($this->_authenticators as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
-                $authenticator->clearIdentity($request);
+                $authenticator->clearIdentity($request, $response);
             }
         }
 
