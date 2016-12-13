@@ -22,7 +22,7 @@ interface PersistenceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
      * @param mixed $identity Identity data to persist.
-     * @return void
+     * @return \Psr\Http\Message\ServerRequestInterface
      */
     public function persistIdentity(ServerRequestInterface $request, $identity);
 
@@ -30,7 +30,7 @@ interface PersistenceInterface
      * Clears the identity data
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
-     * @return void
+     * @return array
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response);
 }
