@@ -221,7 +221,7 @@ class AuthenticationService
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @return array Return an array containing the request and response objects.
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {

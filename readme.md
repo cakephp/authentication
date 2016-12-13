@@ -80,8 +80,20 @@ if ($result->isValid()) {
 To log an identity out just call the services clearIdentity() method:
 
 ```php
-$request->getAttribute('authentication')->clearIdentity();
+$result = $request->getAttribute('authentication')->clearIdentity();
+debug($result);
 ```
+
+The debug will show you an array like this:
+
+```
+[
+    'response' => object(Zend\Diactoros\Response) { ... },
+    'request' => object(Cake\Http\ServerRequest) { ... }
+]
+```
+
+**Attention!** This will return an array containing the request and response objects. Since both are immutable you'll get new objects back. Depending on your context you're working in you'll have to use these instances from now on if you want to continue to work with the modified response and request objects.
 
 ## Migration from the AuthComponent
 
