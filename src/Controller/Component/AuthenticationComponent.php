@@ -14,6 +14,7 @@ namespace Authentication\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Utility\Hash;
 use Exception;
 
 class AuthenticationComponent extends Component
@@ -59,11 +60,19 @@ class AuthenticationComponent extends Component
     /**
      * Returns the identity used in the authentication attempt.
      *
+     * @param string $path Path to return from the data.
      * @return mixed
      */
-    public function getIdentity()
+    public function getIdentity($path = null)
     {
-        return $this->_authentication->getResult()->getIdentity();
+        $controller = $this->_registry->getController();
+        $identity = $controller->request->getAttribute('identity');
+
+        if (is_string($path)) {
+            return Hash::get($identity, $path);
+        }
+
+        return $identity;
     }
 
     /**
