@@ -26,7 +26,7 @@ class AuthenticationComponent extends Component
     /**
      * Authentication service instance.
      *
-     * @var \Authentication\AuthenticationService
+     * @var \Authentication\AuthenticationServiceInterface
      */
     protected $_authentication;
 
@@ -40,6 +40,10 @@ class AuthenticationComponent extends Component
     {
         $controller = $this->_registry->getController();
         $this->_authentication = $controller->request->getAttribute('authentication');
+
+        if ($this->_authentication === null) {
+            throw new Exception('The request object does not contain the required `authentication` attribute');
+        }
 
         if (!$this->_authentication instanceof AuthenticationServiceInterface) {
             throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
@@ -61,7 +65,7 @@ class AuthenticationComponent extends Component
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @param string $path Path to return from the data.
+     * @param string|null $path Path to return from the data.
      * @return mixed
      */
     public function getIdentity($path = null)
