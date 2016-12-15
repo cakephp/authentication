@@ -12,6 +12,7 @@
  */
 namespace Authentication\Controller\Component;
 
+use Authentication\AuthenticationServiceInterface;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Utility\Hash;
@@ -40,8 +41,8 @@ class AuthenticationComponent extends Component
         $controller = $this->_registry->getController();
         $this->_authentication = $controller->request->getAttribute('authentication');
 
-        if ($this->_authentication === null) {
-            throw new Exception('Authentication service instance not found in request.');
+        if (!$this->_authentication instanceof AuthenticationServiceInterface) {
+            throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
         }
 
         $this->eventManager($controller->eventManager());

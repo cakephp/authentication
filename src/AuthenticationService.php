@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Authentication Service
  */
-class AuthenticationService
+class AuthenticationService implements AuthenticationServiceInterface
 {
     use EventDispatcherTrait;
     use InstanceConfigTrait;
