@@ -47,6 +47,15 @@ interface AuthenticationServiceInterface
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response);
 
     /**
+     * Persists the given identity data in the authenticators that support persistence.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param mixed $identity Identity data.
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function setIdentity(ServerRequestInterface $request, $identity);
+
+    /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
      * @return \Authentication\Authenticator\AuthenticateInterface|null

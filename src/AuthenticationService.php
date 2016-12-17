@@ -238,6 +238,24 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
+     * Sets identity data and persists it in the authenticators that support it.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param mixed $identity The identity data.
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function setIdentity(ServerRequestInterface $request, $identity)
+    {
+        foreach ($this->_authenticators as $authenticator) {
+            if ($authenticator instanceof PersistenceInterface) {
+                $authenticator->persistIdentity($request, $identity);
+            }
+        }
+
+        return $request->withAttribute('identity', $identity);
+    }
+
+    /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
      * @return \Authentication\Authenticator\AuthenticateInterface|null

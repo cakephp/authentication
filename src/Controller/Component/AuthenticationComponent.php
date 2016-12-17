@@ -81,6 +81,21 @@ class AuthenticationComponent extends Component
     }
 
     /**
+     * Set identity data to all authenticators that are loaded and support persistence.
+     *
+     * @param mixed $identity Identity data to persist.
+     * @return void
+     */
+    public function setIdentity($identity)
+    {
+        $controller = $this->_registry->getController();
+        $this->controller->request = $this->_authentication->setIdentity(
+            $controller->request,
+            $identity
+        );
+    }
+
+    /**
      * Log a user out.
      *
      * Triggers the `Authentication.logout` event.
