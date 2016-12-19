@@ -15,6 +15,7 @@ namespace Authentication\Controller\Component;
 use Authentication\AuthenticationServiceInterface;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
 
@@ -22,6 +23,13 @@ class AuthenticationComponent extends Component
 {
 
     use EventDispatcherTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_defaultConfig = [
+        'logoutRedirect' => false
+    ];
 
     /**
      * Authentication service instance.
@@ -100,7 +108,7 @@ class AuthenticationComponent extends Component
      *
      * Triggers the `Authentication.logout` event.
      *
-     * @return void
+     * @return void|string|array
      */
     public function logout()
     {
@@ -114,5 +122,10 @@ class AuthenticationComponent extends Component
 
         $controller->request = $result['request'];
         $controller->response = $result['response'];
+
+        $logoutRedirect = $this->config('logoutRedirect');
+        if ($logoutRedirect !== false) {
+            return Router::normalize($logoutRedirect);
+        }
     }
 }

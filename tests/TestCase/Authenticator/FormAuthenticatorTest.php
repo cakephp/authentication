@@ -61,7 +61,7 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $response = new Response();
 
         $form = new FormAuthenticator($identifiers);
         $result = $form->authenticate($request, $response);
@@ -86,7 +86,7 @@ class FormAuthenticatorTest extends TestCase
             [],
             []
         );
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $response = new Response();
 
         $form = new FormAuthenticator($identifiers);
 
@@ -113,7 +113,7 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login'

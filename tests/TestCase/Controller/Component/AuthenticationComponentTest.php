@@ -22,6 +22,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequestFactory;
 use Cake\Network\Response;
 use Cake\ORM\Entity;
+use TestApp\Authentication\InvalidAuthenticationService;
 
 class AuthenticationComponentTest extends TestCase
 {
@@ -58,11 +59,40 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * testInitializeMissingServiceAttribute
+     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage The request object does not contain the required `authentication` attribute
+     * @return void
+     */
+    public function testInitializeMissingServiceAttribute()
+    {
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        new AuthenticationComponent($registry);
+    }
+
+    /**
+     * testInitializeInvalidServiceObject
+     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Authentication service does not implement Authentication\AuthenticationServiceInterface
+     * @return void
+     */
+    public function testInitializeInvalidServiceObject()
+    {
+        $this->request = $this->request->withAttribute('authentication', new InvalidAuthenticationService());
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        new AuthenticationComponent($registry);
+    }
+
+    /**
      * testGetUser
      *
      * @eturn void
      */
-    public function testGetUser()
+    public function testGetUserNullResult()
     {
         $this->request = $this->request->withAttribute('identity', $this->identity);
         $this->request = $this->request->withAttribute('authentication', $this->service);
@@ -80,12 +110,37 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * testGetResult
+     *
+     * @return void
+     */
+    public function testGetResult()
+    {
+        $this->request = $this->request->withAttribute('identity', $this->identity);
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $this->assertNull($component->getResult());
+    }
+
+    /**
      * testLogout
      *
      * @return void
      */
     public function testLogout()
     {
-        $this->markTestIncomplete();
+        $this->request = $this->request->withAttribute('identity', $this->identity);
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $this->assertEquals('florian', $controller->request->getAttribute('identity')->get('username'));
+        $component->logout();
+        $this->assertNull($controller->request->getAttribute('identity'));
     }
 }
