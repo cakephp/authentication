@@ -30,6 +30,7 @@ interface PersistenceInterface
      * Clears the identity data
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
+     * @param \Psr\Http\Message\ResponseInterface $response The response object.
      * @return array
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response);

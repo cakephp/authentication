@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Authentication Service
  */
-class AuthenticationService
+class AuthenticationService implements AuthenticationServiceInterface
 {
     use EventDispatcherTrait;
     use InstanceConfigTrait;
@@ -235,6 +235,24 @@ class AuthenticationService
             'request' => $request->withoutAttribute('identity'),
             'response' => $response
         ];
+    }
+
+    /**
+     * Sets identity data and persists it in the authenticators that support it.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param mixed $identity The identity data.
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function setIdentity(ServerRequestInterface $request, $identity)
+    {
+        foreach ($this->_authenticators as $authenticator) {
+            if ($authenticator instanceof PersistenceInterface) {
+                $authenticator->persistIdentity($request, $identity);
+            }
+        }
+
+        return $request->withAttribute('identity', $identity);
     }
 
     /**
