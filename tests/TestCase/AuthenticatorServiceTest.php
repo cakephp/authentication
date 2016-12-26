@@ -16,10 +16,13 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\AuthenticationService;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Datasource\EntityInterface;
 use Cake\Http\ServerRequestFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TestApp\Authentication\Authenticator\InvalidAuthenticator;
 use Zend\Diactoros\Response;
 
 class AuthenticatorServiceTest extends TestCase
@@ -77,6 +80,18 @@ class AuthenticatorServiceTest extends TestCase
     }
 
     /**
+     * testLoadInvalidAuthenticatorObject
+     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Authenticator must implement AuthenticateInterface.
+     */
+    public function testLoadInvalidAuthenticatorObject()
+    {
+        $service = new AuthenticationService();
+        $service->loadAuthenticator(InvalidAuthenticator::class);
+    }
+
+    /**
      * testIdentifiers
      *
      * @return void
@@ -105,9 +120,7 @@ class AuthenticatorServiceTest extends TestCase
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/'],
-            [],
-            []
+            ['REQUEST_URI' => '/']
         );
         $response = new Response();
 
@@ -149,5 +162,37 @@ class AuthenticatorServiceTest extends TestCase
         $identity = $result->getAttribute('identity');
         $this->assertInternalType('array', $identity);
         $this->assertEquals(['username' => 'florian'], $identity);
+    }
+
+    /**
+     * testGetResult
+     *
+     * @return void
+     */
+    public function testGetResult()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Orm'
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+                'Authentication.Form'
+            ]
+        ]);
+
+        $result = $service->getResult();
+        $this->assertNull($result);
+
+        $service->authenticate($request, $response);
+        $result = $service->getResult();
+        $this->assertInstanceOf(Result::class, $result);
     }
 }
