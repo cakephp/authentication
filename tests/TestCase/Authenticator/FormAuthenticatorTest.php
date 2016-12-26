@@ -17,9 +17,9 @@ use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
-use Zend\Diactoros\Response;
 
 class FormAuthenticatorTest extends TestCase
 {
@@ -142,7 +142,7 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => [

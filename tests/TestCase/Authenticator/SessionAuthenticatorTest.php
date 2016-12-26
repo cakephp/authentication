@@ -17,9 +17,9 @@ use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Network\Session;
-use Zend\Diactoros\Response;
 
 class SessionAuthenticatorTest extends TestCase
 {
@@ -59,7 +59,7 @@ class SessionAuthenticatorTest extends TestCase
     public function testAuthenticate()
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $response = new Response();
 
         $this->sessionMock->expects($this->at(0))
             ->method('read')
@@ -99,7 +99,7 @@ class SessionAuthenticatorTest extends TestCase
     public function testVerifyByDatabase()
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
-        $response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $response = new Response();
 
         $this->sessionMock->expects($this->at(0))
             ->method('read')

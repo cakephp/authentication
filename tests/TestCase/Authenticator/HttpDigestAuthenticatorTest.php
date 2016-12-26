@@ -18,11 +18,11 @@ namespace Authentication\Test\TestCase\Authentication;
 
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Zend\Diactoros\Response;
 
 /**
  * Test case for HttpDigestAuthentication
