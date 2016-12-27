@@ -17,8 +17,8 @@ use Authentication\Authenticator\TokenAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Zend\Diactoros\Response;
 
 class TokenAuthenticatorTest extends TestCase
 {
@@ -52,7 +52,7 @@ class TokenAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password']
         );
 
-        $this->response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $this->response = new Response();
     }
 
     /**

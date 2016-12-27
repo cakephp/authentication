@@ -17,8 +17,8 @@ use Authentication\AuthenticationService;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Zend\Diactoros\Response;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
@@ -59,7 +59,7 @@ class AuthenticationMiddlewareTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response('php://memory');
+        $response = new Response();
 
         $middleware = new AuthenticationMiddleware($this->service);
 
@@ -88,7 +88,7 @@ class AuthenticationMiddlewareTest extends TestCase
             [],
             ['username' => 'invalid', 'password' => 'invalid']
         );
-        $response = new Response('php://memory');
+        $response = new Response();
 
         $middleware = new AuthenticationMiddleware($this->service);
 

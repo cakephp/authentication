@@ -16,11 +16,11 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
-use Zend\Diactoros\Response;
 
 class HttpBasicAuthenticatorTest extends TestCase
 {
@@ -47,7 +47,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         ]);
 
         $this->auth = new HttpBasicAuthenticator($this->identifiers);
-        $this->response = new Response('php://memory', 200, ['X-testing' => 'Yes']);
+        $this->response = new Response();
     }
 
     /**

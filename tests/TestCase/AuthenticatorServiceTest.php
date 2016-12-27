@@ -19,11 +19,11 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TestApp\Authentication\Authenticator\InvalidAuthenticator;
-use Zend\Diactoros\Response;
 
 class AuthenticatorServiceTest extends TestCase
 {
