@@ -58,10 +58,9 @@ You can get the authenticated identity data from the request by doing this:
 
 ```php
 $user = $request->getAttribute('identity');
+```
 
 ### Checking the login status
-
-```
 
 You can check if the authentication process was successful by accessing the result object of the authentication process that comes as well as a request attribute:
 
