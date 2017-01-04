@@ -48,7 +48,7 @@ class Application extends BaseApplication
 }
 ```
 
-If one of the configured authenticators was able to validate the credentials, the middeleware will add the authentication service to the request object as attribute.
+If one of the configured authenticators was able to validate the credentials, the middleware will add the authentication service to the request object as an attribute.
 
 If you're not yet familiar with request attributes [check the PSR7 documentation](http://www.php-fig.org/psr/psr-7/).
 
