@@ -14,6 +14,7 @@ namespace Authentication\Controller\Component;
 
 use Authentication\AuthenticationServiceInterface;
 use Cake\Controller\Component;
+use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
@@ -28,7 +29,10 @@ class AuthenticationComponent extends Component
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'logoutRedirect' => false
+        'logoutRedirect' => false,
+        'triggerAfterIdentifyOn' => [
+            '\Authentication\Authenticator\CookieAuthenticator' => false
+        ]
     ];
 
     /**
@@ -58,6 +62,27 @@ class AuthenticationComponent extends Component
         }
 
         $this->eventManager($controller->eventManager());
+
+        $this->_afterIdentify();
+    }
+
+    protected function _afterIdentify() {
+        $triggerOn = $this->config('triggerAfterIdentifyOn');
+
+        $provider = $this->_authentication->getAuthenticationProvider();
+        $class = get_class($provider);
+
+        if (!isset($triggerOn[$class]) || $triggerOn[$class] !== true) {
+            return;
+        }
+
+        $event = new Event('Authentication.afterIdentify', [
+            'provider' => $provider,
+            'identity' => $this->getIdentity(),
+            'service' => $this->_authentication
+        ]);
+
+        $this->eventManager()->dispatch($event);
     }
 
     /**
