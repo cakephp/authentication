@@ -31,7 +31,10 @@ class AuthenticationComponent extends Component
     protected $_defaultConfig = [
         'logoutRedirect' => false,
         'triggerAfterIdentifyOn' => [
-            '\Authentication\Authenticator\CookieAuthenticator' => false
+            '\Authentication\Authenticator\SessionAuthenticator' => false,
+            '\Authentication\Authenticator\CookieAuthenticator' => false,
+            '\Authentication\Authenticator\HttpBasicAuthenticator' => false,
+            '\Authentication\Authenticator\TokenAuthenticator' => false
         ]
     ];
 
@@ -66,13 +69,26 @@ class AuthenticationComponent extends Component
         $this->_afterIdentify();
     }
 
-    protected function _afterIdentify() {
+    /**
+     * Triggers the Authentication.afterIdentify event for non stateless adapters
+     *
+     * Usually we don't want to get an event fired each time a cookie or session
+     * gets identified, so we'll filter based on the authenticator class when
+     * we want to trigger the event.
+     *
+     * The event is fired by default if the classes are not included in the
+     * array of the configuration key `triggerAfterIdentifyOn`.
+     *
+     * @return void
+     */
+    protected function _afterIdentify()
+    {
         $triggerOn = $this->config('triggerAfterIdentifyOn');
 
         $provider = $this->_authentication->getAuthenticationProvider();
         $class = get_class($provider);
 
-        if (!isset($triggerOn[$class]) || $triggerOn[$class] !== true) {
+        if (isset($triggerOn[$class]) && $triggerOn[$class] === false) {
             return;
         }
 
