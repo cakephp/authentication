@@ -13,6 +13,7 @@
 namespace Authentication\Controller\Component;
 
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\PersistenceInterface;
 use Cake\Controller\Component;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
@@ -29,13 +30,7 @@ class AuthenticationComponent extends Component
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'logoutRedirect' => false,
-        'triggerAfterIdentifyOn' => [
-            '\Authentication\Authenticator\SessionAuthenticator' => false,
-            '\Authentication\Authenticator\CookieAuthenticator' => false,
-            '\Authentication\Authenticator\HttpBasicAuthenticator' => false,
-            '\Authentication\Authenticator\TokenAuthenticator' => false
-        ]
+        'logoutRedirect' => false
     ];
 
     /**
@@ -83,12 +78,9 @@ class AuthenticationComponent extends Component
      */
     protected function _afterIdentify()
     {
-        $triggerOn = $this->config('triggerAfterIdentifyOn');
-
         $provider = $this->_authentication->getAuthenticationProvider();
-        $class = get_class($provider);
 
-        if (isset($triggerOn[$class]) && $triggerOn[$class] === false) {
+        if (empty($provider) || $provider instanceof PersistenceInterface || $provider->isStateless()) {
             return;
         }
 
