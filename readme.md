@@ -8,7 +8,7 @@
 
 Don't know what a middleware is? [Check the CakePHP documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html) and additionally [read this.](https://philsturgeon.uk/php/2016/05/31/why-care-about-php-middleware/)
 
-This plugin is for CakePHP 3.4+. 
+This plugin is for CakePHP 3.4+.
 If your application existed before (<= CakePHP 3.3), please make sure it is adjusted to leverage middleware as described in the [docs](http://book.cakephp.org/3.0/en/controllers/middleware.html#adding-the-new-http-stack-to-an-existing-application).
 
 ## Quick Start
@@ -20,13 +20,18 @@ Add the authentication service to the middleware. See the CakePHP [documentation
 Example of configuring the authentication middleware.
 
 ```php
+use Authentication\AuthenticationService;
+use Authentication\Middleware\AuthenticationMiddleware;
+
 class Application extends BaseApplication
 {
     public function middleware($middleware)
     {
+        // Various other middlewares for error handling, routing etc. added here.
+
         // Instantiate the service
         $service = new AuthenticationService();
-        
+
         // Load identifiers
         $service->identifiers()->load('Authentication.Orm', [
             'fields' => [
@@ -44,6 +49,8 @@ class Application extends BaseApplication
 
         // Add the middleware to the middleware stack
         $middleware->add($authentication);
+
+        return $middleware;
     }
 }
 ```
@@ -87,7 +94,7 @@ The debug will show you an array like this:
 
 ```
 [
-    'response' => object(Zend\Diactoros\Response) { ... },
+    'response' => object(Cake\Http\Response) { ... },
     'request' => object(Cake\Http\ServerRequest) { ... }
 ]
 ```
@@ -194,7 +201,7 @@ This authenticator will check the session if it contains user data or credential
 
 Configuration options:
 
-* **sessionKey**: The session key for the user data, default is `Auth` 
+* **sessionKey**: The session key for the user data, default is `Auth`
 
 ### Form
 
@@ -222,7 +229,7 @@ See https://en.wikipedia.org/wiki/Digest_access_authentication
 
 Configuration options:
 
-* **realm**: Default is `null` 
+* **realm**: Default is `null`
 * **qop**: Default is `auth`
 * **nonce**: Default is `uniqid(''),`
 * **opaque**: Default is `null`
