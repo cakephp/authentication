@@ -158,6 +158,18 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
+     * Loads an identifier.
+     *
+     * @param string $name Name or class name.
+     * @param array $config Identifier configuration.
+     * @return \Authentication\Identifier\IdentifierInterface Identifier instance
+     */
+    public function loadIdentifier($name, array $config = [])
+    {
+        return $this->identifiers()->load($name, $config);
+    }
+
+    /**
      * Gets the authenticator class name.
      *
      * @param string $name Authenticator name.

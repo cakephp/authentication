@@ -16,6 +16,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\AuthenticationService;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\OrmIdentifier;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
@@ -89,6 +90,18 @@ class AuthenticatorServiceTest extends TestCase
     {
         $service = new AuthenticationService();
         $service->loadAuthenticator(InvalidAuthenticator::class);
+    }
+
+    /**
+     * testLoadIdentifier
+     *
+     * @return void
+     */
+    public function testLoadIdentifier()
+    {
+        $service = new AuthenticationService();
+        $result = $service->loadIdentifier('Authentication.Orm');
+        $this->assertInstanceOf(OrmIdentifier::class, $result);
     }
 
     /**
