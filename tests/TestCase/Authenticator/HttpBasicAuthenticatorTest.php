@@ -252,4 +252,18 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $this->auth->unauthenticated($request, $this->response);
     }
+
+    /**
+     * testIsStateless
+     *
+     * @return void
+     */
+    public function testIsStateless()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $this->assertTrue((new HttpBasicAuthenticator($identifiers))->isStateless());
+    }
 }

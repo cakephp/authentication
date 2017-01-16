@@ -175,4 +175,18 @@ class SessionAuthenticatorTest extends TestCase
 
         $authenticator->clearIdentity($request, $response);
     }
+
+    /**
+     * testIsStateless
+     *
+     * @return void
+     */
+    public function testIsStateless()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $this->assertFalse((new SessionAuthenticator($identifiers))->isStateless());
+    }
 }
