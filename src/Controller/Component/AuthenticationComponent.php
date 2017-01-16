@@ -65,14 +65,7 @@ class AuthenticationComponent extends Component
     }
 
     /**
-     * Triggers the Authentication.afterIdentify event for non stateless adapters
-     *
-     * Usually we don't want to get an event fired each time a cookie or session
-     * gets identified, so we'll filter based on the authenticator class when
-     * we want to trigger the event.
-     *
-     * The event is fired by default if the classes are not included in the
-     * array of the configuration key `triggerAfterIdentifyOn`.
+     * Triggers the Authentication.afterIdentify event for non stateless adapters that are not persistent either
      *
      * @return void
      */
@@ -84,7 +77,7 @@ class AuthenticationComponent extends Component
             return;
         }
 
-        $event = new Event('Authentication.afterIdentify', [
+        $event = new Event('Authentication.afterIdentify', $this->_registry->getController(), [
             'provider' => $provider,
             'identity' => $this->getIdentity(),
             'service' => $this->_authentication
