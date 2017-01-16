@@ -29,28 +29,6 @@ use Cake\Network\Response;
 use Cake\ORM\Entity;
 use TestApp\Authentication\InvalidAuthenticationService;
 
-class AuthenticationComponentTestListener implements EventListenerInterface {
-
-    protected $afterIdentifyResult;
-
-    public function implementedEvents()
-    {
-        return [
-            'Authentication.afterIdentify' => 'afterIdentify'
-        ];
-    }
-
-    public function afterIdentify(Event $event)
-    {
-        $this->afterIdentifyResult = $event;
-    }
-
-    public function getAfterIdentifyEvent()
-    {
-        return $this->afterIdentifyResult;
-    }
-}
-
 class AuthenticationComponentTest extends TestCase
 {
 
@@ -178,8 +156,10 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testAfterIdentifyEvent()
     {
-        $listener = new AuthenticationComponentTestListener();
-        EventManager::instance()->on($listener);
+        $result = null;
+        EventManager::instance()->on('Authentication.afterIdentify', function(Event $event) use (&$result) {
+            $result = $event;
+        });
 
         $this->service->authenticate(
             $this->request,
@@ -191,9 +171,8 @@ class AuthenticationComponentTest extends TestCase
 
         $controller = new Controller($this->request, $this->response);
         $registry = new ComponentRegistry($controller);
-        $component = new AuthenticationComponent($registry);
+        new AuthenticationComponent($registry);
 
-        $result = $listener->getAfterIdentifyEvent();
         $this->assertInstanceOf(Event::class, $result);
         $this->assertEquals('Authentication.afterIdentify', $result->name());
         $this->assertNotEmpty($result->data);
