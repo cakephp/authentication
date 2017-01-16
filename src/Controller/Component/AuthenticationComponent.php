@@ -138,8 +138,6 @@ class AuthenticationComponent extends Component
      */
     public function logout()
     {
-        $this->dispatchEvent('Authentication.logout', [$this->getIdentity()]);
-
         $controller = $this->_registry->getController();
         $result = $this->_authentication->clearIdentity(
             $controller->request,
