@@ -157,7 +157,7 @@ class AuthenticationComponentTest extends TestCase
     public function testAfterIdentifyEvent()
     {
         $result = null;
-        EventManager::instance()->on('Authentication.afterIdentify', function(Event $event) use (&$result) {
+        EventManager::instance()->on('Authentication.afterIdentify', function (Event $event) use (&$result) {
             $result = $event;
         });
 
