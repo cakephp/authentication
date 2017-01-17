@@ -105,4 +105,18 @@ class TokenAuthenticatorTest extends TestCase
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
     }
+
+    /**
+     * testIsStateless
+     *
+     * @return void
+     */
+    public function testIsStateless()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $this->assertTrue((new TokenAuthenticator($identifiers))->isStateless());
+    }
 }

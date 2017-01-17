@@ -13,7 +13,9 @@
 namespace Authentication\Controller\Component;
 
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\PersistenceInterface;
 use Cake\Controller\Component;
+use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
@@ -58,6 +60,30 @@ class AuthenticationComponent extends Component
         }
 
         $this->eventManager($controller->eventManager());
+
+        $this->_afterIdentify();
+    }
+
+    /**
+     * Triggers the Authentication.afterIdentify event for non stateless adapters that are not persistent either
+     *
+     * @return void
+     */
+    protected function _afterIdentify()
+    {
+        $provider = $this->_authentication->getAuthenticationProvider();
+
+        if (empty($provider) || $provider instanceof PersistenceInterface || $provider->isStateless()) {
+            return;
+        }
+
+        $event = new Event('Authentication.afterIdentify', $this->_registry->getController(), [
+            'provider' => $provider,
+            'identity' => $this->getIdentity(),
+            'service' => $this->_authentication
+        ]);
+
+        $this->eventManager()->dispatch($event);
     }
 
     /**
@@ -112,8 +138,6 @@ class AuthenticationComponent extends Component
      */
     public function logout()
     {
-        $this->dispatchEvent('Authentication.logout', [$this->getIdentity()]);
-
         $controller = $this->_registry->getController();
         $result = $this->_authentication->clearIdentity(
             $controller->request,

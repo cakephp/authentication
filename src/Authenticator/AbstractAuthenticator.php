@@ -88,6 +88,13 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     abstract public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
 
     /**
+     * Check if the adapter is a stateless adapter or if it maintains state.
+     *
+     * @return bool
+     */
+    abstract public function isStateless();
+
+    /**
      * Handle unauthenticated access attempt. In implementation valid return values
      * can be:
      *

@@ -25,4 +25,9 @@ interface AuthenticateInterface
      * @return \Authentication\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isStateless();
 }

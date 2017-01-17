@@ -99,4 +99,12 @@ class HttpBasicAuthenticator extends AbstractAuthenticator
 
         return sprintf('WWW-Authenticate: Basic realm="%s"', $realm);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isStateless()
+    {
+        return true;
+    }
 }

@@ -14,11 +14,16 @@
 namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\AuthenticateInterface;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventListenerInterface;
+use Cake\Event\EventManager;
 use Cake\Http\ServerRequestFactory;
 use Cake\Network\Response;
 use Cake\ORM\Entity;
@@ -52,7 +57,7 @@ class AuthenticationComponentTest extends TestCase
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
             [],
-            []
+            ['username' => 'mariano', 'password' => 'password']
         );
 
         $this->response = new Response();
@@ -142,5 +147,37 @@ class AuthenticationComponentTest extends TestCase
         $this->assertEquals('florian', $controller->request->getAttribute('identity')->get('username'));
         $component->logout();
         $this->assertNull($controller->request->getAttribute('identity'));
+    }
+
+    /**
+     * testAfterIdentifyEvent
+     *
+     * @return void
+     */
+    public function testAfterIdentifyEvent()
+    {
+        $result = null;
+        EventManager::instance()->on('Authentication.afterIdentify', function (Event $event) use (&$result) {
+            $result = $event;
+        });
+
+        $this->service->authenticate(
+            $this->request,
+            $this->response
+        );
+
+        $this->request = $this->request->withAttribute('identity', $this->identity);
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        new AuthenticationComponent($registry);
+
+        $this->assertInstanceOf(Event::class, $result);
+        $this->assertEquals('Authentication.afterIdentify', $result->name());
+        $this->assertNotEmpty($result->data);
+        $this->assertInstanceOf(AuthenticateInterface::class, $result->data['provider']);
+        $this->assertInstanceOf(EntityInterface::class, $result->data['identity']);
+        $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
     }
 }

@@ -400,4 +400,18 @@ DIGEST;
         $expected = md5('mark:localhost:password');
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * testIsStateless
+     *
+     * @return void
+     */
+    public function testIsStateless()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Orm'
+        ]);
+
+        $this->assertTrue((new HttpDigestAuthenticator($identifiers))->isStateless());
+    }
 }
