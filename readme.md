@@ -233,3 +233,23 @@ Configuration options:
 * **qop**: Default is `auth`
 * **nonce**: Default is `uniqid(''),`
 * **opaque**: Default is `null`
+
+## Events
+
+There is only one event that is fired by authentication: `Authentication.afterIdentify`.
+
+If you don't know what events are and how to use them [check the documentation](https://book.cakephp.org/3.0/en/core-libraries/events.html).
+
+The `Authentication.afterIdentify` event is fired by the `AuthenticationComponent` after an identity was successfully identified.
+
+The event contains the following data:
+
+ * **provider**: An object that implements `\Authentication\Authenticator\AuthenticateInterface`
+ * **identity**: An object that implements `\Cake\Datasource\EntityInterface`
+ * **service**:  An object that implements `\Authentication\AuthenticationServiceInterface`
+
+The subject of the event will be the current controller instance the AuthenticationComponent is attached to.
+
+But the event is only fired if the authenticator that was used to identify the identity is *not* persistent and *not* stateless. The reason for this is that the event would be fired every time because the session authenticator or token for example would trigger it every time for every request. 
+ 
+From the included authenticators only the FormAuthenticator will cause the event to be fired. After that the session authenticator will provide the identity.
