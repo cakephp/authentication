@@ -241,7 +241,7 @@ The event contains the following data:
  * **identity**: An object that implements `\Cake\Datasource\EntityInterface`
  * **service**:  An object that implements `\Authentication\AuthenticationServiceInterface`
 
-The subject of the controller will be the current controller instance the AuthenticationComponent is attached to.
+The subject of the event will be the current controller instance the AuthenticationComponent is attached to.
 
 But the event is only fired if the authenticator that was used to identify the identity is *not* persistent and *not* stateless. The reason for this is that the event would be fired every time because the session authenticator or token for example would trigger it every time for every request. 
  
