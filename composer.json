@@ -11,7 +11,6 @@
     "require": {
         "cakephp/core": "3.4.*@beta",
         "cakephp/event": "3.4.*@beta",
-        "cakephp/orm": "3.4.*@beta",
         "cakephp/utility": "3.4.*@beta",
         "psr/http-message": "~1.0"
     },
@@ -19,6 +18,9 @@
         "cakephp/cakephp": "3.4.*@beta",
         "cakephp/cakephp-codesniffer": "^2.1",
         "phpunit/phpunit": "@stable"
+    },
+    "suggest": {
+        "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework)."
     },
     "license": "MIT",
     "minimum-stability": "stable",
