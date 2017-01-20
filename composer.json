@@ -9,16 +9,18 @@
     ],
     "type": "cakephp-plugin",
     "require": {
-        "cakephp/core": "dev-3.next as 3.4",
-        "cakephp/event": "dev-3.next as 3.4",
-        "cakephp/orm": "dev-3.next as 3.4",
-        "cakephp/utility": "dev-3.next as 3.4",
+        "cakephp/core": "3.4.*@beta",
+        "cakephp/event": "3.4.*@beta",
+        "cakephp/utility": "3.4.*@beta",
         "psr/http-message": "~1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "dev-3.next as 3.4",
+        "cakephp/cakephp": "3.4.*@beta",
         "cakephp/cakephp-codesniffer": "^2.1",
         "phpunit/phpunit": "@stable"
+    },
+    "suggest": {
+        "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework)."
     },
     "license": "MIT",
     "minimum-stability": "stable",
