@@ -1,4 +1,15 @@
 <?php
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 namespace ADmad\JwtAuth\Auth;
 
 use Authentication\Identifier\TokenIdentifier;
@@ -12,21 +23,6 @@ use stdClass;
 /**
  * An authentication adapter for authenticating using JSON Web Tokens.
  *
- * ```
- *  $this->Auth->config('authenticate', [
- *      'ADmad/JwtAuth.Jwt' => [
- *          'parameter' => 'token',
- *          'userModel' => 'Users',
- *          'fields' => [
- *              'username' => 'id'
- *          ],
- *      ]
- *  ]);
- * ```
- *
- * @copyright 2015 ADmad
- * @license MIT
- *
  * @see http://jwt.io
  * @see http://tools.ietf.org/html/draft-ietf-oauth-json-web-token
  */
@@ -34,22 +30,15 @@ class JwtTokenIdentifier extends TokenIdentifier
 {
 
     /**
-     * Constructor.
+     * Default settings
      *
-     * Settings for this object.
-     *
-     * - `header` - Header name to check. Defaults to `'authorization'`.
      * - `prefix` - Token prefix. Defaults to `'bearer'`.
-     * - `parameter` - The url parameter name of the token. Defaults to `token`.
-     *   First $_SERVER['HTTP_AUTHORIZATION'] is checked for token value.
-     *   Its value should be of form "Bearer <token>". If empty this query string
-     *   paramater is checked.
      * - `allowedAlgs` - List of supported verification algorithms.
      *   Defaults to ['HS256']. See API of JWT::decode() for more info.
-     * - `queryDatasource` - Boolean indicating whether the `sub` claim of JWT
+     * - `tokenVerification` - Boolean indicating whether the `sub` claim of JWT
      *   token should be used to query the user model and get user record. If
      *   set to `false` JWT's payload is directly retured. Defaults to `true`.
-     * - `userModel` - The model name of users, defaults to `Users`.
+     * - `model` - The model name of users, defaults to `Users`.
      * - `fields` - Key `username` denotes the identifier field for fetching user
      *   record. The `sub` claim of JWT must contain identifier value.
      *   Defaults to ['username' => 'id'].
@@ -60,9 +49,7 @@ class JwtTokenIdentifier extends TokenIdentifier
      * - `key` - The key, or map of keys used to decode JWT. If not set, value
      *   of Security::salt() will be used.
      *
-     * @param \Cake\Controller\ComponentRegistry $registry The Component registry
-     *   used on this request.
-     * @param array $config Array of config to use.
+     * @var array
      */
     protected $_defaultConfig = [
         'tokenField' => 'token',
