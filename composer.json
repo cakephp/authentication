@@ -20,7 +20,8 @@
         "phpunit/phpunit": "<6.0"
     },
     "suggest": {
-        "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework)."
+        "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework).",
+        "firebase/php-jwt": "To use \"JwtAuthenticator\""
     },
     "license": "MIT",
     "minimum-stability": "stable",
