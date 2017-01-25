@@ -13,6 +13,8 @@
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Authenticator\ChallengeException;
+use Authentication\Authenticator\ChallengerInterface;
 use Authentication\Result;
 use Cake\Network\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
@@ -23,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Provides Basic HTTP authentication support.
  */
-class HttpBasicAuthenticator extends AbstractAuthenticator
+class HttpBasicAuthenticator extends AbstractAuthenticator implements ChallengerInterface
 {
 
     /**
@@ -72,32 +74,28 @@ class HttpBasicAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Handles an unauthenticated access attempt by sending appropriate login headers
+     * Create a challenge exception for basic auth challenge.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
-     * @param \Psr\Http\Message\ResponseInterface $response A response object.
-     * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException
+     * @throws \Authentication\Authenticator\ChallengeException
      */
-    public function unauthenticated(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticationChallenge(ServerRequestInterface $request)
     {
-        $Exception = new UnauthorizedException();
-        $Exception->responseHeader([$this->loginHeaders($request)]);
-        throw $Exception;
+        throw new ChallengeException($this->loginHeaders($request), '');
     }
 
     /**
      * Generate the login headers
      *
      * @param \Cake\Network\Request $request Request object.
-     * @return string Headers for logging in.
+     * @return array Headers for logging in.
      */
     public function loginHeaders(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
         $realm = $this->config('realm') ?: $server['SERVER_NAME'];
 
-        return sprintf('WWW-Authenticate: Basic realm="%s"', $realm);
+        return ['WWW-Authenticate' => sprintf('Basic realm="%s"', $realm)];
     }
 
     /**

@@ -14,6 +14,7 @@
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\AuthenticationService;
+use Authentication\Authenticator\ChallengeException;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\OrmIdentifier;
@@ -67,6 +68,41 @@ class AuthenticatorServiceTest extends TestCase
 
         $result = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $result);
+    }
+
+    /**
+     * test authenticate() with a challenger authenticator
+     *
+     * @return void
+     */
+    public function testAuthenticateWithChallenge()
+    {
+        $request = ServerRequestFactory::fromGlobals([
+            'SERVER_NAME' => 'example.com',
+            'REQUEST_URI' => '/testpath',
+            'PHP_AUTH_USER' => 'mariano',
+            'PHP_AUTH_PW' => 'WRONG'
+        ]);
+        $response = new Response();
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Orm'
+            ],
+            'authenticators' => [
+                'Authentication.HttpBasic'
+            ]
+        ]);
+
+        try {
+            $result = $service->authenticate($request, $response);
+            $this->fail('Challenge exception should have been raised');
+        } catch (ChallengeException $e) {
+            $expected = [
+                'WWW-Authenticate' => 'Basic realm="example.com"'
+            ];
+            $this->assertEquals($expected, $e->getHeaders());
+        }
     }
 
     /**

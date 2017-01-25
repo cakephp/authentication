@@ -13,6 +13,7 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use Authentication\Authenticator\ChallengeException;
 use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
@@ -193,14 +194,13 @@ class HttpBasicAuthenticatorTest extends TestCase
         );
 
         try {
-            $this->auth->unauthenticated($request, $this->response);
-        } catch (UnauthorizedException $e) {
+            $this->auth->authenticationChallenge($request);
+            $this->fail('Should challenge');
+        } catch (ChallengeException $e) {
+            $expected = ['WWW-Authenticate' => 'Basic realm="localhost"'];
+            $this->assertEquals($expected, $e->getHeaders());
+            $this->assertEquals(401, $e->getCode());
         }
-
-        $this->assertNotEmpty($e);
-
-        $expected = ['WWW-Authenticate: Basic realm="localhost"'];
-        $this->assertEquals($expected, $e->responseHeader());
     }
 
     /**
@@ -228,29 +228,6 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $this->assertEquals($expected, $result->getIdentity()->toArray());
-    }
-
-    /**
-     * test scope failure.
-     *
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
-     * @expectedExceptionCode 401
-     * @return void
-     */
-    public function testAuthenticateFailReChallenge()
-    {
-        $this->auth->config('scope.username', 'nate');
-
-        $request = ServerRequestFactory::fromGlobals(
-            [
-                'REQUEST_URI' => '/posts/index',
-                'PHP_AUTH_USER' => 'mariano',
-                'PHP_AUTH_PW' => 'password',
-                'SERVER_NAME' => 'localhost',
-            ]
-        );
-
-        $this->auth->unauthenticated($request, $this->response);
     }
 
     /**
