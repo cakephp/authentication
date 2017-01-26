@@ -39,6 +39,13 @@ class JwtAuthenticator extends TokenAuthenticator {
     ];
 
     /**
+     * Payload data.
+     *
+     * @var object|null
+     */
+    protected $_payload;
+
+    /**
      * @inheritdoc
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
@@ -65,8 +72,7 @@ class JwtAuthenticator extends TokenAuthenticator {
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $token = $this->_getToken($request);
-        $result = $this->_decode($token);
+        $result = $this->getPayload($request);
 
         if (!$result instanceof stdClass) {
             return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
@@ -95,22 +101,38 @@ class JwtAuthenticator extends TokenAuthenticator {
     }
 
     /**
+     * Get payload data.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface|null $request Request to get authentication information from.
+     * @return object|null Payload object on success, null on failure
+     */
+    public function getPayload(ServerRequestInterface $request = null)
+    {
+        if (!$request) {
+            return $this->_payload;
+        }
+
+        $payload = null;
+        $token = $this->_getToken($request);
+
+        if ($token) {
+            $payload = $this->_decodeToken($token);
+        }
+
+        return $this->_payload = $payload;
+    }
+
+    /**
      * Decode JWT token.
      *
      * @param string $token JWT token to decode.
      * @return object|null The JWT's payload as a PHP object, null on failure.
      */
-    protected function _decode($token)
+    protected function _decodeToken($token)
     {
         $config = $this->getConfig();
-
         $token = str_ireplace($config['tokenPrefix'] . ' ', '', $token);
-        try {
-            $payload = JWT::decode($token, $config['key'] ?: $config['salt'], $config['allowedAlgs']);
 
-            return $payload;
-        } catch (Exception $e) {
-            throw $e;
-        }
+        return JWT::decode($token, $config['key'] ?: $config['salt'], $config['allowedAlgs']);
     }
 }
