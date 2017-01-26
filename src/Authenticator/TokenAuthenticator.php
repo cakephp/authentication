@@ -32,15 +32,46 @@ class TokenAuthenticator extends AbstractAuthenticator
      */
     protected function _getToken(ServerRequestInterface $request)
     {
-        $header = $this->config('header');
-        if (!empty($header)) {
-            return $request->getHeaderLine($header);
+        $token = $this->_getTokenFromHeader($request, $this->getConfig('header'));
+        if (empty($token)) {
+            $token = $this->_getTokenFromQuery($request, $this->getConfig('queryParam'));
         }
 
-        $param = $this->config('queryParam');
+        return $token;
+    }
+
+    /**
+     * Gets the token from the request headers
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @param string $headerLine Header name
+     * @return string|null
+     */
+    protected function _getTokenFromHeader(ServerRequestInterface $request, $headerLine)
+    {
+        if (!empty($headerLine)) {
+            $header = $request->getHeaderLine($headerLine);
+            if (!empty($header)) {
+                return $request->getHeaderLine($headerLine);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the token from the request headers
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @param string $queryParam Request query parameter name
+     * @return string|null
+     */
+    protected function _getTokenFromQuery(ServerRequestInterface $request, $queryParam)
+    {
         $queryParams = $request->getQueryParams();
-        if (isset($queryParams[$param])) {
-            return $queryParams[$param];
+
+        if (isset($queryParams[$queryParam])) {
+            return $queryParams[$queryParam];
         }
 
         return null;
