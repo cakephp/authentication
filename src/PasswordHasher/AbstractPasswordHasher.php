@@ -39,7 +39,7 @@ abstract class AbstractPasswordHasher implements PasswordHasherInterface
      */
     public function __construct(array $config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
     }
 
     /**

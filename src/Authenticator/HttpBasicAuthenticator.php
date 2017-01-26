@@ -92,7 +92,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
     protected function loginHeaders(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
-        $realm = $this->config('realm') ?: $server['SERVER_NAME'];
+        $realm = $this->getConfig('realm') ?: $server['SERVER_NAME'];
 
         return ['WWW-Authenticate' => sprintf('Basic realm="%s"', $realm)];
     }

@@ -63,7 +63,7 @@ class FormAuthenticator extends AbstractAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         if (!$this->_checkLoginUrl($request)) {
-            $errors = [sprintf('Login URL %s did not match %s', $request->getUri()->getPath(), $this->config('loginUrl'))];
+            $errors = [sprintf('Login URL %s did not match %s', $request->getUri()->getPath(), $this->getConfig('loginUrl'))];
 
             return new Result(null, Result::FAILURE_OTHER, $errors);
         }
@@ -93,12 +93,12 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected function _checkLoginUrl(ServerRequestInterface $request)
     {
-        $loginUrl = $this->config('loginUrl');
+        $loginUrl = $this->getConfig('loginUrl');
 
         if (!empty($loginUrl)) {
             if (is_array($loginUrl)) {
                 $loginUrl = Router::url($loginUrl);
-                $this->config('loginUrl', $loginUrl);
+                $this->setConfig('loginUrl', $loginUrl);
             }
 
             return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;

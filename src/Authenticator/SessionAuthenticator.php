@@ -47,7 +47,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $sessionKey = $this->config('sessionKey');
+        $sessionKey = $this->getConfig('sessionKey');
         $session = $request->getAttribute('session');
         $user = $session->read($sessionKey);
 
@@ -55,10 +55,10 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
-        if ($this->config('identify') === true) {
+        if ($this->getConfig('identify') === true) {
             $user = $this->identifiers()->identify([
-                'username' => $user[$this->config('fields')['username']],
-                'password' => $user[$this->config('fields')['password']]
+                'username' => $user[$this->getConfig('fields')['username']],
+                'password' => $user[$this->getConfig('fields')['password']]
             ]);
 
             if (empty($user)) {
@@ -78,7 +78,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      */
     public function persistIdentity(ServerRequestInterface $request, $identity)
     {
-        $sessionKey = $this->config('sessionKey');
+        $sessionKey = $this->getConfig('sessionKey');
         $request->getAttribute('session')->write($sessionKey, $identity);
 
         return $request;
@@ -89,7 +89,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $sessionKey = $this->config('sessionKey');
+        $sessionKey = $this->getConfig('sessionKey');
         $request->getAttribute('session')->delete($sessionKey);
 
         return [

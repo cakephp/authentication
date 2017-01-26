@@ -96,7 +96,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function __construct(array $config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
     }
 
     /**
@@ -107,7 +107,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function identifiers()
     {
         if (!$this->_identifiers) {
-            $this->_identifiers = new IdentifierCollection($this->config('identifiers'));
+            $this->_identifiers = new IdentifierCollection($this->getConfig('identifiers'));
         }
 
         return $this->_identifiers;

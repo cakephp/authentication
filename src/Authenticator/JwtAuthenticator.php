@@ -102,7 +102,7 @@ class JwtAuthenticator extends TokenAuthenticator {
      */
     protected function _decode($token)
     {
-        $config = $this->config();
+        $config = $this->getConfig();
 
         $token = str_replace($config['tokenPrefix'] . ' ', '', $token);
 

@@ -40,7 +40,7 @@ abstract class AbstractIdentifier implements IdentifierInterface
      */
     public function __construct(array $config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
     }
 
     /**

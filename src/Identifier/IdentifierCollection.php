@@ -49,7 +49,7 @@ class IdentifierCollection
      */
     public function __construct(array $config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
 
         foreach ($config as $key => $value) {
             if (is_int($key)) {

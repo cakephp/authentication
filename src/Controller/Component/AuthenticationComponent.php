@@ -151,7 +151,7 @@ class AuthenticationComponent extends Component
         $controller->request = $result['request'];
         $controller->response = $result['response'];
 
-        $logoutRedirect = $this->config('logoutRedirect');
+        $logoutRedirect = $this->getConfig('logoutRedirect');
         if ($logoutRedirect !== false) {
             return Router::normalize($logoutRedirect);
         }

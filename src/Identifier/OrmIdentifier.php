@@ -48,7 +48,7 @@ class OrmIdentifier extends AbstractIdentifier
      */
     public function identify($data)
     {
-        $fields = $this->config('fields');
+        $fields = $this->getConfig('fields');
         if (!isset($data[$fields['username']])) {
             return null;
         }

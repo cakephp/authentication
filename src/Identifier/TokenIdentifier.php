@@ -47,7 +47,7 @@ class TokenIdentifier extends AbstractIdentifier
             return null;
         }
 
-        $tokenVerification = $this->config('tokenVerification');
+        $tokenVerification = $this->getConfig('tokenVerification');
         if (is_callable($tokenVerification)) {
             return $tokenVerification($data, $this->config());
         }
