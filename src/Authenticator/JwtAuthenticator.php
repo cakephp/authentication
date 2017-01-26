@@ -104,16 +104,13 @@ class JwtAuthenticator extends TokenAuthenticator {
     {
         $config = $this->getConfig();
 
-        $token = str_replace($config['tokenPrefix'] . ' ', '', $token);
-
+        $token = str_ireplace($config['tokenPrefix'] . ' ', '', $token);
         try {
             $payload = JWT::decode($token, $config['key'] ?: $config['salt'], $config['allowedAlgs']);
 
             return $payload;
         } catch (Exception $e) {
-            if ($config['debug']) {
-                throw $e;
-            }
+            throw $e;
         }
     }
 }

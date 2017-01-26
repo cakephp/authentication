@@ -56,24 +56,44 @@ class JwtAuthenticatorTest extends TestCase
         ];
 
         $this->token = JWT::encode($data, 'salt');
-
         $this->identifiers = new IdentifierCollection([]);
-
-        $this->request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/'],
-            ['token' => $this->token]
-        );
-
         $this->response = new Response();
     }
 
     /**
-     * testAuthenticate
+     * testAuthenticateViaHeaderToken
      *
      * @return void
      */
     public function testAuthenticateViaHeaderToken()
     {
+        $this->request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/']
+        );
+        $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
+
+        $authenticator = new  JwtAuthenticator($this->identifiers, [
+            'salt' => 'salt'
+        ]);
+
+        $result = $authenticator->authenticate($this->request, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertInstanceOf(EntityInterface::class, $result->getIdentity());
+    }
+
+    /**
+     * testAuthenticateViaQueryParamToken
+     *
+     * @return void
+     */
+    public function testAuthenticateViaQueryParamToken()
+    {
+        $this->request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => $this->token]
+        );
+
         $authenticator = new  JwtAuthenticator($this->identifiers, [
             'salt' => 'salt'
         ]);
