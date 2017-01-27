@@ -13,14 +13,13 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
-use Authentication\Authenticator\ChallengeException;
 use Authentication\Authenticator\HttpBasicAuthenticator;
+use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 
 class HttpBasicAuthenticatorTest extends TestCase
@@ -194,9 +193,9 @@ class HttpBasicAuthenticatorTest extends TestCase
         );
 
         try {
-            $this->auth->authenticationChallenge($request);
+            $this->auth->unauthorizedChallenge($request);
             $this->fail('Should challenge');
-        } catch (ChallengeException $e) {
+        } catch (UnauthorizedException $e) {
             $expected = ['WWW-Authenticate' => 'Basic realm="localhost"'];
             $this->assertEquals($expected, $e->getHeaders());
             $this->assertEquals(401, $e->getCode());
@@ -228,19 +227,5 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $this->assertEquals($expected, $result->getIdentity()->toArray());
-    }
-
-    /**
-     * testIsStateless
-     *
-     * @return void
-     */
-    public function testIsStateless()
-    {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
-        ]);
-
-        $this->assertTrue((new HttpBasicAuthenticator($identifiers))->isStateless());
     }
 }

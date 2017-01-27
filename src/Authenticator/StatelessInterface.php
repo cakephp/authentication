@@ -15,10 +15,10 @@ namespace Authentication\Authenticator;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Interface to mark an authenticator as being able
+ * Interface to mark an authenticator as being stateless and able
  * to emit a challenge exception when authentication fails.
  */
-interface ChallengerInterface
+interface StatelessInterface
 {
     /**
      * Create a challenge exception
@@ -30,7 +30,7 @@ interface ChallengerInterface
      * header.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @throws \Authentication\Authenticator\ChallengeException
+     * @throws \Authentication\Authenticator\UnauthorizedException
      */
-    public function authenticationChallenge(ServerRequestInterface $request);
+    public function unauthorizedChallenge(ServerRequestInterface $request);
 }

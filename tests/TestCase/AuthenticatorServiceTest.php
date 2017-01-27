@@ -14,8 +14,8 @@
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\AuthenticationService;
-use Authentication\Authenticator\ChallengeException;
 use Authentication\Authenticator\FormAuthenticator;
+use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\OrmIdentifier;
 use Authentication\Result;
@@ -97,7 +97,7 @@ class AuthenticatorServiceTest extends TestCase
         try {
             $result = $service->authenticate($request, $response);
             $this->fail('Challenge exception should have been raised');
-        } catch (ChallengeException $e) {
+        } catch (UnauthorizedException $e) {
             $expected = [
                 'WWW-Authenticate' => 'Basic realm="example.com"'
             ];

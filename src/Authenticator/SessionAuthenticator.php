@@ -97,12 +97,4 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             'response' => $response
         ];
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isStateless()
-    {
-        return false;
-    }
 }

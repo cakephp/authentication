@@ -15,9 +15,9 @@ namespace Authentication\Authenticator;
 use RuntimeException;
 
 /**
- * An exception that holds onto the headers/body for a challenge response.
+ * An exception that holds onto the headers/body for an unauthorized response.
  */
-class ChallengeException extends RuntimeException
+class UnauthorizedException extends RuntimeException
 {
     /**
      * @var array
@@ -32,7 +32,7 @@ class ChallengeException extends RuntimeException
     /**
      * Constructor
      *
-     * @param array $headers The headers that should be sent in the challenge response.
+     * @param array $headers The headers that should be sent in the unauthorized challenge response.
      * @param string $body The response body that should be sent in the challenge response.
      * @param int $code The exception code that will be used as a HTTP status code
      */

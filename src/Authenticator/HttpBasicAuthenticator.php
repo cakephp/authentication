@@ -13,10 +13,9 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Authenticator\ChallengeException;
-use Authentication\Authenticator\ChallengerInterface;
+use Authentication\Authenticator\StatelessInterface;
+use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Result;
-use Cake\Network\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -25,7 +24,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Provides Basic HTTP authentication support.
  */
-class HttpBasicAuthenticator extends AbstractAuthenticator implements ChallengerInterface
+class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
 
     /**
@@ -79,9 +78,9 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements Challenger
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
      * @throws \Authentication\Authenticator\ChallengeException
      */
-    public function authenticationChallenge(ServerRequestInterface $request)
+    public function unauthorizedChallenge(ServerRequestInterface $request)
     {
-        throw new ChallengeException($this->loginHeaders($request), '');
+        throw new UnauthorizedException($this->loginHeaders($request), '');
     }
 
     /**
@@ -96,13 +95,5 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements Challenger
         $realm = $this->config('realm') ?: $server['SERVER_NAME'];
 
         return ['WWW-Authenticate' => sprintf('Basic realm="%s"', $realm)];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isStateless()
-    {
-        return true;
     }
 }

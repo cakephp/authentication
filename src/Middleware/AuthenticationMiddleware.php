@@ -13,7 +13,7 @@
 namespace Authentication\Middleware;
 
 use Authentication\AuthenticationService;
-use Authentication\Authenticator\ChallengeException;
+use Authentication\Authenticator\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Stream;
@@ -51,7 +51,7 @@ class AuthenticationMiddleware
     {
         try {
             $result = $this->_authenticationService->authenticate($request, $response);
-        } catch (ChallengeException $e) {
+        } catch (UnauthorizedException $e) {
             $body = new Stream('php://memory', 'rw');
             $body->write($e->getBody());
             $response = $response->withStatus($e->getCode())

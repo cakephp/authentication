@@ -70,12 +70,4 @@ class TokenAuthenticator extends AbstractAuthenticator
 
         return new Result($user, Result::SUCCESS);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isStateless()
-    {
-        return true;
-    }
 }

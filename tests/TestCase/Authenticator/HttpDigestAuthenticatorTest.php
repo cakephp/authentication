@@ -142,19 +142,20 @@ DIGEST;
      */
     public function testAuthenticateChallenge()
     {
+        $this->markTestIncomplete('Needs to be updated still');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/posts/index', 'REQUEST_METHOD' => 'GET']
         );
 
-//        try {
-//            $this->auth->unauthenticated($request, $this->response);
-//        } catch (UnauthorizedException $e) {
-//        }
-//
-//        $this->assertNotEmpty($e);
-//
-//        $expected = ['WWW-Authenticate: Digest realm="localhost",qop="auth",nonce="123",opaque="123abc"'];
-//        $this->assertEquals($expected, $e->responseHeader());
+       try {
+           $this->auth->unauthenticated($request, $this->response);
+       } catch (UnauthorizedException $e) {
+       }
+
+       $this->assertNotEmpty($e);
+
+       $expected = ['WWW-Authenticate: Digest realm="localhost",qop="auth",nonce="123",opaque="123abc"'];
+       $this->assertEquals($expected, $e->responseHeader());
     }
 
     /**
@@ -280,9 +281,6 @@ DIGEST;
      */
     public function testLoginHeaders()
     {
-//        $request = new Request([
-//            'environment' => ['SERVER_NAME' => 'localhost']
-//        ]);
         $request = ServerRequestFactory::fromGlobals(
             [
                 'SERVER_NAME' => 'localhost',
@@ -401,19 +399,5 @@ DIGEST;
         $result = HttpDigestAuthenticator::password('mark', 'password', 'localhost');
         $expected = md5('mark:localhost:password');
         $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * testIsStateless
-     *
-     * @return void
-     */
-    public function testIsStateless()
-    {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
-        ]);
-
-        $this->assertTrue((new HttpDigestAuthenticator($identifiers))->isStateless());
     }
 }

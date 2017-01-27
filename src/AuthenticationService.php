@@ -13,7 +13,7 @@
 namespace Authentication;
 
 use Authentication\Authenticator\AuthenticateInterface;
-use Authentication\Authenticator\ChallengerInterface;
+use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
@@ -221,8 +221,8 @@ class AuthenticationService implements AuthenticationServiceInterface
 
                 return $this->_result = $result;
             }
-            if (!$result->isValid() && $authenticator instanceof ChallengerInterface) {
-                $authenticator->authenticationChallenge($request);
+            if (!$result->isValid() && $authenticator instanceof StatelessInterface) {
+                $authenticator->unauthorizedChallenge($request);
             }
         }
 

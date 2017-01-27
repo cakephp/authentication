@@ -86,28 +86,4 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      * @return mixed Either false on failure, or an array of user data on success.
      */
     abstract public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
-
-    /**
-     * Check if the adapter is a stateless adapter or if it maintains state.
-     *
-     * @return bool
-     */
-    abstract public function isStateless();
-
-    /**
-     * Handle unauthenticated access attempt. In implementation valid return values
-     * can be:
-     *
-     * - Null - No action taken, should return appropriate response.
-     * - \Psr\Http\Message\ResponseInterface - A response object, which will cause to
-     *   simply return that response.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
-     * @param \Psr\Http\Message\ResponseInterface $response A response object.
-     * @return null|\Psr\Http\Message\ResponseInterface
-     */
-    public function unauthenticated(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        return null;
-    }
 }
