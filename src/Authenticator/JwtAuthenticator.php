@@ -8,7 +8,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Authenticator;
@@ -22,20 +21,20 @@ use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use stdClass;
 
-class JwtAuthenticator extends TokenAuthenticator {
+class JwtAuthenticator extends TokenAuthenticator
+{
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected $_defaultConfig = [
         'header' => 'Authorization',
         'queryParam' => 'token',
         'tokenPrefix' => 'bearer',
-        'allowedAlgs' => ['HS256'],
+        'algorithms' => ['HS256'],
         'entityClass' => Entity::class,
         'returnPayload' => true,
-        'key' => null,
-        'salt' => null
+        'secretKey' => null,
     ];
 
     /**
@@ -46,26 +45,24 @@ class JwtAuthenticator extends TokenAuthenticator {
     protected $_payload;
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
         parent::__construct($identifiers, $config);
 
-        if (empty($this->_config['salt'])) {
-            if (class_exists('\Cake\Utility\Security')) {
-                $this->getConfig('salt', \Cake\Utility\Security::salt());
-            } else {
-                throw new RuntimeException('You must set the `salt` config key');
+        if (empty($this->_config['secretKey'])) {
+            if (!class_exists('\Cake\Utility\Security')) {
+                throw new RuntimeException('You must set the `secretKey` config key');
             }
+            $this->setConfig('salt', \Cake\Utility\Security::salt());
         }
     }
 
     /**
-     * Authenticates the identity contained in a request. Will use the `config.userModel`, and `config.fields`
-     * to find POST data that is used to find a matching record in the `config.userModel`. Will return false if
-     * there is no post data, either username or password is missing, or if the scope conditions have not been met.
+     * Authenticates the identity based on a JWT token contained in a request.
      *
+     * @link https://jwt.io/
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
      * @return \Authentication\ResultInterface
@@ -133,6 +130,6 @@ class JwtAuthenticator extends TokenAuthenticator {
         $config = $this->getConfig();
         $token = str_ireplace($config['tokenPrefix'] . ' ', '', $token);
 
-        return JWT::decode($token, $config['key'] ?: $config['salt'], $config['allowedAlgs']);
+        return JWT::decode($token, $config['secretKey'], $config['algorithms']);
     }
 }

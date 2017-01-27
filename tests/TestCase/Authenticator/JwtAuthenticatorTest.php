@@ -55,7 +55,7 @@ class JwtAuthenticatorTest extends TestCase
             'firstname' => 'larry'
         ];
 
-        $this->token = JWT::encode($data, 'salt');
+        $this->token = JWT::encode($data, 'secretKey');
         $this->identifiers = new IdentifierCollection([]);
         $this->response = new Response();
     }
@@ -73,7 +73,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
 
         $authenticator = new  JwtAuthenticator($this->identifiers, [
-            'salt' => 'salt'
+            'secretKey' => 'secretKey'
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -95,7 +95,7 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new  JwtAuthenticator($this->identifiers, [
-            'salt' => 'salt'
+            'secretKey' => 'secretKey'
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -115,6 +115,6 @@ class JwtAuthenticatorTest extends TestCase
            'Authentication.Orm'
         ]);
 
-        $this->assertTrue((new JwtAuthenticator($identifiers, ['salt' => 'test']))->isStateless());
+        $this->assertTrue((new JwtAuthenticator($identifiers, ['secretKey' => 'test']))->isStateless());
     }
 }
