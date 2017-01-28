@@ -42,7 +42,7 @@ class JwtAuthenticator extends TokenAuthenticator
      *
      * @var object|null
      */
-    protected $_payload;
+    protected $payload;
 
     /**
      * {@inheritDoc}

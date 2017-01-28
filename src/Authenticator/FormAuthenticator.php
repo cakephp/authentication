@@ -62,7 +62,13 @@ class FormAuthenticator extends AbstractAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         if (!$this->_checkLoginUrl($request)) {
-            $errors = [sprintf('Login URL %s did not match %s', $request->getUri()->getPath(), $this->getConfig('loginUrl'))];
+            $errors = [
+                sprintf(
+                    'Login URL %s did not match %s',
+                    $request->getUri()->getPath(),
+                    $this->getConfig('loginUrl')
+                )
+            ];
 
             return new Result(null, Result::FAILURE_OTHER, $errors);
         }
