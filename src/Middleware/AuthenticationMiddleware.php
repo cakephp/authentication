@@ -59,6 +59,7 @@ class AuthenticationMiddleware
             foreach ($e->getHeaders() as $header => $value) {
                 $response = $response->withHeader($header, $value);
             }
+
             return $response;
         }
         $request = $request->withAttribute('identity', $result->getIdentity());

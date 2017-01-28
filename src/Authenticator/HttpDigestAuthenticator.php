@@ -211,6 +211,6 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             $opts[] = sprintf('%s="%s"', $k, $v);
         }
 
-        return 'WWW-Authenticate: Digest ' . implode(',', $opts);
+        return ['WWW-Authenticate' => 'Digest ' . implode(',', $opts)];
     }
 }

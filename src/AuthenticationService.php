@@ -13,8 +13,8 @@
 namespace Authentication;
 
 use Authentication\Authenticator\AuthenticateInterface;
-use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\PersistenceInterface;
+use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
