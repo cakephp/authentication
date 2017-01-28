@@ -89,7 +89,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * @param \Cake\Network\Request $request Request object.
      * @return array Headers for logging in.
      */
-    public function loginHeaders(ServerRequestInterface $request)
+    protected function loginHeaders(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
         $realm = $this->config('realm') ?: $server['SERVER_NAME'];
