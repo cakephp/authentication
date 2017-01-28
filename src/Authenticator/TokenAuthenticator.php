@@ -52,7 +52,8 @@ class TokenAuthenticator extends AbstractAuthenticator
      * @param string $prefix Prefix to strip
      * @return string
      */
-    protected function stripTokenPrefix($token, $prefix) {
+    protected function stripTokenPrefix($token, $prefix)
+    {
         return str_ireplace($prefix . ' ', '', $token);
     }
 
