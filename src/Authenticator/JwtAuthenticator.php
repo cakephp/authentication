@@ -106,17 +106,17 @@ class JwtAuthenticator extends TokenAuthenticator
     public function getPayload(ServerRequestInterface $request = null)
     {
         if (!$request) {
-            return $this->_payload;
+            return $this->payload;
         }
 
         $payload = null;
-        $token = $this->_getToken($request);
+        $token = $this->getToken($request);
 
         if ($token) {
-            $payload = $this->_decodeToken($token);
+            $payload = $this->decodeToken($token);
         }
 
-        return $this->_payload = $payload;
+        return $this->payload = $payload;
     }
 
     /**
@@ -125,11 +125,12 @@ class JwtAuthenticator extends TokenAuthenticator
      * @param string $token JWT token to decode.
      * @return object|null The JWT's payload as a PHP object, null on failure.
      */
-    protected function _decodeToken($token)
+    protected function decodeToken($token)
     {
-        $config = $this->getConfig();
-        $token = str_ireplace($config['tokenPrefix'] . ' ', '', $token);
-
-        return JWT::decode($token, $config['secretKey'], $config['algorithms']);
+        return JWT::decode(
+            $token,
+            $this->getConfig('secretKey'),
+            $this->getConfig('algorithms')
+        );
     }
 }

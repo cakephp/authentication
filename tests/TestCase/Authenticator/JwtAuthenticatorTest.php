@@ -72,7 +72,7 @@ class JwtAuthenticatorTest extends TestCase
         );
         $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
 
-        $authenticator = new  JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey'
         ]);
 
@@ -94,7 +94,7 @@ class JwtAuthenticatorTest extends TestCase
             ['token' => $this->token]
         );
 
-        $authenticator = new  JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey'
         ]);
 
@@ -102,19 +102,5 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertInstanceOf(EntityInterface::class, $result->getIdentity());
-    }
-
-    /**
-     * testIsStateless
-     *
-     * @return void
-     */
-    public function testIsStateless()
-    {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
-        ]);
-
-        $this->assertTrue((new JwtAuthenticator($identifiers, ['secretKey' => 'test']))->isStateless());
     }
 }
