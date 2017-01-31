@@ -54,7 +54,7 @@ class TokenIdentifierTest extends TestCase
                     return new Entity(['username' => 'larry', 'id' => 3]);
                 }
 
-                return false;
+                return null;
             }
         ]);
 
