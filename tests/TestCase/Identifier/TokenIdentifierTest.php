@@ -59,7 +59,7 @@ class TokenIdentifierTest extends TestCase
         ]);
 
         $result = $identifier->identify(['token' => 'not-larry']);
-        $this->assertNull($result);
+        $this->assertFalse($result);
 
         $result = $identifier->identify(['token' => 'larry']);
         $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
