@@ -49,6 +49,11 @@ class OrmIdentifier extends AbstractIdentifier
     public function identify($data)
     {
         $fields = $this->getConfig('fields');
+
+        if (is_callable($fields)) {
+            return $fields($data, $this);
+        }
+
         if (!isset($data[$fields['username']])) {
             return null;
         }
@@ -59,6 +64,11 @@ class OrmIdentifier extends AbstractIdentifier
         }
 
         return $this->_findUser($data[$fields['username']], $password);
+    }
+
+    public function findUser($username, $password = null)
+    {
+        $this->_findUser($username, $password);
     }
 
     /**

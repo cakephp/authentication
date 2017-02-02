@@ -15,6 +15,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\TokenIdentifier;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
@@ -43,6 +44,13 @@ class JwtAuthenticatorTest extends TestCase
     public $token;
 
     /**
+     * Identifier Collection
+     *
+     * @var \Authentication\Identifier\IdentifierCollection;
+     */
+    public $identifiers;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp()
@@ -50,6 +58,7 @@ class JwtAuthenticatorTest extends TestCase
         parent::setUp();
 
         $data = [
+            'sub' => 3,
             'id' => 3,
             'username' => 'larry',
             'firstname' => 'larry'
@@ -93,6 +102,30 @@ class JwtAuthenticatorTest extends TestCase
             ['REQUEST_URI' => '/'],
             ['token' => $this->token]
         );
+
+        $authenticator = new JwtAuthenticator($this->identifiers, [
+            'secretKey' => 'secretKey'
+        ]);
+
+        $result = $authenticator->authenticate($this->request, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertInstanceOf(EntityInterface::class, $result->getIdentity());
+    }
+
+    /**
+     * testAuthenticationViaORMIdentifierAndSubject
+     *
+     * @return void
+     */
+    public function testAuthenticationViaORMIdentifierAndSubject()
+    {
+        $this->request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => $this->token]
+        );
+
+        $this->identifiers->load('Authentication.JwtSubject');
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey'

@@ -30,6 +30,7 @@ class TokenIdentifier extends AbstractIdentifier
      */
     protected $_defaultConfig = [
         'tokenField' => 'token',
+        'dataField' => 'token',
         'model' => 'Users',
         'finder' => 'all',
         'tokenVerification' => 'Orm'
@@ -43,18 +44,19 @@ class TokenIdentifier extends AbstractIdentifier
      */
     public function identify($data)
     {
-        if (!isset($data['token'])) {
+        $dataField = $this->getConfig('dataField');
+        if (!isset($data[$dataField])) {
             return null;
         }
 
         $tokenVerification = $this->getConfig('tokenVerification');
         if (is_callable($tokenVerification)) {
-            return $tokenVerification($data, $this->config());
+            return $tokenVerification($data, $this->getConfig());
         }
 
         $this->_checkTokenVerification($tokenVerification);
 
-        return $this->_dispatchTokenVerification($tokenVerification, $data['token']);
+        return $this->_dispatchTokenVerification($tokenVerification, $data[$dataField]);
     }
 
     /**
