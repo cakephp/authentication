@@ -18,7 +18,8 @@ namespace Authentication\Identifier;
  * This is mostly a convenience class that just overrides the defaults of the
  * TokenIdentifier.
  */
-class JwtSubjectIdentifier extends TokenIdentifier {
+class JwtSubjectIdentifier extends TokenIdentifier
+{
 
     /**
      * Default configuration

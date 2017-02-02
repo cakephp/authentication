@@ -12,7 +12,6 @@
  */
 namespace Authentication\Identifier;
 
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use InvalidArgumentException;
 use RuntimeException;
