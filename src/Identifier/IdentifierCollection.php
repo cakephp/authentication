@@ -83,7 +83,7 @@ class IdentifierCollection
      * Identifies an user or service by the passed credentials
      *
      * @param mixed $credentials Authentication credentials
-     * @return mixed
+     * @return \Cake\Datasource\EntityInterface|null
      */
     public function identify($credentials)
     {
@@ -95,7 +95,7 @@ class IdentifierCollection
             $this->_errors[$name] = $identifier->getErrors();
         }
 
-        return false;
+        return null;
     }
 
     /**

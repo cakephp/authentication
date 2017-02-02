@@ -44,13 +44,13 @@ class OrmIdentifier extends AbstractIdentifier
      * Identify
      *
      * @param array $data Authentication credentials
-     * @return false|\Cake\Datsource\EntityInterface
+     * @return \Cake\Datsource\EntityInterface|null
      */
     public function identify($data)
     {
         $fields = $this->config('fields');
         if (!isset($data[$fields['username']])) {
-            return false;
+            return null;
         }
 
         $password = null;
@@ -69,20 +69,20 @@ class OrmIdentifier extends AbstractIdentifier
      * @param string $username The username/identifier.
      * @param string|null $password The password, if not provided password checking is skipped
      *   and result of find is returned.
-     * @return bool|\Cake\Datsource\EntityInterface Either false on failure, or user data entity.
+     * @return \Cake\Datsource\EntityInterface|null User data entity or null on failure.
      */
     protected function _findUser($username, $password = null)
     {
         $result = $this->_query($username)->first();
         if (empty($result)) {
-            return false;
+            return null;
         }
 
         if ($password !== null) {
             $hasher = $this->passwordHasher();
             $hashedPassword = $result->get($this->_config['fields']['password']);
             if (!$hasher->check($password, $hashedPassword)) {
-                return false;
+                return null;
             }
 
             $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
