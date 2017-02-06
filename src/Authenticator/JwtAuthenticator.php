@@ -14,7 +14,6 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
-use Cake\ORM\Entity;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,7 +31,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'queryParam' => 'token',
         'tokenPrefix' => 'bearer',
         'algorithms' => ['HS256'],
-        'entityClass' => Entity::class,
+        'entityClass' => '\Cake\ORM\Entity',
         'returnPayload' => true,
         'secretKey' => null,
     ];
