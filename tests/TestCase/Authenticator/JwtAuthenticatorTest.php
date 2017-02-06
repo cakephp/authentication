@@ -15,7 +15,6 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Identifier\TokenIdentifier;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;

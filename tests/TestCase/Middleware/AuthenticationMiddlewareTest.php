@@ -19,6 +19,7 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
+use Firebase\JWT\JWT;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
@@ -138,5 +139,57 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertTrue($response->hasHeader('WWW-Authenticate'));
         $this->assertSame('', $response->getBody()->getContents());
+    }
+
+    /**
+     * testJwtTokenAuthorizationThroughTheMiddlewareStack
+     *
+     * @return void
+     */
+    public function testJwtTokenAuthorizationThroughTheMiddlewareStack()
+    {
+        $data = [
+            'sub' => 3,
+            'id' => 3,
+            'username' => 'larry',
+            'firstname' => 'larry'
+        ];
+
+        $token = JWT::encode($data, 'secretKey');
+
+        $this->service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Orm',
+                'Authentication.JwtSubject'
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+                'Authentication.Jwt' => [
+                    'secretKey' => 'secretKey'
+                ]
+            ]
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => $token]
+        );
+
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service);
+
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $request = $middleware($request, $response, $next);
+        $identity = $request->getAttribute('identity');
+        $service = $request->getAttribute('authentication');
+
+        $this->assertInstanceOf(EntityInterface::class, $identity);
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+        $this->assertTrue($service->getResult()->isValid());
+        $this->assertEquals($data, $identity->toArray());
     }
 }
