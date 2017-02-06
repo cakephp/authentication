@@ -44,7 +44,7 @@ class OrmIdentifier extends AbstractIdentifier
      * Identify
      *
      * @param array $data Authentication credentials
-     * @return \Cake\Datsource\EntityInterface|null
+     * @return \Cake\Datasource\EntityInterface|null
      */
     public function identify($data)
     {

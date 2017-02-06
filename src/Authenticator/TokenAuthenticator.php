@@ -69,7 +69,7 @@ class TokenAuthenticator extends AbstractAuthenticator
         if (!empty($headerLine)) {
             $header = $request->getHeaderLine($headerLine);
             if (!empty($header)) {
-                return $request->getHeaderLine($headerLine);
+                return $header;
             }
         }
 
