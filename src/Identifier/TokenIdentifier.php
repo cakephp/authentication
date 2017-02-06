@@ -60,9 +60,9 @@ class TokenIdentifier extends AbstractIdentifier
     /**
      * Checks that the token verification option is a string
      *
-     * @throws \InvalidArgumentException When the token is not a string
      * @param mixed $tokenVerification Token verification string.
      * @return void
+     * @throws \InvalidArgumentException When the token is not a string
      */
     protected function _checkTokenVerification($tokenVerification)
     {
