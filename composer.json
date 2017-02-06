@@ -17,7 +17,7 @@
     "require-dev": {
         "cakephp/cakephp": "3.4.*@beta",
         "cakephp/cakephp-codesniffer": "^2.1",
-        "phpunit/phpunit": "5.*"
+        "phpunit/phpunit": "<6.0"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework)."
