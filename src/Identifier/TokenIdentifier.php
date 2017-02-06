@@ -39,12 +39,12 @@ class TokenIdentifier extends AbstractIdentifier
      * Identify
      *
      * @param array $data Authentication credentials
-     * @return false|EntityInterface
+     * @return \Cake\Datasource\EntityInterface|null
      */
     public function identify($data)
     {
         if (!isset($data['token'])) {
-            return false;
+            return null;
         }
 
         $tokenVerification = $this->config('tokenVerification');
@@ -60,9 +60,9 @@ class TokenIdentifier extends AbstractIdentifier
     /**
      * Checks that the token verification option is a string
      *
-     * @throws \InvalidArgumentException When the token is not a string
      * @param mixed $tokenVerification Token verification string.
      * @return void
+     * @throws \InvalidArgumentException When the token is not a string
      */
     protected function _checkTokenVerification($tokenVerification)
     {
@@ -76,7 +76,7 @@ class TokenIdentifier extends AbstractIdentifier
      *
      * @param string $tokenVerification Token verification method string.
      * @param string $token Token string.
-     * @return false|\Cake\Datasource\EntityInterface
+     * @return \Cake\Datasource\EntityInterface|null
      */
     protected function _dispatchTokenVerification($tokenVerification, $token)
     {
@@ -92,7 +92,7 @@ class TokenIdentifier extends AbstractIdentifier
      * Lookup the token in the ORM
      *
      * @param string $token The token string.
-     * @return bool|\Cake\Datasource\EntityInterface
+     * @return \Cake\Datasource\EntityInterface|null
      */
     protected function _orm($token)
     {
@@ -115,7 +115,7 @@ class TokenIdentifier extends AbstractIdentifier
 
         $result = $table->find($finder, $options)->first();
         if (empty($result)) {
-            return false;
+            return null;
         }
 
         return $result;

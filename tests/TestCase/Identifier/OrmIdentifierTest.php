@@ -42,13 +42,13 @@ class OrmIdentifierTest extends TestCase
             'password' => 'exist'
         ]);
 
-        $this->assertFalse($result);
+        $this->assertNull($result);
 
         $result = $identifier->identify([
             'password' => 'password'
         ]);
 
-        $this->assertFalse($result);
+        $this->assertNull($result);
 
         // Valid user but invalid password
         $result = $identifier->identify([
@@ -56,7 +56,7 @@ class OrmIdentifierTest extends TestCase
             'password' => 'invalid-password'
         ]);
 
-        $this->assertFalse($result);
+        $this->assertNull($result);
     }
 
     /**

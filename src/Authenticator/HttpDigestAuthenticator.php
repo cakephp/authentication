@@ -125,7 +125,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             }
         }
         if (empty($digest)) {
-            return false;
+            return [];
         }
 
         return $this->parseAuthData($digest);

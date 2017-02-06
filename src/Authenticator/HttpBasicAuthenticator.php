@@ -50,20 +50,20 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
-     * @return bool|\Cake\Datasource\EntityInterface Either false or user entity.
+     * @return \Cake\Datasource\EntityInterface|null User entity or null on failure.
      */
     public function getUser(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
         if (!isset($server['PHP_AUTH_USER']) || !isset($server['PHP_AUTH_PW'])) {
-            return false;
+            return null;
         }
 
         $username = $server['PHP_AUTH_USER'];
         $password = $server['PHP_AUTH_PW'];
 
         if (!is_string($username) || $username === '' || !is_string($password) || $password === '') {
-            return false;
+            return null;
         }
 
         return $this->identifiers()->identify([

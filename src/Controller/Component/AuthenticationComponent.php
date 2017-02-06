@@ -93,7 +93,7 @@ class AuthenticationComponent extends Component
     /**
      * Gets the result of the last authenticate() call.
      *
-     * @return \Authentication\Result Authentication result interface
+     * @return \Authentication\ResultInterface|null Authentication result interface
      */
     public function getResult()
     {
