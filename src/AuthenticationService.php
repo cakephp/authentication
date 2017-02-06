@@ -40,7 +40,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Identifier collection
      *
-     * @var array
+     * @var \Authentication\Identifier\IdentifierCollection
      */
     protected $_identifiers;
 
@@ -54,7 +54,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Result of the last authenticate() call.
      *
-     * @var \Authentication\Result|null
+     * @var \Authentication\ResultInterface|null
      */
     protected $_result;
 
@@ -280,7 +280,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Gets the result of the last authenticate() call.
      *
-     * @return \Authentication\Result Authentication result interface
+     * @return \Authentication\ResultInterface|null Authentication result interface
      */
     public function getResult()
     {

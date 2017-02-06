@@ -12,7 +12,7 @@
  */
 namespace Authentication\Middleware;
 
-use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -24,15 +24,17 @@ class AuthenticationMiddleware
 
     /**
      * Authentication Service
+     *
+     * @var \Authentication\AuthenticationServiceInterface
      */
     protected $_authenticationService;
 
     /**
      * Constructor
      *
-     * @param \Authentication\AuthenticatorService $authenticationService Authentication service instance.
+     * @param \Authentication\AuthenticationServiceInterface $authenticationService Authentication service instance.
      */
-    public function __construct(AuthenticationService $authenticationService)
+    public function __construct(AuthenticationServiceInterface $authenticationService)
     {
         $this->_authenticationService = $authenticationService;
     }
