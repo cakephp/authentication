@@ -50,10 +50,6 @@ class OrmIdentifier extends AbstractIdentifier
     {
         $fields = $this->getConfig('fields');
 
-        if (is_callable($fields)) {
-            return $fields($data, $this);
-        }
-
         if (!isset($data[$fields['username']])) {
             return null;
         }
