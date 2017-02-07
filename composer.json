@@ -17,7 +17,8 @@
     "require-dev": {
         "cakephp/cakephp": "3.4.*@beta",
         "cakephp/cakephp-codesniffer": "^2.1",
-        "phpunit/phpunit": "<6.0"
+        "phpunit/phpunit": "<6.0",
+        "firebase/php-jwt": "~4.0"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework).",
