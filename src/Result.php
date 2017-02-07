@@ -41,8 +41,6 @@ class Result implements ResultInterface
     const FAILURE_OTHER = -3;
 
     /**
-     * Credentials
-     *
      * The authentication credentials were not found in the request.
      */
     const FAILURE_CREDENTIALS_NOT_FOUND = -4;

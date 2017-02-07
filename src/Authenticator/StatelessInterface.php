@@ -12,17 +12,26 @@
  */
 namespace Authentication\Authenticator;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface AuthenticateInterface
+/**
+ * Interface to mark an authenticator as being stateless and able
+ * to emit a challenge exception when authentication fails.
+ */
+interface StatelessInterface
 {
     /**
-     * Authenticate user.
+     * Create a challenge exception
+     *
+     * Create an exception with the appropriate headers and response body
+     * to challenge a request that has missing or invalid credentials.
+     *
+     * This is primarily used by authentication methods that use the WWW-Authorization
+     * header.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\ResultInterface
+     * @return void
+     * @throws \Authentication\Authenticator\UnauthorizedException
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+    public function unauthorizedChallenge(ServerRequestInterface $request);
 }

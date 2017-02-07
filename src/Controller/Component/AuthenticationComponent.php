@@ -14,6 +14,7 @@ namespace Authentication\Controller\Component;
 
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
+use Authentication\Authenticator\StatelessInterface;
 use Cake\Controller\Component;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
@@ -73,7 +74,10 @@ class AuthenticationComponent extends Component
     {
         $provider = $this->_authentication->getAuthenticationProvider();
 
-        if (empty($provider) || $provider instanceof PersistenceInterface || $provider->isStateless()) {
+        if (empty($provider) ||
+            $provider instanceof PersistenceInterface ||
+            $provider instanceof StatelessInterface
+        ) {
             return;
         }
 

@@ -104,4 +104,39 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertFalse($service->getResult()->isValid());
     }
+
+    /**
+     * test non-successful auth with a challenger
+     *
+     * @return void
+     */
+    public function testNonSuccessfulAuthenticationWithChallenge()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath', 'SERVER_NAME' => 'localhost'],
+            [],
+            ['username' => 'invalid', 'password' => 'invalid']
+        );
+        $response = new Response();
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Orm'
+            ],
+            'authenticators' => [
+                'Authentication.HttpBasic'
+            ]
+        ]);
+
+        $middleware = new AuthenticationMiddleware($service);
+
+        $next = function ($request, $response) {
+            $this->fail('next layer should not be called');
+        };
+
+        $response = $middleware($request, $response, $next);
+        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertTrue($response->hasHeader('WWW-Authenticate'));
+        $this->assertSame('', $response->getBody()->getContents());
+    }
 }

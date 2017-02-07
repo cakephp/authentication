@@ -12,9 +12,12 @@
  */
 namespace Authentication\Middleware;
 
+use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Stream;
 
 /**
  * Authentication Middleware
@@ -49,7 +52,19 @@ class AuthenticationMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        $result = $this->_authenticationService->authenticate($request, $response);
+        try {
+            $result = $this->_authenticationService->authenticate($request, $response);
+        } catch (UnauthorizedException $e) {
+            $body = new Stream('php://memory', 'rw');
+            $body->write($e->getBody());
+            $response = $response->withStatus($e->getCode())
+                ->withBody($body);
+            foreach ($e->getHeaders() as $header => $value) {
+                $response = $response->withHeader($header, $value);
+            }
+
+            return $response;
+        }
         $request = $request->withAttribute('identity', $result->getIdentity());
         $request = $request->withAttribute('authentication', $this->_authenticationService);
         $request = $request->withAttribute('authenticationResult', $result);

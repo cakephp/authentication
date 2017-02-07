@@ -17,6 +17,7 @@
 namespace Authentication\Test\TestCase\Authentication;
 
 use Authentication\Authenticator\HttpDigestAuthenticator;
+use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -104,19 +105,15 @@ class HttpDigestAuthenticatorTest extends TestCase
     /**
      * test the authenticate method
      *
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
-     * @expectedExceptionCode 401
      * @return void
      */
     public function testAuthenticateWrongUsername()
     {
-        //$request = new Request('posts/index');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/posts/index'],
             [],
             []
         );
-        //$request->addParams(['pass' => []]);
 
         $digest = <<<DIGEST
 Digest username="incorrect_user",
@@ -131,7 +128,16 @@ opaque="123abc"
 DIGEST;
         $_SERVER['PHP_AUTH_DIGEST'] = $digest;
 
-        $this->auth->unauthenticated($request, $this->response);
+        try {
+            $this->auth->unauthorizedChallenge($request);
+            $this->fail('Should throw an exception');
+        } catch (UnauthorizedException $e) {
+            $this->assertSame(401, $e->getCode());
+            $this->assertEquals(
+                'Digest realm="localhost",qop="auth",nonce="123",opaque="123abc"',
+                $e->getHeaders()['WWW-Authenticate']
+            );
+        }
     }
 
     /**
@@ -145,15 +151,14 @@ DIGEST;
             ['REQUEST_URI' => '/posts/index', 'REQUEST_METHOD' => 'GET']
         );
 
-//        try {
-//            $this->auth->unauthenticated($request, $this->response);
-//        } catch (UnauthorizedException $e) {
-//        }
-//
-//        $this->assertNotEmpty($e);
-//
-//        $expected = ['WWW-Authenticate: Digest realm="localhost",qop="auth",nonce="123",opaque="123abc"'];
-//        $this->assertEquals($expected, $e->responseHeader());
+        try {
+            $this->auth->unauthorizedChallenge($request);
+            $this->fail('Should challenge');
+        } catch (UnauthorizedException $e) {
+            $expected = ['WWW-Authenticate' => 'Digest realm="localhost",qop="auth",nonce="123",opaque="123abc"'];
+            $this->assertEquals($expected, $e->getHeaders());
+            $this->assertEquals(401, $e->getCode());
+        }
     }
 
     /**
@@ -240,8 +245,6 @@ DIGEST;
     /**
      * test scope failure.
      *
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
-     * @expectedExceptionCode 401
      * @return void
      */
     public function testAuthenticateFailReChallenge()
@@ -268,32 +271,16 @@ DIGEST;
             ]
         );
 
-        $this->auth->unauthenticated($request, $this->response);
-    }
-
-    /**
-     * testLoginHeaders method
-     *
-     * @return void
-     */
-    public function testLoginHeaders()
-    {
-//        $request = new Request([
-//            'environment' => ['SERVER_NAME' => 'localhost']
-//        ]);
-        $request = ServerRequestFactory::fromGlobals(
-            [
-                'SERVER_NAME' => 'localhost',
-            ]
-        );
-
-        $this->auth = new HttpDigestAuthenticator($this->identifiers, [
-            'realm' => 'localhost',
-            'nonce' => '123'
-        ]);
-        $expected = 'WWW-Authenticate: Digest realm="localhost",qop="auth",nonce="123",opaque="421aa90e079fa326b6494f812ad13e79"';
-        $result = $this->auth->loginHeaders($request);
-        $this->assertEquals($expected, $result);
+        try {
+            $this->auth->unauthorizedChallenge($request);
+            $this->fail('Should throw an exception');
+        } catch (UnauthorizedException $e) {
+            $this->assertSame(401, $e->getCode());
+            $this->assertEquals(
+                'Digest realm="localhost",qop="auth",nonce="123",opaque="123abc"',
+                $e->getHeaders()['WWW-Authenticate']
+            );
+        }
     }
 
     /**
@@ -399,19 +386,5 @@ DIGEST;
         $result = HttpDigestAuthenticator::password('mark', 'password', 'localhost');
         $expected = md5('mark:localhost:password');
         $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * testIsStateless
-     *
-     * @return void
-     */
-    public function testIsStateless()
-    {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
-        ]);
-
-        $this->assertTrue((new HttpDigestAuthenticator($identifiers))->isStateless());
     }
 }

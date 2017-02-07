@@ -157,18 +157,4 @@ class FormAuthenticatorTest extends TestCase
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals([], $result->getErrors());
     }
-
-    /**
-     * testIsStateless
-     *
-     * @return void
-     */
-    public function testIsStateless()
-    {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
-        ]);
-
-        $this->assertFalse((new FormAuthenticator($identifiers))->isStateless());
-    }
 }

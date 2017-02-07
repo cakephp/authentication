@@ -14,12 +14,12 @@
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\HttpBasicAuthenticator;
+use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 
 class HttpBasicAuthenticatorTest extends TestCase
@@ -193,14 +193,13 @@ class HttpBasicAuthenticatorTest extends TestCase
         );
 
         try {
-            $this->auth->unauthenticated($request, $this->response);
+            $this->auth->unauthorizedChallenge($request);
+            $this->fail('Should challenge');
         } catch (UnauthorizedException $e) {
+            $expected = ['WWW-Authenticate' => 'Basic realm="localhost"'];
+            $this->assertEquals($expected, $e->getHeaders());
+            $this->assertEquals(401, $e->getCode());
         }
-
-        $this->assertNotEmpty($e);
-
-        $expected = ['WWW-Authenticate: Basic realm="localhost"'];
-        $this->assertEquals($expected, $e->responseHeader());
     }
 
     /**
@@ -228,42 +227,5 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $this->assertEquals($expected, $result->getIdentity()->toArray());
-    }
-
-    /**
-     * test scope failure.
-     *
-     * @expectedException \Cake\Network\Exception\UnauthorizedException
-     * @expectedExceptionCode 401
-     * @return void
-     */
-    public function testAuthenticateFailReChallenge()
-    {
-        $this->auth->config('scope.username', 'nate');
-
-        $request = ServerRequestFactory::fromGlobals(
-            [
-                'REQUEST_URI' => '/posts/index',
-                'PHP_AUTH_USER' => 'mariano',
-                'PHP_AUTH_PW' => 'password',
-                'SERVER_NAME' => 'localhost',
-            ]
-        );
-
-        $this->auth->unauthenticated($request, $this->response);
-    }
-
-    /**
-     * testIsStateless
-     *
-     * @return void
-     */
-    public function testIsStateless()
-    {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
-        ]);
-
-        $this->assertTrue((new HttpBasicAuthenticator($identifiers))->isStateless());
     }
 }

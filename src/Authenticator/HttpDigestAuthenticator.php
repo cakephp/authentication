@@ -194,7 +194,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return string Headers for logging in.
      */
-    public function loginHeaders(ServerRequestInterface $request)
+    protected function loginHeaders(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
         $realm = $this->_config['realm'] ?: $server['SERVER_NAME'];
@@ -211,6 +211,6 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             $opts[] = sprintf('%s="%s"', $k, $v);
         }
 
-        return 'WWW-Authenticate: Digest ' . implode(',', $opts);
+        return ['WWW-Authenticate' => 'Digest ' . implode(',', $opts)];
     }
 }

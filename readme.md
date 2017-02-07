@@ -55,9 +55,39 @@ class Application extends BaseApplication
 }
 ```
 
-If one of the configured authenticators was able to validate the credentials, the middleware will add the authentication service to the request object as an attribute.
+If one of the configured authenticators was able to validate the credentials,
+the middleware will add the authentication service to the request object as an
+attribute. If you're not yet familiar with request attributes [check the PSR7
+documentation](http://www.php-fig.org/psr/psr-7/).
 
-If you're not yet familiar with request attributes [check the PSR7 documentation](http://www.php-fig.org/psr/psr-7/).
+### Using Stateless Authenticators with other Authenticators
+
+When using `HttpBasic` or `HttpDigest` with other authenticators, you should
+remember that these authenticators will halt the request when authentication
+credentials are missing or invalid. This is necessary as these authenticators
+must send specific challenge headers in the response. If you want to combine
+`HttpBasic` or `HttpDigest` with other authenticators, you may want to configure
+these authenticators as the *last* authenticators:
+
+```php
+use Authentication\AuthenticationService;
+
+// Instantiate the service
+$service = new AuthenticationService();
+
+// Load identifiers
+$service->loadIdentifier('Authentication.Orm', [
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password'
+    ]
+]);
+
+// Load the authenticators leaving Basic as the last one.
+$service->loadAuthenticator('Authentication.Session');
+$service->loadAuthenticator('Authentication.Form');
+$service->loadAuthenticator('Authentication.HttpBasic');
+```
 
 ### Accessing the user / identity data
 

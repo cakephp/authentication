@@ -14,6 +14,7 @@ namespace Authentication;
 
 use Authentication\Authenticator\AuthenticateInterface;
 use Authentication\Authenticator\PersistenceInterface;
+use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
@@ -219,6 +220,9 @@ class AuthenticationService implements AuthenticationServiceInterface
                 $this->_successfulAuthenticator = $authenticator;
 
                 return $this->_result = $result;
+            }
+            if (!$result->isValid() && $authenticator instanceof StatelessInterface) {
+                $authenticator->unauthorizedChallenge($request);
             }
         }
 

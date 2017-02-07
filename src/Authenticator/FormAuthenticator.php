@@ -106,13 +106,4 @@ class FormAuthenticator extends AbstractAuthenticator
 
         return true;
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isStateless()
-    {
-        return false;
-    }
 }
