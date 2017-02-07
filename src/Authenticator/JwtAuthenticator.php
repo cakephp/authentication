@@ -31,7 +31,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'queryParam' => 'token',
         'tokenPrefix' => 'bearer',
         'algorithms' => ['HS256'],
-        'entityClass' => '\Cake\ORM\Entity',
+        'entityClass' => 'Cake\ORM\Entity',
         'returnPayload' => true,
         'secretKey' => null,
     ];
@@ -51,10 +51,10 @@ class JwtAuthenticator extends TokenAuthenticator
         parent::__construct($identifiers, $config);
 
         if (empty($this->_config['secretKey'])) {
-            if (!class_exists('\Cake\Utility\Security')) {
+            if (!class_exists('Cake\Utility\Security')) {
                 throw new RuntimeException('You must set the `secretKey` config key');
             }
-            $this->setConfig('salt', \Cake\Utility\Security::salt());
+            $this->setConfig('secretKey', \Cake\Utility\Security::salt());
         }
     }
 
