@@ -33,7 +33,7 @@ class ResultTest extends TestCase
             $this->fail('InvalidArgumentException not thrown!');
         } catch (InvalidArgumentException $e) {
             $result = $e->getMessage();
-            $expected = 'Identity can no be empty with status success.';
+            $expected = 'Identity can not be empty with status success.';
             $this->assertEquals($expected, $result);
         }
 

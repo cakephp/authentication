@@ -8,7 +8,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Authenticator;
@@ -63,7 +62,13 @@ class FormAuthenticator extends AbstractAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         if (!$this->_checkLoginUrl($request)) {
-            $errors = [sprintf('Login URL %s did not match %s', $request->getUri()->getPath(), $this->config('loginUrl'))];
+            $errors = [
+                sprintf(
+                    'Login URL %s did not match %s',
+                    $request->getUri()->getPath(),
+                    $this->getConfig('loginUrl')
+                )
+            ];
 
             return new Result(null, Result::FAILURE_OTHER, $errors);
         }
@@ -93,12 +98,12 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected function _checkLoginUrl(ServerRequestInterface $request)
     {
-        $loginUrl = $this->config('loginUrl');
+        $loginUrl = $this->getConfig('loginUrl');
 
         if (!empty($loginUrl)) {
             if (is_array($loginUrl)) {
                 $loginUrl = Router::url($loginUrl);
-                $this->config('loginUrl', $loginUrl);
+                $this->setConfig('loginUrl', $loginUrl);
             }
 
             return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;

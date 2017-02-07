@@ -83,7 +83,7 @@ class Result implements ResultInterface
     public function __construct($identity, $code, array $messages = [])
     {
         if (empty($identity) && $code === self::SUCCESS) {
-            throw new InvalidArgumentException('Identity can no be empty with status success.');
+            throw new InvalidArgumentException('Identity can not be empty with status success.');
         }
         if ($identity !== null && !$identity instanceof EntityInterface) {
             throw new InvalidArgumentException('Identity must be NULL or an object implementing \Cake\Datasource\EntityInterface');

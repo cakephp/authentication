@@ -58,14 +58,14 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
-        $this->config([
+        $this->setConfig([
             'realm' => null,
             'qop' => 'auth',
             'nonce' => uniqid(''),
             'opaque' => null,
         ]);
 
-        $this->config($config);
+        $this->setConfig($config);
         parent::__construct($identifiers, $config);
     }
 

@@ -12,44 +12,25 @@
  */
 namespace Authentication\Identifier;
 
-use Cake\Core\InstanceConfigTrait;
-
-abstract class AbstractIdentifier implements IdentifierInterface
+/**
+ * Jwt Subject aka "sub" identifier.
+ *
+ * This is mostly a convenience class that just overrides the defaults of the
+ * TokenIdentifier.
+ */
+class JwtSubjectIdentifier extends TokenIdentifier
 {
-
-    use InstanceConfigTrait;
 
     /**
      * Default configuration
      *
      * @var array
      */
-    protected $_defaultConfig = [];
-
-    /**
-     * Errors
-     *
-     * @var array
-     */
-    protected $_errors = [];
-
-    /**
-     * Constructor
-     *
-     * @param array $config Configuration
-     */
-    public function __construct(array $config = [])
-    {
-        $this->setConfig($config);
-    }
-
-    /**
-     * Returns errors
-     *
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->_errors;
-    }
+    protected $_defaultConfig = [
+        'tokenField' => 'id',
+        'dataField' => 'sub',
+        'model' => 'Users',
+        'finder' => 'all',
+        'tokenVerification' => 'Orm'
+    ];
 }
