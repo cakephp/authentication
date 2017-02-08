@@ -225,6 +225,28 @@ Configuration options:
 * **queryParam**: Name of the query parameter. Configure it if you want to get the token from the query parameters.
 * **header**: Name of the header. Configure it if you want to get the token from the header.
 
+### JWT
+
+The JWT authenticator gets the [JWT token](https://jwt.io/) from the header or query param and either return the payload directly or pass it to the identifiers to verify them against another datasource for example.
+
+* **header**: The header line to check for the token. The default is `Authorization`.
+* **queryParam**: The query param to check for the token. The default is `token`.
+* **tokenPrefix**: The token prefix. Default is `bearer`.
+* **algorithms**: An array of hashing algorithms for Firebase JWT. Default is an array `['HS256']`.
+* **entityClass**: The entity class to use for the payload data. Default is `Cake\ORM\Entity`
+* **returnPayload**: To return or not return the token payload directly without going through the identifiers. Default is `true`.
+* **secretKey**: Default is `null` but you're **required** to pass a secret key if you're not in the context of a CakePHP application that provides it through `Security::salt()`.
+
+If you want to identify the user based on the `sub` (subject) of the token you can use the JwtSubject identifier.
+
+```php
+$service = new AuthenticationService();
+$service->loadIdentifier('Authentication.JwtSubject');
+$service->loadAuthenticator('Authentication.Jwt', [
+    'returnPayload' => false
+]);
+```
+
 ### Session
 
 This authenticator will check the session if it contains user data or credentials
