@@ -9,13 +9,14 @@
     ],
     "type": "cakephp-plugin",
     "require": {
-        "cakephp/core": "3.4.*@beta",
-        "cakephp/event": "3.4.*@beta",
-        "cakephp/utility": "3.4.*@beta",
+        "cakephp/core": "~3.4",
+        "cakephp/datasource": "~3.4",
+        "cakephp/event": "~3.4",
+        "cakephp/utility": "~3.4",
         "psr/http-message": "~1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "3.4.*@beta",
+        "cakephp/cakephp": "~3.4",
         "cakephp/cakephp-codesniffer": "^2.1",
         "phpunit/phpunit": "<6.0",
         "firebase/php-jwt": "~4.0"
