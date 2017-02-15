@@ -166,16 +166,16 @@ Change your code to use the identity data from the `identity` request attribute 
 $user = $request->getAttribute('identity');
 ```
 
-For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible as `authentication` attribute.
+For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible on the `authentication` attribute.
 
 ```php
-$auth = $request->getAttribute('authentication');
+$authResult = $request->getAttribute('authentication')->getResult();
 // Bool if the result is valid
-debug($auth->isValid());
+debug($authResult->isValid());
 // A status code
-debug($auth->getCode());
+debug($authResult->getCode());
 // An array of error messages or data if the identifier provided any
-debug($auth->getError());
+debug($authResult->getError());
 ```
 
 The huge config array from the AuthComponent needs to be split into identifiers and authenticators when configuring the service. So when you had your AuthComponent configured this way
