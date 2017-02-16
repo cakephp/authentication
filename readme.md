@@ -25,7 +25,7 @@ use Authentication\Middleware\AuthenticationMiddleware;
 
 class Application extends BaseApplication
 {
-    public function middleware($middleware)
+    public function middleware($middlewareStack)
     {
         // Various other middlewares for error handling, routing etc. added here.
 
@@ -48,9 +48,9 @@ class Application extends BaseApplication
         $authentication = new AuthenticationMiddleware($service);
 
         // Add the middleware to the middleware stack
-        $middleware->add($authentication);
+        $middlewareStack->add($authentication);
 
-        return $middleware;
+        return $middlewareStack;
     }
 }
 ```
