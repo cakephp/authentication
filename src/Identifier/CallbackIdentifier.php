@@ -49,15 +49,14 @@ class CallbackIdentifier extends AbstractIdentifier
         }
 
         $result = $callback($data);
-
-        if (!$result instanceof EntityInterface && $result !== null) {
-            throw new RuntimeException(sprintf(
-                'Invalid return type of `%s`. Must be `%s` or `null`.',
-                gettype($result),
-                EntityInterface::class
-            ));
+        if ($result === null || $result instanceof EntityInterface) {
+            return $result;
         }
 
-        return $result;
+        throw new RuntimeException(sprintf(
+            'Invalid return type of `%s`. Must be `%s` or `null`.',
+            gettype($result),
+            EntityInterface::class
+        ));
     }
 }
