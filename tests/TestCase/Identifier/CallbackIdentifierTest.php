@@ -89,10 +89,9 @@ class CallbackIdentifierTest extends TestCase
      */
     public function testInvalidCallbackTypeString()
     {
-        $identifier = new CallbackIdentifier([
+        new CallbackIdentifier([
             'callback' => 'no'
         ]);
-        $identifier->identify([]);
     }
 
     /**
@@ -102,10 +101,9 @@ class CallbackIdentifierTest extends TestCase
      */
     public function testInvalidCallbackTypeObject()
     {
-        $identifier = new CallbackIdentifier([
+        new CallbackIdentifier([
             'callback' => new stdClass()
         ]);
-        $identifier->identify([]);
     }
 
     /**
