@@ -41,7 +41,7 @@ class CallbackIdentifier extends AbstractIdentifier
     {
         $callback = $this->getConfig('callback');
 
-        if (!$callback instanceof Closure) {
+        if (!is_callable($callback)) {
             throw new InvalidArgumentException(sprintf(
                 'The `callback` option is not a callable but `%s`',
                 gettype($callback)

@@ -8,7 +8,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         4.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Identifier;
@@ -18,6 +17,15 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Entity;
 use stdClass;
+
+class MyCallback
+{
+
+    public static function callme($data)
+    {
+        return new Entity();
+    }
+}
 
 class CallbackIdentifierTest extends TestCase
 {
@@ -47,6 +55,30 @@ class CallbackIdentifierTest extends TestCase
         $this->assertNull($result);
 
         $result = $identifier->identify(['username' => 'florian']);
+        $this->assertInstanceOf(EntityInterface::class, $result);
+    }
+
+    /**
+     * testValidCallable
+     *
+     * @return void
+     */
+    public function testValidCallable()
+    {
+        $identifier = new CallbackIdentifier([
+            'callback' => function () {
+                return new Entity();
+            }
+        ]);
+        $result = $identifier->identify([]);
+
+        $this->assertInstanceOf(EntityInterface::class, $result);
+
+        $identifier = new CallbackIdentifier([
+            'callback' => [MyCallback::class, 'callme']
+        ]);
+        $result = $identifier->identify([]);
+
         $this->assertInstanceOf(EntityInterface::class, $result);
     }
 
