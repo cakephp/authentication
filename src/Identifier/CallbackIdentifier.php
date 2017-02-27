@@ -13,7 +13,6 @@
 namespace Authentication\Identifier;
 
 use Cake\Datasource\EntityInterface;
-use Closure;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -28,8 +27,36 @@ class CallbackIdentifier extends AbstractIdentifier
      * @var array
      */
     protected $_defaultConfig = [
-        'callback' => null,
+        'callback' => null
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
+
+        $this->checkCallable();
+    }
+
+    /**
+     * Check the callable option
+     *
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    protected function checkCallable()
+    {
+        $callback = $this->getConfig('callback');
+
+        if (!is_callable($callback)) {
+            throw new InvalidArgumentException(sprintf(
+                'The `callback` option is not a callable but `%s`',
+                gettype($callback)
+            ));
+        }
+    }
 
     /**
      * Identify
@@ -40,13 +67,6 @@ class CallbackIdentifier extends AbstractIdentifier
     public function identify($data)
     {
         $callback = $this->getConfig('callback');
-
-        if (!is_callable($callback)) {
-            throw new InvalidArgumentException(sprintf(
-                'The `callback` option is not a callable but `%s`',
-                gettype($callback)
-            ));
-        }
 
         $result = $callback($data);
         if ($result === null || $result instanceof EntityInterface) {
