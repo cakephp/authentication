@@ -18,7 +18,8 @@
         "cakephp/cakephp": "3.4.*@beta",
         "cakephp/cakephp-codesniffer": "^2.1",
         "phpunit/phpunit": "<6.0",
-        "firebase/php-jwt": "~4.0"
+        "firebase/php-jwt": "~4.0",
+        "phpstan/phpstan": "^0.6.4"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework).",
