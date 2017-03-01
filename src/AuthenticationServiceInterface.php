@@ -52,7 +52,7 @@ interface AuthenticationServiceInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @param mixed $identity Identity data.
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @return array Return an array containing the request and response objects.
      */
     public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
 
