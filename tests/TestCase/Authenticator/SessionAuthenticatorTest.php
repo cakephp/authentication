@@ -147,13 +147,15 @@ class SessionAuthenticatorTest extends TestCase
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+        $response = new Response();
         $authenticator = new SessionAuthenticator($this->identifiers);
 
         $this->sessionMock->expects($this->at(0))
             ->method('write')
             ->with('Auth', ['username' => 'florian']);
 
-        $authenticator->persistIdentity($request, ['username' => 'florian']);
+        $result = $authenticator->persistIdentity($request, $response, ['username' => 'florian']);
+        $this->assertInternalType('array', $result);
     }
 
     /**
@@ -173,6 +175,7 @@ class SessionAuthenticatorTest extends TestCase
             ->method('delete')
             ->with('Auth');
 
-        $authenticator->clearIdentity($request, $response);
+        $result = $authenticator->clearIdentity($request, $response);
+        $this->assertInternalType('array', $result);
     }
 }
