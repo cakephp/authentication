@@ -203,9 +203,11 @@ class AuthenticatorServiceTest extends TestCase
             ['REQUEST_URI' => '/']
         );
 
+        $response = new Response();
+
         $this->assertEmpty($request->getAttribute('identity'));
 
-        $result = $service->setIdentity($request, ['username' => 'florian']);
+        $result = $service->setIdentity($request, $response, ['username' => 'florian']);
         $this->assertInstanceOf(ServerRequestInterface::class, $result);
 
         $identity = $result->getAttribute('identity');
