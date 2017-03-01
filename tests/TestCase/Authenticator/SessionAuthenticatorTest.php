@@ -20,6 +20,8 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Network\Session;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class SessionAuthenticatorTest extends TestCase
 {
@@ -156,6 +158,10 @@ class SessionAuthenticatorTest extends TestCase
 
         $result = $authenticator->persistIdentity($request, $response, ['username' => 'florian']);
         $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
     }
 
     /**
@@ -177,5 +183,9 @@ class SessionAuthenticatorTest extends TestCase
 
         $result = $authenticator->clearIdentity($request, $response);
         $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
     }
 }
