@@ -263,7 +263,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @param mixed $identity The identity data.
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @return array
      */
     public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {

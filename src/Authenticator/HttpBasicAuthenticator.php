@@ -77,7 +77,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
      * @return void
-     * @throws \Authentication\Authenticator\ChallengeException
+     * @throws \Authentication\Authenticator\UnauthorizedException
      */
     public function unauthorizedChallenge(ServerRequestInterface $request)
     {
