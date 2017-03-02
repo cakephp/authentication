@@ -127,10 +127,15 @@ class AuthenticationComponent extends Component
     public function setIdentity($identity)
     {
         $controller = $this->_registry->getController();
-        $this->controller->request = $this->_authentication->setIdentity(
+
+        $result = $this->_authentication->setIdentity(
             $controller->request,
+            $controller->response,
             $identity
         );
+
+        $controller->setRequest($result['request']);
+        $controller->response = $result['response'];
     }
 
     /**

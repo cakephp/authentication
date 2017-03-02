@@ -23,6 +23,7 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TestApp\Authentication\Authenticator\InvalidAuthenticator;
@@ -203,12 +204,19 @@ class AuthenticatorServiceTest extends TestCase
             ['REQUEST_URI' => '/']
         );
 
+        $response = new Response();
+
         $this->assertEmpty($request->getAttribute('identity'));
 
-        $result = $service->setIdentity($request, ['username' => 'florian']);
-        $this->assertInstanceOf(ServerRequestInterface::class, $result);
+        $result = $service->setIdentity($request, $response, ['username' => 'florian']);
 
-        $identity = $result->getAttribute('identity');
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        $identity = $result['request']->getAttribute('identity');
         $this->assertInternalType('array', $identity);
         $this->assertEquals(['username' => 'florian'], $identity);
     }

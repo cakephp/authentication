@@ -20,6 +20,8 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Network\Session;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class SessionAuthenticatorTest extends TestCase
 {
@@ -147,13 +149,19 @@ class SessionAuthenticatorTest extends TestCase
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+        $response = new Response();
         $authenticator = new SessionAuthenticator($this->identifiers);
 
         $this->sessionMock->expects($this->at(0))
             ->method('write')
             ->with('Auth', ['username' => 'florian']);
 
-        $authenticator->persistIdentity($request, ['username' => 'florian']);
+        $result = $authenticator->persistIdentity($request, $response, ['username' => 'florian']);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
     }
 
     /**
@@ -173,6 +181,11 @@ class SessionAuthenticatorTest extends TestCase
             ->method('delete')
             ->with('Auth');
 
-        $authenticator->clearIdentity($request, $response);
+        $result = $authenticator->clearIdentity($request, $response);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
     }
 }

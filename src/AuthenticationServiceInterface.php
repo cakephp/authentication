@@ -50,10 +50,11 @@ interface AuthenticationServiceInterface
      * Persists the given identity data in the authenticators that support persistence.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @param mixed $identity Identity data.
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @return array Return an array containing the request and response objects.
      */
-    public function setIdentity(ServerRequestInterface $request, $identity);
+    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
 
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate

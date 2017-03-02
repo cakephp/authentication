@@ -21,17 +21,18 @@ interface PersistenceInterface
      * Persists the users data
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
+     * @param \Psr\Http\Message\ResponseInterface $response The response object.
      * @param mixed $identity Identity data to persist.
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @return array Returns an array containing the request and response object
      */
-    public function persistIdentity(ServerRequestInterface $request, $identity);
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
 
     /**
      * Clears the identity data
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
      * @param \Psr\Http\Message\ResponseInterface $response The response object.
-     * @return array
+     * @return array Returns an array containing the request and response object
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response);
 }
