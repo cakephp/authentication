@@ -42,7 +42,12 @@ class Application extends BaseApplication
 
         // Load the authenticators, you want session first
         $service->loadAuthenticator('Authentication.Session');
-        $service->loadAuthenticator('Authentication.Form');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
+            ]
+        ]);
 
         // Add it to the authentication middleware
         $authentication = new AuthenticationMiddleware($service);
