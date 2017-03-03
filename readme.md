@@ -15,7 +15,7 @@ If your application existed before (<= CakePHP 3.3), please make sure it is adju
 This package is an Authentication middleware layer for authenticating requests coming into your application, using various authenticators and indentifiers.
 
 ## What it is not
-The pacakge only provides authentication and not authorization. It can be used to find out who someone is, but not what they're allowed to do. 
+The package only provides authentication and not authorization. It can be used to find out who someone is, but not what they're allowed to do. 
 
 ## Quick Start
 
