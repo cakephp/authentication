@@ -116,7 +116,7 @@ if ($result->isValid()) {
 To log an identity out just call the services clearIdentity() method:
 
 ```php
-$result = $request->getAttribute('authentication')->clearIdentity();
+$result = $request->getAttribute('authentication')->clearIdentity($request, $response);
 debug($result);
 ```
 
