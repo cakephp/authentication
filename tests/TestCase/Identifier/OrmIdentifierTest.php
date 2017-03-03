@@ -60,6 +60,31 @@ class OrmIdentifierTest extends TestCase
     }
 
     /**
+     * testIdentifyMultiField
+     *
+     * @return void
+     */
+    public function testIdentifyMultiField()
+    {
+        $identifier = new OrmIdentifier([
+            'fields' => ['username' => ['id', 'username']]
+        ]);
+
+        $result = $identifier->identify([
+            'username' => 'larry',
+            'password' => 'password'
+        ]);
+        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+
+        $result = $identifier->identify([
+            'username' => 3,
+            'password' => 'password'
+        ]);
+        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $this->assertEquals('larry', $result->username);
+    }
+
+    /**
      * testFinderArrayConfig
      *
      * @return void
