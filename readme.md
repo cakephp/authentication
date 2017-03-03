@@ -42,7 +42,7 @@ class Application extends BaseApplication
 
         // Load the authenticators, you want session first
         $service->loadAuthenticator('Authentication.Session', [
-            'sessionkey' => 'user'
+            'sessionKey' => 'user'
         ]);
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => [
