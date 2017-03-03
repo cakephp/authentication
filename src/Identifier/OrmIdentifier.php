@@ -106,19 +106,7 @@ class OrmIdentifier extends AbstractIdentifier
         $config = $this->_config;
         $table = TableRegistry::get($config['userModel']);
 
-        if (is_array($config['fields']['username'])) {
-            $conditions = [];
-            foreach ($config['fields']['username'] as $field) {
-                $conditions[$table->aliasField($field)] = $identifier;
-            }
-            $conditions = [
-                'OR' => $conditions
-            ];
-        } else {
-            $conditions = [$table->aliasField($config['fields']['username']) => $identifier];
-        }
-
-        $options = compact('conditions');
+        $options = ['conditions' => $this->_buildConditions($identifier, $table)];
 
         $finder = $config['finder'];
         if (is_array($finder)) {
@@ -131,5 +119,31 @@ class OrmIdentifier extends AbstractIdentifier
         }
 
         return $table->find($finder, $options);
+    }
+
+    /**
+     * Build query conditions.
+     *
+     * @param string $identifier The username/identifier.
+     * @param \Cake\ORM\Table $table Table instance.
+     * @return array
+     */
+    protected function _buildConditions($identifier, $table)
+    {
+        $usernameFields = $this->config('fields.username');
+
+        if (is_array($usernameFields)) {
+            $conditions = [];
+            foreach ($usernameFields as $field) {
+                $conditions[$table->aliasField($field)] = $identifier;
+            }
+            $conditions = [
+                'OR' => $conditions
+            ];
+        } else {
+            $conditions = [$table->aliasField($usernameFields) => $identifier];
+        }
+
+        return $conditions;
     }
 }
