@@ -15,6 +15,7 @@ namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\OrmIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Datasource\EntityInterface;
 
 class OrmIdentifierTest extends TestCase
 {
@@ -74,13 +75,13 @@ class OrmIdentifierTest extends TestCase
             'username' => 'larry',
             'password' => 'password'
         ]);
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $this->assertInstanceOf(EntityInterface::class, $result);
 
         $result = $identifier->identify([
             'username' => 3,
             'password' => 'password'
         ]);
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $this->assertInstanceOf(EntityInterface::class, $result);
         $this->assertEquals('larry', $result->username);
     }
 
