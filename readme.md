@@ -11,6 +11,12 @@ Don't know what a middleware is? [Check the CakePHP documentation](http://book.c
 This plugin is for CakePHP 3.4+.
 If your application existed before (<= CakePHP 3.3), please make sure it is adjusted to leverage middleware as described in the [docs](http://book.cakephp.org/3.0/en/controllers/middleware.html#adding-the-new-http-stack-to-an-existing-application).
 
+## What is it?
+This package is an Authentication middleware layer for authenticating requests coming into your application, using various authenticators and indentifiers.
+
+## What it is not
+The pacakge only provides authentication and not authorization. It can be used to find out who someone is, but not what they're allowed to do. 
+
 ## Quick Start
 
 Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use a middleware if you don't know what it is or how to work with it.
@@ -42,7 +48,7 @@ class Application extends BaseApplication
 
         // Load the authenticators, you want session first
         $service->loadAuthenticator('Authentication.Session', [
-            'sessionKey' => 'user'
+            'sessionKey' => 'Auth'
         ]);
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => [
@@ -91,8 +97,15 @@ $service->loadIdentifier('Authentication.Orm', [
 ]);
 
 // Load the authenticators leaving Basic as the last one.
-$service->loadAuthenticator('Authentication.Session');
-$service->loadAuthenticator('Authentication.Form');
+$service->loadAuthenticator('Authentication.Session', [
+    'sessionKey' => 'Auth'
+]);
+$service->loadAuthenticator('Authentication.Form', [
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password'
+    ]
+]);
 $service->loadAuthenticator('Authentication.HttpBasic');
 ```
 
@@ -142,6 +155,7 @@ The debug will show you an array like this:
 
 ### Differences
 
+* No authentication layer is provided, you will need to build this yourself.
 * There is no automatic checking of the session. To get the actual user data from the session you'll have to use the `SessionAuthenticator`. It will check the session if there is data in the configured session key and put it into the identity object.
 * The user data is no longer available through the AuthComponent but is accessible via a request attribute and encapsulated in an identity object: `$request->getAttribute('authentication')->getIdentity();`
 * The logic of the authentication process has been split into authenticators and identifiers. An authenticator will extract the credentials from the request, while identifiers verify the credentials and find the matching user.
@@ -215,11 +229,18 @@ $service->loadIdentifier('Authentication.Orm', [
 ]);
 
 // Load the authenticators
-$service->loadAuthenticator('Authentication.Session');
-$service->loadAuthenticator('Authentication.Form');
+$service->loadAuthenticator('Authentication.Session', [
+    'sessionKey' => 'Auth'
+]);
+$service->loadAuthenticator('Authentication.Form', [
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password'
+    ]
+]);
 ```
 
-While this seems to be a little more to write, the benefit is a greater flexibility and better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
+While this seems to be a little more to write, the benefit is a greater flexibility and better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns). Plus, with this separation, it gives you much greater flexibility in developing your own authorization layer.
 
 ## Authenticators
 
