@@ -50,7 +50,9 @@ class OrmIdentifier extends AbstractIdentifier
     {
         $fields = $this->getConfig('fields');
 
-        if (!isset($data[$fields['username']])) {
+        $usernameFields = (array)$fields['username'];
+        $found = array_intersect_key(array_flip($usernameFields), $data);
+        if (empty($found)) {
             return null;
         }
 
@@ -59,7 +61,7 @@ class OrmIdentifier extends AbstractIdentifier
             $password = $data[$fields['password']];
         }
 
-        return $this->_findUser($data[$fields['username']], $password);
+        return $this->_findUser($data[key($found)], $password);
     }
 
     /**
@@ -67,14 +69,14 @@ class OrmIdentifier extends AbstractIdentifier
      * Input passwords will be hashed even when a user doesn't exist. This
      * helps mitigate timing attacks that are attempting to find valid usernames.
      *
-     * @param string $username The username/identifier.
+     * @param string $identifier The username/identifier.
      * @param string|null $password The password, if not provided password checking is skipped
      *   and result of find is returned.
      * @return \Cake\Datasource\EntityInterface|null User data entity or null on failure.
      */
-    protected function _findUser($username, $password = null)
+    protected function _findUser($identifier, $password = null)
     {
-        $result = $this->_query($username)->first();
+        $result = $this->_query($identifier)->first();
         if (empty($result)) {
             return null;
         }
@@ -96,17 +98,15 @@ class OrmIdentifier extends AbstractIdentifier
     /**
      * Get query object for fetching user from database.
      *
-     * @param string $username The username/identifier.
+     * @param string $identifier The username/identifier.
      * @return \Cake\ORM\Query
      */
-    protected function _query($username)
+    protected function _query($identifier)
     {
         $config = $this->_config;
         $table = TableRegistry::get($config['userModel']);
 
-        $options = [
-            'conditions' => [$table->aliasField($config['fields']['username']) => $username]
-        ];
+        $options = ['conditions' => $this->_buildConditions($identifier, $table)];
 
         $finder = $config['finder'];
         if (is_array($finder)) {
@@ -115,9 +115,35 @@ class OrmIdentifier extends AbstractIdentifier
         }
 
         if (!isset($options['username'])) {
-            $options['username'] = $username;
+            $options['username'] = $identifier;
         }
 
         return $table->find($finder, $options);
+    }
+
+    /**
+     * Build query conditions.
+     *
+     * @param string $identifier The username/identifier.
+     * @param \Cake\ORM\Table $table Table instance.
+     * @return array
+     */
+    protected function _buildConditions($identifier, $table)
+    {
+        $usernameFields = $this->config('fields.username');
+
+        if (is_array($usernameFields)) {
+            $conditions = [];
+            foreach ($usernameFields as $field) {
+                $conditions[$table->aliasField($field)] = $identifier;
+            }
+            $conditions = [
+                'OR' => $conditions
+            ];
+        } else {
+            $conditions = [$table->aliasField($usernameFields) => $identifier];
+        }
+
+        return $conditions;
     }
 }
