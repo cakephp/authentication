@@ -25,7 +25,7 @@ use Authentication\Middleware\AuthenticationMiddleware;
 
 class Application extends BaseApplication
 {
-    public function middleware($middlewareStack)
+    public function middleware($middlewareQueue)
     {
         // Various other middlewares for error handling, routing etc. added here.
 
@@ -47,10 +47,10 @@ class Application extends BaseApplication
         // Add it to the authentication middleware
         $authentication = new AuthenticationMiddleware($service);
 
-        // Add the middleware to the middleware stack
-        $middlewareStack->add($authentication);
+        // Add the middleware to the middleware queue
+        $middlewareQueue->add($authentication);
 
-        return $middlewareStack;
+        return $middlewareQueue;
     }
 }
 ```
@@ -302,6 +302,6 @@ The event contains the following data:
 
 The subject of the event will be the current controller instance the AuthenticationComponent is attached to.
 
-But the event is only fired if the authenticator that was used to identify the identity is *not* persistent and *not* stateless. The reason for this is that the event would be fired every time because the session authenticator or token for example would trigger it every time for every request. 
- 
+But the event is only fired if the authenticator that was used to identify the identity is *not* persistent and *not* stateless. The reason for this is that the event would be fired every time because the session authenticator or token for example would trigger it every time for every request.
+
 From the included authenticators only the FormAuthenticator will cause the event to be fired. After that the session authenticator will provide the identity.
