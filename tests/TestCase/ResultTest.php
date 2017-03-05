@@ -42,7 +42,7 @@ class ResultTest extends TestCase
             $this->fail('InvalidArgumentException not thrown!');
         } catch (InvalidArgumentException $e) {
             $result = $e->getMessage();
-            $expected = 'Identity must be NULL or an object implementing \Cake\Datasource\EntityInterface';
+            $expected = 'Identity must be `null` or an object implementing \Cake\Datasource\EntityInterface';
             $this->assertEquals($expected, $result);
         }
     }

@@ -43,7 +43,7 @@ class IdentifierCollectionTest extends TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Identifier class "Does-not-exist" was not found.
+     * @expectedExceptionMessage Identifier class `Does-not-exist` was not found.
      */
     public function testLoadException()
     {
@@ -53,7 +53,7 @@ class IdentifierCollectionTest extends TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Identifier class "TestApp\Authentication\Identifier\InvalidIdentifier
+     * @expectedExceptionMessage Identifier class `TestApp\Authentication\Identifier\InvalidIdentifier`
      */
     public function testLoadExceptionInterfaceNotImplemented()
     {

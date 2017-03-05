@@ -86,7 +86,7 @@ class Result implements ResultInterface
             throw new InvalidArgumentException('Identity can not be empty with status success.');
         }
         if ($identity !== null && !$identity instanceof EntityInterface) {
-            throw new InvalidArgumentException('Identity must be NULL or an object implementing \Cake\Datasource\EntityInterface');
+            throw new InvalidArgumentException('Identity must be `null` or an object implementing \Cake\Datasource\EntityInterface');
         }
 
         $this->_code = (int)$code;
