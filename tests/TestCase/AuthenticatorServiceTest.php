@@ -95,7 +95,7 @@ class AuthenticatorServiceTest extends TestCase
         ]);
 
         try {
-            $result = $service->authenticate($request, $response);
+            $service->authenticate($request, $response);
             $this->fail('Challenge exception should have been raised');
         } catch (UnauthorizedException $e) {
             $expected = [
