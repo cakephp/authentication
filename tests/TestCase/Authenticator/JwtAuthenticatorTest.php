@@ -135,4 +135,69 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertInstanceOf(EntityInterface::class, $result->getIdentity());
     }
+
+    public function testAuthenticateInvalidPayloadNotAnObject()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => $this->token]
+        );
+
+        $response = new Response();
+
+        $this->identifiers->load('Authentication.JwtSubject');
+
+        $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
+            ->setConstructorArgs([
+                $this->identifiers
+            ])
+            ->setMethods([
+                'getPayLoad'
+            ])
+            ->getMock();
+
+        $authenticator->expects($this->at(0))
+            ->method('getPayLoad')
+            ->will($this->returnValue('no an object'));
+
+        $result = $authenticator->authenticate($request, $response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
+        $this->assertNUll($result->getIdentity());
+    }
+
+    /**
+     * testAuthenticateInvalidPayloadEmpty
+     *
+     * @return void
+     */
+    public function testAuthenticateInvalidPayloadEmpty()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => $this->token]
+        );
+
+        $response = new Response();
+
+        $this->identifiers->load('Authentication.JwtSubject');
+
+        $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
+            ->setConstructorArgs([
+                $this->identifiers
+            ])
+            ->setMethods([
+                'getPayLoad'
+            ])
+            ->getMock();
+
+        $authenticator->expects($this->at(0))
+            ->method('getPayLoad')
+            ->will($this->returnValue(new \stdClass()));
+
+        $result = $authenticator->authenticate($request, $response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
+        $this->assertNUll($result->getIdentity());
+    }
 }

@@ -20,7 +20,6 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\OrmIdentifier;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Psr\Http\Message\RequestInterface;
