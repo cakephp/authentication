@@ -252,4 +252,29 @@ class AuthenticatorServiceTest extends TestCase
         $result = $service->getResult();
         $this->assertInstanceOf(Result::class, $result);
     }
+
+    /**
+     * testNoAuthenticatorsLoadedException
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage No authenticator loaded. You need to load at least one authenticator.
+     * @return void
+     */
+    public function testNoAuthenticatorsLoadedException()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Orm'
+            ]
+        ]);
+
+        $service->authenticate($request, $response);
+    }
 }

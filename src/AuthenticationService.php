@@ -22,6 +22,7 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
 /**
  * Authentication Service
@@ -205,10 +206,17 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return \Authentication\ResultInterface A result object. If none of
      * the adapters was a success the last failed result is returned.
+     * @throws RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $this->loadAuthenticators();
+
+        if (empty($this->_authenticators)) {
+            throw new RuntimeException(
+                'No authenticator loaded. You need to load at least one authenticator.'
+            );
+        }
 
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
@@ -225,6 +233,7 @@ class AuthenticationService implements AuthenticationServiceInterface
 
                 return $this->_result = $result;
             }
+
             if (!$result->isValid() && $authenticator instanceof StatelessInterface) {
                 $authenticator->unauthorizedChallenge($request);
             }
