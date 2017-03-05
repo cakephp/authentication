@@ -256,7 +256,9 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         foreach ($this->_authenticators as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
-                $response = $authenticator->clearIdentity($request, $response);
+                $result = $authenticator->clearIdentity($request, $response);
+                $request = $result['request'];
+                $response = $result['response'];
             }
         }
 
