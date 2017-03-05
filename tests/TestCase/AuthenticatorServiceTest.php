@@ -20,7 +20,6 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\OrmIdentifier;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Psr\Http\Message\RequestInterface;
@@ -252,5 +251,30 @@ class AuthenticatorServiceTest extends TestCase
         $service->authenticate($request, $response);
         $result = $service->getResult();
         $this->assertInstanceOf(Result::class, $result);
+    }
+
+    /**
+     * testNoAuthenticatorsLoadedException
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage No authenticator loaded. You need to load at least one authenticator.
+     * @return void
+     */
+    public function testNoAuthenticatorsLoadedException()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Orm'
+            ]
+        ]);
+
+        $service->authenticate($request, $response);
     }
 }
