@@ -199,6 +199,7 @@ class AuthenticatorServiceTest extends TestCase
                 'Authentication.Form'
             ]
         ]);
+        $service->loadAuthenticators();
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
