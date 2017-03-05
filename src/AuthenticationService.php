@@ -206,7 +206,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return \Authentication\ResultInterface A result object. If none of
      * the adapters was a success the last failed result is returned.
-     * @throws RuntimeException Throws a runtime exception when no authenticators are loaded.
+     * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
