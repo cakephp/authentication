@@ -200,4 +200,38 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
         $this->assertNUll($result->getIdentity());
     }
+
+    /**
+     * testGetPayload
+     *
+     * @return void
+     */
+    public function testGetPayload()
+    {
+        $this->request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => $this->token]
+        );
+
+        $this->identifiers->load('Authentication.JwtSubject');
+
+        $authenticator = new JwtAuthenticator($this->identifiers, [
+            'secretKey' => 'secretKey'
+        ]);
+
+        $result = $authenticator->getPayload();
+        $this->assertNull($result);
+
+        $authenticator->authenticate($this->request, $this->response);
+
+        $expected = [
+            'sub' => 3,
+            'id' => 3,
+            'username' => 'larry',
+            'firstname' => 'larry'
+        ];
+
+        $result = $authenticator->getPayload();
+        $this->assertEquals($expected, (array)$result);
+    }
 }
