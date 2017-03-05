@@ -16,3 +16,4 @@ If your application existed before (<= CakePHP 3.3), please make sure it is adju
  * [Quick Start and Introduction to the basics](docs/Quick-start-and-introduction.md)
  * [Migration from the AuthComponent](docs/Migration-from-the-AuthComponent.md)
  * [Authenticators](docs/Authenticators.md)
+ * [Identifiers](docs/Identifiers.md)
