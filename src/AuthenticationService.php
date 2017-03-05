@@ -240,9 +240,8 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         $this->_successfulAuthenticator = null;
-        $this->_result = $result;
 
-        return $this->_result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+        return $this->_result = $result;
     }
 
     /**
