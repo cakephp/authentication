@@ -149,7 +149,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         $authenticator = new $className($this->identifiers(), $config);
 
         if (!$authenticator instanceof AuthenticateInterface) {
-            throw new Exception('Authenticator must implement AuthenticateInterface.');
+            throw new Exception('Authenticators must implement AuthenticateInterface.');
         }
 
         if (isset($this->_authenticators)) {
@@ -214,7 +214,7 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         if (empty($this->_authenticators)) {
             throw new RuntimeException(
-                'No authenticator loaded. You need to load at least one authenticator.'
+                'No authenticators loaded. You need to load at least one authenticator.'
             );
         }
 

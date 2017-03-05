@@ -123,12 +123,15 @@ class IdentifierCollection
         $className = App::className($class, 'Identifier', 'Identifier');
 
         if ($className === false) {
-            throw new RuntimeException(sprintf('Identifier class "%s" was not found.', $class));
+            throw new RuntimeException(sprintf('Identifier class `%s` was not found.', $class));
         }
 
         $identifier = new $className($config);
         if (!($identifier instanceof IdentifierInterface)) {
-            throw new RuntimeException(sprintf('Identifier class "%s" must implement \Auth\Authentication\IdentifierInterface', $className));
+            throw new RuntimeException(sprintf(
+                'Identifier class `%s` must implement \Auth\Authentication\IdentifierInterface',
+                $className
+            ));
         }
 
         if (isset($config['alias'])) {

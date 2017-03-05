@@ -50,7 +50,7 @@ class PasswordHasherFactoryTest extends TestCase
      * test build() throws exception for non existent hasher
      *
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Password hasher class "FooBar" was not found.
+     * @expectedExceptionMessage Password hasher class `FooBar` was not found.
      * @return void
      */
     public function testBuildException()

@@ -52,7 +52,7 @@ class CallbackIdentifier extends AbstractIdentifier
 
         if (!is_callable($callback)) {
             throw new InvalidArgumentException(sprintf(
-                'The `callback` option is not a callable but `%s`',
+                'The `callback` option is not a callable. Got `%s` instead.',
                 gettype($callback)
             ));
         }
@@ -74,7 +74,7 @@ class CallbackIdentifier extends AbstractIdentifier
         }
 
         throw new RuntimeException(sprintf(
-            'Invalid return type of `%s`. Must be `%s` or `null`.',
+            'Invalid return type of `%s`. Expecting `%s` or `null`.',
             gettype($result),
             EntityInterface::class
         ));

@@ -120,7 +120,7 @@ class AuthenticatorServiceTest extends TestCase
      * testLoadInvalidAuthenticatorObject
      *
      * @expectedException \Exception
-     * @expectedExceptionMessage Authenticator must implement AuthenticateInterface.
+     * @expectedExceptionMessage Authenticators must implement AuthenticateInterface.
      */
     public function testLoadInvalidAuthenticatorObject()
     {
@@ -257,7 +257,7 @@ class AuthenticatorServiceTest extends TestCase
      * testNoAuthenticatorsLoadedException
      *
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage No authenticator loaded. You need to load at least one authenticator.
+     * @expectedExceptionMessage No authenticators loaded. You need to load at least one authenticator.
      * @return void
      */
     public function testNoAuthenticatorsLoadedException()
