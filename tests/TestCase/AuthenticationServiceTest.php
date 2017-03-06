@@ -26,7 +26,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TestApp\Authentication\Authenticator\InvalidAuthenticator;
 
-class AuthenticatorServiceTest extends TestCase
+class AuthenticationServiceTest extends TestCase
 {
 
     /**
