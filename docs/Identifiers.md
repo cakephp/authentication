@@ -8,7 +8,10 @@ The ORM identifier checks the passed credentials against a datasource.
 
 Configuration options:
 
-* **fields**: The fiels for the lookup. Default is `['username' => 'username', 'password' => 'password']`.
+* **fields**: The fields for the lookup. Default is `['username' => 'username', 'password' => 'password']`.
+  You can also set the `username` to an array. For e.g. using
+  `['username' => ['username', 'email'], 'password' => 'password']` will allow
+  you to match value of either username or email columns.
 * **userModel**: The user model. Default is `Users` and all pages will be checked.
 * **finder**: The finder to use with the model. Default is `all`.
 * **passwordHasher**: Password hasher. Default is `DefaultPasswordHasher::class`.
@@ -29,8 +32,8 @@ Configuration options:
 
 Checks the passed JWT token against a datasource.
 
-* **tokenField**: Default is `id`.
-* **dataField**: Default is `sub`.
+* **tokenField**: The field in the database to check against. Default is `id`.
+* **dataField**: The payload key to get user identifier from. Default is `sub`.
 * **userModel**: The user model. Default is `Users` and all pages will be checked.
 * **finder**: Finder method in the model. Default is `all`.
 * **tokenVerification**: The verification method. Default is `Orm`.
