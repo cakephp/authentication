@@ -13,7 +13,7 @@ If your application existed before (<= CakePHP 3.3), please make sure it is adju
 
 ## Authentication is not Authorization
 
-This plugin does intentionally **not** handle authorization. It was [decoupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) from authorization on purpose for a clear [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns). See also [Computer access control](https://en.wikipedia.org/wiki/Computer_access_control). This plugin handles only  *identification* and *authentication*. We might have another plugin for authorization.
+This plugin intentionally **does not** handle authorization. It was [decoupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) from authorization on purpose for a clear [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns). See also [Computer access control](https://en.wikipedia.org/wiki/Computer_access_control). This plugin handles only  *identification* and *authentication*. We might have another plugin for authorization.
 
 ## Documentation
 
