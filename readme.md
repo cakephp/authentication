@@ -11,6 +11,10 @@ Don't know what a middleware is? [Check the CakePHP documentation](http://book.c
 This plugin is for CakePHP 3.4+.
 If your application existed before (<= CakePHP 3.3), please make sure it is adjusted to leverage middleware as described in the [docs](http://book.cakephp.org/3.0/en/controllers/middleware.html#adding-the-new-http-stack-to-an-existing-application).
 
+## Authentication is not Authorization
+
+This plugin intentionally **does not** handle authorization. It was [decoupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) from authorization on purpose for a clear [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns). See also [Computer access control](https://en.wikipedia.org/wiki/Computer_access_control). This plugin handles only  *identification* and *authentication*. We might have another plugin for authorization.
+
 ## Documentation
 
  * [Quick Start and Introduction to the basics](docs/Quick-start-and-introduction.md)
