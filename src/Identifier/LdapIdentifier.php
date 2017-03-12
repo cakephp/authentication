@@ -200,12 +200,6 @@ class LdapIdentifier extends AbstractIdentifier
             // Do Nothing
         }
 
-        try {
-            $this->ldapClose();
-        } catch (ErrorException $e) {
-            // Do Nothing
-        }
-
         restore_error_handler();
     }
 

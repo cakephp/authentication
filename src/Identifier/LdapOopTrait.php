@@ -101,7 +101,7 @@ trait LdapOopTrait {
      */
     public function ldapClose()
     {
-        ldap_close($this->getLdapConnection());
+        ldap_close($this->ldapConnection);
         $this->ldapConnection = null;
     }
 }
