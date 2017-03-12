@@ -75,7 +75,7 @@ class LdapIdentifier extends AbstractIdentifier
         $config = $this->getConfig();
 
         try {
-            $this->ldapConnection = $this->ldapConnect($config['host'], $config['port']);
+            $this->ldapConnect($config['host'], $config['port']);
             if (isset($config['options']) && is_array($config['options'])) {
                 foreach ($config['options'] as $option => $value) {
                     $this->ldapSetOption($option, $value);
