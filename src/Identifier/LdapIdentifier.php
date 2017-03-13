@@ -134,10 +134,7 @@ class LdapIdentifier extends AbstractIdentifier
             $ldapBind = $this->ldapBind($this->_config['bindDN'], $password);
             if ($ldapBind === true) {
                 $username = $this->_getUserFromLdap($username);
-                $result = $this->_orm($username);
-                $result->unsetProperty($this->_config['fields']['password']);
-
-                return $result;
+                return $this->_orm($username);
             }
         } catch (ErrorException $e) {
             if ($this->_config['logErrors'] === true) {
