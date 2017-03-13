@@ -12,8 +12,11 @@
  */
 namespace Authentication\Identifier;
 
+use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Core\Exception\Exception;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\ORM\TableRegistry;
 use ErrorException;
 
 /**
@@ -25,6 +28,7 @@ class LdapIdentifier extends AbstractIdentifier
 {
 
     use LdapOopTrait;
+    use PasswordHasherTrait;
 
     /**
      * Default configuration
@@ -34,6 +38,10 @@ class LdapIdentifier extends AbstractIdentifier
     protected $_defaultConfig = [
         'logErrors' => false,
         'port' => null,
+        'dataField' => 'email',
+        'model' => 'Users',
+        'finder' => 'all',
+        'passwordHasher' => DefaultPasswordHasher::class
     ];
 
     /**
@@ -96,64 +104,12 @@ class LdapIdentifier extends AbstractIdentifier
         $fields = $this->getConfig('fields');
 
         if (isset($data[$fields['username']]) && isset($data[$fields['password']])) {
-            $this->_findUser($data[$fields['username']], $data[$fields['password']]);
+            return $this->_findUser($data[$fields['username']], $data[$fields['password']]);
         }
 
         return false;
     }
 
-    /**
-     * Find a user record using the username and password provided.
-     *
-     * @param string $username The username/identifier.
-     * @param string|null $password The password
-     * @return bool|array Either false on failure, or an array of user data.
-     */
-    protected function _findUser($username, $password = null)
-    {
-        if (!empty($this->_config['domain']) && !empty($username) && strpos($username, '@') === false) {
-            $username .= '@' . $this->_config['domain'];
-        }
-
-        set_error_handler(
-            function ($errorNumber, $errorText, $errorFile, $errorLine) {
-                throw new ErrorException($errorText, 0, $errorNumber, $errorFile, $errorLine);
-            },
-            E_ALL
-        );
-
-        try {
-            $ldapBind = $this->ldapBind(isset($this->_config['bindDN']) ? $this->_config['bindDN']($username, $this->_config['domain']) : $username, $password);
-            if ($ldapBind === true) {
-                return $this->_getUserFromLdap($username);
-            }
-        } catch (ErrorException $e) {
-            if ($this->_config['logErrors'] === true) {
-                $this->log($e->getMessage());
-            }
-            $this->_handleLdapError();
-        }
-
-        restore_error_handler();
-
-        return false;
-    }
-
-    /**
-     * Gets an user from the LDAP connection
-     *
-     * @param string $username
-     */
-    protected function _getUserFromLdap($username)
-    {
-        $searchResults = $this->ldapSearch(
-            $this->_config['baseDN']($username, $this->_config['domain']),
-            '(' . $this->_config['search'] . '=' . $username . ')'
-        );
-        $entry = $this->ldapFirstEntry($this->ldapConnection, $searchResults);
-
-        return $this->ldapGetAttributes($entry);
-    }
 
     /**
      * Gets the errors that happened
@@ -166,6 +122,97 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
+     * Find a user record using the username and password provided.
+     *
+     * @param string $username The username/identifier.
+     * @param string|null $password The password
+     * @return bool|array Either false on failure, or an array of user data.
+     */
+    protected function _findUser($username, $password = null)
+    {
+        try {
+            $ldapBind = $this->ldapBind($this->_config['bindDN'], $password);
+            if ($ldapBind === true) {
+                $username = $this->_getUserFromLdap($username);
+                $result = $this->_orm($username);
+                $result->unsetProperty($this->_config['fields']['password']);
+
+                return $result;
+            }
+        } catch (ErrorException $e) {
+            if ($this->_config['logErrors'] === true) {
+                $this->log($e->getMessage());
+            }
+            $this->_handleLdapError();
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets an user from the LDAP connection
+     *
+     * @param string $username
+     */
+    protected function _getUserFromLdap($username)
+    {
+        $searchResults = $this->ldapSearch(
+            '(' . $this->_config['search'] . '=' . $username . ')',
+            $this->_config['filters']
+        );
+
+        $entry = $this->ldapFirstEntry($searchResults);
+        $attr = $this->ldapGetAttributes($entry);
+
+        return $this->_transformResult($attr);
+    }
+
+    /**
+     * Lookup the username in the ORM
+     *
+     * @param string $username The username string.
+     * @return \Cake\Datasource\EntityInterface|null
+     */
+    protected function _orm($username)
+    {
+        $config = $this->_config;
+        $table = TableRegistry::get($config['model']);
+
+        $options = [
+            'conditions' => [$table->aliasField($config['dataField']) => $username]
+        ];
+
+        $finder = $config['finder'];
+        if (is_array($finder)) {
+            $options += current($finder);
+            $finder = key($finder);
+        }
+
+        $result = $table->find($finder, $options)->first();
+        if (empty($result)) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Transform the result of the user search
+     *
+     * @param string $attr
+     * @return string|null
+     */
+    protected function _transformResult($attr)
+    {
+        foreach($this->_config['filters'] as $key => $filter) {
+            if (array_key_exists($filter, $attr)) {
+                return $attr[$filter][0];
+            }
+        }
+        return null;
+    }
+
+    /**
      * Handles an Ldap error
      *
      * @return array Array of error messages
@@ -173,13 +220,7 @@ class LdapIdentifier extends AbstractIdentifier
     protected function _handleLdapError()
     {
         $extendedError = $this->ldapGetOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
-        if (!empty($extendedError)) {
-            foreach ($this->_config['errors'] as $error => $errorMessage) {
-                if (strpos($extendedError, $error) !== false) {
-                    $this->_errors[] = $errorMessage;
-                }
-            }
-        }
+        $this->_errors[] = $extendedError;
     }
 
     /**
@@ -202,5 +243,4 @@ class LdapIdentifier extends AbstractIdentifier
 
         restore_error_handler();
     }
-
 }

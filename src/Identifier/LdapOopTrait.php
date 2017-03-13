@@ -43,12 +43,12 @@ trait LdapOopTrait {
 
     public function ldapFirstEntry($searchResults)
     {
-        return ldap_first_entry($this->ldapConnection($searchResults));
+        return ldap_first_entry($this->getLdapConnection(), $searchResults);
     }
 
-    public function ldapSearch($baseDn, $filter)
+    public function ldapSearch($filter, $attribute)
     {
-        return ldap_search($this->getLdapConnection(), $baseDn, $filter);
+        return ldap_search($this->getLdapConnection(), $this->_config['baseDN'], $filter, $attribute);
     }
 
     public function getLdapConnection()
@@ -72,9 +72,9 @@ trait LdapOopTrait {
         $this->ldapConnection = ldap_connect($host, $port);
     }
 
-    public function ldapGetAttributes($entity)
+    public function ldapGetAttributes($entry)
     {
-        return ldap_get_attributes($this->getLdapConnection(), $entity);
+        return ldap_get_attributes($this->getLdapConnection(), $entry);
     }
 
     /**
@@ -91,6 +91,7 @@ trait LdapOopTrait {
     public function ldapGetOption($option)
     {
         ldap_get_option($this->getLdapConnection(), $option, $extendedError);
+
         return $extendedError;
     }
 
