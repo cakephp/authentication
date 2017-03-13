@@ -21,6 +21,6 @@ use Cake\Datasource\EntityInterface;
  *
  * @todo implement me
  */
-class LdapIdentifierTest extends TestCase {
-
+class LdapIdentifierTest extends TestCase
+{
 }

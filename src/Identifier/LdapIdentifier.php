@@ -135,11 +135,8 @@ class LdapIdentifier extends AbstractIdentifier
     protected function _findUser($username, $password = null)
     {
         try {
-            $ldapBind = $this->ldapBind($this->_config['bindDN'], $password);
+            $ldapBind = $this->ldapBind($this->_config['bindDN']($username), $password);
             if ($ldapBind === true) {
-                $username = $this->_getUserFromLdap($username);
-                $this->ldapUnbind();
-
                 return new Entity([
                     $this->_config['fields']['username'] => $username
                 ]);
@@ -149,43 +146,6 @@ class LdapIdentifier extends AbstractIdentifier
         }
 
         return false;
-    }
-
-    /**
-     * Gets an user from the LDAP connection
-     *
-     * @param string $username The username to lookup
-     * @return string|null
-     * @author Michael Hoffmann
-     */
-    protected function _getUserFromLdap($username)
-    {
-        $searchResults = $this->ldapSearch(
-            '(' . $this->_config['search'] . '=' . $username . ')',
-            $this->_config['filters']
-        );
-
-        $entry = $this->ldapFirstEntry($searchResults);
-        $attr = $this->ldapGetAttributes($entry);
-
-        return $this->_transformResult($attr);
-    }
-
-    /**
-     * Transform the result of the user search
-     *
-     * @param string $attr The atrributes to transform
-     * @return string|null
-     */
-    protected function _transformResult($attr)
-    {
-        foreach ($this->_config['filters'] as $key => $filter) {
-            if (array_key_exists($filter, $attr)) {
-                return $attr[$filter][0];
-            }
-        }
-
-        return null;
     }
 
     /**

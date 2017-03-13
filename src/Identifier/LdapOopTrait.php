@@ -33,36 +33,13 @@ trait LdapOopTrait
     /**
      * Bind to LDAP directory
      *
-     * @param resource|null $bind An LDAP link identifier
-     * @param string|null $password Bind password
+     * @param string $bind Bind rdn
+     * @param string $password Bind password
      * @return bool
      */
-    public function ldapBind($bind = null, $password = null)
+    public function ldapBind($bind, $password)
     {
         return ldap_bind($this->getLdapConnection(), $bind, $password);
-    }
-
-    /**
-     * Return first result id
-     *
-     * @param resource $searchResults Result identifier
-     * @return resource|false Returns the result entry identifier
-     */
-    public function ldapFirstEntry($searchResults)
-    {
-        return ldap_first_entry($this->getLdapConnection(), $searchResults);
-    }
-
-    /**
-     * Search LDAP tree
-     *
-     * @param string $filter The search filter
-     * @param string $attribute The required attributes
-     * @return resource|false
-     */
-    public function ldapSearch($filter, $attribute)
-    {
-        return ldap_search($this->getLdapConnection(), $this->_config['baseDN'], $filter, $attribute);
     }
 
     /**
@@ -90,17 +67,6 @@ trait LdapOopTrait
     public function ldapConnect($host, $port = null)
     {
         $this->ldapConnection = ldap_connect($host, $port);
-    }
-
-    /**
-     * Get attributes from a search result entry
-     *
-     * @param resource $entry Result entry identifier
-     * @return array|false
-     */
-    public function ldapGetAttributes($entry)
-    {
-        return ldap_get_attributes($this->getLdapConnection(), $entry);
     }
 
     /**
