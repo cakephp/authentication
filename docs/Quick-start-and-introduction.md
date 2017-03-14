@@ -98,6 +98,19 @@ if ($result->isValid()) {
 }
 ```
 
+The result sets objects code returned from `getCode()` will match one of these:
+
+ * 1 - Success
+ * 0 - Failure
+ * -1 - Identify not found
+ * -2 - Credentials invalid
+ * -3 - Any other kind of failure
+ * -4 - Credentials not found
+
+The codes are implemented as class constants in the Result object.
+
+The error array returned by `getErrors()` contains *additional* information coming from the specific system against which the authentication attempt was made. For example LDAP or OAuth would put errors specific to their implementation in here for easier logging and debugging the cause. But most of the included authenticators don't put anything in here.
+
 ## Clearing the identity / logging the user out
 
 To log an identity out just call the services clearIdentity() method:
