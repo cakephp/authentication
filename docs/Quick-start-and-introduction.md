@@ -7,14 +7,14 @@ Install the plugin with [composer](https://getcomposer.org/) from your CakePHP P
 php composer.phar require cakephp/authentication
 ```
 
-Load the plugin by adding following statement in your project's `config/bootstrap.php`
+Load the plugin by adding the following statement in your project's `config/bootstrap.php`
 ```php
 Plugin::load('Authentication');
 ```
 
 ## Configuration
 
-Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use a middleware if you don't know what it is or how to work with it.
+Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use middleware if you don't know what it is or how to work with it.
 
 Example of configuring the authentication middleware.
 
