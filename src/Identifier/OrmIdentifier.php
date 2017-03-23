@@ -2,6 +2,8 @@
 namespace Authentication\Identifier;
 
 use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\PasswordHasherFactory;
+use Authentication\PasswordHasher\PasswordHasherInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -50,6 +52,20 @@ class OrmIdentifier extends AbstractIdentifier
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+
+        $passwordHasher = $this->getConfig('passwordHasher');
+        if (!$passwordHasher instanceof PasswordHasherInterface) {
+            $passwordHasher = PasswordHasherFactory::build($passwordHasher);
+        }
+        $this->_passwordHasher = $passwordHasher;
+    }
+
+    /**
      * Identify
      *
      * @param array $data Authentication credentials
@@ -91,7 +107,7 @@ class OrmIdentifier extends AbstractIdentifier
         }
 
         if ($password !== null) {
-            $hasher = $this->passwordHasher();
+            $hasher = $this->getPasswordHasher();
             $hashedPassword = $result->get($this->_config['fields']['password']);
             if (!$hasher->check($password, $hashedPassword)) {
                 return null;
