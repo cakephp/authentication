@@ -13,8 +13,6 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\PasswordHasher\DefaultPasswordHasher;
-use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,7 +21,6 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
 {
 
     use InstanceConfigTrait;
-    use PasswordHasherTrait;
 
     /**
      * Default config for this object.
@@ -43,10 +40,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
         'fields' => [
             'username' => 'username',
             'password' => 'password'
-        ],
-        'userModel' => 'Users',
-        'finder' => 'all',
-        'passwordHasher' => DefaultPasswordHasher::class
+        ]
     ];
 
     /**
