@@ -13,8 +13,6 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\PasswordHasher\DefaultPasswordHasher;
-use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,19 +21,10 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
 {
 
     use InstanceConfigTrait;
-    use PasswordHasherTrait;
 
     /**
      * Default config for this object.
      * - `fields` The fields to use to identify a user by.
-     * - `userModel` The alias for users table, defaults to Users.
-     * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
-     *   You can set finder name as string or an array where key is finder name and value
-     *   is an array passed to `Table::find()` options.
-     *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
-     * - `passwordHasher` Password hasher class. Can be a string specifying class name
-     *    or an array containing `className` key, any other keys will be passed as
-     *    config to the class. Defaults to 'Default'.
      *
      * @var array
      */
@@ -43,10 +32,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
         'fields' => [
             'username' => 'username',
             'password' => 'password'
-        ],
-        'userModel' => 'Users',
-        'finder' => 'all',
-        'passwordHasher' => DefaultPasswordHasher::class
+        ]
     ];
 
     /**
@@ -59,7 +45,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
     /**
      * Constructor
      *
-     * @param \Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param \Authentication\Identifier\IdentifierCollection $identifiers Identifiers collection.
      * @param array $config Configuration settings.
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
