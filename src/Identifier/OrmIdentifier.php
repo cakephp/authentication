@@ -3,7 +3,7 @@ namespace Authentication\Identifier;
 
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherTrait;
-use Cake\Datasource\EntityInterface;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -23,6 +23,7 @@ use Cake\ORM\TableRegistry;
 class OrmIdentifier extends AbstractIdentifier
 {
 
+    use LocatorAwareTrait;
     use PasswordHasherTrait;
 
     /**
@@ -104,7 +105,7 @@ class OrmIdentifier extends AbstractIdentifier
     protected function _query($identifier)
     {
         $config = $this->_config;
-        $table = TableRegistry::get($config['userModel']);
+        $table = $this->tableLocator()->get($config['userModel']);
 
         $options = ['conditions' => $this->_buildConditions($identifier, $table)];
 
