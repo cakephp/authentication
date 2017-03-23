@@ -4,7 +4,6 @@ namespace Authentication\Identifier;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\TableRegistry;
 
 /**
  * CakePHP ORM Identifier
@@ -27,7 +26,16 @@ class OrmIdentifier extends AbstractIdentifier
     use PasswordHasherTrait;
 
     /**
-     * Default configuration
+     * Default configuration.
+     * - `fields` The fields to use to identify a user by.
+     * - `userModel` The alias for users table, defaults to Users.
+     * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
+     *   You can set finder name as string or an array where key is finder name and value
+     *   is an array passed to `Table::find()` options.
+     *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
+     * - `passwordHasher` Password hasher class. Can be a string specifying class name
+     *    or an array containing `className` key, any other keys will be passed as
+     *    config to the class. Defaults to 'Default'.
      *
      * @var array
      */

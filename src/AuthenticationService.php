@@ -216,6 +216,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             );
         }
 
+        $result = null;
         foreach ($this->_authenticators as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {

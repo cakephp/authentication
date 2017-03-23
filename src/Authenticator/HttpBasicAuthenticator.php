@@ -87,7 +87,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
     /**
      * Generate the login headers
      *
-     * @param \Cake\Network\Request $request Request object.
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
      * @return array Headers for logging in.
      */
     protected function loginHeaders(ServerRequestInterface $request)
