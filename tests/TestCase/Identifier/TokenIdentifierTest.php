@@ -41,6 +41,23 @@ class TokenIdentifierTest extends TestCase
     }
 
     /**
+     * testCustomUserModel
+     *
+     * @return void
+     */
+    public function testCustomUserModel()
+    {
+        $identifier = new TokenIdentifier([
+            'userModel' => 'AuthUsers',
+            'tokenField' => 'username'
+        ]);
+
+        $result = $identifier->identify(['token' => 'chartjes']);
+
+        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+    }
+
+    /**
      * testCallableTokenVerification
      *
      * @return void
