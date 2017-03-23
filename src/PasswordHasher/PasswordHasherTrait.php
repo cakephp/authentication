@@ -33,8 +33,11 @@ trait PasswordHasherTrait
         }
 
         $passwordHasher = $this->_config['passwordHasher'];
+        if (!$passwordHasher instanceof PasswordHasherInterface) {
+            $passwordHasher = PasswordHasherFactory::build($passwordHasher);
+        }
 
-        return $this->_passwordHasher = PasswordHasherFactory::build($passwordHasher);
+        return $this->_passwordHasher = $passwordHasher;
     }
 
     /**
