@@ -19,7 +19,6 @@ use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
-use Cake\Event\EventDispatcherTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -29,7 +28,6 @@ use RuntimeException;
  */
 class AuthenticationService implements AuthenticationServiceInterface
 {
-    use EventDispatcherTrait;
     use InstanceConfigTrait;
 
     /**
