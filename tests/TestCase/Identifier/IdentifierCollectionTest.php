@@ -24,7 +24,7 @@ class IdentifierCollectionTest extends TestCase
         $collection = new IdentifierCollection([
             'Authentication.Orm'
         ]);
-        $result = $collection->get('Authentication.Orm');
+        $result = $collection->get('Orm');
         $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
     }
 
