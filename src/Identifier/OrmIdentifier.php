@@ -1,9 +1,7 @@
 <?php
 namespace Authentication\Identifier;
 
-use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherFactory;
-use Authentication\PasswordHasher\PasswordHasherInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -25,7 +23,9 @@ class OrmIdentifier extends AbstractIdentifier
 {
 
     use LocatorAwareTrait;
-    use PasswordHasherTrait;
+    use PasswordHasherTrait {
+        getPasswordHasher as private traitGetPasswordHasher;
+    }
 
     /**
      * Default configuration.
@@ -48,21 +48,27 @@ class OrmIdentifier extends AbstractIdentifier
         ],
         'userModel' => 'Users',
         'finder' => 'all',
-        'passwordHasher' => DefaultPasswordHasher::class
+        'passwordHasher' => null
     ];
 
     /**
-     * {@inheritDoc}
+     * Return password hasher object.
+     *
+     * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
      */
-    public function __construct(array $config = [])
+    public function getPasswordHasher()
     {
-        parent::__construct($config);
-
-        $passwordHasher = $this->getConfig('passwordHasher');
-        if (!$passwordHasher instanceof PasswordHasherInterface) {
-            $passwordHasher = PasswordHasherFactory::build($passwordHasher);
+        if ($this->_passwordHasher === null) {
+            $passwordHasher = $this->getConfig('passwordHasher');
+            if ($passwordHasher !== null) {
+                $passwordHasher = PasswordHasherFactory::build($passwordHasher);
+            } else {
+                $passwordHasher = $this->traitGetPasswordHasher();
+            }
+            $this->_passwordHasher = $passwordHasher;
         }
-        $this->_passwordHasher = $passwordHasher;
+
+        return $this->_passwordHasher;
     }
 
     /**
