@@ -111,7 +111,7 @@ class IdentifierCollection
     /**
      * Returns identifier object out of a identifier name or a configuration array
      *
-     * @param array $class Name of the identifier
+     * @param string $class Name of the identifier
      * at least the key `className` set to the name of the class to use
      * @param array $config Configuration settings
      * @return \Authentication\Identifier\IdentifierInterface Identifier instance

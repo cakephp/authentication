@@ -43,7 +43,7 @@ debug($authResult->isValid());
 // A status code
 debug($authResult->getCode());
 // An array of error messages or data if the identifier provided any
-debug($authResult->getError());
+debug($authResult->getErrors());
 ```
 
 The huge config array from the AuthComponent needs to be split into identifiers and authenticators when configuring the service. So when you had your AuthComponent configured this way

@@ -89,7 +89,7 @@ class Result implements ResultInterface
             throw new InvalidArgumentException('Identity must be `null` or an object implementing \Cake\Datasource\EntityInterface');
         }
 
-        $this->_code = (int)$code;
+        $this->_code = $code;
         $this->_identity = $identity;
         $this->_errors = $messages;
     }

@@ -30,7 +30,7 @@ class TokenIdentifier extends AbstractIdentifier
     protected $_defaultConfig = [
         'tokenField' => 'token',
         'dataField' => 'token',
-        'model' => 'Users',
+        'userModel' => 'Users',
         'finder' => 'all',
         'tokenVerification' => 'Orm'
     ];
@@ -98,7 +98,7 @@ class TokenIdentifier extends AbstractIdentifier
     protected function _orm($token)
     {
         $config = $this->_config;
-        $table = TableRegistry::get($config['model']);
+        $table = TableRegistry::get($config['userModel']);
 
         $options = [
             'conditions' => [$table->aliasField($config['tokenField']) => $token]
