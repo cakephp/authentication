@@ -49,7 +49,7 @@ class PasswordHasherFactory
 
         $hasher = new $className($config);
         if (!($hasher instanceof PasswordHasherInterface)) {
-            throw new RuntimeException('Password hasher must extend AbstractPasswordHasher class.');
+            throw new RuntimeException('Password hasher must implement PasswordHasherInterface.');
         }
 
         return $hasher;
