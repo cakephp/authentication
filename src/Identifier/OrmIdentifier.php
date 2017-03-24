@@ -24,7 +24,7 @@ class OrmIdentifier extends AbstractIdentifier
 
     use LocatorAwareTrait;
     use PasswordHasherTrait {
-        getPasswordHasher as protected traitGetPasswordHasher;
+        getPasswordHasher as protected _getPasswordHasher;
     }
 
     /**
@@ -63,7 +63,7 @@ class OrmIdentifier extends AbstractIdentifier
             if ($passwordHasher !== null) {
                 $passwordHasher = PasswordHasherFactory::build($passwordHasher);
             } else {
-                $passwordHasher = $this->traitGetPasswordHasher();
+                $passwordHasher = $this->_getPasswordHasher();
             }
             $this->_passwordHasher = $passwordHasher;
         }
