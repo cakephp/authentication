@@ -51,7 +51,7 @@ class IdentifierCollection extends AbstractCollection
      * @param string $className Identifier class.
      * @param string $alias Identifier alias.
      * @param array $config Config array.
-     * @return IdentifierInterface
+     * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
      */
     protected function _create($className, $alias, $config)
