@@ -13,6 +13,7 @@
 namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use TestApp\Authentication\Identifier\InvalidIdentifier;
 
@@ -38,6 +39,19 @@ class IdentifierCollectionTest extends TestCase
         $collection = new IdentifierCollection();
         $result = $collection->load('Authentication.Orm');
         $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
+    }
+
+    /**
+     * testSet
+     *
+     * @return void
+     */
+    public function testSet()
+    {
+        $identifier = $this->createMock(IdentifierInterface::class);
+        $collection = new IdentifierCollection();
+        $collection->set('Orm', $identifier);
+        $this->assertSame($identifier, $collection->get('Orm'));
     }
 
     /**
@@ -71,6 +85,34 @@ class IdentifierCollectionTest extends TestCase
         $collection->load('Authentication.Orm');
         $result = $collection->getAll();
         $this->assertInternalType('array', $result);
+    }
+
+    /**
+     * testIsEmpty
+     *
+     * @return void
+     */
+    public function testIsEmpty()
+    {
+        $collection = new IdentifierCollection();
+        $this->assertTrue($collection->isEmpty());
+
+        $collection->load('Authentication.Orm');
+        $this->assertFalse($collection->isEmpty());
+    }
+
+    /**
+     * testIterator
+     *
+     * @return void
+     */
+    public function testIterator()
+    {
+        $identifier = $this->createMock(IdentifierInterface::class);
+        $collection = new IdentifierCollection();
+        $collection->set('Orm', $identifier);
+
+        $this->assertContains($identifier, $collection);
     }
 
     /**

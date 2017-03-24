@@ -52,7 +52,6 @@ class AuthenticationComponentTest extends TestCase
                 'Authentication.Form'
             ]
         ]);
-        $this->service->loadAuthenticators();
 
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
