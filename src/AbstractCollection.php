@@ -12,18 +12,19 @@
  */
 namespace Authentication;
 
+use ArrayIterator;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Core\ObjectRegistry;
+use IteratorAggregate;
 
 /**
  * Description of AbstractCollection
  *
  * @author Robert Pustułka <r.pustulka@robotusers.com>
  */
-abstract class AbstractCollection extends \Cake\Core\ObjectRegistry
+abstract class AbstractCollection extends ObjectRegistry implements IteratorAggregate
 {
     use InstanceConfigTrait;
-
-    protected $_items = [];
 
     /**
      * Config array.
@@ -58,5 +59,25 @@ abstract class AbstractCollection extends \Cake\Core\ObjectRegistry
     public function getAll()
     {
         return $this->_loaded;
+    }
+
+    /**
+     * Returns true if a collection is empty.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return empty($this->_loaded);
+    }
+
+    /**
+     * Returns iterator.
+     *
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->_loaded);
     }
 }
