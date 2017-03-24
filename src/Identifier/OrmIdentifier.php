@@ -24,7 +24,7 @@ class OrmIdentifier extends AbstractIdentifier
 
     use LocatorAwareTrait;
     use PasswordHasherTrait {
-        getPasswordHasher as private traitGetPasswordHasher;
+        getPasswordHasher as protected traitGetPasswordHasher;
     }
 
     /**
