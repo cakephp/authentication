@@ -12,7 +12,7 @@
  */
 namespace Authentication;
 
-use Authentication\Authenticator\AuthenticateInterface;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
@@ -141,15 +141,15 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
-     * @return \Authentication\Authenticator\AuthenticateInterface
+     * @return \Authentication\Authenticator\AuthenticatorInterface
      */
     public function loadAuthenticator($name, array $config = [])
     {
         $className = $this->_getAuthenticatorClass($name, $config);
         $authenticator = new $className($this->identifiers(), $config);
 
-        if (!$authenticator instanceof AuthenticateInterface) {
-            throw new Exception('Authenticators must implement AuthenticateInterface.');
+        if (!$authenticator instanceof AuthenticatorInterface) {
+            throw new Exception('Authenticators must implement AuthenticatorInterface.');
         }
 
         if (isset($this->_authenticators)) {
@@ -294,7 +294,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
-     * @return \Authentication\Authenticator\AuthenticateInterface|null
+     * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticationProvider()
     {

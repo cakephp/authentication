@@ -19,7 +19,7 @@ use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class AbstractAuthenticator implements AuthenticateInterface
+abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
 
     use InstanceConfigTrait;

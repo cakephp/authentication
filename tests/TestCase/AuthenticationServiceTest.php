@@ -119,7 +119,7 @@ class AuthenticationServiceTest extends TestCase
      * testLoadInvalidAuthenticatorObject
      *
      * @expectedException \Exception
-     * @expectedExceptionMessage Authenticators must implement AuthenticateInterface.
+     * @expectedExceptionMessage Authenticators must implement AuthenticatorInterface.
      */
     public function testLoadInvalidAuthenticatorObject()
     {
