@@ -7,7 +7,7 @@ This authenticator will check the session if it contains user data or credential
 Configuration options:
 
 * **sessionKey**: The session key for the user data, default is `Auth`
-* **identify**: Set this key with a value of bool `true` to enable checking the session credentials against the identifiers. 
+* **identify**: Set this key with a value of bool `true` to enable checking the session credentials against the identifiers. Default is `false`. 
 
 ## Form
 

@@ -35,6 +35,8 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
         $this->_defaultConfig['sessionKey'] = 'Auth';
+        $this->_defaultConfig['identify'] = false;
+
         parent::__construct($identifiers, $config);
     }
 
