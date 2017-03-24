@@ -80,7 +80,7 @@ The `Authentication.afterIdentify` event is fired by the `AuthenticationComponen
 
 The event contains the following data:
 
- * **provider**: An object that implements `\Authentication\Authenticator\AuthenticateInterface`
+ * **provider**: An object that implements `\Authentication\Authenticator\AuthenticatorInterface`
  * **identity**: An object that implements `\Cake\Datasource\EntityInterface`
  * **service**:  An object that implements `\Authentication\AuthenticationServiceInterface`
 

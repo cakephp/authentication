@@ -15,7 +15,7 @@ namespace Authentication\Authenticator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface AuthenticateInterface
+interface AuthenticatorInterface
 {
     /**
      * Authenticate user.
