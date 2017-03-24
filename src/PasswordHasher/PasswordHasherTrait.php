@@ -21,13 +21,14 @@ trait PasswordHasherTrait
 
     /**
      * Return password hasher object.
+     * If a password hasher has not been set, DefaultPasswordHasher instance is returned.
      *
      * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
      */
     public function getPasswordHasher()
     {
         if ($this->_passwordHasher === null) {
-            $this->_passwordHasher = PasswordHasherFactory::build(DefaultPasswordHasher::class);
+            $this->_passwordHasher = new DefaultPasswordHasher();
         }
 
         return $this->_passwordHasher;
