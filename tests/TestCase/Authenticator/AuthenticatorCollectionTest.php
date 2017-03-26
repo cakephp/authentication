@@ -83,20 +83,6 @@ class AuthenticatorCollectionTest extends TestCase
     }
 
     /**
-     * testGetAll
-     *
-     * @return void
-     */
-    public function testGetAll()
-    {
-        $identifiers = $this->createMock(IdentifierCollection::class);
-        $collection = new AuthenticatorCollection($identifiers);
-        $collection->load('Authentication.Form');
-        $result = $collection->getAll();
-        $this->assertInternalType('array', $result);
-    }
-
-    /**
      * testIsEmpty
      *
      * @return void

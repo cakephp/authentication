@@ -52,16 +52,6 @@ abstract class AbstractCollection extends ObjectRegistry implements IteratorAggr
     }
 
     /**
-     * Returns all objects.
-     *
-     * @return array
-     */
-    public function getAll()
-    {
-        return $this->_loaded;
-    }
-
-    /**
      * Returns true if a collection is empty.
      *
      * @return bool

@@ -75,19 +75,6 @@ class IdentifierCollectionTest extends TestCase
     }
 
     /**
-     * testGetAll
-     *
-     * @return void
-     */
-    public function testGetAll()
-    {
-        $collection = new IdentifierCollection();
-        $collection->load('Authentication.Orm');
-        $result = $collection->getAll();
-        $this->assertInternalType('array', $result);
-    }
-
-    /**
      * testIsEmpty
      *
      * @return void
