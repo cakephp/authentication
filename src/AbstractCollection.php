@@ -17,11 +17,6 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Core\ObjectRegistry;
 use IteratorAggregate;
 
-/**
- * Description of AbstractCollection
- *
- * @author Robert Pustułka <r.pustulka@robotusers.com>
- */
 abstract class AbstractCollection extends ObjectRegistry implements IteratorAggregate
 {
     use InstanceConfigTrait;
@@ -64,7 +59,7 @@ abstract class AbstractCollection extends ObjectRegistry implements IteratorAggr
     /**
      * Returns iterator.
      *
-     * @return ArrayIterator
+     * @return \ArrayIterator
      */
     public function getIterator()
     {

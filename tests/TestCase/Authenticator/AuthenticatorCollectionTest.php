@@ -22,6 +22,11 @@ use TestApp\Authentication\Identifier\InvalidIdentifier;
 class AuthenticatorCollectionTest extends TestCase
 {
 
+    /**
+     * Test constructor.
+     *
+     * @return void
+     */
     public function testConstruct()
     {
         $identifiers = $this->createMock(IdentifierCollection::class);
