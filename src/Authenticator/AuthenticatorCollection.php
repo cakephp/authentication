@@ -17,11 +17,6 @@ use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use RuntimeException;
 
-/**
- * Description of AuthenticatorCollection
- *
- * @author Robert Pustułka <r.pustulka@robotusers.com>
- */
 class AuthenticatorCollection extends AbstractCollection
 {
 
