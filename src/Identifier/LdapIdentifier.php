@@ -148,7 +148,10 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * Identify
+     *
+     * @param array $data Authentication credentials
+     * @return \Cake\Datasource\EntityInterface|null
      */
     public function identify($data)
     {
@@ -159,7 +162,7 @@ class LdapIdentifier extends AbstractIdentifier
             return $this->_bindUser($data[$fields['username']], $data[$fields['password']]);
         }
 
-        return false;
+        return null;
     }
 
     /**
