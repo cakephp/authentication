@@ -30,7 +30,7 @@ class Ldap implements LdapInterface
      *
      * @var object
      */
-    protected $connection;
+    protected $_connection;
 
     /**
      * Bind to LDAP directory
@@ -52,11 +52,11 @@ class Ldap implements LdapInterface
      */
     public function getConnection()
     {
-        if (empty($this->connection)) {
+        if (empty($this->_connection)) {
             throw new RuntimeException('You are not connected to a LDAP server.');
         }
 
-        return $this->connection;
+        return $this->_connection;
     }
 
     /**
@@ -68,7 +68,7 @@ class Ldap implements LdapInterface
      */
     public function connect($host, $port)
     {
-        $this->connection = ldap_connect($host, $port);
+        $this->_connection = ldap_connect($host, $port);
     }
 
     /**
@@ -103,7 +103,7 @@ class Ldap implements LdapInterface
      */
     public function unbind()
     {
-        ldap_unbind($this->connection);
-        $this->connection = null;
+        ldap_unbind($this->_connection);
+        $this->_connection = null;
     }
 }
