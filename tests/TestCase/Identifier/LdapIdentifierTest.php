@@ -55,6 +55,12 @@ class Ldap implements LdapInterface
     }
 }
 
+/**
+ * A class which doesn't implement the LdapInterface
+ */
+class NotLdap
+{}
+
 class LdapIdentifierTest extends TestCase
 {
 
@@ -95,7 +101,7 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => 1
+            'ldapClass' => new NotLdap
         ]);
     }
 
