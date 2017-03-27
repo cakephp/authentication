@@ -13,7 +13,6 @@
  */
 namespace Authentication\PasswordHasher;
 
-use Authentication\PasswordHasher\AbstractPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherInterface;
 use Cake\Core\App;
 use RuntimeException;
@@ -28,9 +27,9 @@ class PasswordHasherFactory
      *
      * @param string|array $passwordHasher Name of the password hasher or an array with
      * at least the key `className` set to the name of the class to use
-     * @return \Authentication\PasswordHasher\AbstractPasswordHasher Password hasher instance
-     * @throws \RuntimeException If password hasher class not found or
-     *   it does not extend Cake\Auth\AbstractPasswordHasher
+     * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance
+     * @throws \RuntimeException If password hasher class not found or it does
+     *   not implement \Authentication\PasswordHasher\PasswordHasherInterface
      */
     public static function build($passwordHasher)
     {
@@ -50,7 +49,7 @@ class PasswordHasherFactory
 
         $hasher = new $className($config);
         if (!($hasher instanceof PasswordHasherInterface)) {
-            throw new RuntimeException('Password hasher must extend AbstractPasswordHasher class.');
+            throw new RuntimeException('Password hasher must implement PasswordHasherInterface.');
         }
 
         return $hasher;

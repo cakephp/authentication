@@ -23,7 +23,7 @@ interface AuthenticationServiceInterface
      *
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
-     * @return \Authentication\Authenticator\AuthenticateInterface
+     * @return \Authentication\Authenticator\AuthenticatorInterface
      */
     public function loadAuthenticator($name, array $config = []);
 
@@ -59,7 +59,7 @@ interface AuthenticationServiceInterface
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
-     * @return \Authentication\Authenticator\AuthenticateInterface|null
+     * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticationProvider();
 

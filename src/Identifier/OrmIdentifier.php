@@ -1,10 +1,9 @@
 <?php
 namespace Authentication\Identifier;
 
-use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\PasswordHasherFactory;
 use Authentication\PasswordHasher\PasswordHasherTrait;
-use Cake\Datasource\EntityInterface;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
  * CakePHP ORM Identifier
@@ -23,10 +22,22 @@ use Cake\ORM\TableRegistry;
 class OrmIdentifier extends AbstractIdentifier
 {
 
-    use PasswordHasherTrait;
+    use LocatorAwareTrait;
+    use PasswordHasherTrait {
+        getPasswordHasher as protected _getPasswordHasher;
+    }
 
     /**
-     * Default configuration
+     * Default configuration.
+     * - `fields` The fields to use to identify a user by.
+     * - `userModel` The alias for users table, defaults to Users.
+     * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
+     *   You can set finder name as string or an array where key is finder name and value
+     *   is an array passed to `Table::find()` options.
+     *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
+     * - `passwordHasher` Password hasher class. Can be a string specifying class name
+     *    or an array containing `className` key, any other keys will be passed as
+     *    config to the class. Defaults to 'Default'.
      *
      * @var array
      */
@@ -37,8 +48,28 @@ class OrmIdentifier extends AbstractIdentifier
         ],
         'userModel' => 'Users',
         'finder' => 'all',
-        'passwordHasher' => DefaultPasswordHasher::class
+        'passwordHasher' => null
     ];
+
+    /**
+     * Return password hasher object.
+     *
+     * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
+     */
+    public function getPasswordHasher()
+    {
+        if ($this->_passwordHasher === null) {
+            $passwordHasher = $this->getConfig('passwordHasher');
+            if ($passwordHasher !== null) {
+                $passwordHasher = PasswordHasherFactory::build($passwordHasher);
+            } else {
+                $passwordHasher = $this->_getPasswordHasher();
+            }
+            $this->_passwordHasher = $passwordHasher;
+        }
+
+        return $this->_passwordHasher;
+    }
 
     /**
      * Identify
@@ -82,7 +113,7 @@ class OrmIdentifier extends AbstractIdentifier
         }
 
         if ($password !== null) {
-            $hasher = $this->passwordHasher();
+            $hasher = $this->getPasswordHasher();
             $hashedPassword = $result->get($this->_config['fields']['password']);
             if (!$hasher->check($password, $hashedPassword)) {
                 return null;
@@ -104,7 +135,7 @@ class OrmIdentifier extends AbstractIdentifier
     protected function _query($identifier)
     {
         $config = $this->_config;
-        $table = TableRegistry::get($config['userModel']);
+        $table = $this->tableLocator()->get($config['userModel']);
 
         $options = ['conditions' => $this->_buildConditions($identifier, $table)];
 

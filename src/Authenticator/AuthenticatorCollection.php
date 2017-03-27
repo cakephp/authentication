@@ -10,82 +10,67 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier;
+namespace Authentication\Authenticator;
 
 use Authentication\AbstractCollection;
+use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use RuntimeException;
 
-class IdentifierCollection extends AbstractCollection
+class AuthenticatorCollection extends AbstractCollection
 {
 
     /**
-     * Errors
+     * Identifier collection.
      *
-     * @var array
+     * @var \Authentication\Identifier\IdentifierCollection
      */
-    protected $_errors = [];
+    protected $_identifiers;
 
     /**
-     * Identifies an user or service by the passed credentials
+     * Constructor.
      *
-     * @param mixed $credentials Authentication credentials
-     * @return \Cake\Datasource\EntityInterface|null
+     * @param \Authentication\Identifier\IdentifierCollection $identifiers Identifiers collection.
+     * @param array $config Config array.
      */
-    public function identify($credentials)
+    public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
-        foreach ($this->_loaded as $name => $identifier) {
-            $result = $identifier->identify($credentials);
-            if ($result) {
-                return $result;
-            }
-            $this->_errors[$name] = $identifier->getErrors();
-        }
+        $this->_identifiers = $identifiers;
 
-        return null;
+        parent::__construct($config);
     }
 
     /**
-     * Creates identifier instance.
+     * Creates authenticator instance.
      *
-     * @param string $className Identifier class.
-     * @param string $alias Identifier alias.
+     * @param string $className Authenticator class.
+     * @param string $alias Authenticator alias.
      * @param array $config Config array.
-     * @return \Authentication\Identifier\IdentifierInterface
+     * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
      */
     protected function _create($className, $alias, $config)
     {
-        $identifier = new $className($config);
-        if (!($identifier instanceof IdentifierInterface)) {
+        $authenticator = new $className($this->_identifiers, $config);
+        if (!($authenticator instanceof AuthenticatorInterface)) {
             throw new RuntimeException(sprintf(
-                'Identifier class `%s` must implement \Auth\Authentication\IdentifierInterface',
+                'Authenticator class `%s` must implement \Auth\Authentication\AuthenticatorInterface',
                 $className
             ));
         }
 
-        return $identifier;
+        return $authenticator;
     }
 
     /**
-     * Get errors
-     *
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->_errors;
-    }
-
-    /**
-     * Resolves identifier class name.
+     * Resolves authenticator class name.
      *
      * @param string $class Class name to be resolbed.
      * @return string
      */
     protected function _resolveClassName($class)
     {
-        return App::className($class, 'Identifier', 'Identifier');
+        return App::className($class, 'Authenticator', 'Authenticator');
     }
 
     /**
@@ -97,7 +82,7 @@ class IdentifierCollection extends AbstractCollection
      */
     protected function _throwMissingClassError($class, $plugin)
     {
-        $message = sprintf('Identifier class `%s` was not found.', $class);
+        $message = sprintf('Authenticator class `%s` was not found.', $class);
         throw new RuntimeException($message);
     }
 }

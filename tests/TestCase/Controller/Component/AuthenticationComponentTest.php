@@ -14,7 +14,7 @@ namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
-use Authentication\Authenticator\AuthenticateInterface;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Controller\ComponentRegistry;
@@ -52,7 +52,6 @@ class AuthenticationComponentTest extends TestCase
                 'Authentication.Form'
             ]
         ]);
-        $this->service->loadAuthenticators();
 
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -176,7 +175,7 @@ class AuthenticationComponentTest extends TestCase
         $this->assertInstanceOf(Event::class, $result);
         $this->assertEquals('Authentication.afterIdentify', $result->name());
         $this->assertNotEmpty($result->data);
-        $this->assertInstanceOf(AuthenticateInterface::class, $result->data['provider']);
+        $this->assertInstanceOf(AuthenticatorInterface::class, $result->data['provider']);
         $this->assertInstanceOf(EntityInterface::class, $result->data['identity']);
         $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
     }

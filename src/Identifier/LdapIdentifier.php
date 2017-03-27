@@ -14,10 +14,27 @@ namespace Authentication\Identifier;
 
 use Cake\Core\Exception\Exception;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\ORM\Entity;
 use ErrorException;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * LDAP Identifier
+ *
+ * Identifies authentication credentials using LDAP.
+ *
+ * ```
+ *  new LdapIdentifier([
+ *       'host' => 'ldap.example.com',
+ *       'bindDN' => function($username) {
+ *           return $username; //transform into a rdn or dn
+ *       },
+ *       'options' => [
+ *           LDAP_OPT_PROTOCOL_VERSION => 3
+ *       ]
+ *  ]);
+ * ```
  *
  * @link https://github.com/QueenCityCodeFactory/LDAP
  */
@@ -32,8 +49,11 @@ class LdapIdentifier extends AbstractIdentifier
      * @var array
      */
     protected $_defaultConfig = [
-        'logErrors' => false,
-        'port' => null,
+        'fields' => [
+            'username' => 'username',
+            'password' => 'password'
+        ],
+        'port' => 389
     ];
 
     /**
@@ -48,43 +68,25 @@ class LdapIdentifier extends AbstractIdentifier
      */
     public function __construct(array $config = [])
     {
+        parent::__construct($config);
+
+        if (!extension_loaded('ldap')) {
+            throw new RuntimeException('You must enable the ldap extension to use the LDAP identifier.');
+        }
         if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
             define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
         }
-
-        if (isset($config['host']) && is_object($config['host']) && ($config['host'] instanceof \Closure)) {
-            $config['host'] = $config['host']();
+        if (!isset($this->_config['bindDN'])) {
+            throw new RuntimeException('Config `bindDN` is not set.');
         }
-
-        if (empty($config['host'])) {
-            throw new InternalErrorException('LDAP Server not specified');
+        if (!is_callable($this->_config['bindDN'])) {
+            throw new InvalidArgumentException(sprintf(
+                'The `bindDN` config is not a callable. Got `%s` instead.',
+                gettype($this->_config['bindDN'])
+            ));
         }
-
-        parent::__construct($config);
-
-        $this->_connectLdap();
-    }
-
-    /**
-     * Initializes the Ldap connection
-     *
-     * @return void
-     */
-    protected function _connectLdap()
-    {
-        $config = $this->getConfig();
-
-        try {
-            $this->ldapConnection = $this->ldapConnect($config['host'], $config['port']);
-            if (isset($config['options']) && is_array($config['options'])) {
-                foreach ($config['options'] as $option => $value) {
-                    $this->ldapSetOption($option, $value);
-                }
-            } else {
-                $this->ldapSetOption(LDAP_OPT_NETWORK_TIMEOUT, 5);
-            }
-        } catch (Exception $e) {
-            throw new InternalErrorException('Unable to connect to specified LDAP Server(s)');
+        if (!isset($this->_config['host'])) {
+            throw new RuntimeException('Config `host` is not set.');
         }
     }
 
@@ -93,120 +95,92 @@ class LdapIdentifier extends AbstractIdentifier
      */
     public function identify($data)
     {
+        $this->_connectLdap();
         $fields = $this->getConfig('fields');
 
         if (isset($data[$fields['username']]) && isset($data[$fields['password']])) {
-            $this->_findUser($data[$fields['username']], $data[$fields['password']]);
+            return $this->_bindUser($data[$fields['username']], $data[$fields['password']]);
         }
 
         return false;
     }
 
     /**
-     * Find a user record using the username and password provided.
+     * Initializes the LDAP connection
      *
-     * @param string $username The username/identifier.
-     * @param string|null $password The password
+     * @return void
+     * @throws \Cake\Network\Exception\InternalErrorException Raised in case of an unsucessful connection.
+     */
+    protected function _connectLdap()
+    {
+        $config = $this->getConfig();
+
+        try {
+            $this->ldapConnect(
+                $config['host'],
+                $config['port']
+            );
+            if (isset($config['options']) && is_array($config['options'])) {
+                foreach ($config['options'] as $option => $value) {
+                    $this->ldapSetOption($option, $value);
+                }
+            } else {
+                $this->ldapSetOption(LDAP_OPT_NETWORK_TIMEOUT, 5);
+            }
+        } catch (Exception $e) {
+            throw new InternalErrorException('Unable to connect to specified LDAP Server');
+        }
+    }
+
+    /**
+     * Try to bind the given user to the LDAP server
+     *
+     * @param string $username The username
+     * @param string $password The password
      * @return bool|array Either false on failure, or an array of user data.
      */
-    protected function _findUser($username, $password = null)
+    protected function _bindUser($username, $password)
     {
-        if (!empty($this->_config['domain']) && !empty($username) && strpos($username, '@') === false) {
-            $username .= '@' . $this->_config['domain'];
-        }
-
+        // Turn all LDAP errors into exceptions
         set_error_handler(
-            function ($errorNumber, $errorText, $errorFile, $errorLine) {
-                throw new ErrorException($errorText, 0, $errorNumber, $errorFile, $errorLine);
+            function ($errorNumber, $errorText) {
+                 throw new ErrorException($errorText);
             },
             E_ALL
         );
 
+        $config = $this->getConfig();
         try {
-            $ldapBind = $this->ldapBind(isset($this->_config['bindDN']) ? $this->_config['bindDN']($username, $this->_config['domain']) : $username, $password);
+            $ldapBind = $this->ldapBind($config['bindDN']($username), $password);
             if ($ldapBind === true) {
-                return $this->_getUserFromLdap($username);
+                $this->ldapUnbind();
+
+                return new Entity([
+                    $config['fields']['username'] => $username
+                ]);
             }
         } catch (ErrorException $e) {
-            if ($this->_config['logErrors'] === true) {
-                $this->log($e->getMessage());
-            }
-            $this->_handleLdapError();
+            $this->_handleLdapError($e->getMessage());
         }
-
+        $this->ldapUnbind();
         restore_error_handler();
 
         return false;
     }
 
     /**
-     * Gets an user from the LDAP connection
+     * Handles an LDAP error
      *
-     * @param string $username
+     * @param string $message Exception message
+     * @return void
      */
-    protected function _getUserFromLdap($username)
-    {
-        $searchResults = $this->ldapSearch(
-            $this->_config['baseDN']($username, $this->_config['domain']),
-            '(' . $this->_config['search'] . '=' . $username . ')'
-        );
-        $entry = $this->ldapFirstEntry($this->ldapConnection, $searchResults);
-
-        return $this->ldapGetAttributes($entry);
-    }
-
-    /**
-     * Gets the errors that happened
-     *
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->_errors;
-    }
-
-    /**
-     * Handles an Ldap error
-     *
-     * @return array Array of error messages
-     */
-    protected function _handleLdapError()
+    protected function _handleLdapError($message)
     {
         $extendedError = $this->ldapGetOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
-        if (!empty($extendedError)) {
-            foreach ($this->_config['errors'] as $error => $errorMessage) {
-                if (strpos($extendedError, $error) !== false) {
-                    $this->_errors[] = $errorMessage;
-                }
-            }
+        if (!is_null($extendedError)) {
+            $this->_errors[] = $extendedError;
+        } else {
+            $this->_errors[] = $message;
         }
     }
-
-    /**
-     * Destructor
-     */
-    public function __destruct()
-    {
-        set_error_handler(
-            function ($errorNumber, $errorText, $errorFile, $errorLine) {
-                throw new ErrorException($errorText, 0, $errorNumber, $errorFile, $errorLine);
-            },
-            E_ALL
-        );
-
-        try {
-            $this->ldapClose();
-        } catch (ErrorException $e) {
-            // Do Nothing
-        }
-
-        try {
-            $this->ldapClose();
-        } catch (ErrorException $e) {
-            // Do Nothing
-        }
-
-        restore_error_handler();
-    }
-
 }

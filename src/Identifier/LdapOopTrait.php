@@ -20,7 +20,8 @@ namespace Authentication\Identifier;
  * But this makes it easier to unit test code that is using ldap because we can
  * mock it very easy. It also provides some convenience.
  */
-trait LdapOopTrait {
+trait LdapOopTrait
+{
 
     /**
      * LDAP Object
@@ -30,27 +31,23 @@ trait LdapOopTrait {
     protected $ldapConnection;
 
     /**
-     * Binds the connection
+     * Bind to LDAP directory
      *
-     * @param string $bind
-     * @param string $password
-     * @return
+     * @param string $bind Bind rdn
+     * @param string $password Bind password
+     * @return bool
      */
     public function ldapBind($bind, $password)
     {
         return ldap_bind($this->getLdapConnection(), $bind, $password);
     }
 
-    public function ldapFirstEntry($searchResults)
-    {
-        return ldap_first_entry($this->ldapConnection($searchResults));
-    }
-
-    public function ldapSearch($baseDn, $filter)
-    {
-        return ldap_search($this->getLdapConnection(), $baseDn, $filter);
-    }
-
+    /**
+     * Get the LDAP connection
+     *
+     * @return mixed
+     * @throws \RuntimeException If the connection is empty
+     */
     public function getLdapConnection()
     {
         if (empty($this->ldapConnection)) {
@@ -61,24 +58,23 @@ trait LdapOopTrait {
     }
 
     /**
-     * Connect
+     * Connect to an LDAP server
      *
-     * @param string $host
-     * @param int|null $port
+     * @param string $host Hostname
+     * @param int $port Port
      * @return void
      */
-    public function ldapConnect($host, $port = null)
+    public function ldapConnect($host, $port)
     {
         $this->ldapConnection = ldap_connect($host, $port);
     }
 
-    public function ldapGetAttributes($entity)
-    {
-        return ldap_get_attributes($this->getLdapConnection(), $entity);
-    }
-
     /**
-     * Set an LDAP option
+     *  Set the value of the given option
+     *
+     * @param int $option Option to set
+     * @param mixed $value The new value for the specified option
+     * @return void
      */
     public function ldapSetOption($option, $value)
     {
@@ -86,22 +82,26 @@ trait LdapOopTrait {
     }
 
     /**
-     * Get an LDAP option
+     * Get the current value for given option
+     *
+     * @param int $option Option to get
+     * @return mixed This will be set to the option value.
      */
     public function ldapGetOption($option)
     {
-        ldap_get_option($this->getLdapConnection(), $option, $extendedError);
-        return $extendedError;
+        ldap_get_option($this->getLdapConnection(), $option, $retval);
+
+        return $retval;
     }
 
     /**
-     * Closes the LDAP connection
+     * Unbind from LDAP directory
      *
      * @return void
      */
-    public function ldapClose()
+    public function ldapUnbind()
     {
-        ldap_close($this->getLdapConnection());
+        ldap_unbind($this->ldapConnection);
         $this->ldapConnection = null;
     }
 }
