@@ -67,7 +67,7 @@ class LdapIdentifierTest extends TestCase
     {
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function() {
+            'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
             'ldapClass' => Ldap::class
@@ -120,7 +120,7 @@ class LdapIdentifierTest extends TestCase
     public function testMissingHost()
     {
         $identifier = new LdapIdentifier([
-            'bindDN' => function() {
+            'bindDN' => function () {
                 return 'dc=example,dc=com';
             }
         ]);
