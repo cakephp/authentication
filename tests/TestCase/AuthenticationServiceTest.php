@@ -107,7 +107,7 @@ class AuthenticationServiceTest extends TestCase
     /**
      * testLoadAuthenticatorException
      *
-     * @expectedException \Cake\Core\Exception\Exception
+     * @expectedException \RuntimeException
      */
     public function testLoadAuthenticatorException()
     {
@@ -118,8 +118,8 @@ class AuthenticationServiceTest extends TestCase
     /**
      * testLoadInvalidAuthenticatorObject
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Authenticators must implement AuthenticatorInterface.
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement \Auth\Authentication\AuthenticatorInterface
      */
     public function testLoadInvalidAuthenticatorObject()
     {
@@ -197,7 +197,6 @@ class AuthenticationServiceTest extends TestCase
                 'Authentication.Form'
             ]
         ]);
-        $service->loadAuthenticators();
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']

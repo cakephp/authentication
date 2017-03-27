@@ -12,12 +12,10 @@
  */
 namespace Authentication;
 
-use Authentication\Authenticator\AuthenticatorInterface;
+use Authentication\Authenticator\AuthenticatorCollection;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
-use Cake\Core\App;
-use Cake\Core\Exception\Exception;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,11 +29,11 @@ class AuthenticationService implements AuthenticationServiceInterface
     use InstanceConfigTrait;
 
     /**
-     * Authenticator objects
+     * Authenticator collection
      *
-     * @var array
+     * @var \Authentication\Authenticator\AuthenticatorCollection
      */
-    protected $_authenticators = [];
+    protected $_authenticators;
 
     /**
      * Identifier collection
@@ -113,25 +111,19 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * Loads all configured authenticators.
+     * Access the authenticator collection
      *
-     * @return void
+     * @return \Authentication\Authenticator\AuthenticatorCollection
      */
-    public function loadAuthenticators()
+    public function authenticators()
     {
-        if (empty($this->_config['authenticators'])
-            || !empty($this->_authenticators)
-        ) {
-            return;
+        if (!$this->_authenticators) {
+            $identifiers = $this->identifiers();
+            $authenticators = $this->getConfig('authenticators');
+            $this->_authenticators = new AuthenticatorCollection($identifiers, $authenticators);
         }
 
-        foreach ($this->_config['authenticators'] as $name => $config) {
-            if (is_int($name) && is_string($config)) {
-                $name = $config;
-                $config = [];
-            }
-            $this->loadAuthenticator($name, $config);
-        }
+        return $this->_authenticators;
     }
 
     /**
@@ -143,18 +135,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function loadAuthenticator($name, array $config = [])
     {
-        $className = $this->_getAuthenticatorClass($name, $config);
-        $authenticator = new $className($this->identifiers(), $config);
-
-        if (!$authenticator instanceof AuthenticatorInterface) {
-            throw new Exception('Authenticators must implement AuthenticatorInterface.');
-        }
-
-        if (isset($this->_authenticators)) {
-            $this->_authenticators[$name] = $authenticator;
-        }
-
-        return $authenticator;
+        return $this->authenticators()->load($name, $config);
     }
 
     /**
@@ -170,34 +151,6 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * Gets the authenticator class name.
-     *
-     * @param string $name Authenticator name.
-     * @param array $config Configuration options for the authenticator.
-     * @return string
-     */
-    protected function _getAuthenticatorClass($name, $config)
-    {
-        if (!empty($config['className'])) {
-            $class = $config['className'];
-            unset($config['className']);
-        } else {
-            $class = $name;
-        }
-
-        if (class_exists($class)) {
-            return $class;
-        }
-
-        $className = App::className($class, 'Authenticator', 'Authenticator');
-        if (!class_exists($className)) {
-            throw new Exception(sprintf('Authenticator "%s" was not found.', $className));
-        }
-
-        return $className;
-    }
-
-    /**
      * Authenticate the request against the configured authentication adapters.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
@@ -208,16 +161,14 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $this->loadAuthenticators();
-
-        if (empty($this->_authenticators)) {
+        if ($this->authenticators()->isEmpty()) {
             throw new RuntimeException(
                 'No authenticators loaded. You need to load at least one authenticator.'
             );
         }
 
         $result = null;
-        foreach ($this->_authenticators as $authenticator) {
+        foreach ($this->authenticators() as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
                 if ($authenticator instanceof PersistenceInterface) {
@@ -252,7 +203,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
-        foreach ($this->_authenticators as $authenticator) {
+        foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
                 $result = $authenticator->clearIdentity($request, $response);
                 $request = $result['request'];
@@ -276,7 +227,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
-        foreach ($this->_authenticators as $authenticator) {
+        foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
                 $result = $authenticator->persistIdentity($request, $response, $identity);
                 $request = $result['request'];
