@@ -9,12 +9,12 @@
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace TestApp\Authentication\Identifier;
+namespace TestApp\PasswordHasher;
 
 /**
  * It's invalid because it doesn't implement the interface
  */
-class InvalidIdentifier
+class InvalidPasswordHasher
 {
 
 }

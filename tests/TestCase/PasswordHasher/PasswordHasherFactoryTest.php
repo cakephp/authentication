@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\PasswordHasher;
@@ -53,8 +52,20 @@ class PasswordHasherFactoryTest extends TestCase
      * @expectedExceptionMessage Password hasher class `FooBar` was not found.
      * @return void
      */
-    public function testBuildException()
+    public function testBuildMissingHasher()
     {
         $hasher = PasswordHasherFactory::build('FooBar');
+    }
+
+    /**
+     * test build() throws exception for non existent hasher
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Password hasher must implement PasswordHasherInterface.
+     * @return void
+     */
+    public function testBuildInvalidHasher()
+    {
+        $hasher = PasswordHasherFactory::build('Invalid');
     }
 }

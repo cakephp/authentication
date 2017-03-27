@@ -7,7 +7,7 @@ trait PasswordHasherTrait
     /**
      * Password hasher instance.
      *
-     * @var \Cake\Auth\AbstractPasswordHasher
+     * @var \Authentication\PasswordHasher\PasswordHasherInterface
      */
     protected $_passwordHasher;
 
@@ -20,21 +20,31 @@ trait PasswordHasherTrait
     protected $_needsPasswordRehash = false;
 
     /**
-     * Return password hasher object
+     * Return password hasher object.
+     * If a password hasher has not been set, DefaultPasswordHasher instance is returned.
      *
-     * @return \Cake\Auth\AbstractPasswordHasher Password hasher instance
-     * @throws \RuntimeException If password hasher class not found or
-     *   it does not extend AbstractPasswordHasher
+     * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
      */
-    public function passwordHasher()
+    public function getPasswordHasher()
     {
-        if ($this->_passwordHasher) {
-            return $this->_passwordHasher;
+        if ($this->_passwordHasher === null) {
+            $this->_passwordHasher = new DefaultPasswordHasher();
         }
 
-        $passwordHasher = $this->_config['passwordHasher'];
+        return $this->_passwordHasher;
+    }
 
-        return $this->_passwordHasher = PasswordHasherFactory::build($passwordHasher);
+    /**
+     * Sets password hasher object.
+     *
+     * @param \Authentication\PasswordHasher\PasswordHasherInterface $passwordHasher Password hasher instance.
+     * @return $this
+     */
+    public function setPasswordHasher(PasswordHasherInterface $passwordHasher)
+    {
+        $this->_passwordHasher = $passwordHasher;
+
+        return $this;
     }
 
     /**

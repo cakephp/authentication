@@ -1,7 +1,7 @@
 <?php
 namespace Authentication\Identifier;
 
-use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\PasswordHasherFactory;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -23,7 +23,9 @@ class OrmIdentifier extends AbstractIdentifier
 {
 
     use LocatorAwareTrait;
-    use PasswordHasherTrait;
+    use PasswordHasherTrait {
+        getPasswordHasher as protected _getPasswordHasher;
+    }
 
     /**
      * Default configuration.
@@ -46,8 +48,28 @@ class OrmIdentifier extends AbstractIdentifier
         ],
         'userModel' => 'Users',
         'finder' => 'all',
-        'passwordHasher' => DefaultPasswordHasher::class
+        'passwordHasher' => null
     ];
+
+    /**
+     * Return password hasher object.
+     *
+     * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
+     */
+    public function getPasswordHasher()
+    {
+        if ($this->_passwordHasher === null) {
+            $passwordHasher = $this->getConfig('passwordHasher');
+            if ($passwordHasher !== null) {
+                $passwordHasher = PasswordHasherFactory::build($passwordHasher);
+            } else {
+                $passwordHasher = $this->_getPasswordHasher();
+            }
+            $this->_passwordHasher = $passwordHasher;
+        }
+
+        return $this->_passwordHasher;
+    }
 
     /**
      * Identify
@@ -91,7 +113,7 @@ class OrmIdentifier extends AbstractIdentifier
         }
 
         if ($password !== null) {
-            $hasher = $this->passwordHasher();
+            $hasher = $this->getPasswordHasher();
             $hashedPassword = $result->get($this->_config['fields']['password']);
             if (!$hasher->check($password, $hashedPassword)) {
                 return null;

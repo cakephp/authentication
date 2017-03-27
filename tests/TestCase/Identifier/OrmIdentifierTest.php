@@ -13,6 +13,8 @@
 namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\OrmIdentifier;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\WeakPasswordHasher;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 
@@ -104,5 +106,31 @@ class OrmIdentifierTest extends TestCase
         ]);
 
         $this->assertNotEmpty($result->created);
+    }
+
+    /**
+     * testDefaultPasswordHasher
+     *
+     * @return void
+     */
+    public function testDefaultPasswordHasher()
+    {
+        $identifier = new OrmIdentifier();
+        $hasher = $identifier->getPasswordHasher();
+        $this->assertInstanceOf(DefaultPasswordHasher::class, $hasher);
+    }
+
+    /**
+     * testCustomPasswordHasher
+     *
+     * @return void
+     */
+    public function testCustomPasswordHasher()
+    {
+        $identifier = new OrmIdentifier([
+            'passwordHasher' => WeakPasswordHasher::class
+        ]);
+        $hasher = $identifier->getPasswordHasher();
+        $this->assertInstanceOf(WeakPasswordHasher::class, $hasher);
     }
 }
