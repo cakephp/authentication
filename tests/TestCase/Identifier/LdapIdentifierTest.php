@@ -82,6 +82,24 @@ class LdapIdentifierTest extends TestCase
     }
 
     /**
+     * testWrongLdapObject
+     *
+     * @return void
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Could not build the LDAP connection object.
+     */
+    public function testWrongLdapObject()
+    {
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            },
+            'ldapClass' => 1
+        ]);
+    }
+
+    /**
      * testUncallableDN
      *
      * @return void
