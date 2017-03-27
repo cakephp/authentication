@@ -91,7 +91,7 @@ class Ldap implements LdapInterface
      */
     public function getOption($option)
     {
-        ldap_get_option($this->getLdapConnection(), $option, $returnValue);
+        ldap_get_option($this->getConnection(), $option, $returnValue);
 
         return $returnValue;
     }

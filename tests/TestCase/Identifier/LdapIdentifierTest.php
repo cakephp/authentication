@@ -12,45 +12,46 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
-use Authentication\Identifier\LdapIdentifier as BaseLdapIdentifier;
+use Authentication\Identifier\LdapIdentifier;
+use Authentication\Identifier\LdapInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 
 /**
- * Overwrite all LdapOopTrait methods to enable tests
+ * Overwrite all Ldap methods to enable tests
  */
-class LdapIdentifier extends BaseLdapIdentifier
+class Ldap implements LdapInterface
 {
-    protected $ldapConnection = 'connected';
+    protected $_connection = 'connected';
 
-    public function ldapBind($bind, $password)
+    public function bind($bind, $password)
     {
         return true;
     }
 
-    public function getLdapConnection()
+    public function getConnection()
     {
-        return $this->ldapConnection;
+        return $this->_connection;
     }
 
-    public function ldapConnect($host, $port)
+    public function connect($host, $port)
     {
         return;
     }
 
-    public function ldapSetOption($option, $value)
+    public function setOption($option, $value)
     {
         return;
     }
 
-    public function ldapGetOption($option)
+    public function getOption($option)
     {
         return;
     }
 
-    public function ldapUnbind()
+    public function unbind()
     {
-        $this->ldapConnection = null;
+        $this->_connection = null;
     }
 }
 
@@ -69,6 +70,7 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function() {
                 return 'dc=example,dc=com';
             },
+            'ldapClass' => Ldap::class
         ]);
 
         $result = $identifier->identify([
