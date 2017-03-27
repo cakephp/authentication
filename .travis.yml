@@ -25,6 +25,9 @@ matrix:
     - php: 7.1
       env: PHPSTAN=1 DEFAULT=0
 
+before_install:
+  - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.0 ]]; then echo 'extension = ldap.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+
 install:
   - phpenv config-rm xdebug.ini;
   - composer self-update
