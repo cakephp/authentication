@@ -59,7 +59,8 @@ class Ldap implements LdapInterface
  * A class which doesn't implement the LdapInterface
  */
 class NotLdap
-{}
+{
+}
 
 class LdapIdentifierTest extends TestCase
 {
