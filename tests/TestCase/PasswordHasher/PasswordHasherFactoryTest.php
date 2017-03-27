@@ -52,8 +52,20 @@ class PasswordHasherFactoryTest extends TestCase
      * @expectedExceptionMessage Password hasher class `FooBar` was not found.
      * @return void
      */
-    public function testBuildException()
+    public function testBuildMissingHasher()
     {
         $hasher = PasswordHasherFactory::build('FooBar');
+    }
+
+    /**
+     * test build() throws exception for non existent hasher
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Password hasher must implement PasswordHasherInterface.
+     * @return void
+     */
+    public function testBuildInvalidHasher()
+    {
+        $hasher = PasswordHasherFactory::build('Invalid');
     }
 }
