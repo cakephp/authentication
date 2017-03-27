@@ -16,6 +16,7 @@ use Cake\Core\Exception\Exception;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\Entity;
 use ErrorException;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -75,11 +76,17 @@ class LdapIdentifier extends AbstractIdentifier
         if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
             define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
         }
+        if (!isset($this->_config['bindDN'])) {
+            throw new RuntimeException('Config `bindDN` is not set.');
+        }
         if (!is_callable($this->_config['bindDN'])) {
-            throw new RuntimeException('Config "bindDN" must be callable.');
+            throw new InvalidArgumentException(sprintf(
+                'The `bindDN` config is not a callable. Got `%s` instead.',
+                gettype($this->_config['bindDN'])
+            ));
         }
         if (!isset($this->_config['host'])) {
-            throw new RuntimeException('Config "host" is mandatory.');
+            throw new RuntimeException('Config `host` is not set.');
         }
     }
 
@@ -99,16 +106,6 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
-     * Gets the errors that happened
-     *
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->_errors;
-    }
-
-    /**
      * Initializes the LDAP connection
      *
      * @return void
@@ -116,13 +113,15 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _connectLdap()
     {
+        $config = $this->getConfig();
+
         try {
             $this->ldapConnect(
-                $this->_config['host'],
-                $this->_config['port']
+                $config['host'],
+                $config['port']
             );
-            if (isset($this->_config['options']) && is_array($this->_config['options'])) {
-                foreach ($this->_config['options'] as $option => $value) {
+            if (isset($config['options']) && is_array($config['options'])) {
+                foreach ($config['options'] as $option => $value) {
                     $this->ldapSetOption($option, $value);
                 }
             } else {
@@ -144,19 +143,20 @@ class LdapIdentifier extends AbstractIdentifier
     {
         // Turn all LDAP errors into exceptions
         set_error_handler(
-            function ($errorNumber, $errorText, $errorFile, $errorLine) {
-                 throw new ErrorException($errorText, 0, $errorNumber, $errorFile, $errorLine);
+            function ($errorNumber, $errorText) {
+                 throw new ErrorException($errorText);
             },
             E_ALL
         );
 
+        $config = $this->getConfig();
         try {
-            $ldapBind = $this->ldapBind($this->_config['bindDN']($username), $password);
+            $ldapBind = $this->ldapBind($config['bindDN']($username), $password);
             if ($ldapBind === true) {
                 $this->ldapUnbind();
 
                 return new Entity([
-                    $this->_config['fields']['username'] => $username
+                    $config['fields']['username'] => $username
                 ]);
             }
         } catch (ErrorException $e) {

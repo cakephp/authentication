@@ -64,7 +64,7 @@ trait LdapOopTrait
      * @param int $port Port
      * @return void
      */
-    public function ldapConnect($host, $port = null)
+    public function ldapConnect($host, $port)
     {
         $this->ldapConnection = ldap_connect($host, $port);
     }
