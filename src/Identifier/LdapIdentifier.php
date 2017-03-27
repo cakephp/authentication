@@ -173,7 +173,7 @@ class LdapIdentifier extends AbstractIdentifier
         $config = $this->getConfig();
 
         try {
-            $this->_ldap->Connect(
+            $this->_ldap->connect(
                 $config['host'],
                 $config['port']
             );
@@ -194,7 +194,7 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @param string $username The username
      * @param string $password The password
-     * @return bool|array Either false on failure, or an array of user data.
+     * @return \Cake\Datasource\EntityInterface|null
      */
     protected function _bindUser($username, $password)
     {
@@ -222,7 +222,7 @@ class LdapIdentifier extends AbstractIdentifier
         $this->_ldap->unbind();
         restore_error_handler();
 
-        return false;
+        return null;
     }
 
     /**
