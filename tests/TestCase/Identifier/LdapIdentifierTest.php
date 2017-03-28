@@ -36,17 +36,14 @@ class Ldap implements LdapInterface
 
     public function connect($host, $port)
     {
-        return;
     }
 
     public function setOption($option, $value)
     {
-        return;
     }
 
     public function getOption($option)
     {
-        return;
     }
 
     public function unbind()
