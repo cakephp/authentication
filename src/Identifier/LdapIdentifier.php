@@ -13,6 +13,7 @@
 namespace Authentication\Identifier;
 
 use Authentication\Identifier\Backend\Ldap;
+use Authentication\Identifier\Backend\LdapInterface;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Network\Exception\InternalErrorException;
