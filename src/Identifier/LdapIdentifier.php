@@ -67,7 +67,7 @@ class LdapIdentifier extends AbstractIdentifier
     /**
      * LDAP connection object
      *
-     * @var \Authentication\Identifier\LdapInterface
+     * @var \Authentication\Identifier\Backend\LdapInterface
      */
     protected $_ldap = null;
 

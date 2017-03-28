@@ -12,8 +12,8 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
-use Authentication\Identifier\LdapIdentifier;
 use Authentication\Identifier\Backend\LdapInterface;
+use Authentication\Identifier\LdapIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 
