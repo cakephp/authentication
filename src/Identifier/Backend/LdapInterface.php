@@ -10,28 +10,10 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier;
+namespace Authentication\Identifier\Backend;
 
-use RuntimeException;
-
-/**
- * Provides a very thin OOP wrapper around the ldap_* functions.
- *
- * We don't need and want a huge LDAP lib for our purpose.
- *
- * But this makes it easier to unit test code that is using ldap because we can
- * mock it very easy. It also provides some convenience.
- */
-class Ldap implements LdapInterface
+interface LdapInterface
 {
-
-    /**
-     * LDAP Object
-     *
-     * @var object
-     */
-    protected $_connection;
-
     /**
      * Bind to LDAP directory
      *
@@ -39,10 +21,7 @@ class Ldap implements LdapInterface
      * @param string $password Bind password
      * @return bool
      */
-    public function bind($bind, $password)
-    {
-        return ldap_bind($this->getConnection(), $bind, $password);
-    }
+    public function bind($bind, $password);
 
     /**
      * Get the LDAP connection
@@ -50,14 +29,7 @@ class Ldap implements LdapInterface
      * @return mixed
      * @throws \RuntimeException If the connection is empty
      */
-    public function getConnection()
-    {
-        if (empty($this->_connection)) {
-            throw new RuntimeException('You are not connected to a LDAP server.');
-        }
-
-        return $this->_connection;
-    }
+    public function getConnection();
 
     /**
      * Connect to an LDAP server
@@ -66,10 +38,7 @@ class Ldap implements LdapInterface
      * @param int $port Port
      * @return void
      */
-    public function connect($host, $port)
-    {
-        $this->_connection = ldap_connect($host, $port);
-    }
+    public function connect($host, $port);
 
     /**
      *  Set the value of the given option
@@ -78,10 +47,7 @@ class Ldap implements LdapInterface
      * @param mixed $value The new value for the specified option
      * @return void
      */
-    public function setOption($option, $value)
-    {
-        ldap_set_option($this->getConnection(), $option, $value);
-    }
+    public function setOption($option, $value);
 
     /**
      * Get the current value for given option
@@ -89,21 +55,12 @@ class Ldap implements LdapInterface
      * @param int $option Option to get
      * @return mixed This will be set to the option value.
      */
-    public function getOption($option)
-    {
-        ldap_get_option($this->getConnection(), $option, $returnValue);
-
-        return $returnValue;
-    }
+    public function getOption($option);
 
     /**
      * Unbind from LDAP directory
      *
      * @return void
      */
-    public function unbind()
-    {
-        ldap_unbind($this->_connection);
-        $this->_connection = null;
-    }
+    public function unbind();
 }

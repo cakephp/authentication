@@ -13,7 +13,7 @@
 namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\LdapIdentifier;
-use Authentication\Identifier\LdapInterface;
+use Authentication\Identifier\Backend\LdapInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 
@@ -63,6 +63,16 @@ class LdapIdentifierTest extends TestCase
 {
 
     /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->skipIf(!extension_loaded('ldap'), 'LDAP extension is not installed');
+    }
+
+    /**
      * testIdentify
      *
      * @return void
@@ -82,7 +92,7 @@ class LdapIdentifierTest extends TestCase
             'password' => 'doe'
         ]);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $this->assertInstanceOf(EntityInterface::class, $result);
     }
 
     /**

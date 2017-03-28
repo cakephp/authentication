@@ -12,6 +12,8 @@
  */
 namespace Authentication\Identifier;
 
+use Authentication\Identifier\Backend\Ldap;
+use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\Entity;
@@ -133,7 +135,16 @@ class LdapIdentifier extends AbstractIdentifier
         }
 
         if (is_string($this->_config['ldapClass'])) {
-            $this->_ldap = new $this->_config['ldapClass'];
+            $class = App::className($this->_config['ldapClass'], 'Identifier/Backend');
+            $this->_ldap = new $class();
+
+            return;
+        }
+
+        if (is_array($this->_config['ldapClass'])) {
+            list($class, $args) = $this->_config['ldapClass'];
+            $class = App::className($class, 'Identifier/Backend');
+            $this->_ldap = new $class(...$args);
 
             return;
         }
