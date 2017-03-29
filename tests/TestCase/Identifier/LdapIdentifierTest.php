@@ -12,52 +12,11 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
+use Authentication\Identifier\Backend\Ldap;
 use Authentication\Identifier\Backend\LdapInterface;
 use Authentication\Identifier\LdapIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
-
-/**
- * Overwrite all Ldap methods to enable tests
- */
-class Ldap implements LdapInterface
-{
-    protected $_connection = 'connected';
-
-    public function bind($bind, $password)
-    {
-        return true;
-    }
-
-    public function getConnection()
-    {
-        return $this->_connection;
-    }
-
-    public function connect($host, $port)
-    {
-    }
-
-    public function setOption($option, $value)
-    {
-    }
-
-    public function getOption($option)
-    {
-    }
-
-    public function unbind()
-    {
-        $this->_connection = null;
-    }
-}
-
-/**
- * A class which doesn't implement the LdapInterface
- */
-class NotLdap
-{
-}
 
 class LdapIdentifierTest extends TestCase
 {
@@ -79,12 +38,16 @@ class LdapIdentifierTest extends TestCase
      */
     public function testIdentify()
     {
+        $ldap = $this->createMock(Ldap::class);
+        $ldap->method('bind')
+            ->willReturn(true);
+
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => Ldap::class
+            'ldapClass' => $ldap
         ]);
 
         $result = $identifier->identify([
@@ -104,12 +67,14 @@ class LdapIdentifierTest extends TestCase
      */
     public function testWrongLdapObject()
     {
+        $notLdap = $this->createMock(\stdClass::class);
+
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => new NotLdap
+            'ldapClass' => $notLdap
         ]);
     }
 
