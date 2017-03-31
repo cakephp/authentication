@@ -187,20 +187,17 @@ class LdapIdentifier extends AbstractIdentifier
     {
         $config = $this->getConfig();
 
-        try {
-            $this->_ldap->connect(
-                $config['host'],
-                $config['port']
-            );
-            if (isset($config['options']) && is_array($config['options'])) {
-                foreach ($config['options'] as $option => $value) {
-                    $this->_ldap->setOption($option, $value);
-                }
-            } else {
-                $this->_ldap->setOption(LDAP_OPT_NETWORK_TIMEOUT, 5);
+        $this->_ldap->connect(
+            $config['host'],
+            $config['port']
+        );
+
+        if (isset($config['options']) && is_array($config['options'])) {
+            foreach ($config['options'] as $option => $value) {
+                $this->_ldap->setOption($option, $value);
             }
-        } catch (Exception $e) {
-            throw new InternalErrorException('Unable to connect to specified LDAP Server');
+        } else {
+            $this->_ldap->setOption(LDAP_OPT_NETWORK_TIMEOUT, 5);
         }
     }
 
@@ -251,8 +248,7 @@ class LdapIdentifier extends AbstractIdentifier
         $extendedError = $this->_ldap->getOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
         if (!is_null($extendedError)) {
             $this->_errors[] = $extendedError;
-        } else {
-            $this->_errors[] = $message;
         }
+        $this->_errors[] = $message;
     }
 }

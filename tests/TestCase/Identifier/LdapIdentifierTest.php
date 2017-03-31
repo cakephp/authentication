@@ -17,6 +17,7 @@ use Authentication\Identifier\Backend\LdapInterface;
 use Authentication\Identifier\LdapIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
+use ErrorException;
 
 class LdapIdentifierTest extends TestCase
 {
@@ -47,7 +48,10 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => $ldap
+            'ldapClass' => $ldap,
+            'options' => [
+                LDAP_OPT_PROTOCOL_VERSION => 3
+            ]
         ]);
 
         $result = $identifier->identify([
@@ -56,6 +60,80 @@ class LdapIdentifierTest extends TestCase
         ]);
 
         $this->assertInstanceOf(EntityInterface::class, $result);
+    }
+
+    /**
+     * testIdentifyNull
+     *
+     * @return void
+     */
+    public function testIdentifyNull()
+    {
+        $ldap = $this->createMock(Ldap::class);
+        $ldap->method('bind')
+            ->willReturn(false);
+
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            },
+            'ldapClass' => $ldap
+        ]);
+
+        $result = $identifier->identify([
+            'username' => 'john',
+            'password' => 'doe'
+        ]);
+        $this->assertSame(null, $result);
+
+        $resultTwo = $identifier->identify(null);
+        $this->assertSame(null, $result);
+    }
+
+    /**
+     * testBuildLdapObject
+     *
+     * @return void
+     */
+    public function testBuildLdapObject()
+    {
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            }
+        ]);
+
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            },
+            'ldapClass' => 'Authentication\Identifier\Backend\Ldap'
+        ]);
+
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            },
+            'ldapClass' => [
+                'Authentication\Identifier\Backend\Ldap',
+                [
+                    'first',
+                    'second'
+                ]
+            ]
+        ]);
+
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            },
+            'ldapClass' => new Ldap
+        ]);
     }
 
     /**
@@ -79,7 +157,7 @@ class LdapIdentifierTest extends TestCase
     }
 
     /**
-     * testUncallableDN
+     * testMissingBindDN
      *
      * @return void
      * @expectedException \RuntimeException
@@ -120,6 +198,38 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             }
+        ]);
+    }
+
+    /**
+     * testHandleError
+     *
+     * @return void
+     */
+    public function testHandleError()
+    {
+        $ldap = $this->createMock(Ldap::class);
+        $ldap->method('bind')
+            ->will($this->throwException(new ErrorException('This is an error.')));
+        $ldap->method('getOption')
+            ->willReturn('This is another error.');
+
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            },
+            'ldapClass' => $ldap
+        ]);
+
+        $result = $identifier->identify([
+            'username' => 'john',
+            'password' => 'doe'
+        ]);
+
+        $this->assertSame($identifier->getErrors(), [
+            'This is another error.',
+            'This is an error.'
         ]);
     }
 }
