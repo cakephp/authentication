@@ -18,6 +18,7 @@ use Cake\Http\ResponseEmitter;
 use Cake\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use SocialConnect\Auth\Service;
 use SocialConnect\Common\Http\Client\Curl;
 use SocialConnect\Provider\Session\Session;
@@ -48,6 +49,7 @@ class OauthAuthenticator extends AbstractAuthenticator
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
+        'provider' => null,
         'fields' => [
             'username' => 'username'
         ]
@@ -59,6 +61,10 @@ class OauthAuthenticator extends AbstractAuthenticator
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
         parent::__construct($identifiers, $config);
+
+        if (empty($this->_config['provider'])) {
+            throw new RuntimeException('You must pass the `provider` option. The provider can not be empty.');
+        }
 
         $this->_httpClient = new Curl();
 
@@ -78,33 +84,58 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        // TODO Improve Path comparison
+        $this->_buildRedirectUrl($request, $response);
+
+        if (!$this->_isOauthRedirectUrl()) {
+            return new Result(null, Result::FAILURE_OTHER, [
+                'Login URL or Redirect URL does not macth.'
+            ]);
+        }
+
+        $identity = $this->_getIdentity($request->getQueryParams());
+
+        if ($this->_checkOauthIdentity((array)$identity) === false) {
+            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
+                'Login credentials not found.'
+            ]);
+        }
+
+        $user = $this->identifiers()->identify((array)$identity);
+
+        if (empty($user)) {
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
+        }
+
+        return new Result($user, Result::SUCCESS);
+    }
+
+    /**
+     * Checks if the URL is the Oauth redirect URL
+     *
+     * @param \Psr\Http\Message\ResponseInterface $response Response object.
+     * @return bool
+     */
+    protected function _isOauthRedirectUrl(ServerRequestInterface $request)
+    {
+        $result = strcasecmp(
+            Router::url($request->getUri()->getPath(), true),
+            $this->getConfig('Oauth.redirectUri') . '/' . $this->getConfig('provider'). '/'
+        );
+
+        return $result === 0;
+    }
+
+    /**
+     * @todo Improve Path comparison
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @param \Psr\Http\Message\ResponseInterface $response Response object.
+     * @return void
+     */
+    protected function _buildRedirectUrl(ServerRequestInterface $request, ResponseInterface $response)
+    {
         if (strcasecmp(Router::url($request->getUri()->getPath(), true), $this->getConfig('loginUrl')) === 0) {
             $this->_redirect($response);
         }
-
-        // TODO Don't hardcode the provider
-        if (strcasecmp(Router::url($request->getUri()->getPath(), true), $this->getConfig('Oauth.redirectUri') . '/github/') === 0) {
-            $identity = $this->_getIdentity($request->getQueryParams());
-
-            if ($this->_checkOauthIdentity((array)$identity) === false) {
-                return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
-                    'Login credentials not found.'
-                ]);
-            }
-
-            $user = $this->identifiers()->identify((array)$identity);
-
-            if (empty($user)) {
-                return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
-            }
-
-            return new Result($user, Result::SUCCESS);
-        }
-
-        return new Result(null, Result::FAILURE_OTHER, [
-            'Login URL or Redirect URL does not macth.'
-        ]);
     }
 
     /**
@@ -137,9 +168,8 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     protected function _redirect(ResponseInterface $response)
     {
-        // TODO Don't hardcode the provider
-        $providerName = 'github';
-        $provider = $this->_authService->getProvider($providerName);
+        $provider = $this->_authService->getProvider($this->getConfig('provider'));
+
         $response = $response
             ->withStatus(302)
             ->withLocation($provider->makeAuthUrl());
@@ -158,9 +188,7 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     protected function _getIdentity($queryParameters)
     {
-        // TODO Don't hardcode the provider
-        $providerName = 'github';
-        $provider = $this->_authService->getProvider($providerName);
+        $provider = $this->_authService->getProvider($this->getConfig('provider'));
         $accessToken = $provider->getAccessTokenByRequestParameters($queryParameters);
 
         return $provider->getIdentity($accessToken);
