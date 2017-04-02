@@ -33,13 +33,6 @@ class OauthAuthenticator extends AbstractAuthenticator
 {
 
     /**
-     * Http Client
-     *
-     * @var \SocialConnect\Common\Http\Client\Curl
-     */
-    protected $_httpClient;
-
-    /**
      * Service Class
      *
      * @var \SocialConnect\Auth\Service
@@ -58,6 +51,7 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     protected $_defaultConfig = [
         'oauth' => null,
+        'authService' => null,
         'fields' => [
             'username' => 'username'
         ]
@@ -71,13 +65,7 @@ class OauthAuthenticator extends AbstractAuthenticator
         parent::__construct($identifiers, $config);
 
         $this->_checkOauthConfig();
-
-        $this->_httpClient = new Curl();
-        $this->_authService = new Service(
-            $this->_httpClient,
-            new Session(),
-            $this->getConfig('oauth')
-        );
+        $this->_authService = $this->getConfig('authService');
     }
 
     /**
@@ -90,7 +78,7 @@ class OauthAuthenticator extends AbstractAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         if ($this->_isLoginUrl($request) === true) {
-            $this->_redirect($response, $this->_provider);
+            $this->_redirect($response);
         }
 
         if ($this->_isOauthRedirectUrl($request) === true) {
@@ -139,6 +127,9 @@ class OauthAuthenticator extends AbstractAuthenticator
         }
         if (empty($this->_config['loginUrl'])) {
             throw new RuntimeException('You must pass the `loginUrl` option.');
+        }
+        if (empty($this->_config['authService'])) {
+            throw new RuntimeException('You must pass the `authService` option.');
         }
     }
 
@@ -238,9 +229,9 @@ class OauthAuthenticator extends AbstractAuthenticator
      * @param string $providerIdentifier Name of the provider
      * @return void
      */
-    protected function _redirect(ResponseInterface $response, $providerIdentifier)
+    protected function _redirect(ResponseInterface $response)
     {
-        $provider = $this->_authService->getProvider($providerIdentifier);
+        $provider = $this->_authService->getProvider($this->_provider);
 
         $response = $response
             ->withStatus(302)
