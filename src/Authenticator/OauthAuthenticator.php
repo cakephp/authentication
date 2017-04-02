@@ -14,7 +14,9 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
+use Cake\Http\Response;
 use Cake\Http\ResponseEmitter;
+use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -132,10 +134,10 @@ class OauthAuthenticator extends AbstractAuthenticator
     /**
      * Checks the requests if it is the configured redirect action
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The current request.
+     * @param \Cake\Http\ServerRequest $request The current request.
      * @return bool
      */
-    protected function _isOauthRedirectUrl(ServerRequestInterface $request)
+    protected function _isOauthRedirectUrl(ServerRequest $request)
     {
         $redirectUrl = $this->getConfig('redirectUrl');
         $this->_provider = implode('', $request->getParam('pass'));
@@ -159,10 +161,10 @@ class OauthAuthenticator extends AbstractAuthenticator
     /**
      * Checks the requests if it is the configured login action
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The current request.
+     * @param \Cake\Http\ServerRequest $request The current request.
      * @return bool
      */
-    protected function _isLoginUrl(ServerRequestInterface $request)
+    protected function _isLoginUrl(ServerRequest $request)
     {
         $loginUrl = $this->getConfig('loginUrl');
         $this->_provider = $request->getQuery('provider');
@@ -221,10 +223,10 @@ class OauthAuthenticator extends AbstractAuthenticator
     /**
      * Redirect the user to the provider
      *
-     * @param \Psr\Http\Message\ResponseInterface $response Response object.
+     * @param \Cake\Http\Response $response Response object.
      * @return void
      */
-    protected function _redirect(ResponseInterface $response)
+    protected function _redirect(Response $response)
     {
         $provider = $this->_authService->getProvider($this->_provider);
 
