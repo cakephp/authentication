@@ -50,7 +50,7 @@ class OauthAuthenticator extends AbstractAuthenticator
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'oauth' => null,
+        'oauthConfig' => null,
         'authService' => null,
         'fields' => [
             'username' => 'username'
@@ -119,8 +119,8 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     protected function _checkOauthConfig()
     {
-        if (empty($this->_config['oauth'])) {
-            throw new RuntimeException('You must pass the `oauth` option.');
+        if (empty($this->_config['oauthConfig'])) {
+            throw new RuntimeException('You must pass the `oauthConfig` option.');
         }
         if (empty($this->_config['redirectUrl'])) {
             throw new RuntimeException('You must pass the `redirectUrl` option.');
@@ -144,7 +144,7 @@ class OauthAuthenticator extends AbstractAuthenticator
         $redirectUrl = $this->getConfig('redirectUrl');
         $this->_provider = implode('', $request->getParam('pass'));
 
-        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauth.provider'))) {
+        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauthConfig.provider'))) {
             return false;
         }
 
@@ -171,7 +171,7 @@ class OauthAuthenticator extends AbstractAuthenticator
         $loginUrl = $this->getConfig('loginUrl');
         $this->_provider = $request->getQuery('provider');
 
-        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauth.provider'))) {
+        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauthConfig.provider'))) {
             return false;
         }
 
