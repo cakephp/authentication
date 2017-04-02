@@ -23,8 +23,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SocialConnect\Auth\Service;
-use SocialConnect\Common\Http\Client\Curl;
-use SocialConnect\Provider\Session\Session;
 
 /**
  * Oauth Authenticator
@@ -120,14 +118,17 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     protected function _checkOauthConfig()
     {
-        if (empty($this->_config['redirectUrl'])) {
+        if (empty($this->getConfig('redirectUrl'))) {
             throw new RuntimeException('You must pass the `redirectUrl` option.');
         }
-        if (empty($this->_config['loginUrl'])) {
+        if (empty($this->getConfig('loginUrl'))) {
             throw new RuntimeException('You must pass the `loginUrl` option.');
         }
-        if (empty($this->_config['authService'])) {
+        if (empty($this->getConfig('authService'))) {
             throw new RuntimeException('You must pass the `authService` option.');
+        }
+        if (!$this->getConfig('authService') instanceof Service) {
+            throw new RuntimeException('Option `authService` must be an insatce of \SocialConnect\Auth\Service.');
         }
     }
 
