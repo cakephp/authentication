@@ -19,7 +19,8 @@
         "cakephp/cakephp": "~3.4",
         "cakephp/cakephp-codesniffer": "^2.1",
         "phpunit/phpunit": "<6.0",
-        "firebase/php-jwt": "~4.0"
+        "firebase/php-jwt": "~4.0",
+        "socialconnect/auth": "^1.1.0"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework).",
