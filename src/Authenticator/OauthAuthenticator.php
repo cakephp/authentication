@@ -16,6 +16,7 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Cake\Http\ResponseEmitter;
 use Cake\Routing\Router;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -24,7 +25,7 @@ use SocialConnect\Common\Http\Client\Curl;
 use SocialConnect\Provider\Session\Session;
 
 /**
- * Oauth2 Authenticator
+ * Oauth Authenticator
  *
  * Authenticates an identity based on a response from an Oauth provider.
  */
@@ -46,10 +47,17 @@ class OauthAuthenticator extends AbstractAuthenticator
     protected $_authService;
 
     /**
+     * The current provider
+     *
+     * @var string
+     */
+    protected $_provider;
+
+    /**
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'provider' => null,
+        'oauth' => null,
         'fields' => [
             'username' => 'username'
         ]
@@ -62,16 +70,13 @@ class OauthAuthenticator extends AbstractAuthenticator
     {
         parent::__construct($identifiers, $config);
 
-        if (empty($this->_config['provider'])) {
-            throw new RuntimeException('You must pass the `provider` option. The provider can not be empty.');
-        }
+        $this->_checkOauthConfig();
 
         $this->_httpClient = new Curl();
-
         $this->_authService = new Service(
             $this->_httpClient,
             new Session(),
-            $this->getConfig('Oauth')
+            $this->getConfig('oauth')
         );
     }
 
@@ -84,58 +89,110 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $this->_buildRedirectUrl($request, $response);
-
-        if (!$this->_isOauthRedirectUrl()) {
-            return new Result(null, Result::FAILURE_OTHER, [
-                'Login URL or Redirect URL does not macth.'
-            ]);
+        if ($this->_isLoginUrl($request) === true) {
+            $this->_redirect($response, $this->_provider);
         }
 
-        $identity = $this->_getIdentity($request->getQueryParams());
+        if ($this->_isOauthRedirectUrl($request) === true) {
+            try {
+                $identity = $this->_getIdentity($request->getQueryParams());
+            } catch (Exception $e) {
+                return new Result(null, Result::FAILURE_OTHER, [
+                    $e->getMessage()
+                ]);
+            }
 
-        if ($this->_checkOauthIdentity((array)$identity) === false) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
-                'Login credentials not found.'
-            ]);
+            if ($this->_checkOauthIdentity((array)$identity) === false) {
+                return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
+                    'Login credentials not found.'
+                ]);
+            }
+
+            $user = $this->identifiers()->identify((array)$identity);
+
+            if (empty($user)) {
+                return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
+            }
+
+            return new Result($user, Result::SUCCESS);
         }
 
-        $user = $this->identifiers()->identify((array)$identity);
-
-        if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
-        }
-
-        return new Result($user, Result::SUCCESS);
+        return new Result(null, Result::FAILURE_OTHER, [
+            'Login URL or Redirect URL does not macth.'
+        ]);
     }
 
     /**
-     * Checks if the URL is the Oauth redirect URL
+     * Checks the Oauth config
+     *
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    protected function _checkOauthConfig()
+    {
+        if (empty($this->_config['oauth'])) {
+            throw new RuntimeException('You must pass the `oauth` option.');
+        }
+        if (empty($this->_config['redirectUrl'])) {
+            throw new RuntimeException('You must pass the `redirectUrl` option.');
+        }
+        if (empty($this->_config['loginUrl'])) {
+            throw new RuntimeException('You must pass the `loginUrl` option.');
+        }
+    }
+
+    /**
+     * Checks the requests if it is the configured redirect action
      *
      * @param \Psr\Http\Message\ResponseInterface $response Response object.
      * @return bool
      */
     protected function _isOauthRedirectUrl(ServerRequestInterface $request)
     {
-        $result = strcasecmp(
-            Router::url($request->getUri()->getPath(), true),
-            $this->getConfig('Oauth.redirectUri') . '/' . $this->getConfig('provider'). '/'
-        );
+        $redirectUrl = $this->getConfig('redirectUrl');
+        $this->_provider = implode('', $request->getParam('pass'));
 
-        return $result === 0;
+        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauth.provider'))) {
+            return false;
+        }
+
+        if (!empty($redirectUrl)) {
+            if (is_array($redirectUrl)) {
+                $redirectUrl = Router::url($redirectUrl);
+            }
+            $redirectUrl = $redirectUrl . '/' . $this->_provider . '/';
+
+            return strcasecmp($request->getUri()->getPath(), $redirectUrl) === 0;
+        }
+
+        return false;
     }
 
     /**
-     * @todo Improve Path comparison
+     * Checks the requests if it is the configured login action
+     *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @param \Psr\Http\Message\ResponseInterface $response Response object.
-     * @return void
+     * @return bool
      */
-    protected function _buildRedirectUrl(ServerRequestInterface $request, ResponseInterface $response)
+    protected function _isLoginUrl(ServerRequestInterface $request)
     {
-        if (strcasecmp(Router::url($request->getUri()->getPath(), true), $this->getConfig('loginUrl')) === 0) {
-            $this->_redirect($response);
+        $loginUrl = $this->getConfig('loginUrl');
+        $this->_provider = $request->getQuery('provider');
+
+        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauth.provider'))) {
+            return false;
         }
+
+        if (!empty($loginUrl)) {
+            if (is_array($loginUrl)) {
+                $loginUrl = Router::url($loginUrl);
+            }
+
+            return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;
+        }
+
+        return false;
     }
 
     /**
@@ -161,14 +218,29 @@ class OauthAuthenticator extends AbstractAuthenticator
     }
 
     /**
+     * Fetch the identity from the provider
+     *
+     * @param string $queryParameters Query Parameter
+     * @return \SocialConnect\Common\Entity\User User entity
+     */
+    protected function _getIdentity($queryParameters)
+    {
+        $provider = $this->_authService->getProvider($this->_provider);
+        $accessToken = $provider->getAccessTokenByRequestParameters($queryParameters);
+
+        return $provider->getIdentity($accessToken);
+    }
+
+    /**
      * Redirect the user to the provider
      *
      * @param \Psr\Http\Message\ResponseInterface $response Response object.
+     * @param string $providerIdentifier Name of the provider
      * @return void
      */
-    protected function _redirect(ResponseInterface $response)
+    protected function _redirect(ResponseInterface $response, $providerIdentifier)
     {
-        $provider = $this->_authService->getProvider($this->getConfig('provider'));
+        $provider = $this->_authService->getProvider($providerIdentifier);
 
         $response = $response
             ->withStatus(302)
@@ -178,19 +250,5 @@ class OauthAuthenticator extends AbstractAuthenticator
         $emitter->emit($response);
 
         exit;
-    }
-
-    /**
-     * Fetch the identity from the provider
-     *
-     * @param string $queryParameters Query Parameter
-     * @return \SocialConnect\Common\Entity\User User entity
-     */
-    protected function _getIdentity($queryParameters)
-    {
-        $provider = $this->_authService->getProvider($this->getConfig('provider'));
-        $accessToken = $provider->getAccessTokenByRequestParameters($queryParameters);
-
-        return $provider->getIdentity($accessToken);
     }
 }

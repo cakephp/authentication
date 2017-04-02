@@ -16,7 +16,8 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 
-class OauthAuthenticatorTest extends TestCase {
+class OauthAuthenticatorTest extends TestCase
+{
 
     /**
      * Fixtures
@@ -38,7 +39,8 @@ class OauthAuthenticatorTest extends TestCase {
     /**
      * {@inheritdoc}
      */
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([]);
