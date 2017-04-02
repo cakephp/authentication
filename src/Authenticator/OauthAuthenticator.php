@@ -145,7 +145,7 @@ class OauthAuthenticator extends AbstractAuthenticator
     /**
      * Checks the requests if it is the configured redirect action
      *
-     * @param \Psr\Http\Message\ResponseInterface $response Response object.
+     * @param \Psr\Http\Message\ServerRequestInterface $request The current request.
      * @return bool
      */
     protected function _isOauthRedirectUrl(ServerRequestInterface $request)
@@ -172,7 +172,7 @@ class OauthAuthenticator extends AbstractAuthenticator
     /**
      * Checks the requests if it is the configured login action
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @param \Psr\Http\Message\ServerRequestInterface $request The current request.
      * @return bool
      */
     protected function _isLoginUrl(ServerRequestInterface $request)
@@ -196,7 +196,7 @@ class OauthAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Checks the fields to ensure they are supplied.
+     * Check the fields to ensure they are supplied
      *
      * @param array $identity The identity returned by the provider.
      * @return bool False if the fields have not been supplied. True if they exist.
