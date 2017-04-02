@@ -50,7 +50,6 @@ class OauthAuthenticator extends AbstractAuthenticator
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'oauthConfig' => null,
         'authService' => null,
         'fields' => [
             'username' => 'username'
@@ -119,9 +118,6 @@ class OauthAuthenticator extends AbstractAuthenticator
      */
     protected function _checkOauthConfig()
     {
-        if (empty($this->_config['oauthConfig'])) {
-            throw new RuntimeException('You must pass the `oauthConfig` option.');
-        }
         if (empty($this->_config['redirectUrl'])) {
             throw new RuntimeException('You must pass the `redirectUrl` option.');
         }
@@ -144,7 +140,7 @@ class OauthAuthenticator extends AbstractAuthenticator
         $redirectUrl = $this->getConfig('redirectUrl');
         $this->_provider = implode('', $request->getParam('pass'));
 
-        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauthConfig.provider'))) {
+        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->_authService->getConfig()['provider'])) {
             return false;
         }
 
@@ -171,7 +167,7 @@ class OauthAuthenticator extends AbstractAuthenticator
         $loginUrl = $this->getConfig('loginUrl');
         $this->_provider = $request->getQuery('provider');
 
-        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->getConfig('oauthConfig.provider'))) {
+        if (empty($this->_provider) || !array_key_exists($this->_provider, $this->_authService->getConfig()['provider'])) {
             return false;
         }
 
@@ -226,7 +222,6 @@ class OauthAuthenticator extends AbstractAuthenticator
      * Redirect the user to the provider
      *
      * @param \Psr\Http\Message\ResponseInterface $response Response object.
-     * @param string $providerIdentifier Name of the provider
      * @return void
      */
     protected function _redirect(ResponseInterface $response)
