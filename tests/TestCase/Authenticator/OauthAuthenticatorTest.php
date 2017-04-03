@@ -135,11 +135,11 @@ class OauthAuthenticatorTest extends TestCase
     }
 
     /**
-     * testWorngUrls
+     * testWrongUrls
      *
      * @return void
      */
-    public function testWorngUrls()
+    public function testWrongUrls()
     {
         $authService = $this->createMock(Service::class);
 
