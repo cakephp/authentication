@@ -128,7 +128,7 @@ class OauthAuthenticator extends AbstractAuthenticator
             throw new RuntimeException('You must pass the `authService` option.');
         }
         if (!$this->getConfig('authService') instanceof Service) {
-            throw new RuntimeException('Option `authService` must be an insatce of \SocialConnect\Auth\Service.');
+            throw new RuntimeException('Option `authService` must be an instance of \SocialConnect\Auth\Service.');
         }
     }
 

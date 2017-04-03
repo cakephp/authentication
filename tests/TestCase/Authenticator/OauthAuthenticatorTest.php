@@ -379,7 +379,7 @@ class OauthAuthenticatorTest extends TestCase
      *
      * @return void
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Option `authService` must be an insatce of \SocialConnect\Auth\Service.
+     * @expectedExceptionMessage Option `authService` must be an instance of \SocialConnect\Auth\Service.
      */
     public function testWrongAuthService()
     {
