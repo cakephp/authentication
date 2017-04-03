@@ -48,7 +48,7 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => $ldap,
+            'ldap' => $ldap,
             'options' => [
                 LDAP_OPT_PROTOCOL_VERSION => 3
             ]
@@ -78,7 +78,7 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => $ldap
+            'ldap' => $ldap
         ]);
 
         $result = $identifier->identify([
@@ -92,67 +92,22 @@ class LdapIdentifierTest extends TestCase
     }
 
     /**
-     * testBuildLdapObject
-     *
-     * @return void
-     */
-    public function testBuildLdapObject()
-    {
-        $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            }
-        ]);
-
-        $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            },
-            'ldapClass' => 'Authentication\Identifier\Backend\Ldap'
-        ]);
-
-        $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            },
-            'ldapClass' => [
-                'Authentication\Identifier\Backend\Ldap',
-                [
-                    'first',
-                    'second'
-                ]
-            ]
-        ]);
-
-        $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            },
-            'ldapClass' => new Ldap
-        ]);
-    }
-
-    /**
      * testWrongLdapObject
      *
      * @return void
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Could not build the LDAP connection object.
+     * @expectedExceptionMessage Option `ldap` must implement Authentication\Identifier\Backend\LdapInterface.
      */
     public function testWrongLdapObject()
     {
-        $notLdap = $this->createMock(\stdClass::class);
+        $notLdap = new \stdClass;
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => $notLdap
+            'ldap' => $notLdap
         ]);
     }
 
@@ -219,7 +174,7 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldapClass' => $ldap
+            'ldap' => $ldap
         ]);
 
         $result = $identifier->identify([

@@ -50,7 +50,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @var array
      */
     protected $_defaultConfig = [
-        'ldapClass' => null,
+        'ldap' => Ldap::class,
         'fields' => [
             'username' => 'username',
             'password' => 'password'
@@ -81,7 +81,8 @@ class LdapIdentifier extends AbstractIdentifier
 
         $this->_checkLdapExtension();
         $this->_checkLdapConfig();
-        $this->_buildLdapObject();
+
+        $this->_ldap = $this->_config['ldap'];
     }
 
     /**
@@ -121,42 +122,9 @@ class LdapIdentifier extends AbstractIdentifier
         if (!isset($this->_config['host'])) {
             throw new RuntimeException('Config `host` is not set.');
         }
-    }
-
-    /**
-     * Constructs the LDAP object and sets it to the property
-     *
-     * @throws \RuntimeException
-     * @return void
-     */
-    protected function _buildLdapObject()
-    {
-        if (empty($this->_config['ldapClass'])) {
-            $this->setConfig('ldapClass', Ldap::class);
+        if (!($this->_config['ldap'] instanceof LdapInterface)) {
+            throw new RuntimeException('Option `ldap` must implement Authentication\Identifier\Backend\LdapInterface.');
         }
-
-        if (is_string($this->_config['ldapClass'])) {
-            $class = App::className($this->_config['ldapClass'], 'Identifier/Backend');
-            $this->_ldap = new $class();
-
-            return;
-        }
-
-        if (is_array($this->_config['ldapClass'])) {
-            list($class, $args) = $this->_config['ldapClass'];
-            $class = App::className($class, 'Identifier/Backend');
-            $this->_ldap = new $class(...$args);
-
-            return;
-        }
-
-        if ($this->_config['ldapClass'] instanceof LdapInterface) {
-            $this->_ldap = $this->_config['ldapClass'];
-
-            return;
-        }
-
-        throw new RuntimeException('Could not build the LDAP connection object.');
     }
 
     /**
