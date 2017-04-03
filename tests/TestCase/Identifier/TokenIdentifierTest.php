@@ -14,8 +14,6 @@ namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\TokenIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
-use Cake\ORM\Entity;
 
 class TokenIdentifierTest extends TestCase
 {
@@ -48,66 +46,15 @@ class TokenIdentifierTest extends TestCase
     public function testCustomUserModel()
     {
         $identifier = new TokenIdentifier([
-            'userModel' => 'AuthUsers',
+            'datasource' => [
+                'className' => 'Authentication.Orm',
+                'userModel' => 'AuthUsers'
+            ],
             'tokenField' => 'username'
         ]);
 
         $result = $identifier->identify(['token' => 'chartjes']);
 
         $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
-    }
-
-    /**
-     * testCallableTokenVerification
-     *
-     * @return void
-     */
-    public function testCallableTokenVerification()
-    {
-        $identifier = new TokenIdentifier([
-            'tokenVerification' => function ($data) {
-                if ($data['token'] === 'larry') {
-                    return new Entity(['username' => 'larry', 'id' => 3]);
-                }
-
-                return null;
-            }
-        ]);
-
-        $result = $identifier->identify(['token' => 'not-larry']);
-        $this->assertNull($result);
-
-        $result = $identifier->identify(['token' => 'larry']);
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
-    }
-
-    /**
-     * testTokenVerificationMethodDoesNotExist
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Token verification method `Authentication\Identifier\TokenIdentifier::_missing()` does not exist
-     */
-    public function testTokenVerificationMethodDoesNotExist()
-    {
-        $identifier = new TokenIdentifier([
-            'tokenVerification' => 'missing'
-        ]);
-
-        $identifier->identify(['token' => 'larry']);
-    }
-
-    /**
-     * testTokenVerificationInvalidArgumentException
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The `tokenVerification` option is not a string or callable
-     */
-    public function testTokenVerificationInvalidArgumentException()
-    {
-        $identifier = new TokenIdentifier([
-            'tokenVerification' => 12345
-        ]);
-
-        $identifier->identify(['token' => 'larry']);
     }
 }
