@@ -22,7 +22,12 @@ class OrmDatasource implements DatasourceInterface
     use LocatorAwareTrait;
 
     /**
-     * Default configuration
+     * Default configuration.
+     * - `userModel` The alias for users table, defaults to Users.
+     * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
+     *   You can set finder name as string or an array where key is finder name and value
+     *   is an array passed to `Table::find()` options.
+     *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
      *
      * @var array
      */

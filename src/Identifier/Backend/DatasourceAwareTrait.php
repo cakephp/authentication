@@ -83,13 +83,13 @@ trait DatasourceAwareTrait
 
         $class = App::className($config['className'], 'Identifier/Backend', 'Datasource');
         if ($class === false) {
-            $message = sprintf('Datasource class %s does not exist.', $config['className']);
+            $message = sprintf('Datasource class `%s` does not exist.', $config['className']);
             throw new InvalidArgumentException($message);
         }
         $instance = new $class($config);
 
         if (!$instance instanceof DatasourceInterface) {
-            $message = sprintf('Datasource must implement %s.', DatasourceInterface::class);
+            $message = sprintf('Datasource must implement `%s`.', DatasourceInterface::class);
             throw new RuntimeException($message);
         }
 
