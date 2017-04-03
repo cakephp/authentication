@@ -134,6 +134,182 @@ class OauthAuthenticatorTest extends TestCase
     }
 
     /**
+     * testWorngUrls
+     *
+     * @return void
+     */
+    public function testWorngUrls()
+    {
+        $authService = $this->createMock(Service::class);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match']
+        );
+        $response = new Response();
+
+        $oauth = new OauthAuthenticator($this->identifiers, [
+            'loginUrl' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'redirectUrl' => [
+                'controller' => 'Users',
+                'action' => 'callback'
+            ],
+            'authService' => $authService
+        ]);
+
+        $result = $oauth->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
+        $this->assertEquals([0 => 'Login URL or Redirect URL does not macth.'], $result->getErrors());
+    }
+
+    /**
+     * testMissingCredentials
+     *
+     * @return void
+     */
+    public function testMissingCredentials()
+    {
+        $entity = new \stdClass;
+
+        $accessToken = $this->createMock(Accesstoken::class);
+        $accessToken->method('getToken')
+            ->willReturn('1234');
+
+        $provider = $this->createMock(Github::class);
+        $provider->method('getIdentity')
+            ->with($accessToken)
+            ->willReturn($entity);
+        $provider->method('makeAuthUrl')
+            ->willReturn('example.com');
+        $provider->method('getAccessTokenByRequestParameters')
+            ->willReturn($accessToken);
+
+        $authService = $this->createMock(Service::class);
+        $authService->method('getprovider')
+            ->willReturn($provider);
+        $authService->method('getConfig')
+            ->willReturn([
+                'redirectUri' => 'http://app.dev/users/callback',
+                'provider' => [
+                    'github' => [
+                        'applicationId' => '1234',
+                        'applicationSecret' => '1234',
+                    ]
+                ]
+            ]);
+
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => null,
+                'controller' => 'Users',
+                'action' => 'callback',
+                '_ext' => null,
+                'pass' => [
+                    'github'
+                ]
+            ],
+            'environment' => [
+                'REQUEST_URI' => '/users/callback/github/'
+            ]
+        ]);
+        $response = new Response();
+
+        $oauth = new OauthAuthenticator($this->identifiers, [
+            'loginUrl' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'redirectUrl' => [
+                'controller' => 'Users',
+                'action' => 'callback'
+            ],
+            'authService' => $authService
+        ]);
+
+        $result = $oauth->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
+        $this->assertEquals([0 => 'Login credentials not found.'], $result->getErrors());
+    }
+
+    /**
+     * testIdentityNotFound
+     *
+     * @return void
+     */
+    public function testIdentityNotFound()
+    {
+        $entity = new \stdClass;
+        $entity->username = 'foo';
+
+        $accessToken = $this->createMock(Accesstoken::class);
+        $accessToken->method('getToken')
+            ->willReturn('1234');
+
+        $provider = $this->createMock(Github::class);
+        $provider->method('getIdentity')
+            ->with($accessToken)
+            ->willReturn($entity);
+        $provider->method('makeAuthUrl')
+            ->willReturn('example.com');
+        $provider->method('getAccessTokenByRequestParameters')
+            ->willReturn($accessToken);
+
+        $authService = $this->createMock(Service::class);
+        $authService->method('getprovider')
+            ->willReturn($provider);
+        $authService->method('getConfig')
+            ->willReturn([
+                'redirectUri' => 'http://app.dev/users/callback',
+                'provider' => [
+                    'github' => [
+                        'applicationId' => '1234',
+                        'applicationSecret' => '1234',
+                    ]
+                ]
+            ]);
+
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => null,
+                'controller' => 'Users',
+                'action' => 'callback',
+                '_ext' => null,
+                'pass' => [
+                    'github'
+                ]
+            ],
+            'environment' => [
+                'REQUEST_URI' => '/users/callback/github/'
+            ]
+        ]);
+        $response = new Response();
+
+        $oauth = new OauthAuthenticator($this->identifiers, [
+            'loginUrl' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'redirectUrl' => [
+                'controller' => 'Users',
+                'action' => 'callback'
+            ],
+            'authService' => $authService
+        ]);
+
+        $result = $oauth->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
+        $this->assertEquals(['Orm' => []], $result->getErrors());
+    }
+
+    /**
      * testMissingRedirectUrl
      *
      * @return void
