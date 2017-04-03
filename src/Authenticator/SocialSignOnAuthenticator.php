@@ -149,16 +149,12 @@ class SocialSignOnAuthenticator extends AbstractAuthenticator
             return false;
         }
 
-        if (!empty($redirectUrl)) {
-            if (is_array($redirectUrl)) {
-                $redirectUrl = Router::url($redirectUrl);
-            }
-            $redirectUrl = $redirectUrl . '/' . $this->_provider . '/';
-
-            return strcasecmp($request->getUri()->getPath(), $redirectUrl) === 0;
+        if (is_array($redirectUrl)) {
+            $redirectUrl = Router::url($redirectUrl);
         }
+        $redirectUrl = $redirectUrl . '/' . $this->_provider . '/';
 
-        return false;
+        return strcasecmp($request->getUri()->getPath(), $redirectUrl) === 0;
     }
 
     /**
@@ -176,15 +172,11 @@ class SocialSignOnAuthenticator extends AbstractAuthenticator
             return false;
         }
 
-        if (!empty($loginUrl)) {
-            if (is_array($loginUrl)) {
-                $loginUrl = Router::url($loginUrl);
-            }
-
-            return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;
+        if (is_array($loginUrl)) {
+            $loginUrl = Router::url($loginUrl);
         }
 
-        return false;
+        return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;
     }
 
     /**
