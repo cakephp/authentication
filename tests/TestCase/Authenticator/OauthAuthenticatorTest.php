@@ -20,6 +20,7 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
+use Exception;
 use SocialConnect\Auth\Service;
 use SocialConnect\Common\Http\Client\Curl;
 use SocialConnect\OAuth2\AccessToken;
@@ -307,6 +308,77 @@ class OauthAuthenticatorTest extends TestCase
         $this->assertInstanceOf('\Authentication\Result', $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
         $this->assertEquals(['Orm' => []], $result->getErrors());
+    }
+
+    /**
+     * testProviderException
+     *
+     * @return void
+     */
+    public function testProviderException()
+    {
+        $entity = new \stdClass;
+        $entity->username = 'mariano';
+
+        $accessToken = $this->createMock(AccessToken::class);
+        $accessToken->method('getToken')
+            ->willReturn('1234');
+
+        $provider = $this->createMock(GitHub::class);
+        $provider->method('getIdentity')
+            ->will($this->throwException(new Exception('Oauth Error.')))
+            ->with($accessToken);
+        $provider->method('makeAuthUrl')
+            ->willReturn('example.com');
+        $provider->method('getAccessTokenByRequestParameters')
+            ->willReturn($accessToken);
+
+        $authService = $this->createMock(Service::class);
+        $authService->method('getprovider')
+            ->willReturn($provider);
+        $authService->method('getConfig')
+            ->willReturn([
+                'redirectUri' => 'http://app.dev/users/callback',
+                'provider' => [
+                    'github' => [
+                        'applicationId' => '1234',
+                        'applicationSecret' => '1234',
+                    ]
+                ]
+            ]);
+
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => null,
+                'controller' => 'Users',
+                'action' => 'callback',
+                '_ext' => null,
+                'pass' => [
+                    'github'
+                ]
+            ],
+            'environment' => [
+                'REQUEST_URI' => '/users/callback/github/'
+            ]
+        ]);
+        $response = new Response();
+
+        $oauth = new OauthAuthenticator($this->identifiers, [
+            'loginUrl' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'redirectUrl' => [
+                'controller' => 'Users',
+                'action' => 'callback'
+            ],
+            'authService' => $authService
+        ]);
+
+        $result = $oauth->authenticate($request, $response);
+
+        $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
+        $this->assertEquals([0 => 'Oauth Error.'], $result->getErrors());
     }
 
     /**
