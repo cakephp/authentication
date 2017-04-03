@@ -22,7 +22,7 @@ use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
 use SocialConnect\Auth\Service;
 use SocialConnect\Common\Http\Client\Curl;
-use SocialConnect\OAuth2\Accesstoken;
+use SocialConnect\OAuth2\AccessToken;
 use SocialConnect\OAuth2\Provider\Github;
 use SocialConnect\Provider\Session\Session;
 
@@ -72,7 +72,7 @@ class OauthAuthenticatorTest extends TestCase
         $entity = new \stdClass;
         $entity->username = 'mariano';
 
-        $accessToken = $this->createMock(Accesstoken::class);
+        $accessToken = $this->createMock(AccessToken::class);
         $accessToken->method('getToken')
             ->willReturn('1234');
 
@@ -175,7 +175,7 @@ class OauthAuthenticatorTest extends TestCase
     {
         $entity = new \stdClass;
 
-        $accessToken = $this->createMock(Accesstoken::class);
+        $accessToken = $this->createMock(AccessToken::class);
         $accessToken->method('getToken')
             ->willReturn('1234');
 
@@ -247,7 +247,7 @@ class OauthAuthenticatorTest extends TestCase
         $entity = new \stdClass;
         $entity->username = 'foo';
 
-        $accessToken = $this->createMock(Accesstoken::class);
+        $accessToken = $this->createMock(AccessToken::class);
         $accessToken->method('getToken')
             ->willReturn('1234');
 
