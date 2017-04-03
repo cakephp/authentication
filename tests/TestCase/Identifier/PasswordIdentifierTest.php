@@ -12,13 +12,13 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
-use Authentication\Identifier\OrmIdentifier;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\WeakPasswordHasher;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 
-class OrmIdentifierTest extends TestCase
+class PasswordIdentifierTest extends TestCase
 {
 
     /**
@@ -28,7 +28,7 @@ class OrmIdentifierTest extends TestCase
      */
     public function testIdentify()
     {
-        $identifier = new OrmIdentifier();
+        $identifier = new PasswordIdentifier();
 
         // Valid user
         $result = $identifier->identify([
@@ -68,7 +68,7 @@ class OrmIdentifierTest extends TestCase
      */
     public function testIdentifyMultiField()
     {
-        $identifier = new OrmIdentifier([
+        $identifier = new PasswordIdentifier([
             'fields' => ['username' => ['id', 'username']]
         ]);
 
@@ -93,10 +93,13 @@ class OrmIdentifierTest extends TestCase
      */
     public function testFinderArrayConfig()
     {
-        $identifier = new OrmIdentifier([
-            'userModel' => 'AuthUsers',
-            'finder' => [
-                'auth' => ['return_created' => true]
+        $identifier = new PasswordIdentifier([
+            'datasource' => [
+                'className' => 'Authentication.Orm',
+                'userModel' => 'AuthUsers',
+                'finder' => [
+                    'auth' => ['return_created' => true]
+                ]
             ]
         ]);
 
@@ -115,7 +118,7 @@ class OrmIdentifierTest extends TestCase
      */
     public function testDefaultPasswordHasher()
     {
-        $identifier = new OrmIdentifier();
+        $identifier = new PasswordIdentifier();
         $hasher = $identifier->getPasswordHasher();
         $this->assertInstanceOf(DefaultPasswordHasher::class, $hasher);
     }
@@ -127,7 +130,7 @@ class OrmIdentifierTest extends TestCase
      */
     public function testCustomPasswordHasher()
     {
-        $identifier = new OrmIdentifier([
+        $identifier = new PasswordIdentifier([
             'passwordHasher' => WeakPasswordHasher::class
         ]);
         $hasher = $identifier->getPasswordHasher();

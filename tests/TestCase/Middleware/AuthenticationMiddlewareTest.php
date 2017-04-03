@@ -39,7 +39,7 @@ class AuthenticationMiddlewareTest extends TestCase
         parent::setUp();
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Form'
@@ -121,7 +121,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.HttpBasic'
@@ -158,7 +158,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm',
+                'Authentication.Password',
                 'Authentication.JwtSubject'
             ],
             'authenticators' => [

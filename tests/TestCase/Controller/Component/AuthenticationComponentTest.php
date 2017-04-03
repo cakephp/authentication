@@ -45,7 +45,7 @@ class AuthenticationComponentTest extends TestCase
 
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Session',

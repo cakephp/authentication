@@ -17,20 +17,23 @@ use Authentication\PasswordHasher\PasswordHasherFactory;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 
 /**
- * CakePHP ORM Identifier
+ * Password Identifier
  *
- * Identifies authentication credentials using the CakePHP ORM.
+ * Identifies authentication credentials with password
  *
  * ```
- *  new OrmIdentifier([
- *      'finder' => ['auth' => ['some_finder_option' => 'some_value']]
+ *  new PasswordIdentifier([
+ *      'fields' => [
+ *          'username' => ['username', 'email'],
+ *          'password' => 'password'
+ *      ]
  *  ]);
  * ```
  *
- * When configuring OrmIdentifier you can pass in config to which fields,
+ * When configuring PasswordIdentifier you can pass in config to which fields,
  * model and additional conditions are used.
  */
-class OrmIdentifier extends AbstractIdentifier
+class PasswordIdentifier extends AbstractIdentifier
 {
 
     use DatasourceAwareTrait;
@@ -40,7 +43,9 @@ class OrmIdentifier extends AbstractIdentifier
 
     /**
      * Default configuration.
-     * - `fields` The fields to use to identify a user by.
+     * - `fields` The fields to use to identify a user by:
+     *   - `username`: one or many username fields.
+     *   - `password`: password field.
      * - `datasource` The datasource implementation to use.
      * - `passwordHasher` Password hasher class. Can be a string specifying class name
      *    or an array containing `className` key, any other keys will be passed as
