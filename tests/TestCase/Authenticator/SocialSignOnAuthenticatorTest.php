@@ -12,7 +12,7 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
-use Authentication\Authenticator\OauthAuthenticator;
+use Authentication\Authenticator\SocialSignOnAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
@@ -27,7 +27,7 @@ use SocialConnect\OAuth2\AccessToken;
 use SocialConnect\OAuth2\Provider\GitHub;
 use SocialConnect\Provider\Session\Session;
 
-class OauthAuthenticatorTest extends TestCase
+class SocialSignOnAuthenticatorTest extends TestCase
 {
 
     /**
@@ -116,7 +116,7 @@ class OauthAuthenticatorTest extends TestCase
         ]);
         $response = new Response();
 
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'
@@ -130,7 +130,7 @@ class OauthAuthenticatorTest extends TestCase
 
         $result = $oauth->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 
@@ -148,7 +148,7 @@ class OauthAuthenticatorTest extends TestCase
         );
         $response = new Response();
 
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'
@@ -162,7 +162,7 @@ class OauthAuthenticatorTest extends TestCase
 
         $result = $oauth->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
         $this->assertEquals([0 => 'Login URL or Redirect URL does not macth.'], $result->getErrors());
     }
@@ -219,7 +219,7 @@ class OauthAuthenticatorTest extends TestCase
         ]);
         $response = new Response();
 
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'
@@ -233,7 +233,7 @@ class OauthAuthenticatorTest extends TestCase
 
         $result = $oauth->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
         $this->assertEquals([0 => 'Login credentials not found.'], $result->getErrors());
     }
@@ -291,7 +291,7 @@ class OauthAuthenticatorTest extends TestCase
         ]);
         $response = new Response();
 
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'
@@ -305,7 +305,7 @@ class OauthAuthenticatorTest extends TestCase
 
         $result = $oauth->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
         $this->assertEquals(['Orm' => []], $result->getErrors());
     }
@@ -363,7 +363,7 @@ class OauthAuthenticatorTest extends TestCase
         ]);
         $response = new Response();
 
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'
@@ -377,6 +377,7 @@ class OauthAuthenticatorTest extends TestCase
 
         $result = $oauth->authenticate($request, $response);
 
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
         $this->assertEquals([0 => 'Oauth Error.'], $result->getErrors());
     }
@@ -390,7 +391,7 @@ class OauthAuthenticatorTest extends TestCase
      */
     public function testMissingRedirectUrl()
     {
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'
@@ -412,7 +413,7 @@ class OauthAuthenticatorTest extends TestCase
      */
     public function testMissingLoginUrl()
     {
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'redirectUrl' => [
                 'controller' => 'Users',
                 'action' => 'callback'
@@ -434,7 +435,7 @@ class OauthAuthenticatorTest extends TestCase
      */
     public function testMissingAuthService()
     {
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'
@@ -455,7 +456,7 @@ class OauthAuthenticatorTest extends TestCase
      */
     public function testWrongAuthService()
     {
-        $oauth = new OauthAuthenticator($this->identifiers, [
+        $oauth = new SocialSignOnAuthenticator($this->identifiers, [
             'loginUrl' => [
                 'controller' => 'Users',
                 'action' => 'login'

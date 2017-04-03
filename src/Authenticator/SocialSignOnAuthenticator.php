@@ -25,11 +25,13 @@ use RuntimeException;
 use SocialConnect\Auth\Service;
 
 /**
- * Oauth Authenticator
+ * Social Sign On Authenticator
  *
- * Authenticates an identity based on a response from an Oauth provider.
+ * Authenticates an identity based on a response from an Oauth or OpenID provider.
+ *
+ * @see https://github.com/SocialConnect/auth on how to setup the varoius providers.
  */
-class OauthAuthenticator extends AbstractAuthenticator
+class SocialSignOnAuthenticator extends AbstractAuthenticator
 {
 
     /**
