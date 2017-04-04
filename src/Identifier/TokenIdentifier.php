@@ -12,7 +12,7 @@
  */
 namespace Authentication\Identifier;
 
-use Authentication\Identifier\Backend\DatasourceAwareTrait;
+use Authentication\Identifier\Resolver\ResolverAwareTrait;
 
 /**
  * Token Identifier
@@ -20,7 +20,7 @@ use Authentication\Identifier\Backend\DatasourceAwareTrait;
 class TokenIdentifier extends AbstractIdentifier
 {
 
-    use DatasourceAwareTrait;
+    use ResolverAwareTrait;
 
     /**
      * Default configuration.
@@ -30,7 +30,7 @@ class TokenIdentifier extends AbstractIdentifier
     protected $_defaultConfig = [
         'tokenField' => 'token',
         'dataField' => 'token',
-        'datasource' => 'Authentication.Orm'
+        'resolver' => 'Authentication.Orm'
     ];
 
     /**
@@ -50,6 +50,6 @@ class TokenIdentifier extends AbstractIdentifier
             $this->getConfig('tokenField') => $data[$dataField]
         ];
 
-        return $this->getDatasource()->find($conditions);
+        return $this->getResolver()->find($conditions);
     }
 }

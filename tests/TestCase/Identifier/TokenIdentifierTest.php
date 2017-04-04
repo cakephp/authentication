@@ -46,7 +46,7 @@ class TokenIdentifierTest extends TestCase
     public function testCustomUserModel()
     {
         $identifier = new TokenIdentifier([
-            'datasource' => [
+            'resolver' => [
                 'className' => 'Authentication.Orm',
                 'userModel' => 'AuthUsers'
             ],

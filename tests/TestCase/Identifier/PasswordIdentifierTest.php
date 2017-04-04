@@ -94,7 +94,7 @@ class PasswordIdentifierTest extends TestCase
     public function testFinderArrayConfig()
     {
         $identifier = new PasswordIdentifier([
-            'datasource' => [
+            'resolver' => [
                 'className' => 'Authentication.Orm',
                 'userModel' => 'AuthUsers',
                 'finder' => [

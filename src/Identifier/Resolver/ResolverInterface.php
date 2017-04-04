@@ -10,16 +10,16 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier\Backend;
+namespace Authentication\Identifier\Resolver;
 
-interface DatasourceInterface
+interface ResolverInterface
 {
 
     const TYPE_OR = 'OR';
     const TYPE_AND = 'AND';
 
     /**
-     * Returns identity with given conditions from a datasource.
+     * Returns identity with given conditions.
      *
      * @param array $conditions Find conditions.
      * @param string $type Condition type. Can be `AND` or `OR`.

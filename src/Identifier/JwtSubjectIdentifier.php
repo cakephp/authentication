@@ -29,6 +29,6 @@ class JwtSubjectIdentifier extends TokenIdentifier
     protected $_defaultConfig = [
         'tokenField' => 'id',
         'dataField' => 'sub',
-        'datasource' => 'Authentication.Orm'
+        'resolver' => 'Authentication.Orm'
     ];
 }

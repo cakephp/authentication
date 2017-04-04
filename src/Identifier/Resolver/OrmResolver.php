@@ -10,12 +10,12 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier\Backend;
+namespace Authentication\Identifier\Resolver;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
-class OrmDatasource implements DatasourceInterface
+class OrmResolver implements ResolverInterface
 {
 
     use InstanceConfigTrait;

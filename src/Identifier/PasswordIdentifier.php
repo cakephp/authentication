@@ -12,8 +12,8 @@
  */
 namespace Authentication\Identifier;
 
-use Authentication\Identifier\Backend\DatasourceAwareTrait;
-use Authentication\Identifier\Backend\DatasourceInterface;
+use Authentication\Identifier\Resolver\ResolverAwareTrait;
+use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 
@@ -37,17 +37,17 @@ use Authentication\PasswordHasher\PasswordHasherTrait;
 class PasswordIdentifier extends AbstractIdentifier
 {
 
-    use DatasourceAwareTrait;
     use PasswordHasherTrait {
         getPasswordHasher as protected _getPasswordHasher;
     }
+    use ResolverAwareTrait;
 
     /**
      * Default configuration.
      * - `fields` The fields to use to identify a user by:
      *   - `username`: one or many username fields.
      *   - `password`: password field.
-     * - `datasource` The datasource implementation to use.
+     * - `resolver` The resolver implementation to use.
      * - `passwordHasher` Password hasher class. Can be a string specifying class name
      *    or an array containing `className` key, any other keys will be passed as
      *    config to the class. Defaults to 'Default'.
@@ -59,7 +59,7 @@ class PasswordIdentifier extends AbstractIdentifier
             'username' => 'username',
             'password' => 'password'
         ],
-        'datasource' => 'Authentication.Orm',
+        'resolver' => 'Authentication.Orm',
         'passwordHasher' => null
     ];
 
@@ -153,6 +153,6 @@ class PasswordIdentifier extends AbstractIdentifier
             $conditions[$field] = $identifier;
         }
 
-        return $this->getDatasource()->find($conditions, DatasourceInterface::TYPE_OR);
+        return $this->getResolver()->find($conditions, ResolverInterface::TYPE_OR);
     }
 }

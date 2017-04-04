@@ -11,62 +11,62 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace Authentication\Identifier\Backend;
+namespace Authentication\Identifier\Resolver;
 
 use Cake\Core\App;
 use InvalidArgumentException;
 use RuntimeException;
 
-trait DatasourceAwareTrait
+trait ResolverAwareTrait
 {
 
     /**
-     * Datasource instance.
+     * Resolver instance.
      *
-     * @var \Authentication\Identifier\Backend\DatasourceInterface
+     * @var \Authentication\Identifier\Resolver\ResolverInterface
      */
-    protected $datasource;
+    protected $resolver;
 
     /**
-     * Returns DatasourceInterface instance.
+     * Returns ResolverInterface instance.
      *
-     * @return \Authentication\Identifier\Backend\DatasourceInterface
-     * @throws \RuntimeException When datasource has not been set.
+     * @return \Authentication\Identifier\Resolver\ResolverInterface
+     * @throws \RuntimeException When resolver has not been set.
      */
-    public function getDatasource()
+    public function getResolver()
     {
-        if ($this->datasource === null) {
-            $config = $this->getConfig('datasource');
+        if ($this->resolver === null) {
+            $config = $this->getConfig('resolver');
             if ($config !== null) {
-                $this->datasource = $this->buildDatasource($config);
+                $this->resolver = $this->buildDatasource($config);
             } else {
-                throw new RuntimeException('Datasource has not been set.');
+                throw new RuntimeException('Resolver has not been set.');
             }
         }
 
-        return $this->datasource;
+        return $this->resolver;
     }
 
     /**
-     * Sets DatasourceInterface instance.
+     * Sets ResolverInterface instance.
      *
-     * @param \Authentication\Identifier\Backend\DatasourceInterface $datasource Datasource instance.
+     * @param \Authentication\Identifier\Resolver\ResolverInterface $resolver Resolver instance.
      * @return $this
      */
-    public function setDatasource(DatasourceInterface $datasource)
+    public function setResolver(ResolverInterface $resolver)
     {
-        $this->datasource = $datasource;
+        $this->resolver = $resolver;
 
         return $this;
     }
 
     /**
-     * Builds a DatasourceInterface instance.
+     * Builds a ResolverInterface instance.
      *
-     * @param string|array $config Datasource class name or config.
-     * @return \Authentication\Identifier\Backend\DatasourceInterface
+     * @param string|array $config Resolver class name or config.
+     * @return \Authentication\Identifier\Resolver\ResolverInterface
      * @throws \InvalidArgumentException When className option is missing or class name does not exist.
-     * @throws \RuntimeException When datasource does not implement DatasourceInterface.
+     * @throws \RuntimeException When resolver does not implement ResolverInterface.
      */
     protected function buildDatasource($config)
     {
@@ -81,15 +81,15 @@ trait DatasourceAwareTrait
             throw new InvalidArgumentException($message);
         }
 
-        $class = App::className($config['className'], 'Identifier/Backend', 'Datasource');
+        $class = App::className($config['className'], 'Identifier/Resolver', 'Resolver');
         if ($class === false) {
-            $message = sprintf('Datasource class `%s` does not exist.', $config['className']);
+            $message = sprintf('Resolver class `%s` does not exist.', $config['className']);
             throw new InvalidArgumentException($message);
         }
         $instance = new $class($config);
 
-        if (!$instance instanceof DatasourceInterface) {
-            $message = sprintf('Datasource must implement `%s`.', DatasourceInterface::class);
+        if (!$instance instanceof ResolverInterface) {
+            $message = sprintf('Resolver must implement `%s`.', ResolverInterface::class);
             throw new RuntimeException($message);
         }
 
