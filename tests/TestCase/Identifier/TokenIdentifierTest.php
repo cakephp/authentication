@@ -12,6 +12,8 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
+use ArrayObject;
+use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\Identifier\TokenIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
@@ -25,36 +27,45 @@ class TokenIdentifierTest extends TestCase
      */
     public function testIdentify()
     {
+        $resolver = $this->createMock(ResolverInterface::class);
+
         $identifier = new TokenIdentifier([
+            'dataField' => 'user',
             'tokenField' => 'username'
         ]);
+        $identifier->setResolver($resolver);
 
-        $result = $identifier->identify(['token' => 'larry']);
+        $user = new ArrayObject([
+            'username' => 'larry'
+        ]);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
-        $this->assertEquals(3, $result->id);
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with([
+                'username' => 'larry'
+            ])
+            ->willReturn($user);
 
-        $result = $identifier->identify(['token' => 'does not exist']);
-        $this->assertNull($result);
+        $result = $identifier->identify(['user' => 'larry']);
+        $this->assertSame($user, $result);
     }
 
     /**
-     * testCustomUserModel
+     * testIdentifyMissingData
      *
      * @return void
      */
-    public function testCustomUserModel()
+    public function testIdentifyMissingData()
     {
-        $identifier = new TokenIdentifier([
-            'resolver' => [
-                'className' => 'Authentication.Orm',
-                'userModel' => 'AuthUsers'
-            ],
-            'tokenField' => 'username'
-        ]);
+        $resolver = $this->createMock(ResolverInterface::class);
 
-        $result = $identifier->identify(['token' => 'chartjes']);
+        $identifier = new TokenIdentifier();
+        $identifier->setResolver($resolver);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $resolver->expects($this->never())
+            ->method('find');
+
+        $result = $identifier->identify(['user' => 'larry']);
+        $this->assertNull($result);
     }
 }
