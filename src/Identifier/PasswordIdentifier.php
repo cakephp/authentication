@@ -13,6 +13,7 @@
 namespace Authentication\Identifier;
 
 use Authentication\Identifier\Backend\DatasourceAwareTrait;
+use Authentication\Identifier\Backend\DatasourceInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 
@@ -147,16 +148,11 @@ class PasswordIdentifier extends AbstractIdentifier
     protected function _findUser($identifier)
     {
         $fields = $this->getConfig('fields.username');
+        $conditions = [];
         foreach ((array)$fields as $field) {
-            $conditions = [
-                $field => $identifier
-            ];
-            $result = $this->getDatasource()->find($conditions);
-            if ($result !== null) {
-                return $result;
-            }
+            $conditions[$field] = $identifier;
         }
 
-        return null;
+        return $this->getDatasource()->find($conditions, DatasourceInterface::TYPE_OR);
     }
 }
