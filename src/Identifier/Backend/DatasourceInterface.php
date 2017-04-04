@@ -15,11 +15,15 @@ namespace Authentication\Identifier\Backend;
 interface DatasourceInterface
 {
 
+    const TYPE_OR = 'OR';
+    const TYPE_AND = 'AND';
+
     /**
      * Returns identity with given conditions from a datasource.
      *
      * @param array $conditions Find conditions.
+     * @param string $type Condition type. Can be `AND` or `OR`.
      * @return \ArrayAccess|null
      */
-    public function find(array $conditions);
+    public function find(array $conditions, $type = self::TYPE_AND);
 }

@@ -49,7 +49,7 @@ class OrmDatasource implements DatasourceInterface
     /**
      * {@inheritDoc}
      */
-    public function find(array $conditions)
+    public function find(array $conditions, $type = self::TYPE_AND)
     {
         $table = $this->tableLocator()->get($this->_config['userModel']);
 
@@ -63,6 +63,15 @@ class OrmDatasource implements DatasourceInterface
             }
         }
 
-        return $query->where($conditions)->first();
+        $where = [];
+        foreach ($conditions as $field => $value) {
+            $field = $table->aliasField($field);
+            if (is_array($value)) {
+                $field = $field . ' IN';
+            }
+            $where[$field] = $value;
+        }
+
+        return $query->where([$type => $where])->first();
     }
 }
