@@ -38,7 +38,7 @@ trait ResolverAwareTrait
         if ($this->resolver === null) {
             $config = $this->getConfig('resolver');
             if ($config !== null) {
-                $this->resolver = $this->buildDatasource($config);
+                $this->resolver = $this->buildResolver($config);
             } else {
                 throw new RuntimeException('Resolver has not been set.');
             }
@@ -68,7 +68,7 @@ trait ResolverAwareTrait
      * @throws \InvalidArgumentException When className option is missing or class name does not exist.
      * @throws \RuntimeException When resolver does not implement ResolverInterface.
      */
-    protected function buildDatasource($config)
+    protected function buildResolver($config)
     {
         if (is_string($config)) {
             $config = [
