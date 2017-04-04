@@ -15,5 +15,5 @@ namespace TestApp\Identifier\Resolver;
 
 class InvalidResolver
 {
-    
+
 }

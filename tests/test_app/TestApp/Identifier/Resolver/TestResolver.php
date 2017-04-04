@@ -17,7 +17,7 @@ use Authentication\Identifier\Resolver\ResolverInterface;
 
 class TestResolver implements ResolverInterface
 {
-    
+
     public function find(array $conditions, $type = self::TYPE_AND)
     {
         return new ArrayObject([]);
