@@ -81,8 +81,7 @@ class LdapIdentifier extends AbstractIdentifier
 
         $this->_checkLdapExtension();
         $this->_checkLdapConfig();
-
-        $this->_ldap = $this->_config['ldap'];
+        $this->_buildLdapObject();
     }
 
     /**
@@ -122,9 +121,28 @@ class LdapIdentifier extends AbstractIdentifier
         if (!isset($this->_config['host'])) {
             throw new RuntimeException('Config `host` is not set.');
         }
-        if (!($this->_config['ldap'] instanceof LdapInterface)) {
+    }
+
+    /**
+     * Constructs the LDAP object and sets it to the property
+     *
+     * @throws \RuntimeException
+     * @return void
+     */
+    protected function _buildLdapObject()
+    {
+        $ldap = $this->_config['ldap'];
+
+        if (is_string($ldap)) {
+            $class = App::className($ldap, 'Identifier/Backend');
+            $ldap = new $class();
+        }
+
+        if (!($ldap instanceof LdapInterface)) {
             throw new RuntimeException('Option `ldap` must implement Authentication\Identifier\Backend\LdapInterface.');
         }
+
+        $this->_ldap = $ldap;
     }
 
     /**
