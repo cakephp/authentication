@@ -12,9 +12,9 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\CallbackIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
 use Cake\ORM\Entity;
 use stdClass;
 
@@ -55,7 +55,7 @@ class CallbackIdentifierTest extends TestCase
         $this->assertNull($result);
 
         $result = $identifier->identify(['username' => 'florian']);
-        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertInstanceOf(ArrayAccess::class, $result);
     }
 
     /**
@@ -72,14 +72,14 @@ class CallbackIdentifierTest extends TestCase
         ]);
         $result = $identifier->identify([]);
 
-        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertInstanceOf(ArrayAccess::class, $result);
 
         $identifier = new CallbackIdentifier([
             'callback' => [MyCallback::class, 'callme']
         ]);
         $result = $identifier->identify([]);
 
-        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertInstanceOf(ArrayAccess::class, $result);
     }
 
     /**

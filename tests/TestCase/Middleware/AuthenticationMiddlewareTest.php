@@ -12,10 +12,10 @@
  */
 namespace Authentication\Test\TestCase\Middleware;
 
+use ArrayAccess;
 use Authentication\AuthenticationService;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
@@ -71,7 +71,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $identity = $request->getAttribute('identity');
         $service = $request->getAttribute('authentication');
 
-        $this->assertInstanceOf(EntityInterface::class, $identity);
+        $this->assertInstanceOf(ArrayAccess::class, $identity);
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertTrue($service->getResult()->isValid());
     }
@@ -186,9 +186,9 @@ class AuthenticationMiddlewareTest extends TestCase
         $identity = $request->getAttribute('identity');
         $service = $request->getAttribute('authentication');
 
-        $this->assertInstanceOf(EntityInterface::class, $identity);
+        $this->assertInstanceOf(ArrayAccess::class, $identity);
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertTrue($service->getResult()->isValid());
-        $this->assertEquals($data, $identity->toArray());
+        $this->assertEquals($data, (array)$identity);
     }
 }

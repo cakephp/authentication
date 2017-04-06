@@ -12,11 +12,11 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\WeakPasswordHasher;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
 
 class PasswordIdentifierTest extends TestCase
 {
@@ -36,7 +36,7 @@ class PasswordIdentifierTest extends TestCase
             'password' => 'password'
         ]);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $this->assertInstanceOf('\ArrayAccess', $result);
 
         // Invalid user and password
         $result = $identifier->identify([
@@ -76,13 +76,13 @@ class PasswordIdentifierTest extends TestCase
             'username' => 'larry',
             'password' => 'password'
         ]);
-        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertInstanceOf(ArrayAccess::class, $result);
 
         $result = $identifier->identify([
             'username' => 3,
             'password' => 'password'
         ]);
-        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertInstanceOf(ArrayAccess::class, $result);
         $this->assertEquals('larry', $result->username);
     }
 

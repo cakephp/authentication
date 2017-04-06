@@ -15,6 +15,7 @@ namespace Authentication\Test\TestCase\Identifier\Resolver;
 
 use Authentication\Identifier\Resolver\OrmResolver;
 use Authentication\Test\TestCase\AuthenticationTestCase;
+use Cake\Datasource\EntityInterface;
 
 class OrmResolverTest extends AuthenticationTestCase
 {
@@ -26,6 +27,7 @@ class OrmResolverTest extends AuthenticationTestCase
             'username' => 'mariano'
         ]);
 
+        $this->assertInstanceOf(EntityInterface::class, $user);
         $this->assertEquals('mariano', $user['username']);
     }
 

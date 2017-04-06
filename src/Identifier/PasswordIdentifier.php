@@ -87,7 +87,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * Identify method.
      *
      * @param array $data Authentication credentials.
-     * @return \Cake\Datasource\EntityInterface|null
+     * @return \ArrayAccess|null
      */
     public function identify($data)
     {
@@ -115,7 +115,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string $identifier The username/identifier.
      * @param string|null $password The password, if not provided password checking is skipped
      *   and result of find is returned.
-     * @return \Cake\Datasource\EntityInterface|null User data entity or null on failure.
+     * @return \ArrayAccess|null User data entity or null on failure.
      */
     protected function _findIdentity($identifier, $password = null)
     {

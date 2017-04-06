@@ -118,6 +118,6 @@ class IdentifierCollectionTest extends TestCase
             'password' => 'password'
         ]);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $this->assertInstanceOf('\ArrayAccess', $result);
     }
 }
