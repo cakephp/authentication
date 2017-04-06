@@ -61,6 +61,11 @@ class PasswordIdentifierTest extends TestCase
         $this->assertArrayNotHasKey('password', $result);
     }
 
+    /**
+     * testIdentifyNeedsRehash
+     *
+     * @return void
+     */
     public function testIdentifyNeedsRehash()
     {
         $resolver = $this->createMock(ResolverInterface::class);
@@ -95,7 +100,7 @@ class PasswordIdentifierTest extends TestCase
     }
 
     /**
-     * testIdentifyInvalid
+     * testIdentifyInvalidUser
      *
      * @return void
      */
@@ -124,7 +129,7 @@ class PasswordIdentifierTest extends TestCase
     }
 
     /**
-     * testIdentifyInvalid
+     * testIdentifyInvalidPassword
      *
      * @return void
      */
@@ -160,7 +165,31 @@ class PasswordIdentifierTest extends TestCase
     }
 
     /**
-     * testIdentifyValid
+     * testIdentifyMissingCredentials
+     *
+     * @return void
+     */
+    public function testIdentifyMissingCredentials()
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+        $hasher = $this->createMock(PasswordHasherInterface::class);
+
+        $resolver->expects($this->never())
+            ->method('find');
+
+        $hasher->expects($this->never())
+            ->method('check');
+
+        $identifier = new PasswordIdentifier();
+        $identifier->setResolver($resolver)->setPasswordHasher($hasher);
+
+        $result = $identifier->identify([]);
+
+        $this->assertNull($result);
+    }
+
+    /**
+     * testIdentifyMultiField
      *
      * @return void
      */
