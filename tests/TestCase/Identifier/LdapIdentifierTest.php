@@ -60,6 +60,21 @@ class LdapIdentifierTest extends TestCase
     }
 
     /**
+     * testNoLdapOptionSet
+     *
+     * @return void
+     */
+    public function testNoLdapOptionSet()
+    {
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            }
+        ]);
+    }
+
+    /**
      * testIdentifyNull
      *
      * @return void
