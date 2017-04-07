@@ -50,9 +50,9 @@
 		</blacklist>
 		<whitelist processUncoveredFilesFromWhitelist="true">
 			<directory suffix=".php">./src</directory>
-                        <exclude>
-                            <file>./src/Identifier/Backend/Ldap.php</file>
-                        </exclude>
+			<exclude>
+				<file>./src/Identifier/Backend/Ldap.php</file>
+			</exclude>
 		</whitelist>
 	</filter>
 
