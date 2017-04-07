@@ -12,9 +12,9 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
-use Authentication\Identifier\Backend\Ldap;
-use Authentication\Identifier\Backend\LdapInterface;
 use Authentication\Identifier\LdapIdentifier;
+use Authentication\Identifier\Ldap\AdapterInterface;
+use Authentication\Identifier\Ldap\ExtensionAdapter;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 use ErrorException;
@@ -39,7 +39,7 @@ class LdapIdentifierTest extends TestCase
      */
     public function testIdentify()
     {
-        $ldap = $this->createMock(Ldap::class);
+        $ldap = $this->createMock(ExtensionAdapter::class);
         $ldap->method('bind')
             ->willReturn(true);
 
@@ -69,7 +69,7 @@ class LdapIdentifierTest extends TestCase
      */
     public function testIdentifyNull()
     {
-        $ldap = $this->createMock(Ldap::class);
+        $ldap = $this->createMock(ExtensionAdapter::class);
         $ldap->method('bind')
             ->willReturn(false);
 
@@ -163,10 +163,10 @@ class LdapIdentifierTest extends TestCase
      */
     public function testHandleError()
     {
-        $ldap = $this->createMock(Ldap::class);
+        $ldap = $this->createMock(ExtensionAdapter::class);
         $ldap->method('bind')
             ->will($this->throwException(new ErrorException('This is an error.')));
-        $ldap->method('getOption')
+        $ldap->method('getDiagnosticMessage')
             ->willReturn('This is another error.');
 
         $identifier = new LdapIdentifier([

@@ -12,8 +12,8 @@
  */
 namespace Authentication\Identifier;
 
-use Authentication\Identifier\Backend\Ldap;
-use Authentication\Identifier\Backend\LdapInterface;
+use Authentication\Identifier\Ldap\AdapterInterface;
+use Authentication\Identifier\Ldap\ExtensionAdapter;
 use Cake\Core\App;
 use Cake\Core\Exception\Exception;
 use Cake\Network\Exception\InternalErrorException;
@@ -50,7 +50,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @var array
      */
     protected $_defaultConfig = [
-        'ldap' => Ldap::class,
+        'ldap' => ExtensionAdapter::class,
         'fields' => [
             'username' => 'username',
             'password' => 'password'
@@ -68,7 +68,7 @@ class LdapIdentifier extends AbstractIdentifier
     /**
      * LDAP connection object
      *
-     * @var \Authentication\Identifier\Backend\LdapInterface
+     * @var \Authentication\Identifier\Ldap\AdapterInterface
      */
     protected $_ldap = null;
 
@@ -79,22 +79,8 @@ class LdapIdentifier extends AbstractIdentifier
     {
         parent::__construct($config);
 
-        $this->_checkLdapExtension();
         $this->_checkLdapConfig();
         $this->_buildLdapObject();
-    }
-
-    /**
-     * Checks if the php LDAP extension is loaded
-     *
-     * @throws \RuntimeException
-     * @return void
-     */
-    protected function _checkLdapExtension()
-    {
-        if (!extension_loaded('ldap')) {
-            throw new RuntimeException('You must enable the ldap extension to use the LDAP identifier.');
-        }
     }
 
     /**
@@ -106,9 +92,6 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _checkLdapConfig()
     {
-        if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
-            define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
-        }
         if (!isset($this->_config['bindDN'])) {
             throw new RuntimeException('Config `bindDN` is not set.');
         }
@@ -134,11 +117,11 @@ class LdapIdentifier extends AbstractIdentifier
         $ldap = $this->_config['ldap'];
 
         if (is_string($ldap)) {
-            $class = App::className($ldap, 'Identifier/Backend');
+            $class = App::className($ldap, 'Identifier/Ldap');
             $ldap = new $class();
         }
 
-        if (!($ldap instanceof LdapInterface)) {
+        if (!($ldap instanceof AdapterInterface)) {
             throw new RuntimeException('Option `ldap` must implement Authentication\Identifier\Backend\LdapInterface.');
         }
 
@@ -175,16 +158,9 @@ class LdapIdentifier extends AbstractIdentifier
 
         $this->_ldap->connect(
             $config['host'],
-            $config['port']
+            $config['port'],
+            $this->getConfig('options')
         );
-
-        if (isset($config['options']) && is_array($config['options'])) {
-            foreach ($config['options'] as $option => $value) {
-                $this->_ldap->setOption($option, $value);
-            }
-        } else {
-            $this->_ldap->setOption(LDAP_OPT_NETWORK_TIMEOUT, 5);
-        }
     }
 
     /**
@@ -231,7 +207,7 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _handleLdapError($message)
     {
-        $extendedError = $this->_ldap->getOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
+        $extendedError = $this->_ldap->getDiagnosticMessage();
         if (!is_null($extendedError)) {
             $this->_errors[] = $extendedError;
         }

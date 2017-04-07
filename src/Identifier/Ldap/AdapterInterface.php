@@ -10,9 +10,9 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier\Backend;
+namespace Authentication\Identifier\Ldap;
 
-interface LdapInterface
+interface AdapterInterface
 {
     /**
      * Bind to LDAP directory
@@ -24,38 +24,14 @@ interface LdapInterface
     public function bind($bind, $password);
 
     /**
-     * Get the LDAP connection
-     *
-     * @return mixed
-     * @throws \RuntimeException If the connection is empty
-     */
-    public function getConnection();
-
-    /**
      * Connect to an LDAP server
      *
      * @param string $host Hostname
      * @param int $port Port
+     * @param array $options Additional options
      * @return void
      */
-    public function connect($host, $port);
-
-    /**
-     *  Set the value of the given option
-     *
-     * @param int $option Option to set
-     * @param mixed $value The new value for the specified option
-     * @return void
-     */
-    public function setOption($option, $value);
-
-    /**
-     * Get the current value for given option
-     *
-     * @param int $option Option to get
-     * @return mixed This will be set to the option value.
-     */
-    public function getOption($option);
+    public function connect($host, $port, $options);
 
     /**
      * Unbind from LDAP directory
@@ -63,4 +39,11 @@ interface LdapInterface
      * @return void
      */
     public function unbind();
+
+    /**
+     * Get the diagnostic message
+     *
+     * @return string|null
+     */
+    public function getDiagnosticMessage();
 }

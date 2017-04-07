@@ -10,8 +10,9 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier\Backend;
+namespace Authentication\Identifier\Ldap;
 
+use Authentication\Identifier\Ldap\AdapterInterface;
 use RuntimeException;
 
 /**
@@ -22,8 +23,24 @@ use RuntimeException;
  * But this makes it easier to unit test code that is using ldap because we can
  * mock it very easy. It also provides some convenience.
  */
-class Ldap implements LdapInterface
+class ExtensionAdapter implements AdapterInterface
 {
+
+    /**
+     * Constructor
+     *
+     * @throws \RuntimeException
+     */
+    public function __construct()
+    {
+        if (!extension_loaded('ldap')) {
+            throw new RuntimeException('You must enable the ldap extension to use the LDAP identifier.');
+        }
+
+        if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
+            define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
+        }
+    }
 
     /**
      * LDAP Object
@@ -64,11 +81,18 @@ class Ldap implements LdapInterface
      *
      * @param string $host Hostname
      * @param int $port Port
+     * @param array $options Additonal LDAP options
      * @return void
      */
-    public function connect($host, $port)
+    public function connect($host, $port, $options)
     {
         $this->_connection = ldap_connect($host, $port);
+
+        if (is_array($options)) {
+            foreach ($options as $option => $value) {
+                $this->setOption($option, $value);
+            }
+        }
     }
 
     /**
@@ -94,6 +118,16 @@ class Ldap implements LdapInterface
         ldap_get_option($this->getConnection(), $option, $returnValue);
 
         return $returnValue;
+    }
+
+    /**
+     * Get the diagnostic message
+     *
+     * @return string|null
+     */
+    public function getDiagnosticMessage()
+    {
+        return $this->getOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
     }
 
     /**
