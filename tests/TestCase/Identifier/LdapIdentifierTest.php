@@ -14,7 +14,6 @@ namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\LdapIdentifier;
 use Authentication\Identifier\Ldap\AdapterInterface;
-use Authentication\Identifier\Ldap\ExtensionAdapter;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Datasource\EntityInterface;
 use ErrorException;
@@ -28,8 +27,6 @@ class LdapIdentifierTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->skipIf(!extension_loaded('ldap'), 'LDAP extension is not installed');
     }
 
     /**
@@ -39,7 +36,7 @@ class LdapIdentifierTest extends TestCase
      */
     public function testIdentify()
     {
-        $ldap = $this->createMock(ExtensionAdapter::class);
+        $ldap = $this->createMock(AdapterInterface::class);
         $ldap->method('bind')
             ->willReturn(true);
 
@@ -69,7 +66,7 @@ class LdapIdentifierTest extends TestCase
      */
     public function testIdentifyNull()
     {
-        $ldap = $this->createMock(ExtensionAdapter::class);
+        $ldap = $this->createMock(AdapterInterface::class);
         $ldap->method('bind')
             ->willReturn(false);
 
@@ -163,7 +160,7 @@ class LdapIdentifierTest extends TestCase
      */
     public function testHandleError()
     {
-        $ldap = $this->createMock(ExtensionAdapter::class);
+        $ldap = $this->createMock(AdapterInterface::class);
         $ldap->method('bind')
             ->will($this->throwException(new ErrorException('This is an error.')));
         $ldap->method('getDiagnosticMessage')

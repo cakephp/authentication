@@ -24,7 +24,7 @@
     "suggest": {
         "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework).",
         "firebase/php-jwt": "If you want to use the JWT adapter add this dependency",
-        "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP class.",
+        "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP class."
     },
     "license": "MIT",
     "minimum-stability": "stable",
