@@ -13,6 +13,7 @@
 namespace Authentication\Identifier\Ldap;
 
 use Authentication\Identifier\Ldap\AdapterInterface;
+use ErrorException;
 use RuntimeException;
 
 /**
@@ -25,6 +26,13 @@ use RuntimeException;
  */
 class ExtensionAdapter implements AdapterInterface
 {
+
+    /**
+     * LDAP Object
+     *
+     * @var object
+     */
+    protected $_connection;
 
     /**
      * Constructor
@@ -43,13 +51,6 @@ class ExtensionAdapter implements AdapterInterface
     }
 
     /**
-     * LDAP Object
-     *
-     * @var object
-     */
-    protected $_connection;
-
-    /**
      * Bind to LDAP directory
      *
      * @param string $bind Bind rdn
@@ -58,7 +59,11 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function bind($bind, $password)
     {
-        return ldap_bind($this->getConnection(), $bind, $password);
+        $this->_setErrorHandler();
+        $result = ldap_bind($this->getConnection(), $bind, $password);
+        $this->_unsetErrorHandler();
+
+        return $result;
     }
 
     /**
@@ -86,7 +91,9 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function connect($host, $port, $options)
     {
+        $this->_setErrorHandler();
         $this->_connection = ldap_connect($host, $port);
+        $this->_unsetErrorHandler();
 
         if (is_array($options)) {
             foreach ($options as $option => $value) {
@@ -104,7 +111,9 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function setOption($option, $value)
     {
+        $this->_setErrorHandler();
         ldap_set_option($this->getConnection(), $option, $value);
+        $this->_unsetErrorHandler();
     }
 
     /**
@@ -115,7 +124,9 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function getOption($option)
     {
+        $this->_setErrorHandler();
         ldap_get_option($this->getConnection(), $option, $returnValue);
+        $this->_unsetErrorHandler();
 
         return $returnValue;
     }
@@ -137,7 +148,36 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function unbind()
     {
+        $this->_setErrorHandler();
         ldap_unbind($this->_connection);
+        $this->_unsetErrorHandler();
+
         $this->_connection = null;
+    }
+
+    /**
+     * Set an error handler to turn LDAP errors into exceptions
+     *
+     * @return void
+     * @throws \ErrorException
+     */
+    protected function _setErrorHandler()
+    {
+        set_error_handler(
+            function ($errorNumber, $errorText) {
+                 throw new ErrorException($errorText);
+            },
+            E_ALL
+        );
+    }
+
+    /**
+     * Restore the error handler
+     *
+     * @return void
+     */
+    protected function _unsetErrorHandler()
+    {
+        restore_error_handler();
     }
 }

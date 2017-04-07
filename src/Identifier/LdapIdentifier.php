@@ -172,14 +172,6 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _bindUser($username, $password)
     {
-        // Turn all LDAP errors into exceptions
-        set_error_handler(
-            function ($errorNumber, $errorText) {
-                 throw new ErrorException($errorText);
-            },
-            E_ALL
-        );
-
         $config = $this->getConfig();
         try {
             $ldapBind = $this->_ldap->bind($config['bindDN']($username), $password);
@@ -194,7 +186,6 @@ class LdapIdentifier extends AbstractIdentifier
             $this->_handleLdapError($e->getMessage());
         }
         $this->_ldap->unbind();
-        restore_error_handler();
 
         return null;
     }
