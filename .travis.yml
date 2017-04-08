@@ -25,6 +25,9 @@ matrix:
     - php: 7.1
       env: PHPSTAN=1 DEFAULT=0
 
+before_install:
+  - echo 'extension = ldap.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
 install:
   - phpenv config-rm xdebug.ini;
   - composer self-update
