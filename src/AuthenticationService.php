@@ -72,9 +72,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *          'Authentication.Form
      *      ],
      *      'identifiers' => [
-     *          'Authentication.Orm' => [
-     *              'userModel' => 'Users.Users'
-     *          ]
+     *          'Authentication.Password'
      *      ]
      *   ]);
      *   ```

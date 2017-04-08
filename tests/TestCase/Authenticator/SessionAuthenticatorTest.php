@@ -43,7 +43,7 @@ class SessionAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $this->sessionMock = $this->getMockBuilder('\Cake\Network\Session')

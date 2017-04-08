@@ -1,40 +1,53 @@
 <?php
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 namespace Authentication\Identifier;
 
+use Authentication\Identifier\Resolver\ResolverAwareTrait;
+use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
 use Authentication\PasswordHasher\PasswordHasherTrait;
-use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
- * CakePHP ORM Identifier
+ * Password Identifier
  *
- * Identifies authentication credentials using the CakePHP ORM.
+ * Identifies authentication credentials with password
  *
  * ```
- *  new OrmIdentifier([
- *      'finder' => ['auth' => ['some_finder_option' => 'some_value']]
+ *  new PasswordIdentifier([
+ *      'fields' => [
+ *          'username' => ['username', 'email'],
+ *          'password' => 'password'
+ *      ]
  *  ]);
  * ```
  *
- * When configuring OrmIdentifier you can pass in config to which fields,
+ * When configuring PasswordIdentifier you can pass in config to which fields,
  * model and additional conditions are used.
  */
-class OrmIdentifier extends AbstractIdentifier
+class PasswordIdentifier extends AbstractIdentifier
 {
 
-    use LocatorAwareTrait;
     use PasswordHasherTrait {
         getPasswordHasher as protected _getPasswordHasher;
     }
+    use ResolverAwareTrait;
 
     /**
      * Default configuration.
-     * - `fields` The fields to use to identify a user by.
-     * - `userModel` The alias for users table, defaults to Users.
-     * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
-     *   You can set finder name as string or an array where key is finder name and value
-     *   is an array passed to `Table::find()` options.
-     *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
+     * - `fields` The fields to use to identify a user by:
+     *   - `username`: one or many username fields.
+     *   - `password`: password field.
+     * - `resolver` The resolver implementation to use.
      * - `passwordHasher` Password hasher class. Can be a string specifying class name
      *    or an array containing `className` key, any other keys will be passed as
      *    config to the class. Defaults to 'Default'.
@@ -46,8 +59,7 @@ class OrmIdentifier extends AbstractIdentifier
             'username' => 'username',
             'password' => 'password'
         ],
-        'userModel' => 'Users',
-        'finder' => 'all',
+        'resolver' => 'Authentication.Orm',
         'passwordHasher' => null
     ];
 
@@ -72,10 +84,10 @@ class OrmIdentifier extends AbstractIdentifier
     }
 
     /**
-     * Identify
+     * Identify method.
      *
-     * @param array $data Authentication credentials
-     * @return \Cake\Datasource\EntityInterface|null
+     * @param array $data Authentication credentials.
+     * @return \ArrayAccess|null
      */
     public function identify($data)
     {
@@ -92,7 +104,7 @@ class OrmIdentifier extends AbstractIdentifier
             $password = $data[$fields['password']];
         }
 
-        return $this->_findUser($data[key($found)], $password);
+        return $this->_findIdentity($data[key($found)], $password);
     }
 
     /**
@@ -103,24 +115,25 @@ class OrmIdentifier extends AbstractIdentifier
      * @param string $identifier The username/identifier.
      * @param string|null $password The password, if not provided password checking is skipped
      *   and result of find is returned.
-     * @return \Cake\Datasource\EntityInterface|null User data entity or null on failure.
+     * @return \ArrayAccess|null User data entity or null on failure.
      */
-    protected function _findUser($identifier, $password = null)
+    protected function _findIdentity($identifier, $password = null)
     {
-        $result = $this->_query($identifier)->first();
+        $result = $this->_findUser($identifier);
         if (empty($result)) {
             return null;
         }
 
         if ($password !== null) {
+            $passwordField = $this->getConfig('fields.password');
             $hasher = $this->getPasswordHasher();
-            $hashedPassword = $result->get($this->_config['fields']['password']);
+            $hashedPassword = $result[$passwordField];
             if (!$hasher->check($password, $hashedPassword)) {
                 return null;
             }
 
             $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
-            $result->unsetProperty($this->_config['fields']['password']);
+            unset($result[$passwordField]);
         }
 
         return $result;
@@ -130,51 +143,16 @@ class OrmIdentifier extends AbstractIdentifier
      * Get query object for fetching user from database.
      *
      * @param string $identifier The username/identifier.
-     * @return \Cake\ORM\Query
+     * @return \ArrayAccess|null
      */
-    protected function _query($identifier)
+    protected function _findUser($identifier)
     {
-        $config = $this->_config;
-        $table = $this->tableLocator()->get($config['userModel']);
-
-        $options = ['conditions' => $this->_buildConditions($identifier, $table)];
-
-        $finder = $config['finder'];
-        if (is_array($finder)) {
-            $options += current($finder);
-            $finder = key($finder);
+        $fields = $this->getConfig('fields.username');
+        $conditions = [];
+        foreach ((array)$fields as $field) {
+            $conditions[$field] = $identifier;
         }
 
-        if (!isset($options['username'])) {
-            $options['username'] = $identifier;
-        }
-
-        return $table->find($finder, $options);
-    }
-
-    /**
-     * Build query conditions.
-     *
-     * @param string $identifier The username/identifier.
-     * @param \Cake\ORM\Table $table Table instance.
-     * @return array
-     */
-    protected function _buildConditions($identifier, $table)
-    {
-        $usernameFields = $this->config('fields.username');
-
-        if (is_array($usernameFields)) {
-            $conditions = [];
-            foreach ($usernameFields as $field) {
-                $conditions[$table->aliasField($field)] = $identifier;
-            }
-            $conditions = [
-                'OR' => $conditions
-            ];
-        } else {
-            $conditions = [$table->aliasField($usernameFields) => $identifier];
-        }
-
-        return $conditions;
+        return $this->getResolver()->find($conditions, ResolverInterface::TYPE_OR);
     }
 }

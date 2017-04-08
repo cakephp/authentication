@@ -30,7 +30,7 @@ class IdentifierCollection extends AbstractCollection
      * Identifies an user or service by the passed credentials
      *
      * @param mixed $credentials Authentication credentials
-     * @return \Cake\Datasource\EntityInterface|null
+     * @return \ArrayAccess|null
      */
     public function identify($credentials)
     {

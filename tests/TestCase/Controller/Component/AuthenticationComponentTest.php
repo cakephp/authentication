@@ -12,6 +12,7 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
+use ArrayAccess;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
@@ -19,9 +20,7 @@ use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequestFactory;
 use Cake\Network\Response;
@@ -45,7 +44,7 @@ class AuthenticationComponentTest extends TestCase
 
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Session',
@@ -106,7 +105,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $result = $component->getIdentity();
-        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertInstanceOf(ArrayAccess::class, $result);
         $this->assertEquals('florian', $result->get('username', 'florian'));
 
         $result = $component->getIdentity('profession');
@@ -176,7 +175,7 @@ class AuthenticationComponentTest extends TestCase
         $this->assertEquals('Authentication.afterIdentify', $result->name());
         $this->assertNotEmpty($result->data);
         $this->assertInstanceOf(AuthenticatorInterface::class, $result->data['provider']);
-        $this->assertInstanceOf(EntityInterface::class, $result->data['identity']);
+        $this->assertInstanceOf(ArrayAccess::class, $result->data['identity']);
         $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
     }
 }

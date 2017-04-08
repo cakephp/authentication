@@ -32,7 +32,7 @@ class Application extends BaseApplication
         $service = new AuthenticationService();
 
         // Load identifiers
-        $service->loadIdentifier('Authentication.Orm', [
+        $service->loadIdentifier('Authentication.Password', [
             'fields' => [
                 'username' => 'email',
                 'password' => 'password'
@@ -75,7 +75,7 @@ use Authentication\AuthenticationService;
 $service = new AuthenticationService();
 
 // Load identifiers
-$service->loadIdentifier('Authentication.Orm', [
+$service->loadIdentifier('Authentication.Password', [
     'fields' => [
         'username' => 'email',
         'password' => 'password'

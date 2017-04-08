@@ -68,7 +68,7 @@ you'll now have to configure it this way.
 $service = new AuthenticationService();
 
 // Load identifiers
-$service->loadIdentifier('Authentication.Orm', [
+$service->loadIdentifier('Authentication.Password', [
     'fields' => [
         'username' => 'email',
         'password' => 'password'
