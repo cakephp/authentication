@@ -71,6 +71,15 @@ Configuration options:
 * **nonce**: Default is `uniqid(''),`
 * **opaque**: Default is `null`
 
+## OAuth
+
+There are currently no plans to implement an OAuth authenticator.
+The main reason for this is that OAuth 2.0 is not an authentication protocol.
+
+Read more about this topic [here](https://oauth.net/articles/authentication/).
+
+We will maybe add an OpenID Connect authenticator in the future.
+
 ## Events
 
 There is only one event that is fired by authentication: `Authentication.afterIdentify`.
