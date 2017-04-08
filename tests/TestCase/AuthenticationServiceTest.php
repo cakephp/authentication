@@ -16,7 +16,7 @@ use Authentication\AuthenticationService;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Identifier\OrmIdentifier;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
@@ -55,7 +55,7 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Form'
@@ -86,7 +86,7 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.HttpBasic'
@@ -135,8 +135,8 @@ class AuthenticationServiceTest extends TestCase
     public function testLoadIdentifier()
     {
         $service = new AuthenticationService();
-        $result = $service->loadIdentifier('Authentication.Orm');
-        $this->assertInstanceOf(OrmIdentifier::class, $result);
+        $result = $service->loadIdentifier('Authentication.Password');
+        $this->assertInstanceOf(PasswordIdentifier::class, $result);
     }
 
     /**
@@ -160,7 +160,7 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Form'
@@ -190,7 +190,7 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Session',
@@ -235,7 +235,7 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Session',
@@ -269,7 +269,7 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ]
         ]);
 

@@ -12,6 +12,7 @@
  */
 namespace Authentication\Authenticator;
 
+use ArrayObject;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Firebase\JWT\JWT;
@@ -31,7 +32,6 @@ class JwtAuthenticator extends TokenAuthenticator
         'queryParam' => 'token',
         'tokenPrefix' => 'bearer',
         'algorithms' => ['HS256'],
-        'entityClass' => 'Cake\ORM\Entity',
         'returnPayload' => true,
         'secretKey' => null,
     ];
@@ -81,10 +81,9 @@ class JwtAuthenticator extends TokenAuthenticator
         }
 
         if ($this->getConfig('returnPayload')) {
-            $entityClass = $this->getConfig('entityClass');
-            $entity = new $entityClass($result);
+            $user = new ArrayObject($result);
 
-            return new Result($entity, Result::SUCCESS);
+            return new Result($user, Result::SUCCESS);
         }
 
         $user = $this->identifiers()->identify($result);

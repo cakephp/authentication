@@ -10,7 +10,6 @@
     "type": "cakephp-plugin",
     "require": {
         "cakephp/core": "~3.4",
-        "cakephp/datasource": "~3.4",
         "cakephp/event": "~3.4",
         "cakephp/utility": "~3.4",
         "psr/http-message": "~1.0"

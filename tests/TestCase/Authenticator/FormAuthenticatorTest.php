@@ -52,7 +52,7 @@ class FormAuthenticatorTest extends TestCase
     public function testAuthenticate()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -77,7 +77,7 @@ class FormAuthenticatorTest extends TestCase
     public function testCredentialsNotPresent()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -104,7 +104,7 @@ class FormAuthenticatorTest extends TestCase
     public function testAuthenticateLoginUrl()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -133,7 +133,7 @@ class FormAuthenticatorTest extends TestCase
     public function testArrayLoginUrl()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(

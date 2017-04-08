@@ -28,6 +28,15 @@ interface AuthenticationServiceInterface
     public function loadAuthenticator($name, array $config = []);
 
     /**
+     * Loads an identifier.
+     *
+     * @param string $name Name or class name.
+     * @param array $config Identifier configuration.
+     * @return \Authentication\Identifier\IdentifierInterface
+     */
+    public function loadIdentifier($name, array $config = []);
+
+    /**
      * Authenticate the request against the configured authentication adapters.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.

@@ -12,7 +12,7 @@
  */
 namespace Authentication;
 
-use Cake\Datasource\EntityInterface;
+use ArrayAccess;
 use InvalidArgumentException;
 
 /**
@@ -60,7 +60,7 @@ class Result implements ResultInterface
     /**
      * The identity used in the authentication attempt
      *
-     * @var null|\Cake\Datasource\EntityInterface
+     * @var null|\ArrayAccess
      */
     protected $_identity;
 
@@ -76,7 +76,7 @@ class Result implements ResultInterface
     /**
      * Sets the result code, identity, and failure messages
      *
-     * @param null|\Cake\Datasource\EntityInterface $identity The identity data
+     * @param null|\ArrayAccess $identity The identity data
      * @param int $code Error code.
      * @param array $messages Messages.
      */
@@ -85,8 +85,8 @@ class Result implements ResultInterface
         if (empty($identity) && $code === self::SUCCESS) {
             throw new InvalidArgumentException('Identity can not be empty with status success.');
         }
-        if ($identity !== null && !$identity instanceof EntityInterface) {
-            throw new InvalidArgumentException('Identity must be `null` or an object implementing \Cake\Datasource\EntityInterface');
+        if ($identity !== null && !$identity instanceof ArrayAccess) {
+            throw new InvalidArgumentException('Identity must be `null` or an object implementing \ArrayAccess');
         }
 
         $this->_code = $code;
@@ -117,7 +117,7 @@ class Result implements ResultInterface
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @return null|\Cake\Datasource\EntityInterface
+     * @return null|\ArrayAccess
      */
     public function getIdentity()
     {

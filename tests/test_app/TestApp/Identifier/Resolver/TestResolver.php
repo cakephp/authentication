@@ -10,25 +10,16 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier;
+namespace TestApp\Identifier\Resolver;
 
-/**
- * Jwt Subject aka "sub" identifier.
- *
- * This is mostly a convenience class that just overrides the defaults of the
- * TokenIdentifier.
- */
-class JwtSubjectIdentifier extends TokenIdentifier
+use ArrayObject;
+use Authentication\Identifier\Resolver\ResolverInterface;
+
+class TestResolver implements ResolverInterface
 {
 
-    /**
-     * Default configuration
-     *
-     * @var array
-     */
-    protected $_defaultConfig = [
-        'tokenField' => 'id',
-        'dataField' => 'sub',
-        'resolver' => 'Authentication.Orm'
-    ];
+    public function find(array $conditions, $type = self::TYPE_AND)
+    {
+        return new ArrayObject([]);
+    }
 }
