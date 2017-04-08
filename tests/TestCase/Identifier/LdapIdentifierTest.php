@@ -27,6 +27,7 @@ class LdapIdentifierTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->skipIf(!extension_loaded('ldap'), 'LDAP extension is not loaded');
     }
 
     /**
