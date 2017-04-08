@@ -17,7 +17,7 @@ use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherInterface;
-use Authentication\PasswordHasher\WeakPasswordHasher;
+use Authentication\PasswordHasher\LegacyPasswordHasher;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
 class PasswordIdentifierTest extends TestCase
@@ -256,9 +256,9 @@ class PasswordIdentifierTest extends TestCase
     public function testCustomPasswordHasher()
     {
         $identifier = new PasswordIdentifier([
-            'passwordHasher' => 'Authentication.Weak'
+            'passwordHasher' => 'Authentication.Legacy'
         ]);
         $hasher = $identifier->getPasswordHasher();
-        $this->assertInstanceOf(WeakPasswordHasher::class, $hasher);
+        $this->assertInstanceOf(LegacyPasswordHasher::class, $hasher);
     }
 }
