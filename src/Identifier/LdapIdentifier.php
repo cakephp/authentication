@@ -15,8 +15,6 @@ namespace Authentication\Identifier;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
 use Cake\Core\App;
-use Cake\Core\Exception\Exception;
-use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\Entity;
 use ErrorException;
 use InvalidArgumentException;
@@ -122,7 +120,8 @@ class LdapIdentifier extends AbstractIdentifier
         }
 
         if (!($ldap instanceof AdapterInterface)) {
-            throw new RuntimeException('Option `ldap` must implement Authentication\Identifier\Backend\LdapInterface.');
+            $message = sprintf('Option `ldap` must implement `%s`.', LdapIdentifier::class);
+            throw new RuntimeException($message);
         }
 
         $this->_ldap = $ldap;
@@ -150,7 +149,6 @@ class LdapIdentifier extends AbstractIdentifier
      * Initializes the LDAP connection
      *
      * @return void
-     * @throws \Cake\Network\Exception\InternalErrorException Raised in case of an unsucessful connection.
      */
     protected function _connectLdap()
     {
