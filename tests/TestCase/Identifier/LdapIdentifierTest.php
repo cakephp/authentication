@@ -13,9 +13,9 @@
 namespace Authentication\Test\TestCase\Identifier;
 
 use ArrayAccess;
+use Authentication\Identifier\LdapIdentifier;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
-use Authentication\Identifier\LdapIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use ErrorException;
 use stdClass;
