@@ -12,10 +12,10 @@
  */
 namespace Authentication\Identifier;
 
+use ArrayObject;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
 use Cake\Core\App;
-use Cake\ORM\Entity;
 use ErrorException;
 use InvalidArgumentException;
 use RuntimeException;
@@ -131,7 +131,7 @@ class LdapIdentifier extends AbstractIdentifier
      * Identify
      *
      * @param array $data Authentication credentials
-     * @return \Cake\Datasource\EntityInterface|null
+     * @return \ArrayAccess|null
      */
     public function identify($data)
     {
@@ -166,7 +166,7 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @param string $username The username
      * @param string $password The password
-     * @return \Cake\Datasource\EntityInterface|null
+     * @return \ArrayAccess|null
      */
     protected function _bindUser($username, $password)
     {
@@ -176,7 +176,7 @@ class LdapIdentifier extends AbstractIdentifier
             if ($ldapBind === true) {
                 $this->_ldap->unbind();
 
-                return new Entity([
+                return new ArrayObject([
                     $config['fields']['username'] => $username
                 ]);
             }
