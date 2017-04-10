@@ -146,6 +146,16 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
+     * Returns configured LDAP adapter.
+     *
+     * @return \Authentication\Identifier\Ldap\AdapterInterface
+     */
+    public function getAdapter()
+    {
+        return $this->_ldap;
+    }
+
+    /**
      * Initializes the LDAP connection
      *
      * @return void
