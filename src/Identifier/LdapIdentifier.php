@@ -120,7 +120,7 @@ class LdapIdentifier extends AbstractIdentifier
         }
 
         if (!($ldap instanceof AdapterInterface)) {
-            $message = sprintf('Option `ldap` must implement `%s`.', LdapIdentifier::class);
+            $message = sprintf('Option `ldap` must implement `%s`.', AdapterInterface::class);
             throw new RuntimeException($message);
         }
 
