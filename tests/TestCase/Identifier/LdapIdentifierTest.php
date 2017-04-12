@@ -12,23 +12,16 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\LdapIdentifier;
 use Authentication\Identifier\Ldap\AdapterInterface;
+use Authentication\Identifier\Ldap\ExtensionAdapter;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
 use ErrorException;
+use stdClass;
 
 class LdapIdentifierTest extends TestCase
 {
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->skipIf(!extension_loaded('ldap'), 'LDAP extension is not loaded');
-    }
 
     /**
      * testIdentify
@@ -37,19 +30,28 @@ class LdapIdentifierTest extends TestCase
      */
     public function testIdentify()
     {
+        $host = 'ldap.example.com';
+        $bind = function ($username) {
+            return 'cn=' . $username . ',dc=example,dc=com';
+        };
+        $options = [
+            'foo' => 3
+        ];
+
         $ldap = $this->createMock(AdapterInterface::class);
-        $ldap->method('bind')
+        $ldap->expects($this->once())
+            ->method('connect')
+            ->with($host, 389, $options);
+        $ldap->expects($this->once())
+            ->method('bind')
+            ->with('cn=john,dc=example,dc=com', 'doe')
             ->willReturn(true);
 
         $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            },
+            'host' => $host,
+            'bindDN' => $bind,
             'ldap' => $ldap,
-            'options' => [
-                LDAP_OPT_PROTOCOL_VERSION => 3
-            ]
+            'options' => $options
         ]);
 
         $result = $identifier->identify([
@@ -57,22 +59,7 @@ class LdapIdentifierTest extends TestCase
             'password' => 'doe'
         ]);
 
-        $this->assertInstanceOf(EntityInterface::class, $result);
-    }
-
-    /**
-     * testNoLdapOptionSet
-     *
-     * @return void
-     */
-    public function testNoLdapOptionSet()
-    {
-        $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            }
-        ]);
+        $this->assertInstanceOf(ArrayAccess::class, $result);
     }
 
     /**
@@ -98,10 +85,29 @@ class LdapIdentifierTest extends TestCase
             'username' => 'john',
             'password' => 'doe'
         ]);
-        $this->assertSame(null, $result);
+        $this->assertNull($result);
 
         $resultTwo = $identifier->identify(null);
-        $this->assertSame(null, $result);
+        $this->assertNull($resultTwo);
+    }
+
+    /**
+     * testLdapExtensionAdapter
+     *
+     * @return void
+     */
+    public function testLdapExtensionAdapter()
+    {
+        $this->skipIf(!extension_loaded('ldap'), 'LDAP extension is not loaded.');
+
+        $identifier = new LdapIdentifier([
+            'host' => 'ldap.example.com',
+            'bindDN' => function () {
+                return 'dc=example,dc=com';
+            }
+        ]);
+
+        $this->assertInstanceOf(ExtensionAdapter::class, $identifier->getAdapter());
     }
 
     /**
@@ -109,11 +115,11 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Option `ldap` must implement Authentication\Identifier\Backend\LdapInterface.
+     * @expectedExceptionMessage Option `ldap` must implement `Authentication\Identifier\Ldap\AdapterInterface`.
      */
     public function testWrongLdapObject()
     {
-        $notLdap = new \stdClass;
+        $notLdap = new stdClass;
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',

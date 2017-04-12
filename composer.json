@@ -15,16 +15,14 @@
     "require-dev": {
         "cakephp/cakephp": "~3.4",
         "cakephp/cakephp-codesniffer": "^2.1",
-        "cakephp/event": "~3.4",
-        "cakephp/utility": "~3.4",
         "phpunit/phpunit": "<6.0",
         "firebase/php-jwt": "~4.0"
     },
     "suggest": {
-        "cakephp/orm": "To use \"OrmIdentifier\" (Not needed separately if using full CakePHP framework).",
+        "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
         "firebase/php-jwt": "If you want to use the JWT adapter add this dependency",
-        "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP class.",
-        "cakephp/utility": "Provides CakePHP security methods. Required for the JWT and Legacy adapter."
+        "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP adapter for \"LdapIdentifier\".",
+        "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
     },
     "license": "MIT",
     "minimum-stability": "stable",
