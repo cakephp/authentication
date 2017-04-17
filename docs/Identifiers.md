@@ -33,6 +33,19 @@ Checks the passed JWT token against a datasource.
 * **dataField**: The payload key to get user identifier from. Default is `sub`.
 * **resolver**: The identity resolver. Default is `Authentication.Orm` which uses CakePHP ORM.
 
+## LDAP
+
+Checks the passed credentials against a LDAP server. This identifier requires the php LDAP extension.
+
+* **fields**: The fields for the lookup. Default is `['username' => 'username', 'password' => 'password']`.
+* **host**: The FQDN of your LDAP server.
+* **port**: The port of your LDAP server. Defaults to `389`.
+* **bindDN**: The Distinguished Name of the user to authenticate. Must be a callable. Anonymous binds are not supported.
+* **ldap**: The extension adapter. Defaults to `\Authentication\Identifier\Ldap\ExtensionAdapter`.
+  You can pass a custom object\classname here if it implements the `AdapterInterface`.
+* **options**: Additional LDAP options, like `LDAP_OPT_PROTOCOL_VERSION` or `LDAP_OPT_NETWORK_TIMEOUT`.
+  See [php.net](http://php.net/manual/en/function.ldap-set-option.php) for more valid options.
+
 ## Callback
 
 Allows you to use a callback for identification. This is useful for simple identifiers or quick prototyping.
