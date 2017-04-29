@@ -35,12 +35,12 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         $this->_defaultConfig['cookie'] = [
             'name' => 'CookieAuth',
-            'dataPath' => null,
-            'expiresAt' => null,
-            'path' => '',
+            'expire' => null,
+            'path' => '/',
             'domain' => '',
             'secure' => false,
-            'httpOnly' => false
+            'httpOnly' => false,
+            'value' => ''
         ];
 
         parent::__construct($identifiers, $config);
@@ -57,38 +57,19 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * Checks the cookie for authentication data
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return bool False if the fields have not been supplied. True if they exist.
-     */
-    protected function _getDataFromCookie(ServerRequestInterface $request)
-    {
-        $cookieName = $this->getConfig('cookie.name');
-        $cookies = RequestCookies::createFromRequest($request);
-
-        if (!$cookies->has($cookieName)) {
-            return false;
-        }
-
-        $cookie = $cookies->get($cookieName);
-
-        return $cookie->read($this->getConfig('cookie.dataPath'));
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $user = $this->_getDataFromCookie($request);
-        if (empty($data)) {
+        $userData = $cookie = $request->getCookie($this->getConfig('cookie.name'));
+
+        if (empty($userData)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
                 'Login credentials not found'
             ]);
         }
 
-        $user = $this->identifiers()->identify($user);
+        $user = $this->identifiers()->identify($userData);
 
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
@@ -98,41 +79,19 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * Builds a cookie object
-     *
-     * @return \Cake\Http\Cookie
-     */
-    protected function _buildCookie()
-    {
-        $config = $this->getConfig('cookie');
-
-        $cookie = new Cookie(
-            $config['name']
-        );
-
-        if ($config['expires'] instanceof DateTime) {
-            $cookie->expiresAt($config['expires']);
-        } else {
-            $cookie->willNeverExpire();
-        }
-
-        return $cookie;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
-        $cookie = $this->_buildCookie();
-        $cookie->setValue($identity);
-
-        $cookies = $response->getCookies();
-        $cookies->add($cookie);
+        $cookie = $this->getConfig('cookie');
+        $cookie['value'] = $identity;
 
         return [
             'request' => $request,
-            'response' => $response->withCookies($cookies)
+            'response' => $response->withCookie(
+                $cookie['name'],
+                $cookie
+            )
         ];
     }
 
@@ -141,14 +100,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $cookies = $response->getCookies();
-        $cookie = $cookies->get($this->getConfig('cookies')['name']);
-        $cookie->willBeDeleted();
-        $cookies->add($cookie);
+        $cookie = $this->getConfig('cookie');
+        $cookie['expire'] = strtotime('-1 year');
 
         return [
             'request' => $request,
-            'response' => $response->withCookies($cookies)
+            'response' => $response->withCookie(
+                $cookie['name'],
+                $cookie
+            )
         ];
     }
 }
