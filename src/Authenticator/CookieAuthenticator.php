@@ -61,7 +61,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $userData = $cookie = $request->getCookie($this->getConfig('cookie.name'));
+        $userData = $request->getCookie($this->getConfig('cookie.name'));
 
         if (empty($userData)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
