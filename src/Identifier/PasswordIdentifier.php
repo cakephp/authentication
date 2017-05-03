@@ -89,7 +89,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param array $data Authentication credentials.
      * @return \ArrayAccess|null
      */
-    public function identify($data)
+    public function identify(array $data)
     {
         $fields = $this->getConfig('fields');
 

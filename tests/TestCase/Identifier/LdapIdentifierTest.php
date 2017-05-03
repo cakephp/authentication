@@ -63,11 +63,11 @@ class LdapIdentifierTest extends TestCase
     }
 
     /**
-     * testIdentifyNull
+     * testIdentifyMissingCredentials
      *
      * @return void
      */
-    public function testIdentifyNull()
+    public function testIdentifyMissingCredentials()
     {
         $ldap = $this->createMock(AdapterInterface::class);
         $ldap->method('bind')
@@ -87,7 +87,7 @@ class LdapIdentifierTest extends TestCase
         ]);
         $this->assertNull($result);
 
-        $resultTwo = $identifier->identify(null);
+        $resultTwo = $identifier->identify([]);
         $this->assertNull($resultTwo);
     }
 

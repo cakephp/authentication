@@ -133,7 +133,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @param array $data Authentication credentials
      * @return \ArrayAccess|null
      */
-    public function identify($data)
+    public function identify(array $data)
     {
         $this->_connectLdap();
         $fields = $this->getConfig('fields');
