@@ -20,6 +20,8 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class CookieAuthenticatorTest extends TestCase
 {
@@ -57,7 +59,71 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testAuthenticate()
     {
-        $identifiers = new IdentifierCollection([]);
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                'CookieAuth' => [
+                    'username' => 'mariano',
+                    'password' => 'password'
+                ]
+            ]
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+        $result = $authenticator->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+    }
+
+    /**
+     * testAuthenticateUnknownUser
+     *
+     * @return void
+     */
+    public function testAuthenticateUnknownUser()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                'CookieAuth' => [
+                    'username' => 'foo',
+                    'password' => 'bar'
+                ]
+            ]
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+        $result = $authenticator->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
+    }
+
+    /**
+     * testCredentialsNotPresent
+     *
+     * @return void
+     */
+    public function testCredentialsNotPresent()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath']
@@ -78,16 +144,48 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testPersistIdentity()
     {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
 
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath']
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+
+        $result = $authenticator->persistIdentity($request, $response, ['username' => 'mariano']);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
     }
 
     /**
-     * clearIdentity
+     * testClearIdentity
      *
      * @return void
      */
-    public function clearIdentity()
+    public function testClearIdentity()
     {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
 
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath']
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+
+        $result = $authenticator->clearIdentity($request, $response);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
     }
 }
