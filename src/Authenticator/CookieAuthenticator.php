@@ -14,6 +14,7 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
+use Cake\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -48,11 +49,13 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
     /**
      * Checks the CakePHP Version by looking for the cookie implementation
+     *
+     * @return void
      */
     protected function _checkCakeVersion()
     {
         if (!class_exists('Cake\Http\Cookie\Cookie')) {
-            throw new RuntimeException('You must use CakePHP the `3.next` branch or wait version 3.5 to use the CookieAuthenticator');
+            throw new RuntimeException('You must use the CakePHP `3.next` branch or wait until CakePHP version 3.5 is released to use the CookieAuthenticator');
         }
     }
 
@@ -96,7 +99,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * {@inheritDoc}
+     * Clears the identity data
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
+     * @param \Cake\Http\Response $response The response object.
+     * @return array Returns an array containing the request and response object
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
