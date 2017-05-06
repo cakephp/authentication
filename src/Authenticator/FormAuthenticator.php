@@ -106,7 +106,34 @@ class FormAuthenticator extends AbstractAuthenticator
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
         }
 
+        $result = $this->_persistInCookie($request, $response, $user);
+        $request = $result['request'];
+        $response = $result['response'];
+
         return new Result($user, Result::SUCCESS);
+    }
+
+    /**
+     * Writes the user data as well to the cookie if the cookie authenticator is loaded
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
+     * @return array Array including request and response objects
+     */
+    public function _persistInCookie(ServerRequestInterface $request, ResponseInterface $response, $user)
+    {
+        $cookieAuthenticator = $request->getAttribute('authentication');
+        if ($cookieAuthenticator === null) {
+            return;
+        }
+
+        $cookieAuthenticator
+            ->authenticators()
+            ->get('Cookie');
+
+        if ($cookieAuthenticator instanceof CookieAuthenticator) {
+            return $cookieAuthenticator->persistIdentity($request, $response, $user);
+        }
     }
 
     /**

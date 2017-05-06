@@ -78,7 +78,34 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
         }
 
+        $result = $this->_persistInSession($request, $response, $user);
+        $request = $result['request'];
+        $response = $result['response'];
+
         return new Result($user, Result::SUCCESS);
+    }
+
+    /**
+     * Writes the user data to the session as well if the session authenticator is loaded
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
+     * @return array Array including request and response objects
+     */
+    protected function _persistInSession(ServerRequestInterface $request, ResponseInterface $response, $user)
+    {
+        $sessionAuthenticator = $request->getAttribute('authentication');
+        if ($sessionAuthenticator === null) {
+            return;
+        }
+
+        $sessionAuthenticator
+            ->authenticators()
+            ->get('Session');
+
+        if ($sessionAuthenticator instanceof CookieAuthenticator) {
+            return $sessionAuthenticator->persistIdentity($request, $response, $user);
+        }
     }
 
     /**
