@@ -156,4 +156,43 @@ class FormAuthenticatorTest extends TestCase
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals([], $result->getErrors());
     }
+
+    /**
+     * testLoginUrlWithAppInSubFolder
+     *
+     * @return void
+     */
+    public function testLoginUrlWithAppInSubFolder()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/subfolder/Users/login',
+                'PHP_SELF' => '/subfolder/index.php',
+            ],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+
+        $this->assertEquals('/subfolder/', $request->getUri()->webroot);
+        $this->assertEquals('/Users/login', $request->getUri()->getPath());
+
+        $response = new Response();
+
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ]
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals([], $result->getErrors());
+    }
 }

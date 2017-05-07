@@ -102,7 +102,7 @@ class FormAuthenticator extends AbstractAuthenticator
 
         if (!empty($loginUrl)) {
             if (is_array($loginUrl)) {
-                $loginUrl = Router::url($loginUrl);
+                $loginUrl = Router::url(['_base' => false] + $loginUrl);
                 $this->setConfig('loginUrl', $loginUrl);
             }
 

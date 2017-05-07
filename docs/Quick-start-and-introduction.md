@@ -31,17 +31,24 @@ class Application extends BaseApplication
         // Instantiate the service
         $service = new AuthenticationService();
 
+        $fields = [
+            'username' => 'email',
+            'password' => 'password'
+        ];
+
         // Load identifiers
-        $service->loadIdentifier('Authentication.Password', [
-            'fields' => [
-                'username' => 'email',
-                'password' => 'password'
-            ]
-        ]);
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
 
         // Load the authenticators, you want session first
         $service->loadAuthenticator('Authentication.Session');
-        $service->loadAuthenticator('Authentication.Form');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => $fields,
+            'loginUrl' => [
+                'plugin' => false,
+                'controller' => 'Users',
+                'action' => 'login',
+            ]
+        ]);
 
         // Add it to the authentication middleware
         $authentication = new AuthenticationMiddleware($service);
