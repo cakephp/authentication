@@ -89,6 +89,7 @@ class IdentifierCollection extends AbstractCollection
         if (is_bool($className)) {
             $className = null;
         }
+
         return $className;
     }
 
