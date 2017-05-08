@@ -80,8 +80,8 @@ class IdentifierCollection extends AbstractCollection
     /**
      * Resolves identifier class name.
      *
-     * @param string $class Class name to be resolbed.
-     * @return string
+     * @param string $class Class name to be resolved.
+     * @return string|bool
      */
     protected function _resolveClassName($class)
     {
