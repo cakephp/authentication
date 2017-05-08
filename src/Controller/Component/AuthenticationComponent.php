@@ -22,6 +22,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
+use RuntimeException;
 
 class AuthenticationComponent extends Component
 {
@@ -104,19 +105,32 @@ class AuthenticationComponent extends Component
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @param string|null $path Path to return from the data.
-     * @return mixed
+     * @return \ArrayAccess|null
      */
-    public function getIdentity($path = null)
+    public function getIdentity()
     {
         $controller = $this->_registry->getController();
         $identity = $controller->request->getAttribute('identity');
 
-        if (is_string($path)) {
-            return Hash::get($identity, $path);
+        return $identity;
+    }
+
+    /**
+     * Returns the identity used in the authentication attempt.
+     *
+     * @param string $path Path to return from the data.
+     * @return mixed
+     * @throws \RuntimeException If the identity has not been found.
+     */
+    public function getIdentityData($path)
+    {
+        $identity = $this->getIdentity();
+
+        if ($identity === null) {
+            throw new RuntimeException('The identity has not been found.');
         }
 
-        return $identity;
+        return Hash::get($identity, $path);
     }
 
     /**

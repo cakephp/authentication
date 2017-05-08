@@ -91,11 +91,11 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
-     * testGetUser
+     * testGetIdentity
      *
      * @eturn void
      */
-    public function testGetUserNullResult()
+    public function testGetIdentity()
     {
         $this->request = $this->request->withAttribute('identity', $this->identity);
         $this->request = $this->request->withAttribute('authentication', $this->service);
@@ -107,9 +107,42 @@ class AuthenticationComponentTest extends TestCase
         $result = $component->getIdentity();
         $this->assertInstanceOf(ArrayAccess::class, $result);
         $this->assertEquals('florian', $result->get('username', 'florian'));
+    }
 
-        $result = $component->getIdentity('profession');
+    /**
+     * testGetIdentity
+     *
+     * @eturn void
+     */
+    public function testGetIdentityData()
+    {
+        $this->request = $this->request->withAttribute('identity', $this->identity);
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $result = $component->getIdentityData('profession');
         $this->assertEquals('developer', $result);
+    }
+
+    /**
+     * testGetMissingIdentityData
+     *
+     * @eturn void
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage The identity has not been found.
+     */
+    public function testGetMissingIdentityData()
+    {
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->getIdentityData('profession');
     }
 
     /**
