@@ -74,6 +74,7 @@ class AuthenticatorCollection extends AbstractCollection
         if (is_bool($class)) {
             $className = null;
         }
+
         return $className;
     }
 
