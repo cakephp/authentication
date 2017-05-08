@@ -14,7 +14,7 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
-use Cake\Http\Response;
+use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -64,13 +64,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $userData = $request->getCookie($this->getConfig('cookie.name'));
+        $cookies = $request->getCookieParams();
+        $cookieName = $this->getConfig('cookie.name');
 
-        if (empty($userData)) {
+        if (!isset($cookies[$cookieName])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
                 'Login credentials not found'
             ]);
         }
+        $userData = $cookies[$cookieName];
 
         $user = $this->identifiers()->identify($userData);
 
@@ -113,15 +115,22 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
-        $cookie = $this->getConfig('cookie');
-        $cookie['value'] = $identity;
+        $data = $this->getConfig('cookie');
+        $data['value'] = $identity;
+
+        $cookie = new Cookie(
+            $data['name'],
+            $data['value'],
+            $data['expire'],
+            $data['path'],
+            $data['domain'],
+            $data['secure'],
+            $data['httpOnly']
+        );
 
         return [
             'request' => $request,
-            'response' => $response->withCookie(
-                $cookie['name'],
-                $cookie
-            )
+            'response' => $response->withAddedHeader('Set-Cookie', $cookie->toHeaderValue())
         ];
     }
 
