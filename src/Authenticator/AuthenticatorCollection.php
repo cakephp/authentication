@@ -70,7 +70,11 @@ class AuthenticatorCollection extends AbstractCollection
      */
     protected function _resolveClassName($class)
     {
-        return (string)App::className($class, 'Authenticator', 'Authenticator') ?: null;
+        $className = App::className($class, 'Authenticator', 'Authenticator') ?: null;
+        if (is_bool($class)) {
+            $className = null;
+        }
+        return $className;
     }
 
     /**
