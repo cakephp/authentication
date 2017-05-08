@@ -66,11 +66,11 @@ class AuthenticatorCollection extends AbstractCollection
      * Resolves authenticator class name.
      *
      * @param string $class Class name to be resolved.
-     * @return string|bool
+     * @return string|null
      */
     protected function _resolveClassName($class)
     {
-        return App::className($class, 'Authenticator', 'Authenticator');
+        return (string)App::className($class, 'Authenticator', 'Authenticator') ?: null;
     }
 
     /**

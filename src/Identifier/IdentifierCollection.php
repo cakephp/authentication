@@ -81,11 +81,11 @@ class IdentifierCollection extends AbstractCollection
      * Resolves identifier class name.
      *
      * @param string $class Class name to be resolved.
-     * @return string|bool
+     * @return string|null
      */
     protected function _resolveClassName($class)
     {
-        return App::className($class, 'Identifier', 'Identifier');
+        return (string)App::className($class, 'Identifier', 'Identifier') ?: null;
     }
 
     /**
