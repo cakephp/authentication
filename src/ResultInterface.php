@@ -31,7 +31,7 @@ interface ResultInterface
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @return mixed
+     * @return \ArrayAccess|null
      */
     public function getIdentity();
 

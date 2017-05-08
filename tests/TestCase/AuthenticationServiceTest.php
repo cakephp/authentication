@@ -12,6 +12,8 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use ArrayAccess;
+use ArrayObject;
 use Authentication\AuthenticationService;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\UnauthorizedException;
@@ -206,7 +208,8 @@ class AuthenticationServiceTest extends TestCase
 
         $this->assertEmpty($request->getAttribute('identity'));
 
-        $result = $service->setIdentity($request, $response, ['username' => 'florian']);
+        $data = new ArrayObject(['username' => 'florian']);
+        $result = $service->setIdentity($request, $response, $data);
 
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('request', $result);
@@ -215,8 +218,8 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
         $identity = $result['request']->getAttribute('identity');
-        $this->assertInternalType('array', $identity);
-        $this->assertEquals(['username' => 'florian'], $identity);
+        $this->assertInstanceOf(ArrayAccess::class, $identity);
+        $this->assertEquals($data, $identity);
     }
 
     /**

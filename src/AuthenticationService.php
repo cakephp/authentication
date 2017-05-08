@@ -12,6 +12,7 @@
  */
 namespace Authentication;
 
+use ArrayAccess;
 use Authentication\Authenticator\AuthenticatorCollection;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -220,10 +221,10 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param mixed $identity The identity data.
+     * @param \ArrayAccess $identity The identity data.
      * @return array
      */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
+    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity)
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {

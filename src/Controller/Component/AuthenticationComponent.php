@@ -12,6 +12,7 @@
  */
 namespace Authentication\Controller\Component;
 
+use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -21,6 +22,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
+use RuntimeException;
 
 class AuthenticationComponent extends Component
 {
@@ -103,28 +105,41 @@ class AuthenticationComponent extends Component
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @param string|null $path Path to return from the data.
-     * @return mixed
+     * @return \ArrayAccess|null
      */
-    public function getIdentity($path = null)
+    public function getIdentity()
     {
         $controller = $this->_registry->getController();
         $identity = $controller->request->getAttribute('identity');
-
-        if (is_string($path)) {
-            return Hash::get($identity, $path);
-        }
 
         return $identity;
     }
 
     /**
+     * Returns the identity used in the authentication attempt.
+     *
+     * @param string $path Path to return from the data.
+     * @return mixed
+     * @throws \RuntimeException If the identity has not been found.
+     */
+    public function getIdentityData($path)
+    {
+        $identity = $this->getIdentity();
+
+        if ($identity === null) {
+            throw new RuntimeException('The identity has not been found.');
+        }
+
+        return Hash::get($identity, $path);
+    }
+
+    /**
      * Set identity data to all authenticators that are loaded and support persistence.
      *
-     * @param mixed $identity Identity data to persist.
-     * @return void
+     * @param \ArrayAccess $identity Identity data to persist.
+     * @return $this
      */
-    public function setIdentity($identity)
+    public function setIdentity(ArrayAccess $identity)
     {
         $controller = $this->_registry->getController();
 
@@ -136,6 +151,8 @@ class AuthenticationComponent extends Component
 
         $controller->setRequest($result['request']);
         $controller->response = $result['response'];
+
+        return $this;
     }
 
     /**
