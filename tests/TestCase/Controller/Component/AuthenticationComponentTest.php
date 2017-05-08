@@ -114,6 +114,24 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
+    public function testSetIdentity()
+    {
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->setIdentity($this->identity);
+        $result = $component->getIdentity();
+        $this->assertSame($this->identity, $result);
+    }
+
+    /**
+     * testGetIdentity
+     *
+     * @eturn void
+     */
     public function testGetIdentityData()
     {
         $this->request = $this->request->withAttribute('identity', $this->identity);
