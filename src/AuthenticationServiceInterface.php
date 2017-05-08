@@ -12,6 +12,7 @@
  */
 namespace Authentication;
 
+use ArrayAccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -60,10 +61,10 @@ interface AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param mixed $identity Identity data.
+     * @param \ArrayAccess $identity Identity data.
      * @return array Return an array containing the request and response objects.
      */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
+    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity);
 
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate

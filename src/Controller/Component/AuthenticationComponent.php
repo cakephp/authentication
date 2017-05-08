@@ -12,6 +12,7 @@
  */
 namespace Authentication\Controller\Component;
 
+use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -121,10 +122,10 @@ class AuthenticationComponent extends Component
     /**
      * Set identity data to all authenticators that are loaded and support persistence.
      *
-     * @param mixed $identity Identity data to persist.
-     * @return void
+     * @param \ArrayAccess $identity Identity data to persist.
+     * @return $this
      */
-    public function setIdentity($identity)
+    public function setIdentity(ArrayAccess $identity)
     {
         $controller = $this->_registry->getController();
 
@@ -136,6 +137,8 @@ class AuthenticationComponent extends Component
 
         $controller->setRequest($result['request']);
         $controller->response = $result['response'];
+
+        return $this;
     }
 
     /**

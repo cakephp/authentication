@@ -12,13 +12,14 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use ArrayAccess;
+use ArrayObject;
 use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Cake\Network\Session;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -151,11 +152,12 @@ class SessionAuthenticatorTest extends TestCase
         $response = new Response();
         $authenticator = new SessionAuthenticator($this->identifiers);
 
+        $data = new ArrayObject(['username' => 'florian']);
         $this->sessionMock->expects($this->at(0))
             ->method('write')
-            ->with('Auth', ['username' => 'florian']);
+            ->with('Auth', $data);
 
-        $result = $authenticator->persistIdentity($request, $response, ['username' => 'florian']);
+        $result = $authenticator->persistIdentity($request, $response, $data);
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
