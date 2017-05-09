@@ -51,7 +51,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function initialize(array $config)
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
         $this->_authentication = $controller->request->getAttribute('authentication');
 
         if ($this->_authentication === null) {
@@ -87,7 +87,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             'provider' => $provider,
             'identity' => $this->getIdentity(),
             'service' => $this->_authentication
-        ], $this->_registry->getController());
+        ], $this->getController());
     }
 
     /**
@@ -107,7 +107,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function getIdentity()
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
         $identity = $controller->request->getAttribute('identity');
 
         return $identity;
@@ -139,7 +139,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function setIdentity(ArrayAccess $identity)
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
 
         $result = $this->_authentication->setIdentity(
             $controller->request,
@@ -162,7 +162,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function logout()
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
         $result = $this->_authentication->clearIdentity(
             $controller->request,
             $controller->response
