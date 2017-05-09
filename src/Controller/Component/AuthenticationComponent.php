@@ -170,6 +170,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $controller->request = $result['request'];
         $controller->response = $result['response'];
+        
+        $this->dispatchEvent('Authentication.logout', [], $controller);
 
         $logoutRedirect = $this->getConfig('logoutRedirect');
         if ($logoutRedirect !== false) {
