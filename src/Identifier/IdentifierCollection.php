@@ -85,12 +85,7 @@ class IdentifierCollection extends AbstractCollection
      */
     protected function _resolveClassName($class)
     {
-        $className = App::className($class, 'Identifier', 'Identifier') ?: null;
-        if (is_bool($className)) {
-            $className = null;
-        }
-
-        return $className;
+        return App::className($class, 'Identifier', 'Identifier') ?: null;
     }
 
     /**
