@@ -17,14 +17,14 @@ use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Cake\Controller\Component;
-use Cake\Event\Event;
+use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
 use RuntimeException;
 
-class AuthenticationComponent extends Component
+class AuthenticationComponent extends Component implements EventDispatcherInterface
 {
 
     use EventDispatcherTrait;
@@ -83,13 +83,11 @@ class AuthenticationComponent extends Component
             return;
         }
 
-        $event = new Event('Authentication.afterIdentify', $this->_registry->getController(), [
+        $this->dispatchEvent('Authentication.afterIdentify', [
             'provider' => $provider,
             'identity' => $this->getIdentity(),
             'service' => $this->_authentication
-        ]);
-
-        $this->eventManager()->dispatch($event);
+        ], $this->_registry->getController());
     }
 
     /**
