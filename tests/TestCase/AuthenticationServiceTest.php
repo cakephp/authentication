@@ -60,6 +60,7 @@ class AuthenticationServiceTest extends TestCase
                 'Authentication.Password'
             ],
             'authenticators' => [
+                'Authentication.Session',
                 'Authentication.Form'
             ]
         ]);
@@ -69,6 +70,11 @@ class AuthenticationServiceTest extends TestCase
 
         $result = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $result);
+
+        $this->assertEquals(
+            'mariano',
+            $request->getAttribute('session')->read('Auth.username')
+        );
     }
 
     /**
@@ -216,6 +222,11 @@ class AuthenticationServiceTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        $this->assertEquals(
+            'florian',
+            $result['request']->getAttribute('session')->read('Auth.username')
+        );
 
         $identity = $result['request']->getAttribute('identity');
         $this->assertInstanceOf(ArrayAccess::class, $identity);
