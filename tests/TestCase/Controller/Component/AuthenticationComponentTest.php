@@ -186,6 +186,11 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testLogout()
     {
+        $result = null;
+        EventManager::instance()->on('Authentication.logout', function (Event $event) use (&$result) {
+            $result = $event;
+        });
+
         $this->request = $this->request->withAttribute('identity', $this->identity);
         $this->request = $this->request->withAttribute('authentication', $this->service);
 
@@ -196,6 +201,8 @@ class AuthenticationComponentTest extends TestCase
         $this->assertEquals('florian', $controller->request->getAttribute('identity')->get('username'));
         $component->logout();
         $this->assertNull($controller->request->getAttribute('identity'));
+        $this->assertInstanceOf(Event::class, $result);
+        $this->assertEquals('Authentication.logout', $result->name());
     }
 
     /**

@@ -17,14 +17,14 @@ use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Cake\Controller\Component;
-use Cake\Event\Event;
+use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
 use RuntimeException;
 
-class AuthenticationComponent extends Component
+class AuthenticationComponent extends Component implements EventDispatcherInterface
 {
 
     use EventDispatcherTrait;
@@ -51,7 +51,7 @@ class AuthenticationComponent extends Component
      */
     public function initialize(array $config)
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
         $this->_authentication = $controller->request->getAttribute('authentication');
 
         if ($this->_authentication === null) {
@@ -83,13 +83,11 @@ class AuthenticationComponent extends Component
             return;
         }
 
-        $event = new Event('Authentication.afterIdentify', $this->_registry->getController(), [
+        $this->dispatchEvent('Authentication.afterIdentify', [
             'provider' => $provider,
             'identity' => $this->getIdentity(),
             'service' => $this->_authentication
-        ]);
-
-        $this->eventManager()->dispatch($event);
+        ], $this->getController());
     }
 
     /**
@@ -109,7 +107,7 @@ class AuthenticationComponent extends Component
      */
     public function getIdentity()
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
         $identity = $controller->request->getAttribute('identity');
 
         return $identity;
@@ -141,7 +139,7 @@ class AuthenticationComponent extends Component
      */
     public function setIdentity(ArrayAccess $identity)
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
 
         $result = $this->_authentication->setIdentity(
             $controller->request,
@@ -164,7 +162,7 @@ class AuthenticationComponent extends Component
      */
     public function logout()
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
         $result = $this->_authentication->clearIdentity(
             $controller->request,
             $controller->response
@@ -172,6 +170,8 @@ class AuthenticationComponent extends Component
 
         $controller->request = $result['request'];
         $controller->response = $result['response'];
+
+        $this->dispatchEvent('Authentication.logout', [], $controller);
 
         $logoutRedirect = $this->getConfig('logoutRedirect');
         if ($logoutRedirect !== false) {
