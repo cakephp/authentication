@@ -15,6 +15,36 @@ namespace Authentication;
 interface ResultInterface
 {
     /**
+     * General Failure
+     */
+    const FAILURE = 0;
+
+    /**
+     * Failure due to identity not being found.
+     */
+    const FAILURE_IDENTITY_NOT_FOUND = -1;
+
+    /**
+     * Failure due to invalid credential being supplied.
+     */
+    const FAILURE_CREDENTIAL_INVALID = -2;
+
+    /**
+     * Failure due to other circumstances.
+     */
+    const FAILURE_OTHER = -3;
+
+    /**
+     * The authentication credentials were not found in the request.
+     */
+    const FAILURE_CREDENTIALS_NOT_FOUND = -4;
+
+    /**
+     * Authentication success.
+     */
+    const SUCCESS = 1;
+
+    /**
      * Returns whether the result represents a successful authentication attempt.
      *
      * @return bool
