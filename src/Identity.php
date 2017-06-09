@@ -23,12 +23,14 @@ class Identity implements IdentityInterface
 
     /**
      * Default configuration.
-     * - `userModel` The alias for users table, defaults to Users.
+     * - `fieldMap` Mapping of fields
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'idField' => 'id',
+        'fieldMap' => [
+            'id' => 'id'
+        ]
     ];
 
     /**
@@ -43,6 +45,7 @@ class Identity implements IdentityInterface
      */
     public function __construct($identityData, array $config = [])
     {
+        $this->setConfig($config);
         $this->data = $identityData;
     }
 
@@ -51,9 +54,24 @@ class Identity implements IdentityInterface
      */
     public function getIdentifier()
     {
-        $idField = $this->getConfig('idField');
-        if (isset($this->data[$idField])) {
-            return $this->data[$idField];
+        return $this->get('id');
+    }
+
+    /**
+     * Get data from the identity
+     *
+     * @param string $field Field in the user data.
+     * @return mixed
+     */
+    public function get($field)
+    {
+        $map = $this->getConfig('fieldMap');
+        if (isset($map[$field])) {
+            $field = $map[$field];
+        }
+
+        if (isset($this->data[$field])) {
+           return $this->data[$field];
         }
 
         return null;
@@ -81,7 +99,7 @@ class Identity implements IdentityInterface
     public function offsetGet($offset)
     {
         if (isset($this->data[$offset])) {
-            $this->data[$offset];
+            return $this->data[$offset];
         }
 
         return null;
@@ -102,7 +120,7 @@ class Identity implements IdentityInterface
      */
     public function offsetSet($offset, $value)
     {
-        $this->data[$offset] = $value;
+        return $this->data[$offset] = $value;
     }
 
     /**
