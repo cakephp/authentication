@@ -109,14 +109,9 @@ class Identity implements IdentityInterface
      * Offset to set
      *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     * @param mixed $offset <p>
-     * The offset to assign the value to.
-     * </p>
-     * @param mixed $value <p>
-     * The value to set.
-     * </p>
+     * @param mixed $offset The offset to assign the value to.
+     * @param mixed $value
      * @return void
-     * @since 5.0.0
      */
     public function offsetSet($offset, $value)
     {
@@ -127,11 +122,8 @@ class Identity implements IdentityInterface
      * Offset to unset
      *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     * @param mixed $offset <p>
-     * The offset to unset.
-     * </p>
+     * @param mixed $offset
      * @return void
-     * @since 5.0.0
      */
     public function offsetUnset($offset)
     {

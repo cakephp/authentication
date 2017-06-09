@@ -274,7 +274,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Builds the identity object
      *
-     * @param array|ArrayAccess
+     * @param array|ArrayAccess $identityData Identity data
      * @return \Authentication\IdentityInterface
      */
     public function buildIdentity($identityData)
