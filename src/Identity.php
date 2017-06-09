@@ -137,4 +137,26 @@ class Identity implements IdentityInterface
     {
         unset($this->data[$offset]);
     }
+
+    /**
+     * Turns the object into an array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Debug info
+     *
+     * @return array
+     */
+    public function __debugInfo()
+    {
+        return [
+            'data' => $this->data
+        ];
+    }
 }

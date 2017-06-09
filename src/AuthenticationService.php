@@ -82,7 +82,8 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     protected $_defaultConfig = [
         'authenticators' => [],
-        'identifiers' => []
+        'identifiers' => [],
+        'identityClass' => Identity::class
     ];
 
     /**
@@ -231,7 +232,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return [
-            'request' => $request->withAttribute('identity', $identity),
+            'request' => $request->withAttribute('identity', $this->buildIdentity($identity)),
             'response' => $response
         ];
     }
@@ -254,5 +255,35 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function getResult()
     {
         return $this->_result;
+    }
+
+    /**
+     * Gets an identity object
+     *
+     * @return null|\Authentication\IdentityInterface
+     */
+    public function getIdentity()
+    {
+        if (!$this->_result->isValid()) {
+            return null;
+        }
+
+        return $this->buildIdentity($this->_result->getIdentity());
+    }
+
+    /**
+     * Builds the identity object
+     *
+     * @param array|ArrayAccess
+     * @return \Authentication\IdentityInterface
+     */
+    public function buildIdentity($identityData)
+    {
+        $class = $this->getConfig('identityClass');
+        if (is_callable($class)) {
+            return $class($identityData);
+        }
+
+        return new $class($identityData);
     }
 }

@@ -15,7 +15,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Identity;
 use Cake\TestSuite\TestCase;
 
-class ResultTest extends TestCase
+class IdentityTest extends TestCase
 {
     /**
      * Test getIdentifier()
