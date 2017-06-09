@@ -12,6 +12,7 @@
  */
 namespace Authentication;
 
+use ArrayAccess;
 use Cake\Core\InstanceConfigTrait;
 
 /**
@@ -71,7 +72,7 @@ class Identity implements IdentityInterface
         }
 
         if (isset($this->data[$field])) {
-           return $this->data[$field];
+            return $this->data[$field];
         }
 
         return null;
@@ -122,7 +123,7 @@ class Identity implements IdentityInterface
      * Offset to unset
      *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     * @param mixed $offset
+     * @param mixed $offset Offset
      * @return void
      */
     public function offsetUnset($offset)
