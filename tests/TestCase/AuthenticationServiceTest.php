@@ -308,6 +308,42 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * testCallableIdentityProvider
+     *
+     * @return void
+     */
+    public function testCallableIdentityProvider()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $callable = function () {
+            return new Identity([
+                'id' => 'by-callable'
+            ]);
+        };
+
+        $service = new AuthenticationService([
+            'identityClass' => $callable,
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Form'
+            ]
+        ]);
+
+        // Authenticate an identity
+        $service->authenticate($request, $response);
+        $this->assertInstanceOf(Identity::class, $service->getIdentity());
+        $this->assertEquals('by-callable', $service->getIdentity()->getIdentifier());
+    }
+
+    /**
      * testGetIdentity
      *
      * @return void
@@ -326,7 +362,6 @@ class AuthenticationServiceTest extends TestCase
                 'Authentication.Password'
             ],
             'authenticators' => [
-                'Authentication.Session',
                 'Authentication.Form'
             ]
         ]);
