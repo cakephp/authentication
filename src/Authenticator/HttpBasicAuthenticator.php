@@ -30,7 +30,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
      * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
-     * @return \Authentication\ResultInterface
+     * @return \Authentication\Authenticator\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
