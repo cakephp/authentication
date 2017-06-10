@@ -20,6 +20,7 @@ use Authentication\Authenticator\Result;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
+use Authentication\Identity;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -288,5 +289,55 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         $service->authenticate($request, $response);
+    }
+
+    /**
+     * testBuildIdentity
+     *
+     * @return void
+     */
+    public function testBuildIdentity()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ]
+        ]);
+
+        $this->assertInstanceOf(Identity::class, $service->buildIdentity([]));
+    }
+
+    /**
+     * testGetIdentity
+     *
+     * @return void
+     */
+    public function testGetIdentity()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+                'Authentication.Form'
+            ]
+        ]);
+
+        // No identity present before login
+        $this->assertNull($service->getIdentity());
+
+        // Authenticate an identity
+        $service->authenticate($request, $response);
+
+        // Now we can get the identity
+        $this->assertInstanceOf(Identity::class, $service->getIdentity());
     }
 }
