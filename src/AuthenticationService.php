@@ -279,11 +279,26 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function buildIdentity($identityData)
     {
+        $check = function ($identity) {
+            if (!$identity instanceof IdentityInterface) {
+                throw new RuntimeException(sprintf(
+                    'Object `%s` does not implement `%s`',
+                    get_class($identity),
+                    IdentityInterface::class
+                ));
+            }
+        };
+
         $class = $this->getConfig('identityClass');
+
         if (is_callable($class)) {
-            return $class($identityData);
+            $identity = $class($identityData);
+            $check($identity);
+            return $identity;
         }
 
-        return new $class($identityData);
+        $identity = new $class($identityData);
+        $check($identity);
+        return $identity;
     }
 }
