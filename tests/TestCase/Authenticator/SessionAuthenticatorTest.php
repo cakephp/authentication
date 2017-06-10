@@ -12,11 +12,10 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
-use ArrayAccess;
 use ArrayObject;
+use Authentication\Authenticator\Result;
 use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Authenticator\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;

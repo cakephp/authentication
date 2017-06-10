@@ -14,8 +14,8 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use ArrayAccess;
 use Authentication\Authenticator\JwtAuthenticator;
-use Authentication\Identifier\IdentifierCollection;
 use Authentication\Authenticator\Result;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
