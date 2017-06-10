@@ -12,7 +12,6 @@
  */
 namespace Authentication;
 
-use ArrayAccess;
 use Cake\Core\InstanceConfigTrait;
 
 /**
@@ -42,7 +41,10 @@ class Identity implements IdentityInterface
     protected $data;
 
     /**
-     * {@inheritdoc}
+     * Constructor
+     *
+     * @param array $identityData Identity data
+     * @param array $config Config options
      */
     public function __construct($identityData, array $config = [])
     {

@@ -20,14 +20,6 @@ use ArrayAccess;
 interface IdentityInterface extends ArrayAccess
 {
     /**
-     * Constructor
-     *
-     * @param array $identityData Identity data
-     * @param array $config Config options
-     */
-    public function __construct($identityData, array $config = []);
-
-    /**
      * @return string|int|null
      */
     public function getIdentifier();
