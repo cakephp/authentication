@@ -13,9 +13,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Authenticator\StatelessInterface;
-use Authentication\Authenticator\UnauthorizedException;
-use Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

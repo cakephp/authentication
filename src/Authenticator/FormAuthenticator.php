@@ -12,7 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Result;
 use Cake\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

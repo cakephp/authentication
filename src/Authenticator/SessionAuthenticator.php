@@ -16,7 +16,6 @@ namespace Authentication\Authenticator;
 use ArrayAccess;
 use ArrayObject;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

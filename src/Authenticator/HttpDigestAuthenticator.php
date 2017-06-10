@@ -14,7 +14,6 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

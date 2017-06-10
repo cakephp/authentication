@@ -12,8 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Authenticator\StatelessInterface;
-use Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

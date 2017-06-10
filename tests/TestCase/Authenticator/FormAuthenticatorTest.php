@@ -14,7 +14,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
+use Authentication\Authenticator\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -65,7 +65,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers);
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 
@@ -91,7 +91,7 @@ class FormAuthenticatorTest extends TestCase
 
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
     }
@@ -120,7 +120,7 @@ class FormAuthenticatorTest extends TestCase
 
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
         $this->assertEquals([0 => 'Login URL /users/does-not-match did not match /users/login'], $result->getErrors());
     }
@@ -152,7 +152,7 @@ class FormAuthenticatorTest extends TestCase
 
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals([], $result->getErrors());
     }
@@ -191,7 +191,7 @@ class FormAuthenticatorTest extends TestCase
 
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals([], $result->getErrors());
     }
