@@ -53,7 +53,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Result of the last authenticate() call.
      *
-     * @var \Authentication\ResultInterface|null
+     * @var \Authentication\Authenticator\ResultInterface|null
      */
     protected $_result;
 
@@ -155,7 +155,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\ResultInterface A result object. If none of
+     * @return \Authentication\Authenticator\ResultInterface A result object. If none of
      * the adapters was a success the last failed result is returned.
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
@@ -250,7 +250,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Gets the result of the last authenticate() call.
      *
-     * @return \Authentication\ResultInterface|null Authentication result interface
+     * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
     public function getResult()
     {
