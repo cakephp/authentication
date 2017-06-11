@@ -15,8 +15,8 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use ArrayObject;
 use Authentication\Authenticator\CookieAuthenticator;
+use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;

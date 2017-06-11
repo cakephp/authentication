@@ -14,7 +14,6 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
