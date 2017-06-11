@@ -308,6 +308,25 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * testBuildIdentityRuntimeException
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Object `stdClass` does not implement `Authentication\IdentityInterface`
+     * @return void
+     */
+    public function testBuildIdentityRuntimeException()
+    {
+        $service = new AuthenticationService([
+            'identityClass' => \stdClass::class,
+            'identifiers' => [
+                'Authentication.Password'
+            ]
+        ]);
+
+        $service->buildIdentity([]);
+    }
+
+    /**
      * testCallableIdentityProvider
      *
      * @return void
