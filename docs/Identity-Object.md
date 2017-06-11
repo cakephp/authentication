@@ -2,7 +2,7 @@
 
 The identity object is returned by the service and made available in the request. The object provides a method `getIdentifier()` that can be called to get the id of the current log in identity.
 
-The reason this object exists is to provide an interface that makes it easy to get access to the identity's across various implementations/sources.
+The reason this object exists is to provide an interface that makes it easy to get access to the identity's id across various implementations/sources.
 
 ```php
 // Service
