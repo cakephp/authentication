@@ -12,6 +12,7 @@
  */
 namespace Authentication\Authenticator;
 
+use ArrayAccess;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
 use Cake\Http\Cookie\Cookie;
@@ -86,10 +87,10 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * {@inheritDoc}
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity)
     {
         $data = $this->getConfig('cookie');
-        $data['value'] = $identity;
+        $data['value'] = (array)$identity;
 
         $cookie = new Cookie(
             $data['name'],

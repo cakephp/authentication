@@ -13,6 +13,7 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use ArrayObject;
 use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Result;
@@ -155,7 +156,9 @@ class CookieAuthenticatorTest extends TestCase
 
         $authenticator = new CookieAuthenticator($identifiers);
 
-        $result = $authenticator->persistIdentity($request, $response, ['username' => 'mariano']);
+        $array = new ArrayObject(['username' => 'mariano']);
+        $result = $authenticator->persistIdentity($request, $response, $array);
+
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
