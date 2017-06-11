@@ -53,7 +53,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Result of the last authenticate() call.
      *
-     * @var \Authentication\ResultInterface|null
+     * @var \Authentication\Authenticator\ResultInterface|null
      */
     protected $_result;
 
@@ -82,7 +82,8 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     protected $_defaultConfig = [
         'authenticators' => [],
-        'identifiers' => []
+        'identifiers' => [],
+        'identityClass' => Identity::class
     ];
 
     /**
@@ -154,7 +155,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\ResultInterface A result object. If none of
+     * @return \Authentication\Authenticator\ResultInterface A result object. If none of
      * the adapters was a success the last failed result is returned.
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
@@ -231,7 +232,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return [
-            'request' => $request->withAttribute('identity', $identity),
+            'request' => $request->withAttribute('identity', $this->buildIdentity($identity)),
             'response' => $response
         ];
     }
@@ -249,10 +250,51 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Gets the result of the last authenticate() call.
      *
-     * @return \Authentication\ResultInterface|null Authentication result interface
+     * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
     public function getResult()
     {
         return $this->_result;
+    }
+
+    /**
+     * Gets an identity object
+     *
+     * @return null|\Authentication\IdentityInterface
+     */
+    public function getIdentity()
+    {
+        if (empty($this->_result) || !$this->_result->isValid()) {
+            return null;
+        }
+
+        return $this->buildIdentity($this->_result->getIdentity());
+    }
+
+    /**
+     * Builds the identity object
+     *
+     * @param array|ArrayAccess $identityData Identity data
+     * @return \Authentication\IdentityInterface
+     */
+    public function buildIdentity($identityData)
+    {
+        $class = $this->getConfig('identityClass');
+
+        if (is_callable($class)) {
+            $identity = $class($identityData);
+        } else {
+            $identity = new $class($identityData);
+        }
+
+        if (!$identity instanceof IdentityInterface) {
+            throw new RuntimeException(sprintf(
+                'Object `%s` does not implement `%s`',
+                get_class($identity),
+                IdentityInterface::class
+            ));
+        }
+
+        return $identity;
     }
 }

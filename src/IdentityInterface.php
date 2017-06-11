@@ -10,19 +10,17 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Authenticator;
+namespace Authentication;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use ArrayAccess;
 
-interface AuthenticatorInterface
+/**
+ * Identity interface
+ */
+interface IdentityInterface extends ArrayAccess
 {
     /**
-     * Authenticate user.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\Authenticator\ResultInterface
+     * @return string|int|null
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+    public function getIdentifier();
 }

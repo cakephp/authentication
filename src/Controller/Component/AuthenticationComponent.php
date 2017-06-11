@@ -93,7 +93,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * Gets the result of the last authenticate() call.
      *
-     * @return \Authentication\ResultInterface|null Authentication result interface
+     * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
     public function getResult()
     {

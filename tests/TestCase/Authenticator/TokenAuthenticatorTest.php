@@ -12,9 +12,9 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use Authentication\Authenticator\Result;
 use Authentication\Authenticator\TokenAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -66,7 +66,7 @@ class TokenAuthenticatorTest extends TestCase
             'queryParam' => 'token'
         ]);
         $result = $tokenAuth->authenticate($this->request, $this->response);
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
 
         // Test header token
@@ -75,7 +75,7 @@ class TokenAuthenticatorTest extends TestCase
             'header' => 'Token'
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 
@@ -92,7 +92,7 @@ class TokenAuthenticatorTest extends TestCase
             'queryParam' => 'token'
         ]);
         $result = $tokenAuth->authenticate($requestWithParams, $this->response);
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
 
         // Test with valid query param but invalid token
@@ -101,7 +101,7 @@ class TokenAuthenticatorTest extends TestCase
             'queryParam' => 'token'
         ]);
         $result = $tokenAuth->authenticate($requestWithParams, $this->response);
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
     }
 }

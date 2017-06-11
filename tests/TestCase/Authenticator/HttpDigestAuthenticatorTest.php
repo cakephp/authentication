@@ -16,6 +16,7 @@
 namespace Authentication\Test\TestCase\Authentication;
 
 use Authentication\Authenticator\HttpDigestAuthenticator;
+use Authentication\Authenticator\Result;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\Response;
@@ -97,7 +98,7 @@ class HttpDigestAuthenticatorTest extends TestCase
         );
 
         $result = $this->auth->authenticate($request, $this->response);
-        $this->assertInstanceOf('Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
     }
 
@@ -196,7 +197,7 @@ DIGEST;
             'created' => new Time('2007-03-17 01:16:23'),
             'updated' => new Time('2007-03-17 01:18:31')
         ];
-        $this->assertInstanceOf('Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
         $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
@@ -236,7 +237,7 @@ DIGEST;
             'created' => new Time('2007-03-17 01:16:23'),
             'updated' => new Time('2007-03-17 01:18:31')
         ];
-        $this->assertInstanceOf('Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
         $this->assertEquals($expected, $result->getIdentity()->toArray());
     }
