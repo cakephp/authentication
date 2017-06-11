@@ -2,7 +2,7 @@
 
 The identity object is returned by the service and made available in the request. The object provides a method `getIdentifier()` that can be called to get the id of the current log in identity.
 
-The reason this object exists is to provide an interface that makes it easy to get access to the identities id no matter what it is.
+The reason this object exists is to provide an interface that makes it easy to get access to the identity's across various implementations/sources.
 
 ```php
 // Service
@@ -28,7 +28,7 @@ $identity->get('email');
 $identity->get('username');
 ```
 
-The default Identity object class can be configured to map fields. This is pretty useful if the identifier of the identity is just something else than the famous `id` field or if you want to map other fields to more generic and common names. 
+The default Identity object class can be configured to map fields. This is pretty useful if the identifier of the identity is a non-conventional `id` field or if you want to map other fields to more generic and common names.
 
 ```php
     $identity = new Identity($data, [
@@ -39,6 +39,9 @@ The default Identity object class can be configured to map fields. This is prett
     ]);
 };
 ```
+## Creating your own identity object
+
+If you want to create your own identity object, your object must implement the IdentityInterface.
 
 ## Using another identity object
 
@@ -62,7 +65,3 @@ $service = new AuthenticationService([
     ]
 ]);
 ```
-
-## Creating your own identity object
-
-If you want to create your own identity object, your object must implement the IdentityInterface.
