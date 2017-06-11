@@ -21,3 +21,4 @@ This plugin intentionally **does not** handle authorization. It was [decoupled](
  * [Migration from the AuthComponent](docs/Migration-from-the-AuthComponent.md)
  * [Authenticators](docs/Authenticators.md)
  * [Identifiers](docs/Identifiers.md)
+ * [Identity Objects](docs/Identity-Object.md)
