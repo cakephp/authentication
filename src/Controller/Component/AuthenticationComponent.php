@@ -103,7 +103,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * Returns the identity used in the authentication attempt.
      *
-     * @return \ArrayAccess|null
+     * @return \Authentication\IdentityInterface|null
      */
     public function getIdentity()
     {

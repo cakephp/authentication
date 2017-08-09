@@ -16,6 +16,7 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Controller\Component\AuthenticationComponent;
+use Authentication\Identity;
 use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Controller\ComponentRegistry;
@@ -37,10 +38,12 @@ class AuthenticationComponentTest extends TestCase
     {
         parent::setUp();
 
-        $this->identity = new Entity([
+        $this->identityData = new Entity([
             'username' => 'florian',
             'profession' => 'developer'
         ]);
+
+        $this->identity = new Identity($this->identityData);
 
         $this->service = new AuthenticationService([
             'identifiers' => [
@@ -122,9 +125,9 @@ class AuthenticationComponentTest extends TestCase
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
-        $component->setIdentity($this->identity);
+        $component->setIdentity($this->identityData);
         $result = $component->getIdentity();
-        $this->assertSame($this->identity->toArray(), $result->toArray());
+        $this->assertSame($this->identityData->toArray(), $result->toArray());
     }
 
     /**
