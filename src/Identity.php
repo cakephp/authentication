@@ -149,7 +149,15 @@ class Identity implements IdentityInterface
      */
     public function toArray()
     {
-        return $this->data;
+        if (is_array($this->data)) {
+            return $this->data;
+        }
+
+        if (method_exists($this->data, 'toArray')) {
+            return $this->data->toArray();
+        }
+        
+        return (array)$this->data;
     }
 
     /**

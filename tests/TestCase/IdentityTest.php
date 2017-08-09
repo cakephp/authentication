@@ -12,7 +12,9 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use ArrayObject;
 use Authentication\Identity;
+use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 
 class IdentityTest extends TestCase
@@ -72,5 +74,24 @@ class IdentityTest extends TestCase
     public function testBuildInvalidArgument()
     {
         new Identity(new \stdClass);
+    }
+
+    /**
+     * Test toArray() method
+     *
+     * @return void
+     */
+    public function testToArray()
+    {
+        $array = ['email' => 'info@cakephp.org'];
+
+        $identity = new Identity($array);
+        $this->assertEquals($array, $identity->toArray());
+
+        $identity = new Identity(new ArrayObject($array));
+        $this->assertEquals($array, $identity->toArray());
+
+        $identity = new Identity(new Entity($array));
+        $this->assertEquals($array, $identity->toArray());
     }
 }
