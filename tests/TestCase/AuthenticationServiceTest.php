@@ -233,7 +233,7 @@ class AuthenticationServiceTest extends TestCase
 
         $identity = $result['request']->getAttribute('identity');
         $this->assertInstanceOf(IdentityInterface::class, $identity);
-        $this->assertEquals($data, $identity->toArray());
+        $this->assertEquals($data->getArrayCopy(), $identity->toArray());
     }
 
     /**
