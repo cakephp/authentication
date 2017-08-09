@@ -66,6 +66,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * - `identifiers` - An array of identifiers. The identifiers are constructed by the service
      *   and then passed to the authenticators that will pass the credentials to them and get the
      *   user data.
+     * - `identityClass` - The class name of identity or a callable identity builder.
      *
      *   ```
      *   $service = new AuthenticationService([
@@ -231,8 +232,12 @@ class AuthenticationService implements AuthenticationServiceInterface
             }
         }
 
+        if (!$identity instanceof IdentityInterface) {
+            $identity = $this->buildIdentity($identity);
+        }
+
         return [
-            'request' => $request->withAttribute('identity', $this->buildIdentity($identity)),
+            'request' => $request->withAttribute('identity', $identity),
             'response' => $response
         ];
     }
@@ -268,7 +273,12 @@ class AuthenticationService implements AuthenticationServiceInterface
             return null;
         }
 
-        return $this->buildIdentity($this->_result->getIdentity());
+        $identity = $this->_result->getIdentity();
+        if (!$identity instanceof IdentityInterface) {
+            $identity = $this->buildIdentity($identity);
+        }
+
+        return $identity;
     }
 
     /**

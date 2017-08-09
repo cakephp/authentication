@@ -15,14 +15,17 @@ namespace Authentication\Test\TestCase\Authenticator;
 use ArrayAccess;
 use ArrayObject;
 use Authentication\AuthenticationService;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;
+use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -235,6 +238,24 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * testSetIdentityInterface
+     *
+     * @return void
+     */
+    public function testSetIdentityInterface()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+        $identity = $this->createMock(IdentityInterface::class);
+
+        $service = new AuthenticationService();
+
+        $result = $service->setIdentity($request, $response, $identity);
+
+        $this->assertSame($identity, $result['request']->getAttribute('identity'));
+    }
+
+    /**
      * testGetResult
      *
      * @return void
@@ -393,5 +414,30 @@ class AuthenticationServiceTest extends TestCase
 
         // Now we can get the identity
         $this->assertInstanceOf(Identity::class, $service->getIdentity());
+    }
+
+    /**
+     * testGetIdentityInterface
+     *
+     * @return void
+     */
+    public function testGetIdentityInterface()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+
+        $identity = $this->createMock(IdentityInterface::class);
+        $result = new Result($identity, Result::SUCCESS);
+
+        $authenticator = $this->createMock(AuthenticatorInterface::class);
+        $authenticator->method('authenticate')
+            ->willReturn($result);
+
+        $service = new AuthenticationService();
+        $service->authenticators()->set('Test', $authenticator);
+
+        $service->authenticate($request, $response);
+
+        $this->assertSame($identity, $service->getIdentity());
     }
 }
