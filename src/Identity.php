@@ -156,7 +156,7 @@ class Identity implements IdentityInterface
         if (method_exists($this->data, 'toArray')) {
             return $this->data->toArray();
         }
-        
+
         return (array)$this->data;
     }
 
