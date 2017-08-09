@@ -12,7 +12,6 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
-use ArrayAccess;
 use ArrayObject;
 use Authentication\AuthenticationService;
 use Authentication\Authenticator\AuthenticatorInterface;
@@ -233,7 +232,7 @@ class AuthenticationServiceTest extends TestCase
         );
 
         $identity = $result['request']->getAttribute('identity');
-        $this->assertInstanceOf(ArrayAccess::class, $identity);
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
         $this->assertEquals($data, $identity->toArray());
     }
 

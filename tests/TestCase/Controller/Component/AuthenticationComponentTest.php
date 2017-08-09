@@ -12,11 +12,11 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
-use ArrayAccess;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Controller\Component\AuthenticationComponent;
+use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
@@ -105,8 +105,8 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $result = $component->getIdentity();
-        $this->assertInstanceOf(ArrayAccess::class, $result);
-        $this->assertEquals('florian', $result->get('username', 'florian'));
+        $this->assertInstanceOf(IdentityInterface::class, $result);
+        $this->assertEquals('florian', $result->get('username'));
     }
 
     /**
@@ -233,7 +233,7 @@ class AuthenticationComponentTest extends TestCase
         $this->assertEquals('Authentication.afterIdentify', $result->name());
         $this->assertNotEmpty($result->data);
         $this->assertInstanceOf(AuthenticatorInterface::class, $result->data['provider']);
-        $this->assertInstanceOf(ArrayAccess::class, $result->data['identity']);
+        $this->assertInstanceOf(IdentityInterface::class, $result->data['identity']);
         $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
     }
 }
