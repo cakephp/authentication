@@ -189,6 +189,6 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertInstanceOf(IdentityInterface::class, $identity);
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertTrue($service->getResult()->isValid());
-        $this->assertEquals($data, (array)$identity);
+        $this->assertEquals($data, $identity->toArray());
     }
 }

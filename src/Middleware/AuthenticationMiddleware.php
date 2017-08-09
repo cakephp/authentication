@@ -65,7 +65,7 @@ class AuthenticationMiddleware
 
             return $response;
         }
-        $request = $request->withAttribute('identity', $result->getIdentity());
+        $request = $request->withAttribute('identity', $this->_authenticationService->getIdentity());
         $request = $request->withAttribute('authentication', $this->_authenticationService);
         $request = $request->withAttribute('authenticationResult', $result);
 
