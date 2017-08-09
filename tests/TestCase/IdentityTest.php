@@ -64,4 +64,13 @@ class IdentityTest extends TestCase
         $result = $identity->get('email');
         $this->assertEquals('info@cakephp.org', $result);
     }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedException Array data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.
+     */
+    public function testBuildInvalidArgument()
+    {
+        new Identity(new \stdClass);
+    }
 }

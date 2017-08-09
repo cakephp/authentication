@@ -12,7 +12,9 @@
  */
 namespace Authentication;
 
+use ArrayAccess;
 use Cake\Core\InstanceConfigTrait;
+use InvalidArgumentException;
 
 /**
  * Identity object
@@ -36,18 +38,25 @@ class Identity implements IdentityInterface
     /**
      * Identity data
      *
-     * @var array
+     * @var array|\ArrayAccess
      */
     protected $data;
 
     /**
      * Constructor
      *
-     * @param array $identityData Identity data
+     * @param array|\ArrayAccess $identityData Identity data
      * @param array $config Config options
+     * @throws InvalidArgumentException When invalid identity data is passed.
      */
     public function __construct($identityData, array $config = [])
     {
+        if (!is_array($identityData) && !$identityData instanceof ArrayAccess) {
+            $type = is_object($identityData) ? get_class($identityData) : gettype($identityData);
+            $message = sprintf('Array data must be an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
+            throw new InvalidArgumentException($message);
+        }
+
         $this->setConfig($config);
         $this->data = $identityData;
     }
