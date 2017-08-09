@@ -325,7 +325,7 @@ class AuthenticationServiceTest extends TestCase
             ]
         ]);
 
-        $this->assertInstanceOf(Identity::class, $service->buildIdentity([]));
+        $this->assertInstanceOf(Identity::class, $service->buildIdentity(new ArrayObject([])));
     }
 
     /**
@@ -344,7 +344,7 @@ class AuthenticationServiceTest extends TestCase
             ]
         ]);
 
-        $service->buildIdentity([]);
+        $service->buildIdentity(new ArrayObject([]));
     }
 
     /**
