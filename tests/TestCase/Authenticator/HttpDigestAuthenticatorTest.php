@@ -199,7 +199,7 @@ DIGEST;
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity()->toArray());
+        $this->assertEquals($expected, $result->getData()->toArray());
     }
 
     /**
@@ -239,7 +239,7 @@ DIGEST;
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity()->toArray());
+        $this->assertEquals($expected, $result->getData()->toArray());
     }
 
     /**

@@ -59,11 +59,11 @@ interface ResultInterface
     public function getCode();
 
     /**
-     * Returns the identity used in the authentication attempt.
+     * Returns the identity data used in the authentication attempt.
      *
      * @return \ArrayAccess|null
      */
-    public function getIdentity();
+    public function getData();
 
     /**
      * Returns an array of string reasons why the authentication attempt was unsuccessful.

@@ -21,29 +21,27 @@ class ResultTest extends TestCase
 {
 
     /**
-     * testConstructor
+     * testConstructorEmptyData
      *
      * @return void
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identity data can not be empty with status success.
      */
-    public function testConstructor()
+    public function testConstructorEmptyData()
     {
-        try {
-            new Result(null, Result::SUCCESS);
-            $this->fail('InvalidArgumentException not thrown!');
-        } catch (InvalidArgumentException $e) {
-            $result = $e->getMessage();
-            $expected = 'Identity can not be empty with status success.';
-            $this->assertEquals($expected, $result);
-        }
+        new Result(null, Result::SUCCESS);
+    }
 
-        try {
-            new Result([], Result::FAILURE_CREDENTIAL_INVALID);
-            $this->fail('InvalidArgumentException not thrown!');
-        } catch (InvalidArgumentException $e) {
-            $result = $e->getMessage();
-            $expected = 'Identity must be `null` or an object implementing \ArrayAccess';
-            $this->assertEquals($expected, $result);
-        }
+    /**
+     * testConstructorEmptyData
+     *
+     * @return void
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identity data must be `null` or an object implementing `ArrayAccess`.
+     */
+    public function testConstructorInvalidData()
+    {
+        new Result([], Result::FAILURE_CREDENTIAL_INVALID);
     }
 
     /**
@@ -76,7 +74,7 @@ class ResultTest extends TestCase
     {
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::SUCCESS);
-        $this->assertEquals($entity, $result->getIdentity());
+        $this->assertEquals($entity, $result->getData());
     }
 
     /**
