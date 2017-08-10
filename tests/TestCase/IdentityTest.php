@@ -26,10 +26,10 @@ class IdentityTest extends TestCase
      */
     public function testGetIdentifier()
     {
-        $data = [
+        $data = new ArrayObject([
             'id' => 1,
             'username' => 'florian'
-        ];
+        ]);
 
         $identity = new Identity($data);
 
@@ -47,11 +47,11 @@ class IdentityTest extends TestCase
      */
     public function testFieldMapping()
     {
-        $data = [
+        $data = new ArrayObject([
             'id' => 1,
             'first_name' => 'florian',
             'mail' => 'info@cakephp.org'
-        ];
+        ]);
 
         $identity = new Identity($data, [
             'fieldMap' => [
@@ -68,30 +68,15 @@ class IdentityTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedException Array data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.
-     */
-    public function testBuildInvalidArgument()
-    {
-        new Identity(new \stdClass);
-    }
-
-    /**
      * Test toArray() method
      *
      * @return void
      */
-    public function testToArray()
+    public function testGetOriginalData()
     {
-        $array = ['email' => 'info@cakephp.org'];
+        $data = new ArrayObject(['email' => 'info@cakephp.org']);
 
-        $identity = new Identity($array);
-        $this->assertEquals($array, $identity->toArray());
-
-        $identity = new Identity(new ArrayObject($array));
-        $this->assertEquals($array, $identity->toArray());
-
-        $identity = new Identity(new Entity($array));
-        $this->assertEquals($array, $identity->toArray());
+        $identity = new Identity($data);
+        $this->assertSame($data, $identity->getOriginalData());
     }
 }

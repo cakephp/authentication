@@ -233,7 +233,7 @@ class AuthenticationServiceTest extends TestCase
 
         $identity = $result['request']->getAttribute('identity');
         $this->assertInstanceOf(IdentityInterface::class, $identity);
-        $this->assertEquals($data->getArrayCopy(), $identity->toArray());
+        $this->assertEquals($data, $identity->getOriginalData());
     }
 
     /**
@@ -361,9 +361,9 @@ class AuthenticationServiceTest extends TestCase
         $response = new Response();
 
         $callable = function () {
-            return new Identity([
+            return new Identity(new ArrayObject([
                 'id' => 'by-callable'
-            ]);
+            ]));
         };
 
         $service = new AuthenticationService([

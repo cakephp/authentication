@@ -14,7 +14,6 @@ namespace Authentication;
 
 use ArrayAccess;
 use Cake\Core\InstanceConfigTrait;
-use InvalidArgumentException;
 
 /**
  * Identity object
@@ -38,25 +37,18 @@ class Identity implements IdentityInterface
     /**
      * Identity data
      *
-     * @var array|\ArrayAccess
+     * @var \ArrayAccess
      */
     protected $data;
 
     /**
      * Constructor
      *
-     * @param array|\ArrayAccess $data Identity data
-     * @param array $config Config options
-     * @throws InvalidArgumentException When invalid identity data is passed.
+     * @param \ArrayAccess $data Identity data.
+     * @param array $config Config options.
      */
-    public function __construct($data, array $config = [])
+    public function __construct(ArrayAccess $data, array $config = [])
     {
-        if (!is_array($data) && !$data instanceof ArrayAccess) {
-            $type = is_object($data) ? get_class($data) : gettype($data);
-            $message = sprintf('Identity data must be an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
-            throw new InvalidArgumentException($message);
-        }
-
         $this->setConfig($config);
         $this->data = $data;
     }
@@ -143,21 +135,13 @@ class Identity implements IdentityInterface
     }
 
     /**
-     * Turns the object into an array
+     * Gets the original data object.
      *
-     * @return array
+     * @return \ArrayAccess
      */
-    public function toArray()
+    public function getOriginalData()
     {
-        if (is_array($this->data)) {
-            return $this->data;
-        }
-
-        if (method_exists($this->data, 'toArray')) {
-            return $this->data->toArray();
-        }
-
-        return (array)$this->data;
+        return $this->data;
     }
 
     /**
@@ -168,6 +152,7 @@ class Identity implements IdentityInterface
     public function __debugInfo()
     {
         return [
+            'config' => $this->_config,
             'data' => $this->data
         ];
     }
