@@ -26,10 +26,10 @@ class IdentityTest extends TestCase
      */
     public function testGetIdentifier()
     {
-        $data = new ArrayObject([
+        $data = [
             'id' => 1,
             'username' => 'florian'
-        ]);
+        ];
 
         $identity = new Identity($data);
 
@@ -47,11 +47,11 @@ class IdentityTest extends TestCase
      */
     public function testFieldMapping()
     {
-        $data = new ArrayObject([
+        $data = [
             'id' => 1,
             'first_name' => 'florian',
             'mail' => 'info@cakephp.org'
-        ]);
+        ];
 
         $identity = new Identity($data, [
             'fieldMap' => [
@@ -68,7 +68,16 @@ class IdentityTest extends TestCase
     }
 
     /**
-     * Test toArray() method
+     * @expectedException InvalidArgumentException
+     * @expectedException Array data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.
+     */
+    public function testBuildInvalidArgument()
+    {
+        new Identity(new \stdClass);
+    }
+
+    /**
+     * Test getOriginalData() method
      *
      * @return void
      */
