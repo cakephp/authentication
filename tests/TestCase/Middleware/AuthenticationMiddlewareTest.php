@@ -12,8 +12,8 @@
  */
 namespace Authentication\Test\TestCase\Middleware;
 
-use ArrayAccess;
 use Authentication\AuthenticationService;
+use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
@@ -71,7 +71,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $identity = $request->getAttribute('identity');
         $service = $request->getAttribute('authentication');
 
-        $this->assertInstanceOf(ArrayAccess::class, $identity);
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertTrue($service->getResult()->isValid());
     }
@@ -186,9 +186,9 @@ class AuthenticationMiddlewareTest extends TestCase
         $identity = $request->getAttribute('identity');
         $service = $request->getAttribute('authentication');
 
-        $this->assertInstanceOf(ArrayAccess::class, $identity);
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertTrue($service->getResult()->isValid());
-        $this->assertEquals($data, (array)$identity);
+        $this->assertEquals($data, $identity->getOriginalData()->getArrayCopy());
     }
 }

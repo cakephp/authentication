@@ -34,10 +34,7 @@ class TokenIdentifier extends AbstractIdentifier
     ];
 
     /**
-     * Identify method.
-     *
-     * @param array $data Authentication credentials.
-     * @return \ArrayAccess|null
+     * {@inheritDoc}
      */
     public function identify(array $data)
     {

@@ -16,7 +16,7 @@ use Authentication\AbstractCollection;
 use Cake\Core\App;
 use RuntimeException;
 
-class IdentifierCollection extends AbstractCollection
+class IdentifierCollection extends AbstractCollection implements IdentifierInterface
 {
 
     /**
@@ -29,10 +29,10 @@ class IdentifierCollection extends AbstractCollection
     /**
      * Identifies an user or service by the passed credentials
      *
-     * @param mixed $credentials Authentication credentials
-     * @return \ArrayAccess|null
+     * @param array $credentials Authentication credentials
+     * @return \ArrayAccess|array|null
      */
-    public function identify($credentials)
+    public function identify(array $credentials)
     {
         foreach ($this->_loaded as $name => $identifier) {
             $result = $identifier->identify($credentials);
@@ -59,8 +59,9 @@ class IdentifierCollection extends AbstractCollection
         $identifier = new $className($config);
         if (!($identifier instanceof IdentifierInterface)) {
             throw new RuntimeException(sprintf(
-                'Identifier class `%s` must implement \Auth\Authentication\IdentifierInterface',
-                $className
+                'Identifier class `%s` must implement `%s`.',
+                $className,
+                IdentifierInterface::class
             ));
         }
 

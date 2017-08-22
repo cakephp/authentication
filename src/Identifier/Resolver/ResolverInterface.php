@@ -23,7 +23,7 @@ interface ResolverInterface
      *
      * @param array $conditions Find conditions.
      * @param string $type Condition type. Can be `AND` or `OR`.
-     * @return \ArrayAccess|null
+     * @return \ArrayAccess|array|null
      */
     public function find(array $conditions, $type = self::TYPE_AND);
 }

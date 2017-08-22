@@ -12,7 +12,6 @@
  */
 namespace Authentication;
 
-use ArrayAccess;
 use Authentication\Authenticator\AuthenticatorCollection;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -66,6 +65,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * - `identifiers` - An array of identifiers. The identifiers are constructed by the service
      *   and then passed to the authenticators that will pass the credentials to them and get the
      *   user data.
+     * - `identityClass` - The class name of identity or a callable identity builder.
      *
      *   ```
      *   $service = new AuthenticationService([
@@ -172,7 +172,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
                 if (!($authenticator instanceof StatelessInterface)) {
-                    $this->setIdentity($request, $response, $result->getIdentity());
+                    $this->setIdentity($request, $response, $result->getData());
                 }
 
                 $this->_successfulAuthenticator = $authenticator;
@@ -218,10 +218,10 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param \ArrayAccess $identity The identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @return array
      */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity)
+    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
@@ -231,8 +231,12 @@ class AuthenticationService implements AuthenticationServiceInterface
             }
         }
 
+        if (!$identity instanceof IdentityInterface) {
+            $identity = $this->buildIdentity($identity);
+        }
+
         return [
-            'request' => $request->withAttribute('identity', $this->buildIdentity($identity)),
+            'request' => $request->withAttribute('identity', $identity),
             'response' => $response
         ];
     }
@@ -264,17 +268,22 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function getIdentity()
     {
-        if (empty($this->_result) || !$this->_result->isValid()) {
+        if ($this->_result === null || !$this->_result->isValid()) {
             return null;
         }
 
-        return $this->buildIdentity($this->_result->getIdentity());
+        $identity = $this->_result->getData();
+        if (!$identity instanceof IdentityInterface) {
+            $identity = $this->buildIdentity($identity);
+        }
+
+        return $identity;
     }
 
     /**
      * Builds the identity object
      *
-     * @param array|ArrayAccess $identityData Identity data
+     * @param \ArrayAccess|array $identityData Identity data
      * @return \Authentication\IdentityInterface
      */
     public function buildIdentity($identityData)

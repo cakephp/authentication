@@ -12,7 +12,9 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use ArrayObject;
 use Authentication\Identity;
+use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 
 class IdentityTest extends TestCase
@@ -63,5 +65,37 @@ class IdentityTest extends TestCase
 
         $result = $identity->get('email');
         $this->assertEquals('info@cakephp.org', $result);
+    }
+
+    /**
+     * Test array data.
+     */
+    public function testBuildArray()
+    {
+        $data = ['username' => 'robert'];
+        $identity = new Identity($data);
+        $this->assertEquals($data['username'], $identity['username']);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedException Array data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.
+     */
+    public function testBuildInvalidArgument()
+    {
+        new Identity(new \stdClass);
+    }
+
+    /**
+     * Test getOriginalData() method
+     *
+     * @return void
+     */
+    public function testGetOriginalData()
+    {
+        $data = new ArrayObject(['email' => 'info@cakephp.org']);
+
+        $identity = new Identity($data);
+        $this->assertSame($data, $identity->getOriginalData());
     }
 }

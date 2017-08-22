@@ -16,34 +16,33 @@ use Authentication\Authenticator\Result;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
+use stdClass;
 
 class ResultTest extends TestCase
 {
 
     /**
-     * testConstructor
+     * testConstructorEmptyData
      *
      * @return void
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identity data can not be empty with status success.
      */
-    public function testConstructor()
+    public function testConstructorEmptyData()
     {
-        try {
-            new Result(null, Result::SUCCESS);
-            $this->fail('InvalidArgumentException not thrown!');
-        } catch (InvalidArgumentException $e) {
-            $result = $e->getMessage();
-            $expected = 'Identity can not be empty with status success.';
-            $this->assertEquals($expected, $result);
-        }
+        new Result(null, Result::SUCCESS);
+    }
 
-        try {
-            new Result([], Result::FAILURE_CREDENTIAL_INVALID);
-            $this->fail('InvalidArgumentException not thrown!');
-        } catch (InvalidArgumentException $e) {
-            $result = $e->getMessage();
-            $expected = 'Identity must be `null` or an object implementing \ArrayAccess';
-            $this->assertEquals($expected, $result);
-        }
+    /**
+     * testConstructorEmptyData
+     *
+     * @return void
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `stdClass` given.
+     */
+    public function testConstructorInvalidData()
+    {
+        new Result(new stdClass, Result::FAILURE_CREDENTIAL_INVALID);
     }
 
     /**
@@ -76,7 +75,19 @@ class ResultTest extends TestCase
     {
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::SUCCESS);
-        $this->assertEquals($entity, $result->getIdentity());
+        $this->assertEquals($entity, $result->getData());
+    }
+
+    /**
+     * testGetIdentityArray
+     *
+     * @return void
+     */
+    public function testGetIdentityArray()
+    {
+        $data = ['user' => 'florian'];
+        $result = new Result($data, Result::SUCCESS);
+        $this->assertEquals($data, $result->getData());
     }
 
     /**

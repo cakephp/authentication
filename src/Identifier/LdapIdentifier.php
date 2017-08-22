@@ -128,10 +128,7 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
-     * Identify
-     *
-     * @param array $data Authentication credentials
-     * @return \ArrayAccess|null
+     * {@inheritDoc}
      */
     public function identify(array $data)
     {

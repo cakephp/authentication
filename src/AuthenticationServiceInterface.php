@@ -48,7 +48,14 @@ interface AuthenticationServiceInterface
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
 
     /**
-     * Clears the identity from authenticators that store them and the request
+     * Gets an identity object or null if identity has not been resolved.
+     *
+     * @return null|\Authentication\IdentityInterface
+     */
+    public function getIdentity();
+
+    /**
+     * Clears the identity from authenticators that store them and the request.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
@@ -61,10 +68,10 @@ interface AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param \ArrayAccess $identity Identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @return array Return an array containing the request and response objects.
      */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity);
+    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
 
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
