@@ -68,6 +68,16 @@ class IdentityTest extends TestCase
     }
 
     /**
+     * Test array data.
+     */
+    public function testBuildArray()
+    {
+        $data = ['username' => 'robert'];
+        $identity = new Identity($data);
+        $this->assertEquals($data['username'], $identity['username']);
+    }
+
+    /**
      * @expectedException InvalidArgumentException
      * @expectedException Array data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.
      */

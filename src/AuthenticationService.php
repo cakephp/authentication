@@ -12,7 +12,6 @@
  */
 namespace Authentication;
 
-use ArrayAccess;
 use Authentication\Authenticator\AuthenticatorCollection;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -219,10 +218,10 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param \ArrayAccess $identity The identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @return array
      */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity)
+    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
@@ -269,7 +268,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function getIdentity()
     {
-        if (empty($this->_result) || !$this->_result->isValid()) {
+        if ($this->_result === null || !$this->_result->isValid()) {
             return null;
         }
 
@@ -284,10 +283,10 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Builds the identity object
      *
-     * @param \ArrayAccess $identityData Identity data
+     * @param \ArrayAccess|array $identityData Identity data
      * @return \Authentication\IdentityInterface
      */
-    public function buildIdentity(ArrayAccess $identityData)
+    public function buildIdentity($identityData)
     {
         $class = $this->getConfig('identityClass');
 

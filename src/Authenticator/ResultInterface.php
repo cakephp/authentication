@@ -61,7 +61,7 @@ interface ResultInterface
     /**
      * Returns the identity data used in the authentication attempt.
      *
-     * @return \ArrayAccess|null
+     * @return \ArrayAccess|array|null
      */
     public function getData();
 

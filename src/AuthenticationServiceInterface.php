@@ -68,10 +68,10 @@ interface AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param \ArrayAccess $identity Identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @return array Return an array containing the request and response objects.
      */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity);
+    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
 
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate

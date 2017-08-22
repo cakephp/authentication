@@ -30,7 +30,7 @@ class Result implements ResultInterface
     /**
      * The identity data used in the authentication attempt
      *
-     * @var null|\ArrayAccess
+     * @var null|array|\ArrayAccess
      */
     protected $_data;
 
@@ -46,17 +46,20 @@ class Result implements ResultInterface
     /**
      * Sets the result code, identity, and failure messages
      *
-     * @param null|\ArrayAccess $data The identity data
+     * @param null|array|\ArrayAccess $data The identity data
      * @param int $code Error code.
      * @param array $messages Messages.
+     * @throws InvalidArgumentException When invalid identity data is passed.
      */
     public function __construct($data, $code, array $messages = [])
     {
         if (empty($data) && $code === self::SUCCESS) {
             throw new InvalidArgumentException('Identity data can not be empty with status success.');
         }
-        if ($data !== null && !$data instanceof ArrayAccess) {
-            throw new InvalidArgumentException('Identity data must be `null` or an object implementing `ArrayAccess`.');
+        if ($data !== null && !is_array($data) && !$data instanceof ArrayAccess) {
+            $type = is_object($data) ? get_class($data) : gettype($data);
+            $message = sprintf('Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
+            throw new InvalidArgumentException($message);
         }
 
         $this->_code = $code;
@@ -87,7 +90,7 @@ class Result implements ResultInterface
     /**
      * Returns the identity data used in the authentication attempt.
      *
-     * @return null|\ArrayAccess
+     * @return \ArrayAccess|array|null
      */
     public function getData()
     {

@@ -19,7 +19,7 @@ interface IdentifierInterface
      * Identifies an user or service by the passed credentials
      *
      * @param array $credentials Authentication credentials
-     * @return \ArrayAccess|null
+     * @return \ArrayAccess|array|null
      */
     public function identify(array $credentials);
 

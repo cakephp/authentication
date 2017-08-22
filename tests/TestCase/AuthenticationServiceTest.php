@@ -255,6 +255,25 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * testSetIdentityInterface
+     *
+     * @return void
+     */
+    public function testSetIdentityArray()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+        $data = [
+            'username' => 'robert'
+        ];
+
+        $service = new AuthenticationService();
+
+        $result = $service->setIdentity($request, $response, $data);
+        $this->assertInstanceOf(IdentityInterface::class, $result['request']->getAttribute('identity'));
+    }
+
+    /**
      * testGetResult
      *
      * @return void
