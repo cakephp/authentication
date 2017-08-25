@@ -100,7 +100,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         }
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
-        if (hash_equals($digest['response'], $hash)) {
+        if (hash_equals($hash, $digest['response'])) {
             return new Result($user, Result::SUCCESS);
         }
 
