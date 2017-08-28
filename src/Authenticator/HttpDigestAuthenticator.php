@@ -263,7 +263,8 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return false;
         }
         $secret = $this->getConfig('secret');
+        $check = hash_hmac('sha1', $expires . ':' . $secret, $secret);
 
-        return hash_hmac('sha1', $expires . ':' . $secret, $secret) === $checksum;
+        return hash_equals($check, $checksum);
     }
 }
