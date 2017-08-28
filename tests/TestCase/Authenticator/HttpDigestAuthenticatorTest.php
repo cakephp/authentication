@@ -15,6 +15,7 @@
  */
 namespace Authentication\Test\TestCase\Authentication;
 
+use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\UnauthorizedException;
@@ -85,6 +86,7 @@ class HttpDigestAuthenticatorTest extends TestCase
         $this->assertEquals(['username' => 'user', 'password' => 'pass'], $object->config('fields'));
         $this->assertEquals(123456, $object->config('nonce'));
         $this->assertEquals(env('SERVER_NAME'), $object->config('realm'));
+        $this->assertInstanceOf(StatelessInterface::class, $object, 'Should be a stateless authenticator');
     }
 
     /**
@@ -129,41 +131,8 @@ opaque="123abc"
 DIGEST;
         $_SERVER['PHP_AUTH_DIGEST'] = $digest;
 
-        try {
-            $this->auth->unauthorizedChallenge($request);
-            $this->fail('Should throw an exception');
-        } catch (UnauthorizedException $e) {
-            $this->assertSame(401, $e->getCode());
-            $header = $e->getHeaders()['WWW-Authenticate'];
-            $this->assertRegexp(
-                '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
-                $header
-            );
-        }
-    }
-
-    /**
-     * test that challenge headers are sent when no credentials are found.
-     *
-     * @return void
-     */
-    public function testAuthenticateChallenge()
-    {
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/posts/index', 'REQUEST_METHOD' => 'GET']
-        );
-
-        try {
-            $this->auth->unauthorizedChallenge($request);
-            $this->fail('Should challenge');
-        } catch (UnauthorizedException $e) {
-            $this->assertEquals(401, $e->getCode());
-            $header = $e->getHeaders()['WWW-Authenticate'];
-            $this->assertRegexp(
-                '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
-                $header
-            );
-        }
+        $result = $this->auth->authenticate($request, $this->response);
+        $this->assertFalse($result->isValid(), 'Should fail');
     }
 
     /**
@@ -205,11 +174,124 @@ DIGEST;
     }
 
     /**
+     * test authenticate with garbage nonce
+     *
+     * @return void
+     */
+    public function testAuthenticateFailsOnBadNonce()
+    {
+        $data = [
+            'username' => 'mariano',
+            'uri' => '/dir/index.html',
+            'nonce' => 'notbase64data',
+            'nc' => 1,
+            'cnonce' => '123',
+            'qop' => 'auth',
+        ];
+        $data['response'] = $this->auth->generateResponseHash($data, '09faa9931501bf30f0d4253fa7763022', 'GET');
+
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'SERVER_NAME' => 'localhost',
+                'REQUEST_URI' => '/dir/index.html',
+                'REQUEST_METHOD' => 'GET',
+                'PHP_AUTH_DIGEST' => $this->digestHeader($data),
+            ]
+        );
+
+        $result = $this->auth->authenticate($request, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertFalse($result->isValid());
+    }
+
+    /**
+     * test authenticate fails with a nonce that has too many parts
+     *
+     * @return void
+     */
+    public function testAuthenticateFailsNonceWithTooManyParts()
+    {
+        $data = [
+            'username' => 'mariano',
+            'uri' => '/dir/index.html',
+            'nonce' => base64_encode(time() . ':lol:lol'),
+            'nc' => 1,
+            'cnonce' => '123',
+            'qop' => 'auth',
+        ];
+        $data['response'] = $this->auth->generateResponseHash($data, '09faa9931501bf30f0d4253fa7763022', 'GET');
+
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'SERVER_NAME' => 'localhost',
+                'REQUEST_URI' => '/dir/index.html',
+                'REQUEST_METHOD' => 'GET',
+                'PHP_AUTH_DIGEST' => $this->digestHeader($data),
+            ]
+        );
+
+        $result = $this->auth->authenticate($request, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertFalse($result->isValid());
+    }
+
+    /**
+     * Test that authentication fails when a nonce is stale
+     *
+     * @return void
+     */
+    public function testAuthenticateFailsOnStaleNonce()
+    {
+        $request = ServerRequestFactory::fromGlobals([
+            'REQUEST_URI' => '/posts/index',
+            'REQUEST_METHOD' => 'GET'
+        ]);
+
+        $data = [
+            'uri' => '/dir/index.html',
+            'nonce' => $this->generateNonce(null, 5, strtotime('-10 minutes')),
+            'nc' => 1,
+            'cnonce' => '123',
+            'qop' => 'auth',
+        ];
+        $data['response'] = $this->auth->generateResponseHash($data, '09faa9931501bf30f0d4253fa7763022', 'GET');
+        $request->env('PHP_AUTH_DIGEST', $this->digestHeader($data));
+
+        $result = $this->auth->authenticate($request, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertFalse($result->isValid());
+    }
+
+    /**
+     * test that challenge headers are sent when no credentials are found.
+     *
+     * @return void
+     */
+    public function testUnauthorizedChallenge()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/posts/index', 'REQUEST_METHOD' => 'GET']
+        );
+
+        try {
+            $this->auth->unauthorizedChallenge($request);
+            $this->fail('Should challenge');
+        } catch (UnauthorizedException $e) {
+            $this->assertEquals(401, $e->getCode());
+            $header = $e->getHeaders()['WWW-Authenticate'];
+            $this->assertRegexp(
+                '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
+                $header
+            );
+        }
+    }
+
+    /**
      * test scope failure.
      *
      * @return void
      */
-    public function testAuthenticateFailReChallenge()
+    public function testUnauthorizedFailReChallenge()
     {
         $this->auth->config('scope.username', 'nate');
 
@@ -252,7 +334,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testAuthenticateChallengeIncludesStaleAttributeOnStaleNonce()
+    public function testUnauthorizedChallengeIncludesStaleAttributeOnStaleNonce()
     {
         $request = ServerRequestFactory::fromGlobals([
             'REQUEST_URI' => '/posts/index',
@@ -276,33 +358,6 @@ DIGEST;
 
         $header = $e->getHeaders()['WWW-Authenticate'];
         $this->assertContains('stale=true', $header);
-    }
-
-    /**
-     * Test that authentication fails when a nonce is stale
-     *
-     * @return void
-     */
-    public function testAuthenticateFailsOnStaleNonce()
-    {
-        $request = ServerRequestFactory::fromGlobals([
-            'REQUEST_URI' => '/posts/index',
-            'REQUEST_METHOD' => 'GET'
-        ]);
-
-        $data = [
-            'uri' => '/dir/index.html',
-            'nonce' => $this->generateNonce(null, 5, strtotime('-10 minutes')),
-            'nc' => 1,
-            'cnonce' => '123',
-            'qop' => 'auth',
-        ];
-        $data['response'] = $this->auth->generateResponseHash($data, '09faa9931501bf30f0d4253fa7763022', 'GET');
-        $request->env('PHP_AUTH_DIGEST', $this->digestHeader($data));
-
-        $result = $this->auth->authenticate($request, $this->response);
-        $this->assertInstanceOf(Result::class, $result);
-        $this->assertFalse($result->isValid());
     }
 
     /**
