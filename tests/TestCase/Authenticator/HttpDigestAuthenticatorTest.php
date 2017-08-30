@@ -15,9 +15,9 @@
  */
 namespace Authentication\Test\TestCase\Authentication;
 
-use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
+use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\Configure;
