@@ -12,6 +12,7 @@
  */
 namespace Authentication\Authenticator;
 
+use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -61,11 +62,15 @@ class FormAuthenticator extends AbstractAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         if (!$this->_checkLoginUrl($request)) {
+            $loginUrl = $this->getConfig('loginUrl');
+            if (is_array($loginUrl)) {
+                $loginUrl = Router::url($loginUrl, true);
+            }
             $errors = [
                 sprintf(
                     'Login URL %s did not match %s',
                     $request->getUri()->getPath(),
-                    $this->getConfig('loginUrl')
+                    $loginUrl
                 )
             ];
 
@@ -100,12 +105,26 @@ class FormAuthenticator extends AbstractAuthenticator
         $loginUrl = $this->getConfig('loginUrl');
 
         if (!empty($loginUrl)) {
-            if (is_array($loginUrl)) {
-                $loginUrl = Router::url(['_base' => false] + $loginUrl);
+            $requestUrl = Router::parseRequest($request);
+            unset($request['_matchedRoute']);
+
+            if (is_string($loginUrl)) {
+                $loginUrl = Router::parseRequest((new ServerRequest([
+                    'uri' => $loginUrl
+                ])));
+
+                unset($loginUrl['_matchedRoute']);
                 $this->setConfig('loginUrl', $loginUrl);
             }
 
-            return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;
+            $keysToCompare = array_keys($loginUrl);
+            foreach ($keysToCompare as $key) {
+                if (!array_key_exists($key, $requestUrl)
+                    || $requestUrl[$key] !== $loginUrl[$key]
+                ) {
+                    return false;
+                }
+            }
         }
 
         return true;
