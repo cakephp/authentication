@@ -18,7 +18,7 @@
 Following the principle of separation of concerns, the former authentication objects were split into separate objects, identifiers and authenticators.
 
 * **Authenticators** take the incoming request and try to extract identification credentials from it. If credentials are found, they are passed to a collection of identifiers where the user is located. For that reason authenticators take an IdentifierCollection as first constructor argument.
-* **Identifiers** are verify identification credentials against a storage system. eg. (ORM tables, LDAP etc) and return identified user data.
+* **Identifiers** verify identification credentials against a storage system. eg. (ORM tables, LDAP etc) and return identified user data.
 
 This makes it easy to change the identification logic as needed or use several sources of user data.
 
@@ -61,7 +61,7 @@ $this->loadComponent('Auth', [
 ]);
 ```
 
-you'll now have to configure it this way.
+You'll now have to configure it this way:
 
 ```php
 // Instantiate the service
