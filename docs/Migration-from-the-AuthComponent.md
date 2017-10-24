@@ -80,4 +80,23 @@ $service->loadAuthenticator('Authentication.Session');
 $service->loadAuthenticator('Authentication.Form');
 ```
 
+If you have customized the `userModel` you can use the following configuration:
+
+```php
+// Instantiate the service
+$service = new AuthenticationService();
+
+// Load identifiers
+$service->loadIdentifier('Authentication.Password', [
+    'resolver' => [
+        'className' => 'Authentication.Orm',
+        'userModel' => 'Employees',
+    ],
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password'
+    ]
+]);
+```
+
 While this seems to be a little more to write, the benefit is a greater flexibility and better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
