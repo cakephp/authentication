@@ -56,15 +56,18 @@ Configuration options:
 
 # Identifier resolvers
 
-Identifier resolver is an adapter for a datasource. It is used to find an identity in a database or any other data store.
+Identifier resolvers provide adapters for different datasources. They allow
+you to control which source identities are searched in. They are separate from
+the identifiers so that they can be swapped out independently from the
+identifier method (form, jwt, basic auth).
 
 ## ORM Resolver
 
-Identity resolver for CakePHP ORM.
+Identity resolver for the CakePHP ORM.
 
 Configuration options:
 
-* **userModel**: The user model. Default is `Users` and all pages will be checked.
+* **userModel**: The user model identities are located in. Default is `Users`.
 * **finder**: The finder to use with the model. Default is `all`.
 
 In order to use ORM resolver you must require `cakephp/orm` in your `composer.json` file.
