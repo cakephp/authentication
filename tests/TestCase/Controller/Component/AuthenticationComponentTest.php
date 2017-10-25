@@ -229,8 +229,8 @@ class AuthenticationComponentTest extends TestCase
         $this->request = $this->request->withAttribute('authentication', $this->service);
 
         $controller = new Controller($this->request, $this->response);
-        $registry = new ComponentRegistry($controller);
-        new AuthenticationComponent($registry);
+        $controller->loadComponent('Authentication.Authentication');
+        $controller->startupProcess();
 
         $this->assertInstanceOf(Event::class, $result);
         $this->assertEquals('Authentication.afterIdentify', $result->name());
