@@ -47,7 +47,7 @@ class AuthenticationMiddleware
      *
      * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
      * @param string|null $name Authentication service provider name.
-     * @throws InvalidArgumentException When invalid subject has been passed.
+     * @throws \InvalidArgumentException When invalid subject has been passed.
      */
     public function __construct($subject, $name = null)
     {
@@ -76,7 +76,7 @@ class AuthenticationMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
-        $service = $this->getAuthenticationService();
+        $service = $this->getAuthenticationService($request, $response);
         try {
             $result = $service->authenticate($request, $response);
         } catch (UnauthorizedException $e) {
@@ -100,10 +100,12 @@ class AuthenticationMiddleware
     /**
      * Returns AuthenticationServiceInterface instance.
      *
-     * @return AuthenticationServiceInterface
-     * @throws RuntimeException When authentication method has not been defined.
+     * @param \Psr\Http\Message\ServerRequestInterface $request Server request.
+     * @param \Psr\Http\Message\ResponseInterface $response Response.
+     * @return \Authentication\AuthenticationServiceInterface
+     * @throws \RuntimeException When authentication method has not been defined.
      */
-    protected function getAuthenticationService()
+    protected function getAuthenticationService($request, $response)
     {
         if ($this->subject instanceof AuthenticationServiceInterface) {
             return $this->subject;
@@ -121,6 +123,6 @@ class AuthenticationMiddleware
 
         $service = new AuthenticationService();
 
-        return $this->subject->$method($service);
+        return $this->subject->$method($service, $request, $response);
     }
 }

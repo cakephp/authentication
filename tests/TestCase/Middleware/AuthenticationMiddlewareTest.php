@@ -13,6 +13,7 @@
 namespace Authentication\Test\TestCase\Middleware;
 
 use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceInterface;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
@@ -96,6 +97,35 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $this->assertTrue($service->identifiers()->has('Token'));
         $this->assertTrue($service->authenticators()->has('Token'));
+    }
+
+    public function testApplicationAuthenticationRequestResponse()
+    {
+        $request = ServerRequestFactory::fromGlobals();
+        $response = new Response();
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $service = $this->createMock(AuthenticationServiceInterface::class);
+
+        $application = $this->getMockBuilder(BaseApplication::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['authentication', 'middleware'])
+            ->getMock();
+
+        $application->expects($this->once())
+            ->method('authentication')
+            ->with(
+                $this->isInstanceOf(AuthenticationServiceInterface::class),
+                $request,
+                $response
+            )
+            ->willReturn($service);
+
+        $middleware = new AuthenticationMiddleware($application);
+
+        $middleware($request, $response, $next);
     }
 
     /**
