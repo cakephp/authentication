@@ -63,8 +63,6 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         }
 
         $this->eventManager($controller->eventManager());
-
-        $this->_afterIdentify();
     }
 
     /**
@@ -72,7 +70,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return void
      */
-    protected function _afterIdentify()
+    public function beforeFilter()
     {
         $provider = $this->_authentication->getAuthenticationProvider();
 
