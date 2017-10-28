@@ -15,8 +15,11 @@ namespace Authentication\Middleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\UnauthorizedException;
+use Cake\Core\HttpApplicationInterface;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Zend\Diactoros\Stream;
 
 /**
@@ -26,20 +29,41 @@ class AuthenticationMiddleware
 {
 
     /**
-     * Authentication Service
+     * Authentication service or application instance.
      *
-     * @var \Authentication\AuthenticationServiceInterface
+     * @var \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface
      */
-    protected $_authenticationService;
+    protected $subject;
+
+    /**
+     * Authentication service provider name.
+     *
+     * @var string
+     */
+    protected $name;
 
     /**
      * Constructor
      *
-     * @param \Authentication\AuthenticationServiceInterface $authenticationService Authentication service instance.
+     * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
+     * @param string|null $name Authentication service provider name.
+     * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    public function __construct($subject, $name = null)
     {
-        $this->_authenticationService = $authenticationService;
+        if (!$subject instanceof AuthenticationServiceInterface && !$subject instanceof HttpApplicationInterface) {
+            $expected = implode('` or `', [
+                AuthenticationServiceInterface::class,
+                HttpApplicationInterface::class
+            ]);
+            $type = is_object($subject) ? get_class($subject) : gettype($subject);
+            $message = sprintf('Subject must be an instance of `%s`, `%s` given.', $expected, $type);
+
+            throw new InvalidArgumentException($message);
+        }
+
+        $this->subject = $subject;
+        $this->name = $name;
     }
 
     /**
@@ -52,8 +76,9 @@ class AuthenticationMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
+        $service = $this->getAuthenticationService($request, $response);
         try {
-            $result = $this->_authenticationService->authenticate($request, $response);
+            $result = $service->authenticate($request, $response);
         } catch (UnauthorizedException $e) {
             $body = new Stream('php://memory', 'rw');
             $body->write($e->getBody());
@@ -65,10 +90,39 @@ class AuthenticationMiddleware
 
             return $response;
         }
-        $request = $request->withAttribute('identity', $this->_authenticationService->getIdentity());
-        $request = $request->withAttribute('authentication', $this->_authenticationService);
+        $request = $request->withAttribute('identity', $service->getIdentity());
+        $request = $request->withAttribute('authentication', $service);
         $request = $request->withAttribute('authenticationResult', $result);
 
         return $next($request, $response);
+    }
+
+    /**
+     * Returns AuthenticationServiceInterface instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Server request.
+     * @param \Psr\Http\Message\ResponseInterface $response Response.
+     * @return \Authentication\AuthenticationServiceInterface
+     * @throws \RuntimeException When authentication method has not been defined.
+     */
+    protected function getAuthenticationService($request, $response)
+    {
+        if ($this->subject instanceof AuthenticationServiceInterface) {
+            return $this->subject;
+        }
+
+        $method = 'authentication' . ucfirst($this->name);
+        if (!method_exists($this->subject, $method)) {
+            if (strlen($this->name)) {
+                $message = sprintf('Method `%s` for `%s` authentication service has not been defined in your `Application` class.', $method, $this->name);
+            } else {
+                $message = sprintf('Method `%s` has not been defined in your `Application` class.', $method);
+            }
+            throw new RuntimeException($message);
+        }
+
+        $service = new AuthenticationService();
+
+        return $this->subject->$method($service, $request, $response);
     }
 }

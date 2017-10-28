@@ -14,9 +14,9 @@ Plugin::load('Authentication');
 
 ## Configuration
 
-Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use middleware if you don't know what it is or how to work with it.
+Add the authentication to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use middleware if you don't know what it is or how to work with it.
 
-Example of configuring the authentication middleware.
+Example of configuring the authentication middleware using `authentication` application hook.
 
 ```php
 use Authentication\AuthenticationService;
@@ -24,13 +24,8 @@ use Authentication\Middleware\AuthenticationMiddleware;
 
 class Application extends BaseApplication
 {
-    public function middleware($middleware)
+    public function authentication($service)
     {
-        // Various other middlewares for error handling, routing etc. added here.
-
-        // Instantiate the service
-        $service = new AuthenticationService();
-
         $fields = [
             'username' => 'email',
             'password' => 'password'
@@ -50,8 +45,15 @@ class Application extends BaseApplication
             ]
         ]);
 
-        // Add it to the authentication middleware
-        $authentication = new AuthenticationMiddleware($service);
+        return $service;
+    }
+
+    public function middleware($middleware)
+    {
+        // Various other middlewares for error handling, routing etc. added here.
+
+        // Add the authentication middleware
+        $authentication = new AuthenticationMiddleware($this);
 
         // Add the middleware to the middleware queue
         $middleware->add($authentication);
