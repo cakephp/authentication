@@ -1,4 +1,4 @@
 linters:
   phpcs:
     standard: CakePHP
-    extensions: '.php,.ctp'
+    extensions: 'php,ctp'

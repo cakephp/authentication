@@ -17,7 +17,7 @@ use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class AbstractAuthenticator implements AuthenticateInterface
+abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
 
     use InstanceConfigTrait;
@@ -69,7 +69,7 @@ abstract class AbstractAuthenticator implements AuthenticateInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request to get authentication information from.
      * @param \Psr\Http\Message\ResponseInterface $response A response object that can have headers added.
-     * @return mixed Either false on failure, or an array of user data on success.
+     * @return \ArrayAccess|null Either null on failure, or \ArrayAccess data on success.
      */
     abstract public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
 }

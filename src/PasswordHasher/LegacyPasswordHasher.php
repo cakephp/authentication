@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\PasswordHasher;
@@ -17,13 +16,14 @@ namespace Authentication\PasswordHasher;
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
 use Cake\Utility\Security;
+use RuntimeException;
 
 /**
  * Password hashing class that use weak hashing algorithms. This class is
  * intended only to be used with legacy databases where passwords have
  * not been migrated to a stronger algorithm yet.
  */
-class WeakPasswordHasher extends AbstractPasswordHasher
+class LegacyPasswordHasher extends AbstractPasswordHasher
 {
 
     /**
@@ -44,6 +44,9 @@ class WeakPasswordHasher extends AbstractPasswordHasher
         if (Configure::read('debug')) {
             Debugger::checkSecurityKeys();
         }
+        if (!class_exists('Cake\Utility\Security')) {
+            throw new RuntimeException('You must install the cakephp/utility dependency to use this password hasher');
+        };
     }
 
     /**

@@ -14,7 +14,6 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -48,7 +47,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * HttpDigestAuthenticate uses the following extra keys:
      *
      * - `realm` The realm authentication is for, Defaults to the servername.
-     * - `nonce` A nonce used for authentication. Defaults to `uniqid()`.
+     * - `nonceLifetime` The number of seconds that nonces are valid for. Defaults to 300.
      * - `qop` Defaults to 'auth', no other values are supported at this time.
      * - `opaque` A string that must be returned unchanged by clients.
      *    Defaults to `md5($config['realm'])`
@@ -61,7 +60,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         $this->setConfig([
             'realm' => null,
             'qop' => 'auth',
-            'nonce' => uniqid(''),
+            'nonceLifetime' => 300,
             'opaque' => null,
         ]);
 
@@ -74,7 +73,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
-     * @return \Authentication\ResultInterface
+     * @return \Authentication\Authenticator\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -91,6 +90,10 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
+        if (!$this->validNonce($digest['nonce'])) {
+            return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
+        }
+
         $field = $this->_config['fields']['password'];
         $password = $user[$field];
         unset($user[$field]);
@@ -101,7 +104,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         }
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
-        if ($digest['response'] === $hash) {
+        if (hash_equals($hash, $digest['response'])) {
             return new Result($user, Result::SUCCESS);
         }
 
@@ -202,15 +205,66 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         $options = [
             'realm' => $realm,
             'qop' => $this->_config['qop'],
-            'nonce' => $this->_config['nonce'],
+            'nonce' => $this->generateNonce(),
             'opaque' => $this->_config['opaque'] ?: md5($realm)
         ];
 
+        $digest = $this->_getDigest($request);
+        if ($digest && isset($digest['nonce']) && !$this->validNonce($digest['nonce'])) {
+            $options['stale'] = true;
+        }
+
         $opts = [];
         foreach ($options as $k => $v) {
-            $opts[] = sprintf('%s="%s"', $k, $v);
+            if (is_bool($v)) {
+                $v = $v ? 'true' : 'false';
+                $opts[] = sprintf('%s=%s', $k, $v);
+            } else {
+                $opts[] = sprintf('%s="%s"', $k, $v);
+            }
         }
 
         return ['WWW-Authenticate' => 'Digest ' . implode(',', $opts)];
+    }
+
+    /**
+     * Generate a nonce value that is validated in future requests.
+     *
+     * @return string
+     */
+    protected function generateNonce()
+    {
+        $expiryTime = microtime(true) + $this->getConfig('nonceLifetime');
+        $secret = $this->getConfig('secret');
+        $signatureValue = hash_hmac('sha1', $expiryTime . ':' . $secret, $secret);
+        $nonceValue = $expiryTime . ':' . $signatureValue;
+
+        return base64_encode($nonceValue);
+    }
+
+    /**
+     * Check the nonce to ensure it is valid and not expired.
+     *
+     * @param string $nonce The nonce value to check.
+     * @return bool
+     */
+    protected function validNonce($nonce)
+    {
+        $value = base64_decode($nonce);
+        if ($value === false) {
+            return false;
+        }
+        $parts = explode(':', $value);
+        if (count($parts) !== 2) {
+            return false;
+        }
+        list($expires, $checksum) = $parts;
+        if ($expires < microtime(true)) {
+            return false;
+        }
+        $secret = $this->getConfig('secret');
+        $check = hash_hmac('sha1', $expires . ':' . $secret, $secret);
+
+        return hash_equals($check, $checksum);
     }
 }

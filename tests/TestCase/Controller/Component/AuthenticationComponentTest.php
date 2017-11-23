@@ -14,14 +14,14 @@ namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
-use Authentication\Authenticator\AuthenticateInterface;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Controller\Component\AuthenticationComponent;
+use Authentication\Identity;
+use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequestFactory;
 use Cake\Network\Response;
@@ -38,21 +38,22 @@ class AuthenticationComponentTest extends TestCase
     {
         parent::setUp();
 
-        $this->identity = new Entity([
+        $this->identityData = new Entity([
             'username' => 'florian',
             'profession' => 'developer'
         ]);
 
+        $this->identity = new Identity($this->identityData);
+
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Session',
                 'Authentication.Form'
             ]
         ]);
-        $this->service->loadAuthenticators();
 
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -93,11 +94,11 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
-     * testGetUser
+     * testGetIdentity
      *
      * @eturn void
      */
-    public function testGetUserNullResult()
+    public function testGetIdentity()
     {
         $this->request = $this->request->withAttribute('identity', $this->identity);
         $this->request = $this->request->withAttribute('authentication', $this->service);
@@ -107,11 +108,62 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $result = $component->getIdentity();
-        $this->assertInstanceOf(EntityInterface::class, $result);
-        $this->assertEquals('florian', $result->get('username', 'florian'));
+        $this->assertInstanceOf(IdentityInterface::class, $result);
+        $this->assertEquals('florian', $result->get('username'));
+    }
 
-        $result = $component->getIdentity('profession');
+    /**
+     * testGetIdentity
+     *
+     * @eturn void
+     */
+    public function testSetIdentity()
+    {
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->setIdentity($this->identityData);
+        $result = $component->getIdentity();
+        $this->assertSame($this->identityData, $result->getOriginalData());
+    }
+
+    /**
+     * testGetIdentity
+     *
+     * @eturn void
+     */
+    public function testGetIdentityData()
+    {
+        $this->request = $this->request->withAttribute('identity', $this->identity);
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $result = $component->getIdentityData('profession');
         $this->assertEquals('developer', $result);
+    }
+
+    /**
+     * testGetMissingIdentityData
+     *
+     * @eturn void
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage The identity has not been found.
+     */
+    public function testGetMissingIdentityData()
+    {
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->getIdentityData('profession');
     }
 
     /**
@@ -137,6 +189,11 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testLogout()
     {
+        $result = null;
+        EventManager::instance()->on('Authentication.logout', function (Event $event) use (&$result) {
+            $result = $event;
+        });
+
         $this->request = $this->request->withAttribute('identity', $this->identity);
         $this->request = $this->request->withAttribute('authentication', $this->service);
 
@@ -147,6 +204,8 @@ class AuthenticationComponentTest extends TestCase
         $this->assertEquals('florian', $controller->request->getAttribute('identity')->get('username'));
         $component->logout();
         $this->assertNull($controller->request->getAttribute('identity'));
+        $this->assertInstanceOf(Event::class, $result);
+        $this->assertEquals('Authentication.logout', $result->name());
     }
 
     /**
@@ -170,14 +229,14 @@ class AuthenticationComponentTest extends TestCase
         $this->request = $this->request->withAttribute('authentication', $this->service);
 
         $controller = new Controller($this->request, $this->response);
-        $registry = new ComponentRegistry($controller);
-        new AuthenticationComponent($registry);
+        $controller->loadComponent('Authentication.Authentication');
+        $controller->startupProcess();
 
         $this->assertInstanceOf(Event::class, $result);
         $this->assertEquals('Authentication.afterIdentify', $result->name());
         $this->assertNotEmpty($result->data);
-        $this->assertInstanceOf(AuthenticateInterface::class, $result->data['provider']);
-        $this->assertInstanceOf(EntityInterface::class, $result->data['identity']);
+        $this->assertInstanceOf(AuthenticatorInterface::class, $result->data['provider']);
+        $this->assertInstanceOf(IdentityInterface::class, $result->data['identity']);
         $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
     }
 }

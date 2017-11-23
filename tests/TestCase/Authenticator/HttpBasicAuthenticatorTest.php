@@ -42,7 +42,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $this->auth = new HttpBasicAuthenticator($this->identifiers);
@@ -174,7 +174,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         ];
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity()->toArray());
+        $this->assertEquals($expected, $result->getData()->toArray());
     }
 
     /**
@@ -225,6 +225,6 @@ class HttpBasicAuthenticatorTest extends TestCase
         ];
 
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getIdentity()->toArray());
+        $this->assertEquals($expected, $result->getData()->toArray());
     }
 }

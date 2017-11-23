@@ -22,7 +22,7 @@ interface PersistenceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
      * @param \Psr\Http\Message\ResponseInterface $response The response object.
-     * @param mixed $identity Identity data to persist.
+     * @param \ArrayAccess|array $identity Identity data to persist.
      * @return array Returns an array containing the request and response object
      */
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);

@@ -12,10 +12,10 @@
  */
 namespace Authentication\Test\TestCase\Identifier;
 
+use ArrayObject;
+use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\Identifier\TokenIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Datasource\EntityInterface;
-use Cake\ORM\Entity;
 
 class TokenIdentifierTest extends TestCase
 {
@@ -27,87 +27,45 @@ class TokenIdentifierTest extends TestCase
      */
     public function testIdentify()
     {
+        $resolver = $this->createMock(ResolverInterface::class);
+
         $identifier = new TokenIdentifier([
+            'dataField' => 'user',
             'tokenField' => 'username'
         ]);
+        $identifier->setResolver($resolver);
 
-        $result = $identifier->identify(['token' => 'larry']);
+        $user = new ArrayObject([
+            'username' => 'larry'
+        ]);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
-        $this->assertEquals(3, $result->id);
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with([
+                'username' => 'larry'
+            ])
+            ->willReturn($user);
 
-        $result = $identifier->identify(['token' => 'does not exist']);
-        $this->assertNull($result);
+        $result = $identifier->identify(['user' => 'larry']);
+        $this->assertSame($user, $result);
     }
 
     /**
-     * testCustomUserModel
+     * testIdentifyMissingData
      *
      * @return void
      */
-    public function testCustomUserModel()
+    public function testIdentifyMissingData()
     {
-        $identifier = new TokenIdentifier([
-            'userModel' => 'AuthUsers',
-            'tokenField' => 'username'
-        ]);
+        $resolver = $this->createMock(ResolverInterface::class);
 
-        $result = $identifier->identify(['token' => 'chartjes']);
+        $identifier = new TokenIdentifier();
+        $identifier->setResolver($resolver);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
-    }
+        $resolver->expects($this->never())
+            ->method('find');
 
-    /**
-     * testCallableTokenVerification
-     *
-     * @return void
-     */
-    public function testCallableTokenVerification()
-    {
-        $identifier = new TokenIdentifier([
-            'tokenVerification' => function ($data) {
-                if ($data['token'] === 'larry') {
-                    return new Entity(['username' => 'larry', 'id' => 3]);
-                }
-
-                return null;
-            }
-        ]);
-
-        $result = $identifier->identify(['token' => 'not-larry']);
+        $result = $identifier->identify(['user' => 'larry']);
         $this->assertNull($result);
-
-        $result = $identifier->identify(['token' => 'larry']);
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
-    }
-
-    /**
-     * testTokenVerificationMethodDoesNotExist
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Token verification method `Authentication\Identifier\TokenIdentifier::_missing()` does not exist
-     */
-    public function testTokenVerificationMethodDoesNotExist()
-    {
-        $identifier = new TokenIdentifier([
-            'tokenVerification' => 'missing'
-        ]);
-
-        $identifier->identify(['token' => 'larry']);
-    }
-
-    /**
-     * testTokenVerificationInvalidArgumentException
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The `tokenVerification` option is not a string or callable
-     */
-    public function testTokenVerificationInvalidArgumentException()
-    {
-        $identifier = new TokenIdentifier([
-            'tokenVerification' => 12345
-        ]);
-
-        $identifier->identify(['token' => 'larry']);
     }
 }

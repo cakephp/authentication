@@ -12,13 +12,13 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use ArrayObject;
+use Authentication\Authenticator\Result;
 use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Cake\Network\Session;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -43,7 +43,7 @@ class SessionAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $this->sessionMock = $this->getMockBuilder('\Cake\Network\Session')
@@ -75,7 +75,7 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
 
         $this->sessionMock->expects($this->at(0))
@@ -88,7 +88,7 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
     }
 
@@ -117,7 +117,7 @@ class SessionAuthenticatorTest extends TestCase
         ]);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
 
         $this->sessionMock->expects($this->at(0))
@@ -135,7 +135,7 @@ class SessionAuthenticatorTest extends TestCase
         ]);
         $result = $authenticator->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
     }
 
@@ -151,11 +151,12 @@ class SessionAuthenticatorTest extends TestCase
         $response = new Response();
         $authenticator = new SessionAuthenticator($this->identifiers);
 
+        $data = new ArrayObject(['username' => 'florian']);
         $this->sessionMock->expects($this->at(0))
             ->method('write')
-            ->with('Auth', ['username' => 'florian']);
+            ->with('Auth', $data);
 
-        $result = $authenticator->persistIdentity($request, $response, ['username' => 'florian']);
+        $result = $authenticator->persistIdentity($request, $response, $data);
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);

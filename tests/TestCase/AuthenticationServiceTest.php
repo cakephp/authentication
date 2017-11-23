@@ -12,14 +12,19 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use ArrayObject;
 use Authentication\AuthenticationService;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
+use Authentication\Authenticator\Result;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Identifier\OrmIdentifier;
-use Authentication\Result;
+use Authentication\Identifier\PasswordIdentifier;
+use Authentication\Identity;
+use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -55,9 +60,10 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
+                'Authentication.Session',
                 'Authentication.Form'
             ]
         ]);
@@ -67,6 +73,11 @@ class AuthenticationServiceTest extends TestCase
 
         $result = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $result);
+
+        $this->assertEquals(
+            'mariano',
+            $request->getAttribute('session')->read('Auth.username')
+        );
     }
 
     /**
@@ -86,7 +97,7 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.HttpBasic'
@@ -107,7 +118,7 @@ class AuthenticationServiceTest extends TestCase
     /**
      * testLoadAuthenticatorException
      *
-     * @expectedException \Cake\Core\Exception\Exception
+     * @expectedException \RuntimeException
      */
     public function testLoadAuthenticatorException()
     {
@@ -118,8 +129,8 @@ class AuthenticationServiceTest extends TestCase
     /**
      * testLoadInvalidAuthenticatorObject
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Authenticators must implement AuthenticateInterface.
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement \Auth\Authentication\AuthenticatorInterface
      */
     public function testLoadInvalidAuthenticatorObject()
     {
@@ -135,8 +146,8 @@ class AuthenticationServiceTest extends TestCase
     public function testLoadIdentifier()
     {
         $service = new AuthenticationService();
-        $result = $service->loadIdentifier('Authentication.Orm');
-        $this->assertInstanceOf(OrmIdentifier::class, $result);
+        $result = $service->loadIdentifier('Authentication.Password');
+        $this->assertInstanceOf(PasswordIdentifier::class, $result);
     }
 
     /**
@@ -160,7 +171,7 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Form'
@@ -190,14 +201,13 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Session',
                 'Authentication.Form'
             ]
         ]);
-        $service->loadAuthenticators();
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
@@ -207,7 +217,8 @@ class AuthenticationServiceTest extends TestCase
 
         $this->assertEmpty($request->getAttribute('identity'));
 
-        $result = $service->setIdentity($request, $response, ['username' => 'florian']);
+        $data = new ArrayObject(['username' => 'florian']);
+        $result = $service->setIdentity($request, $response, $data);
 
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('request', $result);
@@ -215,9 +226,51 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
+        $this->assertEquals(
+            'florian',
+            $result['request']->getAttribute('session')->read('Auth.username')
+        );
+
         $identity = $result['request']->getAttribute('identity');
-        $this->assertInternalType('array', $identity);
-        $this->assertEquals(['username' => 'florian'], $identity);
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
+        $this->assertEquals($data, $identity->getOriginalData());
+    }
+
+    /**
+     * testSetIdentityInterface
+     *
+     * @return void
+     */
+    public function testSetIdentityInterface()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+        $identity = $this->createMock(IdentityInterface::class);
+
+        $service = new AuthenticationService();
+
+        $result = $service->setIdentity($request, $response, $identity);
+
+        $this->assertSame($identity, $result['request']->getAttribute('identity'));
+    }
+
+    /**
+     * testSetIdentityInterface
+     *
+     * @return void
+     */
+    public function testSetIdentityArray()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+        $data = [
+            'username' => 'robert'
+        ];
+
+        $service = new AuthenticationService();
+
+        $result = $service->setIdentity($request, $response, $data);
+        $this->assertInstanceOf(IdentityInterface::class, $result['request']->getAttribute('identity'));
     }
 
     /**
@@ -236,7 +289,7 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ],
             'authenticators' => [
                 'Authentication.Session',
@@ -270,10 +323,139 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Orm'
+                'Authentication.Password'
             ]
         ]);
 
         $service->authenticate($request, $response);
+    }
+
+    /**
+     * testBuildIdentity
+     *
+     * @return void
+     */
+    public function testBuildIdentity()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ]
+        ]);
+
+        $this->assertInstanceOf(Identity::class, $service->buildIdentity(new ArrayObject([])));
+    }
+
+    /**
+     * testBuildIdentityRuntimeException
+     *
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Object `stdClass` does not implement `Authentication\IdentityInterface`
+     * @return void
+     */
+    public function testBuildIdentityRuntimeException()
+    {
+        $service = new AuthenticationService([
+            'identityClass' => \stdClass::class,
+            'identifiers' => [
+                'Authentication.Password'
+            ]
+        ]);
+
+        $service->buildIdentity(new ArrayObject([]));
+    }
+
+    /**
+     * testCallableIdentityProvider
+     *
+     * @return void
+     */
+    public function testCallableIdentityProvider()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $callable = function () {
+            return new Identity(new ArrayObject([
+                'id' => 'by-callable'
+            ]));
+        };
+
+        $service = new AuthenticationService([
+            'identityClass' => $callable,
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Form'
+            ]
+        ]);
+
+        // Authenticate an identity
+        $service->authenticate($request, $response);
+        $this->assertInstanceOf(Identity::class, $service->getIdentity());
+        $this->assertEquals('by-callable', $service->getIdentity()->getIdentifier());
+    }
+
+    /**
+     * testGetIdentity
+     *
+     * @return void
+     */
+    public function testGetIdentity()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Form'
+            ]
+        ]);
+
+        // No identity present before login
+        $this->assertNull($service->getIdentity());
+
+        // Authenticate an identity
+        $service->authenticate($request, $response);
+
+        // Now we can get the identity
+        $this->assertInstanceOf(Identity::class, $service->getIdentity());
+    }
+
+    /**
+     * testGetIdentityInterface
+     *
+     * @return void
+     */
+    public function testGetIdentityInterface()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+
+        $identity = $this->createMock(IdentityInterface::class);
+        $result = new Result($identity, Result::SUCCESS);
+
+        $authenticator = $this->createMock(AuthenticatorInterface::class);
+        $authenticator->method('authenticate')
+            ->willReturn($result);
+
+        $service = new AuthenticationService();
+        $service->authenticators()->set('Test', $authenticator);
+
+        $service->authenticate($request, $response);
+
+        $this->assertSame($identity, $service->getIdentity());
     }
 }

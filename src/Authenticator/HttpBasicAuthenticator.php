@@ -13,9 +13,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Authenticator\StatelessInterface;
-use Authentication\Authenticator\UnauthorizedException;
-use Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -33,7 +30,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
      * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
-     * @return \Authentication\ResultInterface
+     * @return \Authentication\Authenticator\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -50,7 +47,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
-     * @return \Cake\Datasource\EntityInterface|null User entity or null on failure.
+     * @return \ArrayAccess|null User entity or null on failure.
      */
     public function getUser(ServerRequestInterface $request)
     {

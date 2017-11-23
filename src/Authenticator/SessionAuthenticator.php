@@ -13,10 +13,9 @@
  */
 namespace Authentication\Authenticator;
 
+use ArrayAccess;
+use ArrayObject;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
-use Cake\Datasource\EntityInterface;
-use Cake\ORM\Entity;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -45,7 +44,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
      * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
-     * @return \Authentication\ResultInterface
+     * @return \Authentication\Authenticator\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -68,8 +67,8 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             }
         }
 
-        if (!$user instanceof EntityInterface) {
-            $user = new Entity($user);
+        if (!$user instanceof ArrayAccess) {
+            $user = new ArrayObject($user);
         }
 
         return new Result($user, Result::SUCCESS);

@@ -12,7 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -21,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * Authenticates an identity based on a token in a query param or the header.
  */
-class TokenAuthenticator extends AbstractAuthenticator
+class TokenAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
 
     /**
@@ -101,7 +100,7 @@ class TokenAuthenticator extends AbstractAuthenticator
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
-     * @return \Authentication\ResultInterface
+     * @return \Authentication\Authenticator\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -117,5 +116,15 @@ class TokenAuthenticator extends AbstractAuthenticator
         }
 
         return new Result($user, Result::SUCCESS);
+    }
+
+    /**
+     * No-op method.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
+     * @return void
+     */
+    public function unauthorizedChallenge(ServerRequestInterface $request)
+    {
     }
 }

@@ -12,9 +12,7 @@
  */
 namespace Authentication\Identifier;
 
-use Cake\ORM\TableRegistry;
-use InvalidArgumentException;
-use RuntimeException;
+use Authentication\Identifier\Resolver\ResolverAwareTrait;
 
 /**
  * Token Identifier
@@ -22,103 +20,33 @@ use RuntimeException;
 class TokenIdentifier extends AbstractIdentifier
 {
 
+    use ResolverAwareTrait;
+
     /**
-     * Default configuration
+     * Default configuration.
      *
      * @var array
      */
     protected $_defaultConfig = [
         'tokenField' => 'token',
         'dataField' => 'token',
-        'userModel' => 'Users',
-        'finder' => 'all',
-        'tokenVerification' => 'Orm'
+        'resolver' => 'Authentication.Orm'
     ];
 
     /**
-     * Identify
-     *
-     * @param array $data Authentication credentials
-     * @return \Cake\Datasource\EntityInterface|null
+     * {@inheritDoc}
      */
-    public function identify($data)
+    public function identify(array $data)
     {
         $dataField = $this->getConfig('dataField');
         if (!isset($data[$dataField])) {
             return null;
         }
 
-        $tokenVerification = $this->getConfig('tokenVerification');
-        if (is_callable($tokenVerification)) {
-            return $tokenVerification($data, $this->getConfig());
-        }
-
-        $this->_checkTokenVerification($tokenVerification);
-
-        return $this->_dispatchTokenVerification($tokenVerification, $data[$dataField]);
-    }
-
-    /**
-     * Checks that the token verification option is a string
-     *
-     * @param mixed $tokenVerification Token verification string.
-     * @return void
-     * @throws \InvalidArgumentException When the token is not a string
-     */
-    protected function _checkTokenVerification($tokenVerification)
-    {
-        if (!is_string($tokenVerification)) {
-            throw new InvalidArgumentException('The `tokenVerification` option is not a string or callable');
-        }
-    }
-
-    /**
-     * Calls the internal token verification method based on the tokenVerification string
-     *
-     * @param string $tokenVerification Token verification method string.
-     * @param string $token Token string.
-     * @return \Cake\Datasource\EntityInterface|null
-     */
-    protected function _dispatchTokenVerification($tokenVerification, $token)
-    {
-        $method = '_' . $tokenVerification;
-        if (!method_exists($this, $method)) {
-            throw new RuntimeException(sprintf('Token verification method `%s` does not exist', __CLASS__ . '::' . $method . '()'));
-        }
-
-        return $this->{$method}($token);
-    }
-
-    /**
-     * Lookup the token in the ORM
-     *
-     * @param string $token The token string.
-     * @return \Cake\Datasource\EntityInterface|null
-     */
-    protected function _orm($token)
-    {
-        $config = $this->_config;
-        $table = TableRegistry::get($config['userModel']);
-
-        $options = [
-            'conditions' => [$table->aliasField($config['tokenField']) => $token]
+        $conditions = [
+            $this->getConfig('tokenField') => $data[$dataField]
         ];
 
-        $finder = $config['finder'];
-        if (is_array($finder)) {
-            $options += current($finder);
-            $finder = key($finder);
-        }
-
-        if (!isset($options['token'])) {
-            $options['token'] = $token;
-        }
-
-        $result = $table->find($finder, $options)->first();
-        if (empty($result)) {
-            return null;
-        }
-
-        return $result;
+        return $this->getResolver()->find($conditions);
     }
 }

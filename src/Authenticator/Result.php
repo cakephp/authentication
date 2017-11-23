@@ -10,9 +10,9 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication;
+namespace Authentication\Authenticator;
 
-use Cake\Datasource\EntityInterface;
+use ArrayAccess;
 use InvalidArgumentException;
 
 /**
@@ -21,36 +21,6 @@ use InvalidArgumentException;
 class Result implements ResultInterface
 {
     /**
-     * General Failure
-     */
-    const FAILURE = 0;
-
-    /**
-     * Failure due to identity not being found.
-     */
-    const FAILURE_IDENTITY_NOT_FOUND = -1;
-
-    /**
-     * Failure due to invalid credential being supplied.
-     */
-    const FAILURE_CREDENTIAL_INVALID = -2;
-
-    /**
-     * Failure due to other circumstances.
-     */
-    const FAILURE_OTHER = -3;
-
-    /**
-     * The authentication credentials were not found in the request.
-     */
-    const FAILURE_CREDENTIALS_NOT_FOUND = -4;
-
-    /**
-     * Authentication success.
-     */
-    const SUCCESS = 1;
-
-    /**
      * Authentication result code
      *
      * @var int
@@ -58,11 +28,11 @@ class Result implements ResultInterface
     protected $_code;
 
     /**
-     * The identity used in the authentication attempt
+     * The identity data used in the authentication attempt
      *
-     * @var null|\Cake\Datasource\EntityInterface
+     * @var null|array|\ArrayAccess
      */
-    protected $_identity;
+    protected $_data;
 
     /**
      * An array of string reasons why the authentication attempt was unsuccessful
@@ -76,21 +46,24 @@ class Result implements ResultInterface
     /**
      * Sets the result code, identity, and failure messages
      *
-     * @param null|\Cake\Datasource\EntityInterface $identity The identity data
+     * @param null|array|\ArrayAccess $data The identity data
      * @param int $code Error code.
      * @param array $messages Messages.
+     * @throws InvalidArgumentException When invalid identity data is passed.
      */
-    public function __construct($identity, $code, array $messages = [])
+    public function __construct($data, $code, array $messages = [])
     {
-        if (empty($identity) && $code === self::SUCCESS) {
-            throw new InvalidArgumentException('Identity can not be empty with status success.');
+        if (empty($data) && $code === self::SUCCESS) {
+            throw new InvalidArgumentException('Identity data can not be empty with status success.');
         }
-        if ($identity !== null && !$identity instanceof EntityInterface) {
-            throw new InvalidArgumentException('Identity must be `null` or an object implementing \Cake\Datasource\EntityInterface');
+        if ($data !== null && !is_array($data) && !$data instanceof ArrayAccess) {
+            $type = is_object($data) ? get_class($data) : gettype($data);
+            $message = sprintf('Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
+            throw new InvalidArgumentException($message);
         }
 
         $this->_code = $code;
-        $this->_identity = $identity;
+        $this->_data = $data;
         $this->_errors = $messages;
     }
 
@@ -115,13 +88,13 @@ class Result implements ResultInterface
     }
 
     /**
-     * Returns the identity used in the authentication attempt.
+     * Returns the identity data used in the authentication attempt.
      *
-     * @return null|\Cake\Datasource\EntityInterface
+     * @return \ArrayAccess|array|null
      */
-    public function getIdentity()
+    public function getData()
     {
-        return $this->_identity;
+        return $this->_data;
     }
 
     /**

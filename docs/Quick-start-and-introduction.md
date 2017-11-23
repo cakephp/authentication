@@ -14,9 +14,9 @@ Plugin::load('Authentication');
 
 ## Configuration
 
-Add the authentication service to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use middleware if you don't know what it is or how to work with it.
+Add the authentication to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use middleware if you don't know what it is or how to work with it.
 
-Example of configuring the authentication middleware.
+Example of configuring the authentication middleware using `authentication` application hook.
 
 ```php
 use Authentication\AuthenticationService;
@@ -24,32 +24,41 @@ use Authentication\Middleware\AuthenticationMiddleware;
 
 class Application extends BaseApplication
 {
-    public function middleware($middlewareQueue)
+    public function authentication($service)
     {
-        // Various other middlewares for error handling, routing etc. added here.
-
-        // Instantiate the service
-        $service = new AuthenticationService();
+        $fields = [
+            'username' => 'email',
+            'password' => 'password'
+        ];
 
         // Load identifiers
-        $service->loadIdentifier('Authentication.Orm', [
-            'fields' => [
-                'username' => 'email',
-                'password' => 'password'
-            ]
-        ]);
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
 
         // Load the authenticators, you want session first
         $service->loadAuthenticator('Authentication.Session');
-        $service->loadAuthenticator('Authentication.Form');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => $fields,
+            'loginUrl' => [
+                'plugin' => false,
+                'controller' => 'Users',
+                'action' => 'login',
+            ]
+        ]);
 
-        // Add it to the authentication middleware
-        $authentication = new AuthenticationMiddleware($service);
+        return $service;
+    }
+
+    public function middleware($middleware)
+    {
+        // Various other middlewares for error handling, routing etc. added here.
+
+        // Add the authentication middleware
+        $authentication = new AuthenticationMiddleware($this);
 
         // Add the middleware to the middleware queue
-        $middlewareQueue->add($authentication);
+        $middleware->add($authentication);
 
-        return $middlewareQueue;
+        return $middleware;
     }
 }
 ```
@@ -75,7 +84,7 @@ use Authentication\AuthenticationService;
 $service = new AuthenticationService();
 
 // Load identifiers
-$service->loadIdentifier('Authentication.Orm', [
+$service->loadIdentifier('Authentication.Password', [
     'fields' => [
         'username' => 'email',
         'password' => 'password'

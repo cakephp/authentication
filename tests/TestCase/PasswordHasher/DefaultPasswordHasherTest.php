@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\PasswordHasher;
@@ -35,5 +34,20 @@ class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->needsRehash(md5('foo')));
         $password = $hasher->hash('foo');
         $this->assertFalse($hasher->needsRehash($password));
+    }
+
+    /**
+     * Tests that when the hash options change, the password needs
+     * to be rehashed
+     *
+     * @return void
+     */
+    public function testNeedsRehashWithDifferentOptions()
+    {
+        $defaultHasher = new DefaultPasswordHasher(['hashType' => PASSWORD_BCRYPT, 'hashOptions' => ['cost' => 10]]);
+        $updatedHasher = new DefaultPasswordHasher(['hashType' => PASSWORD_BCRYPT, 'hashOptions' => ['cost' => 12]]);
+        $password = $defaultHasher->hash('foo');
+
+        $this->assertTrue($updatedHasher->needsRehash($password));
     }
 }

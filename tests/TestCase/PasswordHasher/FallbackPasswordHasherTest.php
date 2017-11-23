@@ -9,14 +9,13 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\PasswordHasher;
 
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\FallbackPasswordHasher;
-use Authentication\PasswordHasher\WeakPasswordHasher;
+use Authentication\PasswordHasher\LegacyPasswordHasher;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -32,13 +31,13 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testHash()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Weak', 'Authentication.Default']]);
-        $weak = new WeakPasswordHasher();
-        $this->assertSame($weak->hash('foo'), $hasher->hash('foo'));
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Legacy', 'Authentication.Default']]);
+        $legacy = new LegacyPasswordHasher();
+        $this->assertSame($legacy->hash('foo'), $hasher->hash('foo'));
 
         $simple = new DefaultPasswordHasher();
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Weak', 'Authentication.Default']]);
-        $this->assertSame($weak->hash('foo'), $hasher->hash('foo'));
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Legacy', 'Authentication.Default']]);
+        $this->assertSame($legacy->hash('foo'), $hasher->hash('foo'));
     }
 
     /**
@@ -49,12 +48,12 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testCheck()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Weak', 'Authentication.Default']]);
-        $weak = new WeakPasswordHasher();
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Legacy', 'Authentication.Default']]);
+        $legacy = new LegacyPasswordHasher();
         $simple = new DefaultPasswordHasher();
 
         $hash = $simple->hash('foo');
-        $otherHash = $weak->hash('foo');
+        $otherHash = $legacy->hash('foo');
         $this->assertTrue($hasher->check('foo', $hash));
         $this->assertTrue($hasher->check('foo', $otherHash));
     }
@@ -67,8 +66,8 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testCheckWithConfigs()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Default', 'Authentication.Weak' => ['hashType' => 'md5']]]);
-        $legacy = new WeakPasswordHasher(['hashType' => 'md5']);
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Default', 'Authentication.Legacy' => ['hashType' => 'md5']]]);
+        $legacy = new LegacyPasswordHasher(['hashType' => 'md5']);
         $simple = new DefaultPasswordHasher();
 
         $hash = $simple->hash('foo');
@@ -85,9 +84,9 @@ class FallbackPasswordHasherTest extends TestCase
      */
     public function testNeedsRehash()
     {
-        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Default', 'Authentication.Weak']]);
-        $weak = new WeakPasswordHasher();
-        $otherHash = $weak->hash('foo');
+        $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Default', 'Authentication.Legacy']]);
+        $legacy = new LegacyPasswordHasher();
+        $otherHash = $legacy->hash('foo');
         $this->assertTrue($hasher->needsRehash($otherHash));
 
         $simple = new DefaultPasswordHasher();

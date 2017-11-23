@@ -12,7 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Result;
 use Cake\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,7 +56,7 @@ class FormAuthenticator extends AbstractAuthenticator
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
-     * @return \Authentication\ResultInterface
+     * @return \Authentication\Authenticator\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -102,7 +101,7 @@ class FormAuthenticator extends AbstractAuthenticator
 
         if (!empty($loginUrl)) {
             if (is_array($loginUrl)) {
-                $loginUrl = Router::url($loginUrl);
+                $loginUrl = Router::url(['_base' => false] + $loginUrl);
                 $this->setConfig('loginUrl', $loginUrl);
             }
 

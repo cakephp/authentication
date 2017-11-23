@@ -12,6 +12,7 @@
  */
 namespace Authentication;
 
+use ArrayAccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -23,22 +24,38 @@ interface AuthenticationServiceInterface
      *
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
-     * @return \Authentication\Authenticator\AuthenticateInterface
+     * @return \Authentication\Authenticator\AuthenticatorInterface
      */
     public function loadAuthenticator($name, array $config = []);
+
+    /**
+     * Loads an identifier.
+     *
+     * @param string $name Name or class name.
+     * @param array $config Identifier configuration.
+     * @return \Authentication\Identifier\IdentifierInterface
+     */
+    public function loadIdentifier($name, array $config = []);
 
     /**
      * Authenticate the request against the configured authentication adapters.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\ResultInterface A result object. If none of
+     * @return \Authentication\Authenticator\ResultInterface A result object. If none of
      * the adapters was a success the last failed result is returned.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
 
     /**
-     * Clears the identity from authenticators that store them and the request
+     * Gets an identity object or null if identity has not been resolved.
+     *
+     * @return null|\Authentication\IdentityInterface
+     */
+    public function getIdentity();
+
+    /**
+     * Clears the identity from authenticators that store them and the request.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
@@ -51,7 +68,7 @@ interface AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param mixed $identity Identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @return array Return an array containing the request and response objects.
      */
     public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
@@ -59,14 +76,14 @@ interface AuthenticationServiceInterface
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
-     * @return \Authentication\Authenticator\AuthenticateInterface|null
+     * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticationProvider();
 
     /**
      * Gets the result of the last authenticate() call.
      *
-     * @return \Authentication\ResultInterface|null Authentication result interface
+     * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
     public function getResult();
 }

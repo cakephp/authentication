@@ -12,7 +12,7 @@
  */
 namespace Authentication\Identifier;
 
-use Cake\Datasource\EntityInterface;
+use ArrayAccess;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -59,24 +59,21 @@ class CallbackIdentifier extends AbstractIdentifier
     }
 
     /**
-     * Identify
-     *
-     * @param array $data Authentication credentials
-     * @return \Cake\Datasource\EntityInterface|null
+     * {@inheritDoc}
      */
-    public function identify($data)
+    public function identify(array $data)
     {
         $callback = $this->getConfig('callback');
 
         $result = $callback($data);
-        if ($result === null || $result instanceof EntityInterface) {
+        if ($result === null || $result instanceof ArrayAccess) {
             return $result;
         }
 
         throw new RuntimeException(sprintf(
             'Invalid return type of `%s`. Expecting `%s` or `null`.',
             gettype($result),
-            EntityInterface::class
+            ArrayAccess::class
         ));
     }
 }

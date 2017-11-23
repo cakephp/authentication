@@ -13,6 +13,7 @@
 namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use TestApp\Authentication\Identifier\InvalidIdentifier;
 
@@ -22,10 +23,10 @@ class IdentifierCollectionTest extends TestCase
     public function testConstruct()
     {
         $collection = new IdentifierCollection([
-            'Authentication.Orm'
+            'Authentication.Password'
         ]);
-        $result = $collection->get('Authentication.Orm');
-        $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
+        $result = $collection->get('Password');
+        $this->assertInstanceOf('\Authentication\Identifier\PasswordIdentifier', $result);
     }
 
     /**
@@ -36,8 +37,21 @@ class IdentifierCollectionTest extends TestCase
     public function testLoad()
     {
         $collection = new IdentifierCollection();
-        $result = $collection->load('Authentication.Orm');
-        $this->assertInstanceOf('\Authentication\Identifier\OrmIdentifier', $result);
+        $result = $collection->load('Authentication.Password');
+        $this->assertInstanceOf('\Authentication\Identifier\PasswordIdentifier', $result);
+    }
+
+    /**
+     * testSet
+     *
+     * @return void
+     */
+    public function testSet()
+    {
+        $identifier = $this->createMock(IdentifierInterface::class);
+        $collection = new IdentifierCollection();
+        $collection->set('Password', $identifier);
+        $this->assertSame($identifier, $collection->get('Password'));
     }
 
     /**
@@ -61,16 +75,31 @@ class IdentifierCollectionTest extends TestCase
     }
 
     /**
-     * testGetAll
+     * testIsEmpty
      *
      * @return void
      */
-    public function testGetAll()
+    public function testIsEmpty()
     {
         $collection = new IdentifierCollection();
-        $collection->load('Authentication.Orm');
-        $result = $collection->getAll();
-        $this->assertInternalType('array', $result);
+        $this->assertTrue($collection->isEmpty());
+
+        $collection->load('Authentication.Password');
+        $this->assertFalse($collection->isEmpty());
+    }
+
+    /**
+     * testIterator
+     *
+     * @return void
+     */
+    public function testIterator()
+    {
+        $identifier = $this->createMock(IdentifierInterface::class);
+        $collection = new IdentifierCollection();
+        $collection->set('Password', $identifier);
+
+        $this->assertContains($identifier, $collection);
     }
 
     /**
@@ -81,7 +110,7 @@ class IdentifierCollectionTest extends TestCase
     public function testIdentify()
     {
         $collection = new IdentifierCollection([
-            'Authentication.Orm'
+            'Authentication.Password'
         ]);
 
         $result = $collection->identify([
@@ -89,6 +118,6 @@ class IdentifierCollectionTest extends TestCase
             'password' => 'password'
         ]);
 
-        $this->assertInstanceOf('\Cake\Datasource\EntityInterface', $result);
+        $this->assertInstanceOf('\ArrayAccess', $result);
     }
 }

@@ -13,8 +13,8 @@
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\FormAuthenticator;
+use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Result;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -52,7 +52,7 @@ class FormAuthenticatorTest extends TestCase
     public function testAuthenticate()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -65,7 +65,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers);
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
     }
 
@@ -77,7 +77,7 @@ class FormAuthenticatorTest extends TestCase
     public function testCredentialsNotPresent()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -91,7 +91,7 @@ class FormAuthenticatorTest extends TestCase
 
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
     }
@@ -104,7 +104,7 @@ class FormAuthenticatorTest extends TestCase
     public function testAuthenticateLoginUrl()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -120,7 +120,7 @@ class FormAuthenticatorTest extends TestCase
 
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
         $this->assertEquals([0 => 'Login URL /users/does-not-match did not match /users/login'], $result->getErrors());
     }
@@ -133,7 +133,7 @@ class FormAuthenticatorTest extends TestCase
     public function testArrayLoginUrl()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Orm'
+           'Authentication.Password'
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -152,7 +152,46 @@ class FormAuthenticatorTest extends TestCase
 
         $result = $form->authenticate($request, $response);
 
-        $this->assertInstanceOf('\Authentication\Result', $result);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals([], $result->getErrors());
+    }
+
+    /**
+     * testLoginUrlWithAppInSubFolder
+     *
+     * @return void
+     */
+    public function testLoginUrlWithAppInSubFolder()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/subfolder/Users/login',
+                'PHP_SELF' => '/subfolder/index.php',
+            ],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+
+        $this->assertEquals('/subfolder/', $request->getUri()->webroot);
+        $this->assertEquals('/Users/login', $request->getUri()->getPath());
+
+        $response = new Response();
+
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ]
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals([], $result->getErrors());
     }

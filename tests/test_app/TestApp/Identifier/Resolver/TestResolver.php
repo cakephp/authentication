@@ -10,19 +10,16 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Authenticator;
+namespace TestApp\Identifier\Resolver;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use ArrayObject;
+use Authentication\Identifier\Resolver\ResolverInterface;
 
-interface AuthenticateInterface
+class TestResolver implements ResolverInterface
 {
-    /**
-     * Authenticate user.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\ResultInterface
-     */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+
+    public function find(array $conditions, $type = self::TYPE_AND)
+    {
+        return new ArrayObject([]);
+    }
 }

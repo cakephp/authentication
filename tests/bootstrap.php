@@ -9,7 +9,6 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
@@ -43,7 +42,7 @@ define('CONFIG', ROOT . DS . 'config'. DS);
 
 Configure::write('debug', true);
 Configure::write('App', [
-    'namespace' => 'App',
+    'namespace' => 'TestApp',
     'paths' => [
         'plugins' => [ROOT . 'Plugin' . DS],
         'templates' => [ROOT . 'App' . DS . 'Template' . DS]
