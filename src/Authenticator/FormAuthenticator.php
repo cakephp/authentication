@@ -13,7 +13,7 @@
 namespace Authentication\Authenticator;
 
 use Cake\Http\ServerRequest;
-use Cake\Routing\Router;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -64,8 +64,9 @@ class FormAuthenticator extends AbstractAuthenticator
         if (!$this->_checkLoginUrl($request)) {
             $loginUrl = $this->getConfig('loginUrl');
             if (is_array($loginUrl)) {
-                $loginUrl = Router::url($loginUrl, true);
+                $loginUrl = \Cake\Routing\Router::url($loginUrl, true);
             }
+            dd($loginUrl);
             $errors = [
                 sprintf(
                     'Login URL %s did not match %s',
@@ -105,28 +106,69 @@ class FormAuthenticator extends AbstractAuthenticator
         $loginUrl = $this->getConfig('loginUrl');
 
         if (!empty($loginUrl)) {
-            $requestUrl = Router::parseRequest($request);
-            unset($request['_matchedRoute']);
-
-            if (is_string($loginUrl)) {
-                $loginUrl = Router::parseRequest((new ServerRequest([
-                    'uri' => $loginUrl
-                ])));
-
-                unset($loginUrl['_matchedRoute']);
-                $this->setConfig('loginUrl', $loginUrl);
+            if (is_string($loginUrl) && $this->_compareStringUrl($loginUrl, $request->getUri()->getPath())) {
+                return true;
             }
 
-            $keysToCompare = array_keys($loginUrl);
-            foreach ($keysToCompare as $key) {
-                if (!array_key_exists($key, $requestUrl)
-                    || $requestUrl[$key] !== $loginUrl[$key]
-                ) {
-                    return false;
-                }
+            return $this->_compareArrayUrl($loginUrl, $request);
+        }
+
+        return true;
+    }
+
+    /**
+     *
+     */
+    protected function _compareArrayUrl($loginUrl, ServerRequestInterface $request) {
+        if (!class_exists('\Cake\Routing\Router')) {
+            return false;
+        }
+
+        $requestUrl = \Cake\Routing\Router::parseRequest($request);
+        unset($request['_matchedRoute']);
+
+        if (is_string($loginUrl)) {
+            $loginUrl = \Cake\Routing\Router::parseRequest((new ServerRequest([
+                'uri' => $loginUrl
+            ])));
+
+            unset($loginUrl['_matchedRoute']);
+            $this->setConfig('loginUrl', $loginUrl);
+        }
+
+        $keysToCompare = array_keys($loginUrl);
+        foreach ($keysToCompare as $key) {
+            if (!array_key_exists($key, $requestUrl)
+                || $requestUrl[$key] !== $loginUrl[$key]
+            ) {
+                return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Checks string URLs for login
+     *
+     * @param string $loginUrl URL of the login to compare against
+     * @param string $requestUrl URL from the request
+     * @return bool
+     */
+    protected function _compareStringUrl($loginUrl, $requestUrl) {
+        if (!is_string($loginUrl)) {
+            throw new InvalidArgumentException();
+        }
+
+        if ($loginUrl === $requestUrl) {
+            return true;
+        }
+
+        $regex = $this->getConfig('loginUrlRegex');
+        if (!empty($regex) && preg_match($regex, $loginUrl)) {
+            return true;
+        }
+
+        return false;
     }
 }

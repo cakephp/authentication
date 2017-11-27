@@ -195,4 +195,56 @@ class FormAuthenticatorTest extends TestCase
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals([], $result->getErrors());
     }
+
+    /**
+     *
+     */
+    public function testRegexLoginUrl()
+    {
+        // Testing with /en/login
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/en/login',
+                'PHP_SELF' => '/en/login',
+            ],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+
+        $response = new Response();
+
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrlRegex' => '/\/([a-zA-Z]){2}\/login$/',
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals([], $result->getErrors());
+
+        // Now testing with /de/login
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/de/login',
+                'PHP_SELF' => '/de/login',
+            ],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrlRegex' => '/\/([a-zA-Z]){2}\/login$/',
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals([], $result->getErrors());
+    }
 }
