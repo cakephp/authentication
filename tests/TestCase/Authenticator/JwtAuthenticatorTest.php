@@ -19,6 +19,7 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
+use Exception;
 use Firebase\JWT\JWT;
 
 class JwtAuthenticatorTest extends TestCase
@@ -135,6 +136,13 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
     }
 
+    /**
+     * Testing an invalid token
+     *
+     * The authenticator will turn the JWT libs exceptions into an error result.
+     *
+     * @return void
+     */
     public function testAuthenticateInvalidPayloadNotAnObject()
     {
         $request = ServerRequestFactory::fromGlobals(
@@ -198,6 +206,29 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
         $this->assertNUll($result->getData());
+    }
+
+    public function testInvalidToken()
+    {
+        $this->request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => 'should cause an exception']
+        );
+
+        $this->identifiers->load('Authentication.JwtSubject');
+
+        $authenticator = new JwtAuthenticator($this->identifiers, [
+            'secretKey' => 'secretKey'
+        ]);
+
+        $result = $authenticator->authenticate($this->request, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
+        $this->assertNUll($result->getData());
+        $errors = $result->getErrors();
+        $this->assertArrayHasKey('message', $errors);
+        $this->assertArrayHasKey('exception', $errors);
+        $this->assertInstanceOf(Exception::class, $errors['exception']);
     }
 
     /**

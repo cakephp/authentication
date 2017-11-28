@@ -14,6 +14,7 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierCollection;
+use Exception;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -67,7 +68,19 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $result = $this->getPayload($request);
+        try {
+            $result = $this->getPayload($request);
+        } catch (Exception $e) {
+            return new Result(
+                null,
+                Result::FAILURE_CREDENTIAL_INVALID,
+                [
+                    'message' => $e->getMessage(),
+                    'exception' => $e
+                ]
+            );
+        }
+
 
         if (!$result instanceof stdClass) {
             return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
