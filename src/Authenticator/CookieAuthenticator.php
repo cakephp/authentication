@@ -34,6 +34,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     {
         $this->_checkCakeVersion();
 
+        $this->_defaultConfig['rememberMeField'] = 'remember_me';
         $this->_defaultConfig['cookie'] = [
             'name' => 'CookieAuth',
             'expire' => null,
@@ -86,8 +87,18 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * {@inheritDoc}
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, ArrayAccess $identity)
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
+        $field = $this->getConfig('rememberMeField');
+        $data = $request->getParsedBody();
+
+        if (!is_array($data) || empty($data[$field])) {
+            return [
+                'request' => $request,
+                'response' => $response
+            ];
+        }
+
         $data = $this->getConfig('cookie');
         $data['value'] = (array)$identity;
 

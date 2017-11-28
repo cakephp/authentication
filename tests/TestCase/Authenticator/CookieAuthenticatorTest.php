@@ -152,6 +152,9 @@ class CookieAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath']
         );
+        $request = $request->withParsedBody([
+            'remember_me' => 1
+        ]);
         $response = new Response();
 
         $authenticator = new CookieAuthenticator($identifiers);
@@ -164,6 +167,7 @@ class CookieAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertContains('CookieAuth', $result['response']->getHeaderLine('Set-Cookie'));
     }
 
     /**
