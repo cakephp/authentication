@@ -168,6 +168,21 @@ class CookieAuthenticatorTest extends TestCase
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
         $this->assertContains('CookieAuth', $result['response']->getHeaderLine('Set-Cookie'));
+
+        // Testing that the field is not present
+        $request = $request->withParsedBody([]);
+        $result = $authenticator->persistIdentity($request, $response, $array);
+        $this->assertNotContains('CookieAuth', $result['response']->getHeaderLine('Set-Cookie'));
+
+        // Testing a different field name
+        $request = $request->withParsedBody([
+            'other_field' => 1
+        ]);
+        $authenticator = new CookieAuthenticator($identifiers, [
+            'rememberMeField' => 'other_field'
+        ]);
+        $result = $authenticator->persistIdentity($request, $response, $array);
+        $this->assertContains('CookieAuth', $result['response']->getHeaderLine('Set-Cookie'));
     }
 
     /**
