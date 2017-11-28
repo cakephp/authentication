@@ -66,7 +66,7 @@ class FormAuthenticator extends AbstractAuthenticator
             if (is_array($loginUrl)) {
                 $loginUrl = \Cake\Routing\Router::url($loginUrl, true);
             }
-            dd($loginUrl);
+
             $errors = [
                 sprintf(
                     'Login URL %s did not match %s',
@@ -117,9 +117,14 @@ class FormAuthenticator extends AbstractAuthenticator
     }
 
     /**
+     * Compare the URL as array
      *
+     * @param string|array $loginUrl Login URL
+     * @param \Cake\Http\ServerRequestInterface $request Request
+     * @return bool
      */
-    protected function _compareArrayUrl($loginUrl, ServerRequestInterface $request) {
+    protected function _compareArrayUrl($loginUrl, ServerRequestInterface $request)
+    {
         if (!class_exists('\Cake\Routing\Router')) {
             return false;
         }
@@ -155,7 +160,8 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param string $requestUrl URL from the request
      * @return bool
      */
-    protected function _compareStringUrl($loginUrl, $requestUrl) {
+    protected function _compareStringUrl($loginUrl, $requestUrl)
+    {
         if (!is_string($loginUrl)) {
             throw new InvalidArgumentException();
         }
