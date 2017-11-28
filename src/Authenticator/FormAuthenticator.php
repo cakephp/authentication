@@ -12,7 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Cake\Http\ServerRequest;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -125,7 +124,8 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected function _compareArrayUrl($loginUrl, ServerRequestInterface $request)
     {
-        if (!class_exists('\Cake\Routing\Router')) {
+        if (!class_exists('\Cake\Routing\Router')
+            || !class_exists('\Cake\Http\ServerRequest')) {
             return false;
         }
 
@@ -133,7 +133,7 @@ class FormAuthenticator extends AbstractAuthenticator
         unset($request['_matchedRoute']);
 
         if (is_string($loginUrl)) {
-            $loginUrl = \Cake\Routing\Router::parseRequest((new ServerRequest([
+            $loginUrl = \Cake\Routing\Router::parseRequest((new \Cake\Http\ServerRequest([
                 'uri' => $loginUrl
             ])));
 
