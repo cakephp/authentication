@@ -12,7 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use ArrayAccess;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\ResponseInterface;

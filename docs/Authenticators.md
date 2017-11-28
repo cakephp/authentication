@@ -73,6 +73,24 @@ Configuration options:
 * **nonce**: Default is `uniqid(''),`
 * **opaque**: Default is `null`
 
+## Cookie Authenticator aka "Remember Me"
+
+The Cookie Authenticator allows you to implement the "remember me" feature for your login forms.
+
+Just make sure your login form has a field field that matches the field name that is configured in this authenticator.
+
+Configuration options:
+
+* **rememberMeField**: Default is `remember_me`
+* **cookie**: Array of cookie options:
+  * **name**: Cookie name, default is `CookieAuth`
+  * **expire**: Expiration, default is `null`
+  * **path**: Path, default is `/`
+  * **domain**: Domain, default is an empty string ``
+  * **secure**: Bool, default is `false`
+  * **httpOnly**: Bool, default is `false`
+  * **value**: Value, default is an empty string ``
+
 ## OAuth
 
 There are currently no plans to implement an OAuth authenticator.
