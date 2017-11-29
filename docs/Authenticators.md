@@ -79,6 +79,8 @@ The Cookie Authenticator allows you to implement the "remember me" feature for y
 
 Just make sure your login form has a field field that matches the field name that is configured in this authenticator.
 
+To encrypt and decrypt your cookie make sure you added the EncryptedCookieMiddleware to your app *before* the AuthenticationMiddleware. 
+
 Configuration options:
 
 * **rememberMeField**: Default is `remember_me`
