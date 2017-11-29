@@ -24,6 +24,16 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
 {
 
     /**
+     * {@inheritDoc}
+     */
+    protected $_defaultConfig = [
+        'header' => null,
+        'queryParam' => null,
+        'tokenPrefix' => null,
+        'dataKey' => 'token'
+    ];
+
+    /**
      * Checks if the token is in the headers or a request parameter
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
@@ -109,7 +119,9 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
             return new Result(null, Result::FAILURE_OTHER);
         }
 
-        $user = $this->identifiers()->identify(['token' => $token]);
+        $user = $this->identifiers()->identify([
+            $this->getConfig('dataKey') => $token
+        ]);
 
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
