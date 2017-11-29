@@ -13,9 +13,6 @@
  */
 namespace Authentication\Authenticator;
 
-use ArrayAccess;
-use ArrayObject;
-use Authentication\Identifier\IdentifierCollection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -26,18 +23,18 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 {
 
     /**
-     * Constructor
+     * Default config for this object.
+     * - `fields` The fields to use to verify a user by.
      *
-     * @param array $identifiers Array of config to use.
-     * @param array $config Configuration settings.
+     * @var array
      */
-    public function __construct(IdentifierCollection $identifiers, array $config = [])
-    {
-        $this->_defaultConfig['sessionKey'] = 'Auth';
-        $this->_defaultConfig['identify'] = false;
-
-        parent::__construct($identifiers, $config);
-    }
+    protected $_defaultConfig = [
+        'fields' => [
+            'id' => 'id'
+        ],
+        'sessionKey' => 'Auth',
+        'identify' => false
+    ];
 
     /**
      * Authenticate a user using session data.
@@ -57,18 +54,15 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         }
 
         if ($this->getConfig('identify') === true) {
-            $user = $this->identifiers()->identify([
-                'username' => $user[$this->getConfig('fields')['username']],
-                'password' => $user[$this->getConfig('fields')['password']]
-            ]);
+            $data = [];
+            foreach ($this->getConfig('fields') as $key => $field) {
+                $data[$key] = $user[$field];
+            }
+            $user = $this->identifiers()->identify($data);
 
             if (empty($user)) {
                 return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
             }
-        }
-
-        if (!$user instanceof ArrayAccess) {
-            $user = new ArrayObject($user);
         }
 
         return new Result($user, Result::SUCCESS);
