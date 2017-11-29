@@ -24,16 +24,12 @@ use RuntimeException;
  */
 class CookieAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {
-
     /**
      * {@inheritDoc}
      */
-    public function __construct(IdentifierCollection $identifiers, array $config = [])
-    {
-        $this->_checkCakeVersion();
-
-        $this->_defaultConfig['rememberMeField'] = 'remember_me';
-        $this->_defaultConfig['cookie'] = [
+    protected $_defaultConfig = [
+        'rememberMeField' => 'remember_me',
+        'cookie' => [
             'name' => 'CookieAuth',
             'expire' => null,
             'path' => '/',
@@ -41,7 +37,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             'secure' => false,
             'httpOnly' => false,
             'value' => ''
-        ];
+        ]
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(IdentifierCollection $identifiers, array $config = [])
+    {
+        $this->_checkCakeVersion();
 
         parent::__construct($identifiers, $config);
     }

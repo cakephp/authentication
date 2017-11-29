@@ -77,7 +77,7 @@ Configuration options:
 
 The Cookie Authenticator allows you to implement the "remember me" feature for your login forms.
 
-Just make sure your login form has a field field that matches the field name that is configured in this authenticator.
+Just make sure your login form has a field that matches the field name that is configured in this authenticator.
 
 To encrypt and decrypt your cookie make sure you added the EncryptedCookieMiddleware to your app *before* the AuthenticationMiddleware. 
 
