@@ -104,4 +104,32 @@ class TokenAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
     }
+
+    /**
+     * testTokenPrefix
+     *
+     * @return void
+     */
+    public function testTokenPrefix()
+    {
+        //valid prefix
+        $requestWithHeaders = $this->request->withAddedHeader('Token', 'identity mariano');
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+            'header' => 'Token',
+            'tokenPrefix' => 'identity'
+        ]);
+        $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+
+        //invalid prefix
+        $requestWithHeaders = $this->request->withAddedHeader('Token', 'bearer mariano');
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+            'header' => 'Token',
+            'tokenPrefix' => 'identity'
+        ]);
+        $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
+    }
 }
