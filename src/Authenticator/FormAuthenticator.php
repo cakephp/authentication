@@ -12,7 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Cake\Routing\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -23,6 +22,25 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FormAuthenticator extends AbstractAuthenticator
 {
+
+    /**
+     * Default config for this object.
+     * - `fields` The fields to use to identify a user by.
+     * - `loginUrl` Login URL or an array of URLs.
+     * - `useRegex` Whether or not to use `loginUrl` as regular expression(s).
+     * - `checkFullUri` Whether or not to check the full request URI.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'fields' => [
+            'username' => 'username',
+            'password' => 'password'
+        ],
+        'loginUrl' => null,
+        'useRegex' => false,
+        'checkFullUri' => false
+    ];
 
     /**
      * Checks the fields to ensure they are supplied.
@@ -61,11 +79,17 @@ class FormAuthenticator extends AbstractAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         if (!$this->_checkLoginUrl($request)) {
+            if ($this->getConfig('checkFullUri')) {
+                $uri = $request->getUri();
+            } else {
+                $uri = $request->getUri()->getPath();
+            }
+
             $errors = [
                 sprintf(
-                    'Login URL %s did not match %s',
-                    $request->getUri()->getPath(),
-                    $this->getConfig('loginUrl')
+                    'Login URL `%s` did not match `%s`.',
+                    $uri,
+                    implode('` or `', (array)$this->getConfig('loginUrl'))
                 )
             ];
 
@@ -97,17 +121,32 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected function _checkLoginUrl(ServerRequestInterface $request)
     {
-        $loginUrl = $this->getConfig('loginUrl');
+        $loginUrls = (array)$this->getConfig('loginUrl');
 
-        if (!empty($loginUrl)) {
-            if (is_array($loginUrl)) {
-                $loginUrl = Router::url(['_base' => false] + $loginUrl);
-                $this->setConfig('loginUrl', $loginUrl);
-            }
-
-            return strcasecmp($request->getUri()->getPath(), $loginUrl) === 0;
+        if (empty($loginUrls)) {
+            return true;
         }
 
-        return true;
+        if ($this->getConfig('checkFullUri')) {
+            $url = (string)$request->getUri();
+        } else {
+            $url = $request->getUri()->getPath();
+        }
+
+        if ($this->getConfig('useRegex')) {
+            $check = 'preg_match';
+        } else {
+            $check = function ($loginUrl, $url) {
+                return strcasecmp($loginUrl, $url) === 0;
+            };
+        }
+
+        foreach ($loginUrls as $loginUrl) {
+            if ($check($loginUrl, $url)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
