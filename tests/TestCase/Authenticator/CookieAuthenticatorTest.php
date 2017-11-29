@@ -209,5 +209,7 @@ class CookieAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        $this->assertContains('CookieAuth=; expires=Thu, 01-Jan-1970', $result['response']->getHeaderLine('Set-Cookie'));
     }
 }

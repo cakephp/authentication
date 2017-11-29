@@ -13,7 +13,6 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
-use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -55,7 +54,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     protected function _checkCakeVersion()
     {
         if (!class_exists('Cake\Http\Cookie\Cookie')) {
-            throw new RuntimeException('You must use the CakePHP `3.next` branch or wait until CakePHP version 3.5 is released to use the CookieAuthenticator');
+            throw new RuntimeException('Install CakePHP version >=3.5.0 to use the `CookieAuthenticator`.');
         }
     }
 
@@ -101,7 +100,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $data = $this->getConfig('cookie');
         $data['value'] = (array)$identity;
 
-        $cookie = new Cookie(
+        $cookie = new \Cake\Http\Cookie\Cookie(
             $data['name'],
             $data['value'],
             $data['expire'],
@@ -118,23 +117,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * Clears the identity data
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
-     * @param \Cake\Http\Response $response The response object.
-     * @return array Returns an array containing the request and response object
+     * {@inheritDoc}
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $cookie = $this->getConfig('cookie');
-        $cookie['expire'] = strtotime('-1 year');
+        $cookie = (new \Cake\Http\Cookie\Cookie($this->getConfig('cookie.name')))->withExpired();
 
         return [
             'request' => $request,
-            'response' => $response->withCookie(
-                $cookie['name'],
-                $cookie
-            )
+            'response' => $response->withAddedHeader('Set-Cookie', $cookie->toHeaderValue())
         ];
     }
 }
