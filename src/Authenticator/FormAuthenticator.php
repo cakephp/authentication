@@ -137,7 +137,7 @@ class FormAuthenticator extends AbstractAuthenticator
             $check = 'preg_match';
         } else {
             $check = function ($loginUrl, $url) {
-                return strcasecmp($loginUrl, $url) === 0;
+                return $loginUrl === $url;
             };
         }
 
