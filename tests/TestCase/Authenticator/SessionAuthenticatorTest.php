@@ -43,7 +43,7 @@ class SessionAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Verification'
         ]);
 
         $this->sessionMock = $this->getMockBuilder('\Cake\Network\Session')
@@ -106,8 +106,9 @@ class SessionAuthenticatorTest extends TestCase
             ->method('read')
             ->with('Auth')
             ->will($this->returnValue([
+                'id' => 1,
                 'username' => 'mariano',
-                'password' => 'password'
+                'password' => 'h4s5ed'
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
@@ -124,6 +125,7 @@ class SessionAuthenticatorTest extends TestCase
             ->method('read')
             ->with('Auth')
             ->will($this->returnValue([
+                'id' => 1000,
                 'username' => 'does-not',
                 'password' => 'exist'
             ]));
