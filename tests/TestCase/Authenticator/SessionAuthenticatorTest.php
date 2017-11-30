@@ -107,7 +107,7 @@ class SessionAuthenticatorTest extends TestCase
             ->with('Auth')
             ->will($this->returnValue([
                 'username' => 'mariano',
-                'password' => 'password'
+                'password' => 'h45h'
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
