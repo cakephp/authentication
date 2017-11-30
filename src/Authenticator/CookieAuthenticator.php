@@ -13,6 +13,8 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
+use Cake\Utility\CookieCryptTrait;
+use Cake\Utility\Security;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -24,11 +26,17 @@ use RuntimeException;
  */
 class CookieAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {
+
+    use CookieCryptTrait;
+
     /**
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
         'rememberMeField' => 'remember_me',
+        'encryptionKey' => null,
+        'encryptionType' => 'aes',
+        'encrypt' => true,
         'cookie' => [
             'name' => 'CookieAuth',
             'expire' => null,
@@ -51,6 +59,21 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
+     * Gets the cookie encryption key
+     *
+     * @return string
+     */
+    protected function _getCookieEncryptionKey()
+    {
+        $key = $this->getConfig('encryptionKey');
+        if (!empty($key)) {
+            return $key;
+        }
+
+        return Security::getSalt();
+    }
+
+    /**
      * Checks the CakePHP Version by looking for the cookie implementation
      *
      * @return void
@@ -69,13 +92,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     {
         $cookies = $request->getCookieParams();
         $cookieName = $this->getConfig('cookie.name');
-
         if (!isset($cookies[$cookieName])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
                 'Login credentials not found'
             ]);
         }
         $userData = $cookies[$cookieName];
+        if ($this->getConfig('encrypt')) {
+            $userData = $this->_decrypt($userData, $this->getConfig('encryptionType'));
+        }
 
         $user = $this->identifiers()->identify($userData);
 
@@ -102,7 +127,9 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         }
 
         $data = $this->getConfig('cookie');
-        $data['value'] = (array)$identity;
+        $data['value'] = $this->getConfig('encrypt')
+            ? $this->_encrypt((array)$identity, $this->getConfig('encryptionType'))
+            : (array)$identity;
 
         $cookie = new \Cake\Http\Cookie\Cookie(
             $data['name'],

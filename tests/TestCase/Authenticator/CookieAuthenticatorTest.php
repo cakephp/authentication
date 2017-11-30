@@ -18,9 +18,11 @@ use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
+use Cake\Utility\Security;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -44,6 +46,7 @@ class CookieAuthenticatorTest extends TestCase
     {
         $this->skipIf(!class_exists('\Cake\Http\Cookie\Cookie'));
 
+        Security::setSalt('12345678901234567890123456789012');
         parent::setUp();
         Router::reload();
         Router::scope('/', function ($routes) {
@@ -69,10 +72,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => [
-                    'username' => 'mariano',
-                    'password' => 'password'
-                ]
+                'CookieAuth' => 'Q2FrZQ==.N2FkYzFlYWUyNjhhNmQ4NTdjNjgxOTVmZDE3NGEzYmMyNzIxNDI1NDA2ODRmNjVmODMxNTViMjI1Y2RiZjAwMNwMbRdXBvNvsvGYpBGaguwTwey1lRaBSs4K6rqlMWimQuwVglT80iVpgep+H5L9Yv7/X1NXU08ew5aVLEAA7Vs='
             ]
         );
         $response = new Response();
@@ -100,10 +100,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => [
-                    'username' => 'foo',
-                    'password' => 'bar'
-                ]
+                'CookieAuth' => 'Q2FrZQ==.NTA1Mjc3OWJmOTMzZWJjMzY5YWNkM2ZjZDg0ZWEyNDlmMmViNmY0OWJlZmQxNGU2MmEwNzI5NGE4NDZjODIyMSx0WNSojYWoohIyCSBsiMpN6WvajzMwESEG87m3jesYpEeqJqePssBDJsKCRypyca1s6+WnG6WLqd5jdStZJTE='
             ]
         );
         $response = new Response();
