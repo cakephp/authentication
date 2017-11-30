@@ -93,13 +93,8 @@ class PasswordIdentifier extends AbstractIdentifier
         }
 
         $identity = $this->_findIdentity($data['username']);
-        if ($identity === null) {
-            return null;
-        }
-
         if (array_key_exists('password', $data)) {
             $password = $data['password'];
-
             if (!$this->_checkPassword($identity, $password)) {
                 return null;
             }
@@ -113,12 +108,18 @@ class PasswordIdentifier extends AbstractIdentifier
      * Input passwords will be hashed even when a user doesn't exist. This
      * helps mitigate timing attacks that are attempting to find valid usernames.
      *
-     * @param array|\ArrayAccess $identity The identity.
+     * @param array|\ArrayAccess|null $identity The identity or null.
      * @param string|null $password The password.
      * @return bool
      */
     protected function _checkPassword($identity, $password)
     {
+        if ($identity === null) {
+            $identity = [
+                'password' => ''
+            ];
+        }
+
         $passwordField = $this->getConfig('fields.password');
         $hasher = $this->getPasswordHasher();
         $hashedPassword = $identity[$passwordField];

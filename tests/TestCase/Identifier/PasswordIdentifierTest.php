@@ -114,8 +114,10 @@ class PasswordIdentifierTest extends TestCase
             ->with(['username' => 'does-not'])
             ->willReturn(null);
 
-        $hasher->expects($this->never())
-            ->method('check');
+        $hasher->expects($this->once())
+            ->method('check')
+            ->with('exist', '')
+            ->willReturn(false);
 
         $identifier = new PasswordIdentifier();
         $identifier->setResolver($resolver)->setPasswordHasher($hasher);
