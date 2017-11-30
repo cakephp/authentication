@@ -88,20 +88,24 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     public function identify(array $data)
     {
-        $fields = $this->getConfig('fields');
-
-        $usernameFields = (array)$fields['username'];
-        $found = array_intersect_key(array_flip($usernameFields), $data);
-        if (empty($found)) {
+        if (!isset($data['username'])) {
             return null;
         }
 
-        $password = null;
-        if (!empty($data[$fields['password']])) {
-            $password = $data[$fields['password']];
+        $identity = $this->_findIdentity($data['username']);
+        if ($identity === null) {
+            return null;
         }
 
-        return $this->_findIdentity($data[key($found)], $password);
+        if (array_key_exists('password', $data)) {
+            $password = $data['password'];
+
+            if (!$this->_checkPassword($identity, $password)) {
+                return null;
+            }
+        }
+
+        return $identity;
     }
 
     /**
@@ -109,40 +113,32 @@ class PasswordIdentifier extends AbstractIdentifier
      * Input passwords will be hashed even when a user doesn't exist. This
      * helps mitigate timing attacks that are attempting to find valid usernames.
      *
-     * @param string $identifier The username/identifier.
-     * @param string|null $password The password, if not provided password checking is skipped
-     *   and result of find is returned.
-     * @return \ArrayAccess|null User data entity or null on failure.
+     * @param array|\ArrayAccess $identity The identity.
+     * @param string|null $password The password.
+     * @return bool
      */
-    protected function _findIdentity($identifier, $password = null)
+    protected function _checkPassword($identity, $password)
     {
-        $result = $this->_findUser($identifier);
-        if (empty($result)) {
-            return null;
+        $passwordField = $this->getConfig('fields.password');
+        $hasher = $this->getPasswordHasher();
+        $hashedPassword = $identity[$passwordField];
+        if (!$hasher->check($password, $hashedPassword)) {
+            return false;
         }
 
-        if ($password !== null) {
-            $passwordField = $this->getConfig('fields.password');
-            $hasher = $this->getPasswordHasher();
-            $hashedPassword = $result[$passwordField];
-            if (!$hasher->check($password, $hashedPassword)) {
-                return null;
-            }
+        $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
+        unset($identity[$passwordField]);
 
-            $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
-            unset($result[$passwordField]);
-        }
-
-        return $result;
+        return true;
     }
 
     /**
-     * Get query object for fetching user from database.
+     * Find a user record using the username/identifier provided.
      *
      * @param string $identifier The username/identifier.
-     * @return \ArrayAccess|null
+     * @return \ArrayAccess|array|null
      */
-    protected function _findUser($identifier)
+    protected function _findIdentity($identifier)
     {
         $fields = $this->getConfig('fields.username');
         $conditions = [];

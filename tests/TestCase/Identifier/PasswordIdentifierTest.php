@@ -165,6 +165,75 @@ class PasswordIdentifierTest extends TestCase
     }
 
     /**
+     * testIdentifyEmptyPassword
+     *
+     * @return void
+     */
+    public function testIdentifyEmptyPassword()
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+        $hasher = $this->createMock(PasswordHasherInterface::class);
+
+        $user = new ArrayObject([
+            'username' => 'mariano',
+            'password' => 'h45hedpa55w0rd'
+        ]);
+
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with(['username' => 'mariano'])
+            ->willReturn($user);
+
+        $hasher->expects($this->once())
+            ->method('check')
+            ->with('', 'h45hedpa55w0rd')
+            ->willReturn(false);
+
+        $identifier = new PasswordIdentifier();
+        $identifier->setResolver($resolver)->setPasswordHasher($hasher);
+
+        $result = $identifier->identify([
+            'username' => 'mariano',
+            'password' => ''
+        ]);
+
+        $this->assertNull($result);
+    }
+
+    /**
+     * testIdentifyNoPassword
+     *
+     * @return void
+     */
+    public function testIdentifyNoPassword()
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+        $hasher = $this->createMock(PasswordHasherInterface::class);
+
+        $user = new ArrayObject([
+            'username' => 'mariano',
+            'password' => 'h45hedpa55w0rd'
+        ]);
+
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with(['username' => 'mariano'])
+            ->willReturn($user);
+
+        $hasher->expects($this->never())
+            ->method('check');
+
+        $identifier = new PasswordIdentifier();
+        $identifier->setResolver($resolver)->setPasswordHasher($hasher);
+
+        $result = $identifier->identify([
+            'username' => 'mariano'
+        ]);
+
+        $this->assertInstanceOf('\ArrayAccess', $result);
+    }
+
+    /**
      * testIdentifyMissingCredentials
      *
      * @return void
