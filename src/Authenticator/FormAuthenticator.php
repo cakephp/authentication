@@ -28,25 +28,28 @@ class FormAuthenticator extends AbstractAuthenticator
      * Checks the fields to ensure they are supplied.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @param array $fields The fields to be checked.
-     * @return bool False if the fields have not been supplied. True if they exist.
+     * @return array|null False if the fields have not been supplied. True if they exist.
      */
-    protected function _checkBody(ServerRequestInterface $request, array $fields)
+    protected function _getData(ServerRequestInterface $request)
     {
+        $fields = $this->_config['fields'];
         $body = $request->getParsedBody();
 
-        foreach ([$fields['username'], $fields['password']] as $field) {
+        $data = [];
+        foreach ($fields as $key => $field) {
             if (!isset($body[$field])) {
-                return false;
+                return null;
             }
 
             $value = $body[$field];
-            if (empty($value) || !is_string($value)) {
-                return false;
+            if (!is_string($value) || !strlen($value)) {
+                return null;
             }
+
+            $data[$key] = $value;
         }
 
-        return true;
+        return $data;
     }
 
     /**
@@ -72,15 +75,14 @@ class FormAuthenticator extends AbstractAuthenticator
             return new Result(null, Result::FAILURE_OTHER, $errors);
         }
 
-        $fields = $this->_config['fields'];
-        if (!$this->_checkBody($request, $fields)) {
+        $data = $this->_getData($request);
+        if ($data === null) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
                 'Login credentials not found'
             ]);
         }
 
-        $body = $request->getParsedBody();
-        $user = $this->identifiers()->identify($body);
+        $user = $this->identifiers()->identify($data);
 
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
