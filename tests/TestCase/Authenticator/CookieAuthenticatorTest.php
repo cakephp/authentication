@@ -17,12 +17,9 @@ use ArrayObject;
 use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Cake\Routing\Router;
-use Cake\Utility\Security;
+use Cake\TestSuite\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -46,22 +43,15 @@ class CookieAuthenticatorTest extends TestCase
     {
         $this->skipIf(!class_exists('\Cake\Http\Cookie\Cookie'));
 
-        Security::setSalt('12345678901234567890123456789012');
         parent::setUp();
-        Router::reload();
-        Router::scope('/', function ($routes) {
-            $routes->connect('/', ['controller' => 'pages', 'action' => 'display', 'home']);
-            $routes->connect('/some_alias', ['controller' => 'tests_apps', 'action' => 'some_method']);
-            $routes->fallbacks();
-        });
     }
 
     /**
-     * testAuthenticate
+     * testAuthenticateSuccess
      *
      * @return void
      */
-    public function testAuthenticate()
+    public function testAuthenticateSuccess()
     {
         $identifiers = new IdentifierCollection([
             'Authentication.Password'
@@ -72,7 +62,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => 'Q2FrZQ==.N2FkYzFlYWUyNjhhNmQ4NTdjNjgxOTVmZDE3NGEzYmMyNzIxNDI1NDA2ODRmNjVmODMxNTViMjI1Y2RiZjAwMNwMbRdXBvNvsvGYpBGaguwTwey1lRaBSs4K6rqlMWimQuwVglT80iVpgep+H5L9Yv7/X1NXU08ew5aVLEAA7Vs='
+                'CookieAuth' => 'mariano:$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'
             ]
         );
         $response = new Response();
@@ -100,7 +90,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => 'Q2FrZQ==.NTA1Mjc3OWJmOTMzZWJjMzY5YWNkM2ZjZDg0ZWEyNDlmMmViNmY0OWJlZmQxNGU2MmEwNzI5NGE4NDZjODIyMSx0WNSojYWoohIyCSBsiMpN6WvajzMwESEG87m3jesYpEeqJqePssBDJsKCRypyca1s6+WnG6WLqd5jdStZJTE='
+                'CookieAuth' => 'robert:$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'
             ]
         );
         $response = new Response();
@@ -136,6 +126,34 @@ class CookieAuthenticatorTest extends TestCase
     }
 
     /**
+     * testAuthenticateInvalidToken
+     *
+     * @return void
+     */
+    public function testAuthenticateInvalidToken()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                'CookieAuth' => 'mariano:$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/asdasdsadasd'
+            ]
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+        $result = $authenticator->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
+    }
+
+    /**
      * testPersistIdentity
      *
      * @return void
@@ -156,19 +174,22 @@ class CookieAuthenticatorTest extends TestCase
 
         $authenticator = new CookieAuthenticator($identifiers);
 
-        $array = new ArrayObject(['username' => 'mariano']);
-        $result = $authenticator->persistIdentity($request, $response, $array);
+        $identity = new ArrayObject([
+            'username' => 'mariano',
+            'password' => '$2a$10$u05j8FjsvLBNdfhBhc21LOuVMpzpabVXQ9OpC2wO3pSO0q6t7HHMO'
+        ]);
+        $result = $authenticator->persistIdentity($request, $response, $identity);
 
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
-        $this->assertContains('CookieAuth', $result['response']->getHeaderLine('Set-Cookie'));
+        $this->assertContains('CookieAuth=mariano%3A%242y%2410%24', $result['response']->getHeaderLine('Set-Cookie'));
 
         // Testing that the field is not present
         $request = $request->withParsedBody([]);
-        $result = $authenticator->persistIdentity($request, $response, $array);
+        $result = $authenticator->persistIdentity($request, $response, $identity);
         $this->assertNotContains('CookieAuth', $result['response']->getHeaderLine('Set-Cookie'));
 
         // Testing a different field name
@@ -178,8 +199,8 @@ class CookieAuthenticatorTest extends TestCase
         $authenticator = new CookieAuthenticator($identifiers, [
             'rememberMeField' => 'other_field'
         ]);
-        $result = $authenticator->persistIdentity($request, $response, $array);
-        $this->assertContains('CookieAuth', $result['response']->getHeaderLine('Set-Cookie'));
+        $result = $authenticator->persistIdentity($request, $response, $identity);
+        $this->assertContains('CookieAuth=mariano%3A%242y%2410%24', $result['response']->getHeaderLine('Set-Cookie'));
     }
 
     /**
