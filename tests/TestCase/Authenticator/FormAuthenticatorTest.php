@@ -259,7 +259,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'useRegex' => true,
-            'checkFullUri' => true
+            'checkFullUrl' => true
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -293,7 +293,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'useRegex' => true,
-            'checkFullUri' => true
+            'checkFullUrl' => true
         ]);
 
         $result = $form->authenticate($request, $response);

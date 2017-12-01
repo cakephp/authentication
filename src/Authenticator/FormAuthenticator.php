@@ -28,7 +28,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * - `fields` The fields to use to identify a user by.
      * - `loginUrl` Login URL or an array of URLs.
      * - `useRegex` Whether or not to use `loginUrl` as regular expression(s).
-     * - `checkFullUri` Whether or not to check the full request URI.
+     * - `checkFullUrl` Whether or not to check the full request URI.
      *
      * @var array
      */
@@ -39,7 +39,7 @@ class FormAuthenticator extends AbstractAuthenticator
         ],
         'loginUrl' => null,
         'useRegex' => false,
-        'checkFullUri' => false
+        'checkFullUrl' => false
     ];
 
     /**
@@ -79,16 +79,12 @@ class FormAuthenticator extends AbstractAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         if (!$this->_checkLoginUrl($request)) {
-            if ($this->getConfig('checkFullUri')) {
-                $uri = $request->getUri();
-            } else {
-                $uri = $request->getUri()->getPath();
-            }
+            $url = $this->_getUrl($request);
 
             $errors = [
                 sprintf(
                     'Login URL `%s` did not match `%s`.',
-                    $uri,
+                    $url,
                     implode('` or `', (array)$this->getConfig('loginUrl'))
                 )
             ];
@@ -127,12 +123,6 @@ class FormAuthenticator extends AbstractAuthenticator
             return true;
         }
 
-        if ($this->getConfig('checkFullUri')) {
-            $url = (string)$request->getUri();
-        } else {
-            $url = $request->getUri()->getPath();
-        }
-
         if ($this->getConfig('useRegex')) {
             $check = 'preg_match';
         } else {
@@ -141,6 +131,7 @@ class FormAuthenticator extends AbstractAuthenticator
             };
         }
 
+        $url = $this->_getUrl($request);
         foreach ($loginUrls as $loginUrl) {
             if ($check($loginUrl, $url)) {
                 return true;
@@ -148,5 +139,20 @@ class FormAuthenticator extends AbstractAuthenticator
         }
 
         return false;
+    }
+
+    /**
+     * Returns current url.
+     *
+     * @param ServerRequestInterface $request Server request.
+     * @return string
+     */
+    protected function _getUrl(ServerRequestInterface $request)
+    {
+        if ($this->getConfig('checkFullUrl')) {
+            return (string)$request->getUri();
+        }
+
+        return $request->getUri()->getPath();
     }
 }
