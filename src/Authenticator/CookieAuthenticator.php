@@ -82,8 +82,8 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
                 'Login credentials not found'
             ]);
         }
-        $token = $cookies[$cookieName];
-        $token  = explode(':', $token);
+
+        $token = explode(':', $cookies[$cookieName]);
 
         if (count($token) !== 2) {
             return new Result(null, Result::FAILURE_CREDENTIAL_INVALID, [
