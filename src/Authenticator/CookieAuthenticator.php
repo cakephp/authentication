@@ -86,7 +86,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         list($username, $tokenHash) = explode(':', $token);
 
         $credentials = [
-            'username' => $username
+            'username' => json_decode($username)
         ];
         $identity = $this->identifiers()->identify($credentials);
 
@@ -168,7 +168,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         $usernameField = $this->getConfig('fields.username');
 
-        return $identity[$usernameField] . ':' . $hash;
+        return json_encode($identity[$usernameField]) . ':' . $hash;
     }
 
     /**
