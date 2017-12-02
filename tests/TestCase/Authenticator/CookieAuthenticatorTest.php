@@ -47,6 +47,34 @@ class CookieAuthenticatorTest extends TestCase
     }
 
     /**
+     * testAuthenticateInvalidTokenMissingUsername
+     *
+     * @return void
+     */
+    public function testAuthenticateInvalidTokenMissingUsername()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                'CookieAuth' => '$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'
+            ]
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+        $result = $authenticator->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
+    }
+
+    /**
      * testAuthenticateSuccess
      *
      * @return void
