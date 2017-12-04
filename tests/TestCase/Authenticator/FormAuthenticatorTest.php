@@ -18,7 +18,6 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Cake\Routing\Router;
 
 class FormAuthenticatorTest extends TestCase
 {
@@ -32,17 +31,6 @@ class FormAuthenticatorTest extends TestCase
         'core.auth_users',
         'core.users'
     ];
-
-    public function setUp()
-    {
-        parent::setUp();
-        Router::reload();
-        Router::scope('/', function ($routes) {
-            $routes->connect('/', ['controller' => 'pages', 'action' => 'display', 'home']);
-            $routes->connect('/some_alias', ['controller' => 'tests_apps', 'action' => 'some_method']);
-            $routes->fallbacks();
-        });
-    }
 
     /**
      * testAuthenticate
@@ -124,11 +112,11 @@ class FormAuthenticatorTest extends TestCase
     }
 
     /**
-     * testAuthenticateLoginUrl
+     * testSingleLoginUrlMismatch
      *
      * @return void
      */
-    public function testAuthenticateLoginUrl()
+    public function testSingleLoginUrlMismatch()
     {
         $identifiers = new IdentifierCollection([
            'Authentication.Password'
@@ -149,15 +137,47 @@ class FormAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
-        $this->assertEquals([0 => 'Login URL /users/does-not-match did not match /users/login'], $result->getErrors());
+        $this->assertEquals([0 => 'Login URL `/users/does-not-match` did not match `/users/login`.'], $result->getErrors());
     }
 
     /**
-     * testArrayLoginUrl
+     * testMultipleLoginUrlMismatch
      *
      * @return void
      */
-    public function testArrayLoginUrl()
+    public function testMultipleLoginUrlMismatch()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => [
+                '/en/users/login',
+                '/de/users/login',
+            ]
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
+        $this->assertEquals([0 => 'Login URL `/users/does-not-match` did not match `/en/users/login` or `/de/users/login`.'], $result->getErrors());
+    }
+
+    /**
+     * testSingleLoginUrlSuccess
+     *
+     * @return void
+     */
+    public function testSingleLoginUrlSuccess()
     {
         $identifiers = new IdentifierCollection([
            'Authentication.Password'
@@ -171,9 +191,38 @@ class FormAuthenticatorTest extends TestCase
         $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/Users/login'
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals([], $result->getErrors());
+    }
+
+    /**
+     * testMultipleLoginUrlSuccess
+     *
+     * @return void
+     */
+    public function testMultipleLoginUrlSuccess()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/de/users/login'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
             'loginUrl' => [
-                'controller' => 'Users',
-                'action' => 'login'
+                '/en/users/login',
+                '/de/users/login',
             ]
         ]);
 
@@ -185,35 +234,93 @@ class FormAuthenticatorTest extends TestCase
     }
 
     /**
-     * testLoginUrlWithAppInSubFolder
+     * testRegexLoginUrlSuccess
      *
      * @return void
      */
-    public function testLoginUrlWithAppInSubFolder()
+    public function testRegexLoginUrlSuccess()
     {
-        $request = ServerRequestFactory::fromGlobals(
-            [
-                'REQUEST_URI' => '/subfolder/Users/login',
-                'PHP_SELF' => '/subfolder/index.php',
-            ],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-
-        $this->assertEquals('/subfolder/', $request->getUri()->webroot);
-        $this->assertEquals('/Users/login', $request->getUri()->getPath());
-
-        $response = new Response();
-
         $identifiers = new IdentifierCollection([
            'Authentication.Password'
         ]);
 
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/de/users/login'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
         $form = new FormAuthenticator($identifiers, [
-            'loginUrl' => [
-                'controller' => 'Users',
-                'action' => 'login'
-            ]
+            'loginUrl' => '%^/[a-z]{2}/users/login/?$%',
+            'useRegex' => true
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals([], $result->getErrors());
+    }
+
+    /**
+     * testFullRegexLoginUrlFailure
+     *
+     * @return void
+     */
+    public function testFullRegexLoginUrlFailure()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/de/users/login'
+            ],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
+            'useRegex' => true,
+            'checkFullUrl' => true
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_OTHER, $result->getCode());
+        $this->assertEquals([0 => 'Login URL `http://localhost/de/users/login` did not match `%auth\.localhost/[a-z]{2}/users/login/?$%`.'], $result->getErrors());
+    }
+
+    /**
+     * testRegexLoginUrlSuccess
+     *
+     * @return void
+     */
+    public function testFullRegexLoginUrlSuccess()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/de/users/login',
+                'SERVER_NAME' => 'auth.localhost'
+            ],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
+            'useRegex' => true,
+            'checkFullUrl' => true
         ]);
 
         $result = $form->authenticate($request, $response);
