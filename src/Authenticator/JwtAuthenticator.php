@@ -14,6 +14,7 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Exception;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
@@ -87,7 +88,8 @@ class JwtAuthenticator extends TokenAuthenticator
 
         $result = json_decode(json_encode($result), true);
 
-        if (empty($result)) {
+        $key = IdentifierInterface::CREDENTIAL_JWT_SUBJECT;
+        if (empty($result[$key])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND);
         }
 
@@ -97,7 +99,9 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result($user, Result::SUCCESS);
         }
 
-        $user = $this->identifiers()->identify($result);
+        $user = $this->identifiers()->identify([
+            $key => $result[$key]
+        ]);
 
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
