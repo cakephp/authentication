@@ -16,7 +16,7 @@ Looks up the data in the request body, usually when a form submit happens via PO
 Configuration options:
 
 * **loginUrl**: The login URL, string or array of URLs. Default is `null` and all pages will be checked.
-* **fields**: Array that maps `username` and `password` to the specified fields.
+* **fields**: Array that maps `username` and `password` to the specified POST data fields.
 * **useRegex**: Whether or not to use regular expressions for URL matching. Default is `false`.
 * **checkFullUrl**: Whether or not to check full URL. Useful when a login form is on a different subdomain. Default is `false`.
 
@@ -92,6 +92,11 @@ Configuration options:
   * **secure**: Bool, default is `false`
   * **httpOnly**: Bool, default is `false`
   * **value**: Value, default is an empty string ``
+* **fields**: Array that maps `username` and `password` to the specified identity fields.
+* **loginUrl**: The login URL, string or array of URLs. Default is `null` and all pages will be checked.
+* **useRegex**: Whether or not to use regular expressions for URL matching. Default is `false`.
+* **checkFullUrl**: Whether or not to check full URL. Useful when a login form is on a different subdomain. Default is `false`.
+* **passwordHasher**: Password hasher to use for token hashing. Default is `DefaultPasswordHasher::class`.
 
 ## OAuth
 
