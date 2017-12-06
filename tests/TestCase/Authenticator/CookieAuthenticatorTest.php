@@ -232,6 +232,43 @@ class CookieAuthenticatorTest extends TestCase
     }
 
     /**
+     * testPersistIdentityLoginUrlMismatch
+     *
+     * @return void
+     */
+    public function testPersistIdentityLoginUrlMismatch()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath']
+        );
+        $request = $request->withParsedBody([
+            'remember_me' => 1
+        ]);
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers, [
+            'loginUrl' => '/users/login'
+        ]);
+
+        $identity = new ArrayObject([
+            'username' => 'mariano',
+            'password' => '$2a$10$u05j8FjsvLBNdfhBhc21LOuVMpzpabVXQ9OpC2wO3pSO0q6t7HHMO'
+        ]);
+        $result = $authenticator->persistIdentity($request, $response, $identity);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertNotContains('CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24', $result['response']->getHeaderLine('Set-Cookie'));
+    }
+
+    /**
      * testClearIdentity
      *
      * @return void
