@@ -13,6 +13,7 @@
 namespace Authentication\Test\TestCase\Authenticator;
 
 use ArrayAccess;
+use ArrayObject;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
@@ -113,21 +114,33 @@ class JwtAuthenticatorTest extends TestCase
     }
 
     /**
-     * testAuthenticationViaORMIdentifierAndSubject
+     * testAuthenticationViaIdentifierAndSubject
      *
      * @return void
      */
-    public function testAuthenticationViaORMIdentifierAndSubject()
+    public function testAuthenticationViaIdentifierAndSubject()
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
             ['token' => $this->token]
         );
 
-        $this->identifiers->load('Authentication.JwtSubject');
+        $this->identifiers = $this->createMock(IdentifierCollection::class);
+        $this->identifiers->expects($this->once())
+            ->method('identify')
+            ->with([
+                'sub' => 3
+            ])
+            ->willReturn(new ArrayObject([
+                'sub' => 3,
+                'id' => 3,
+                'username' => 'larry',
+                'firstname' => 'larry'
+            ]));
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
-            'secretKey' => 'secretKey'
+            'secretKey' => 'secretKey',
+            'returnPayload' => false
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -151,8 +164,6 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $response = new Response();
-
-        $this->identifiers->load('Authentication.JwtSubject');
 
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
             ->setConstructorArgs([
@@ -187,8 +198,6 @@ class JwtAuthenticatorTest extends TestCase
 
         $response = new Response();
 
-        $this->identifiers->load('Authentication.JwtSubject');
-
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
             ->setConstructorArgs([
                 $this->identifiers
@@ -215,8 +224,6 @@ class JwtAuthenticatorTest extends TestCase
             ['token' => 'should cause an exception']
         );
 
-        $this->identifiers->load('Authentication.JwtSubject');
-
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey'
         ]);
@@ -242,8 +249,6 @@ class JwtAuthenticatorTest extends TestCase
             ['REQUEST_URI' => '/'],
             ['token' => $this->token]
         );
-
-        $this->identifiers->load('Authentication.JwtSubject');
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey'
