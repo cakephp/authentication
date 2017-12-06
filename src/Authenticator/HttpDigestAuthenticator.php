@@ -14,6 +14,7 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -83,7 +84,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         }
 
         $user = $this->identifiers()->identify([
-            'username' => $digest['username'],
+            IdentifierInterface::CREDENTIAL_USERNAME => $digest['username'],
         ]);
 
         if (empty($user)) {
@@ -94,7 +95,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
         }
 
-        $field = $this->_config['fields']['password'];
+        $field = $this->_config['fields'][IdentifierInterface::CREDENTIAL_PASSWORD];
         $password = $user[$field];
         unset($user[$field]);
 

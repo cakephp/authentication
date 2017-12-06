@@ -12,6 +12,7 @@
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -34,8 +35,8 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected $_defaultConfig = [
         'fields' => [
-            'username' => 'username',
-            'password' => 'password'
+            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
         ],
         'loginUrl' => null,
         'useRegex' => false,

@@ -15,6 +15,7 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use ArrayObject;
+use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -34,7 +35,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      */
     protected $_defaultConfig = [
         'fields' => [
-            'username' => 'username'
+            IdentifierInterface::CREDENTIAL_USERNAME => 'username'
         ],
         'sessionKey' => 'Auth',
         'identify' => false
