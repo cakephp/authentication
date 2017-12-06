@@ -22,6 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FormAuthenticator extends AbstractAuthenticator
 {
+    use LoginUrlCheckTrait;
 
     /**
      * Default config for this object.
@@ -107,52 +108,5 @@ class FormAuthenticator extends AbstractAuthenticator
         }
 
         return new Result($user, Result::SUCCESS);
-    }
-
-    /**
-     * Checks the requests if it is the configured login action
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return bool
-     */
-    protected function _checkLoginUrl(ServerRequestInterface $request)
-    {
-        $loginUrls = (array)$this->getConfig('loginUrl');
-
-        if (empty($loginUrls)) {
-            return true;
-        }
-
-        if ($this->getConfig('useRegex')) {
-            $check = 'preg_match';
-        } else {
-            $check = function ($loginUrl, $url) {
-                return $loginUrl === $url;
-            };
-        }
-
-        $url = $this->_getUrl($request);
-        foreach ($loginUrls as $loginUrl) {
-            if ($check($loginUrl, $url)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns current url.
-     *
-     * @param ServerRequestInterface $request Server request.
-     * @return string
-     */
-    protected function _getUrl(ServerRequestInterface $request)
-    {
-        if ($this->getConfig('checkFullUrl')) {
-            return (string)$request->getUri();
-        }
-
-        return $request->getUri()->getPath();
     }
 }
