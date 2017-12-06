@@ -63,7 +63,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             foreach ($this->getConfig('fields') as $key => $field) {
                 $credentials[$key] = $user[$field];
             }
-            $user = $this->identifiers()->identify($credentials);
+            $user = $this->_identifier->identify($credentials);
 
             if (empty($user)) {
                 return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);

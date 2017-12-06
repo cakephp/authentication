@@ -12,7 +12,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -37,32 +36,45 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     ];
 
     /**
-     * Identifier collection
+     * Identifier or identifiers collection.
      *
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierInterface
      */
-    protected $_identifiers;
+    protected $_identifier;
 
     /**
      * Constructor
      *
-     * @param \Authentication\Identifier\IdentifierCollection $identifiers Identifiers collection.
+     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
      * @param array $config Configuration settings.
      */
-    public function __construct(IdentifierCollection $identifiers, array $config = [])
+    public function __construct(IdentifierInterface $identifier, array $config = [])
     {
         $this->setConfig($config);
-        $this->_identifiers = $identifiers;
+        $this->_identifier = $identifier;
     }
 
     /**
-     * Gets the identifier collection
+     * Gets the identifier.
      *
-     * @return \Authentication\Identifier\IdentifierCollection
+     * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function identifiers()
+    public function getIdentifier()
     {
-        return $this->_identifiers;
+        return $this->_identifier;
+    }
+
+    /**
+     * Sets the identifier.
+     *
+     * @param \Authentication\Identifier\IdentifierInterface $identifier IdentifierInterface instance.
+     * @return $this
+     */
+    public function setIdentifier(IdentifierInterface $identifier)
+    {
+        $this->_identifier = $identifier;
+
+        return $this;
     }
 
     /**

@@ -13,7 +13,6 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -53,10 +52,10 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * - `opaque` A string that must be returned unchanged by clients.
      *    Defaults to `md5($config['realm'])`
      *
-     * @param \Authentication\Identifier\IdentifierCollection $identifiers Array of config to use.
+     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier instance.
      * @param array $config Configuration settings.
      */
-    public function __construct(IdentifierCollection $identifiers, array $config = [])
+    public function __construct(IdentifierInterface $identifier, array $config = [])
     {
         $this->setConfig([
             'realm' => null,
@@ -66,7 +65,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         ]);
 
         $this->setConfig($config);
-        parent::__construct($identifiers, $config);
+        parent::__construct($identifier, $config);
     }
 
     /**
@@ -83,8 +82,8 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_OTHER);
         }
 
-        $user = $this->identifiers()->identify([
-            IdentifierInterface::CREDENTIAL_USERNAME => $digest['username'],
+        $user = $this->_identifier->identify([
+            IdentifierInterface::CREDENTIAL_USERNAME => $digest['username']
         ]);
 
         if (empty($user)) {
