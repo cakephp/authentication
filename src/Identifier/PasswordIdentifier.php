@@ -56,8 +56,8 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     protected $_defaultConfig = [
         'fields' => [
-            'username' => 'username',
-            'password' => 'password'
+            self::CREDENTIAL_USERNAME => 'username',
+            self::CREDENTIAL_PASSWORD => 'password'
         ],
         'resolver' => 'Authentication.Orm',
         'passwordHasher' => null
@@ -88,13 +88,13 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     public function identify(array $data)
     {
-        if (!isset($data['username'])) {
+        if (!isset($data[self::CREDENTIAL_USERNAME])) {
             return null;
         }
 
-        $identity = $this->_findIdentity($data['username']);
-        if (array_key_exists('password', $data)) {
-            $password = $data['password'];
+        $identity = $this->_findIdentity($data[self::CREDENTIAL_USERNAME]);
+        if (array_key_exists(self::CREDENTIAL_PASSWORD, $data)) {
+            $password = $data[self::CREDENTIAL_PASSWORD];
             if (!$this->_checkPassword($identity, $password)) {
                 return null;
             }
@@ -114,13 +114,14 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     protected function _checkPassword($identity, $password)
     {
+        $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
+
         if ($identity === null) {
             $identity = [
-                'password' => ''
+                $passwordField => ''
             ];
         }
 
-        $passwordField = $this->getConfig('fields.password');
         $hasher = $this->getPasswordHasher();
         $hashedPassword = $identity[$passwordField];
         if (!$hasher->check($password, $hashedPassword)) {
@@ -141,7 +142,7 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     protected function _findIdentity($identifier)
     {
-        $fields = $this->getConfig('fields.username');
+        $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
         $conditions = [];
         foreach ((array)$fields as $field) {
             $conditions[$field] = $identifier;

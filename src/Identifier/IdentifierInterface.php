@@ -20,6 +20,8 @@ interface IdentifierInterface
 
     const CREDENTIAL_TOKEN = 'token';
 
+    const CREDENTIAL_JWT_SUBJECT = 'sub';
+
     /**
      * Identifies an user or service by the passed credentials
      *
