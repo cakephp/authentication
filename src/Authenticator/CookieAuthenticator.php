@@ -83,9 +83,9 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             ]);
         }
 
-        $token = explode(':', $cookies[$cookieName]);
+        $token = json_decode($cookies[$cookieName], true);
 
-        if (count($token) !== 2) {
+        if ($token === null || count($token) !== 2) {
             return new Result(null, Result::FAILURE_CREDENTIAL_INVALID, [
                 'Cookie token is invalid.'
             ]);
@@ -94,7 +94,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         list($username, $tokenHash) = $token;
 
         $credentials = [
-            'username' => json_decode($username)
+            'username' => $username
         ];
         $identity = $this->identifiers()->identify($credentials);
 
@@ -162,9 +162,9 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * Creates a full cookie token.
+     * Creates a full cookie token serialized as a JSON sting.
      *
-     * Cookie token consists of concatendated username and hashed username + password hash.
+     * Cookie token consists of a username and hashed username + password hash.
      *
      * @param array|\ArrayAccess $identity Identity data.
      * @return string
@@ -176,7 +176,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         $usernameField = $this->getConfig('fields.username');
 
-        return json_encode($identity[$usernameField]) . ':' . $hash;
+        return json_encode([$identity[$usernameField], $hash]);
     }
 
     /**

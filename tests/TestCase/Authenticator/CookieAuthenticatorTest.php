@@ -62,7 +62,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => '$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'
+                'CookieAuth' => '["$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]'
             ]
         );
         $response = new Response();
@@ -90,7 +90,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => '"mariano":$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'
+                'CookieAuth' => '["mariano","$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]'
             ]
         );
         $response = new Response();
@@ -118,7 +118,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => '"robert":$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'
+                'CookieAuth' => '["robert","$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]'
             ]
         );
         $response = new Response();
@@ -169,7 +169,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => '"mariano":$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/asdasdsadasd'
+                'CookieAuth' => '["mariano","$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/asdasdsadasd"]'
             ]
         );
         $response = new Response();
@@ -213,7 +213,7 @@ class CookieAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
-        $this->assertContains('CookieAuth=%22mariano%22%3A%242y%2410%24', $result['response']->getHeaderLine('Set-Cookie'));
+        $this->assertContains('CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24', $result['response']->getHeaderLine('Set-Cookie'));
 
         // Testing that the field is not present
         $request = $request->withParsedBody([]);
@@ -228,7 +228,7 @@ class CookieAuthenticatorTest extends TestCase
             'rememberMeField' => 'other_field'
         ]);
         $result = $authenticator->persistIdentity($request, $response, $identity);
-        $this->assertContains('CookieAuth=%22mariano%22%3A%242y%2410%24', $result['response']->getHeaderLine('Set-Cookie'));
+        $this->assertContains('CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24', $result['response']->getHeaderLine('Set-Cookie'));
     }
 
     /**
