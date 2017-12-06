@@ -14,6 +14,11 @@ namespace Authentication\Identifier;
 
 interface IdentifierInterface
 {
+    const CREDENTIAL_USERNAME = 'username';
+
+    const CREDENTIAL_PASSWORD = 'password';
+
+    const CREDENTIAL_TOKEN = 'token';
 
     /**
      * Identifies an user or service by the passed credentials
