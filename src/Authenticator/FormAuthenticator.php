@@ -22,7 +22,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FormAuthenticator extends AbstractAuthenticator
 {
-    use LoginUrlCheckTrait;
 
     /**
      * Default config for this object.
@@ -34,6 +33,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * @var array
      */
     protected $_defaultConfig = [
+        'loginUrlChecker' => LoginUrlChecker::class,
         'fields' => [
             'username' => 'username',
             'password' => 'password'
@@ -79,8 +79,19 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        if (!$this->_checkLoginUrl($request)) {
-            $url = $this->_getUrl($request);
+        $checkerClass = $this->getConfig('loginUrlChecker');
+        $checker = new $checkerClass();
+        $isLoginUrl = $checker->check($request, $this->getConfig('loginUrl'), [
+            'useRegex' => $this->getConfig('useRegex'),
+            'checkFullUrl' => $this->getConfig('checkFullUrl')
+        ]);
+
+        if (!$isLoginUrl) {
+            if ($this->getConfig('checkFullUrl')) {
+                $url = (string)$request->getUri();
+            } else {
+                $url = $request->getUri()->getPath();
+            }
 
             $errors = [
                 sprintf(
