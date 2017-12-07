@@ -33,7 +33,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'loginUrlChecker' => LoginUrlChecker::class,
+        'loginUrlChecker' => [
+            'loginUrl' => null,
+            'useRegex' => false,
+            'checkFullUrl' => false
+        ],
         'rememberMeField' => 'remember_me',
         'fields' => [
             'username' => 'username',

@@ -28,10 +28,13 @@ trait CheckLoginUrlTrait
      */
     protected function _checkLoginUrl(ServerRequestInterface $request)
     {
-        return $this->_getLoginUrlChecker()->check($request, $this->getConfig('loginUrl'), [
-            'useRegex' => $this->getConfig('useRegex'),
-            'checkFullUrl' => $this->getConfig('checkFullUrl')
-        ]);
+        $config = (array)$this->getConfig('loginUrlChecker');
+
+        return $this->_getLoginUrlChecker()->check(
+            $request,
+            $config['loginUrl'],
+            $config
+        );
     }
 
     /**
@@ -41,13 +44,17 @@ trait CheckLoginUrlTrait
      */
     protected function _getLoginUrlChecker()
     {
-        $checkerClass = $this->getConfig('loginUrlChecker');
-        $checker = new $checkerClass();
+        $options = $this->getConfig('loginUrlChecker');
+        if (!isset($options['className'])) {
+            $options['className'] = LoginUrlChecker::class;
+        }
+
+        $checker = new $options['className']();
 
         if (!$checker instanceof LoginUrlCheckerInterface) {
             throw new RuntimeException(sprintf(
                 'The provided login URL checker `%s` does not implement the `%s` interface',
-                $checkerClass,
+                $options['className'],
                 LoginUrlCheckerInterface::class
             ));
         }

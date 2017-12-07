@@ -251,7 +251,9 @@ class CookieAuthenticatorTest extends TestCase
         $response = new Response();
 
         $authenticator = new CookieAuthenticator($identifiers, [
-            'loginUrl' => '/users/login'
+            'loginUrlChecker' => [
+                'loginUrl' => '/users/login'
+            ]
         ]);
 
         $identity = new ArrayObject([

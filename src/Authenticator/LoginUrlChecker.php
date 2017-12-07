@@ -35,6 +35,7 @@ class LoginUrlChecker implements LoginUrlCheckerInterface
 
         $getFullUrl = (isset($options['checkFullUrl']) && $options['checkFullUrl']);
         $url = $this->_getUrlFromRequest($request, $getFullUrl);
+
         foreach ($loginUrls as $loginUrl) {
             if ($check($loginUrl, $url)) {
                 return true;

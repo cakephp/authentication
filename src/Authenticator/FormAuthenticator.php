@@ -35,14 +35,15 @@ class FormAuthenticator extends AbstractAuthenticator
      * @var array
      */
     protected $_defaultConfig = [
-        'loginUrlChecker' => LoginUrlChecker::class,
+        'loginUrlChecker' => [
+            'loginUrl' => null,
+            'useRegex' => false,
+            'checkFullUrl' => false
+        ],
         'fields' => [
             'username' => 'username',
             'password' => 'password'
-        ],
-        'loginUrl' => null,
-        'useRegex' => false,
-        'checkFullUrl' => false
+        ]
     ];
 
     /**
@@ -78,7 +79,8 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected function _buildLoginUrlErrorResult($request)
     {
-        if ($this->getConfig('checkFullUrl')) {
+        $config = $this->getConfig('loginUrlChecker');
+        if (isset($config['checkFullUrl']) && $config['checkFullUrl']) {
             $url = (string)$request->getUri();
         } else {
             $url = $request->getUri()->getPath();
@@ -88,7 +90,7 @@ class FormAuthenticator extends AbstractAuthenticator
             sprintf(
                 'Login URL `%s` did not match `%s`.',
                 $url,
-                implode('` or `', (array)$this->getConfig('loginUrl'))
+                implode('` or `', (array)$config['loginUrl'])
             )
         ];
 
