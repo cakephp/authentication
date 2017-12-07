@@ -23,6 +23,8 @@ use Psr\Http\Message\ServerRequestInterface;
 class FormAuthenticator extends AbstractAuthenticator
 {
 
+    use CheckLoginUrlTrait;
+
     /**
      * Default config for this object.
      * - `fields` The fields to use to identify a user by.
@@ -69,6 +71,31 @@ class FormAuthenticator extends AbstractAuthenticator
     }
 
     /**
+     * Prepares the error object for a login URL error
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
+     * @return \Authentication\Authenticator\ResultInterface
+     */
+    protected function _buildLoginUrlErrorResult($request)
+    {
+        if ($this->getConfig('checkFullUrl')) {
+            $url = (string)$request->getUri();
+        } else {
+            $url = $request->getUri()->getPath();
+        }
+
+        $errors = [
+            sprintf(
+                'Login URL `%s` did not match `%s`.',
+                $url,
+                implode('` or `', (array)$this->getConfig('loginUrl'))
+            )
+        ];
+
+        return new Result(null, Result::FAILURE_OTHER, $errors);
+    }
+
+    /**
      * Authenticates the identity contained in a request. Will use the `config.userModel`, and `config.fields`
      * to find POST data that is used to find a matching record in the `config.userModel`. Will return false if
      * there is no post data, either username or password is missing, or if the scope conditions have not been met.
@@ -79,29 +106,8 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $checkerClass = $this->getConfig('loginUrlChecker');
-        $checker = new $checkerClass();
-        $isLoginUrl = $checker->check($request, $this->getConfig('loginUrl'), [
-            'useRegex' => $this->getConfig('useRegex'),
-            'checkFullUrl' => $this->getConfig('checkFullUrl')
-        ]);
-
-        if (!$isLoginUrl) {
-            if ($this->getConfig('checkFullUrl')) {
-                $url = (string)$request->getUri();
-            } else {
-                $url = $request->getUri()->getPath();
-            }
-
-            $errors = [
-                sprintf(
-                    'Login URL `%s` did not match `%s`.',
-                    $url,
-                    implode('` or `', (array)$this->getConfig('loginUrl'))
-                )
-            ];
-
-            return new Result(null, Result::FAILURE_OTHER, $errors);
+        if (!$this->_checkLoginUrl($request)) {
+            return $this->_buildLoginUrlErrorResult($request);
         }
 
         $fields = $this->_config['fields'];

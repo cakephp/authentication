@@ -26,6 +26,7 @@ use RuntimeException;
 class CookieAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {
 
+    use CheckLoginUrlTrait;
     use PasswordHasherTrait;
 
     /**
@@ -123,14 +124,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $field = $this->getConfig('rememberMeField');
         $bodyData = $request->getParsedBody();
 
-        $checkerClass = $this->getConfig('loginUrlChecker');
-        $checker = new $checkerClass();
-        $isLoginUrl = $checker->check($request, $this->getConfig('loginUrl'), [
-            'useRegex' => $this->getConfig('useRegex'),
-            'checkFullUrl' => $this->getConfig('checkFullUrl')
-        ]);
-
-        if (!$isLoginUrl || !is_array($bodyData) || empty($bodyData[$field])) {
+        if (!$this->_checkLoginUrl($request) || !is_array($bodyData) || empty($bodyData[$field])) {
             return [
                 'request' => $request,
                 'response' => $response
