@@ -14,6 +14,7 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\PasswordHasher\PasswordHasherTrait;
+use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -138,7 +139,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $data = $this->getConfig('cookie');
         $value = $this->_createToken($identity);
 
-        $cookie = new \Cake\Http\Cookie\Cookie(
+        $cookie = new Cookie(
             $data['name'],
             $value,
             $data['expire'],
@@ -207,7 +208,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $cookie = (new \Cake\Http\Cookie\Cookie($this->getConfig('cookie.name')))->withExpired();
+        $cookie = (new Cookie($this->getConfig('cookie.name')))->withExpired();
 
         return [
             'request' => $request,
