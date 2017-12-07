@@ -67,7 +67,8 @@ class LoginUrlChecker implements LoginUrlCheckerInterface
      * @param array $options Options to merge in
      * @return array
      */
-    protected function _mergeDefaultOptions($options) {
+    protected function _mergeDefaultOptions(array $options)
+    {
         return $options += $this->_defaultOptions;
     }
 
