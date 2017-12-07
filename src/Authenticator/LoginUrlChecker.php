@@ -19,12 +19,24 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class LoginUrlChecker implements LoginUrlCheckerInterface
 {
+    /**
+     * Default Options
+     *
+     * @var array
+     */
+    protected $_defaultOptions = [
+        'loginUrl' => '/users/login',
+        'useRegex' => false,
+        'checkFullUrl' => false
+    ];
 
     /**
      * {@inheritdoc}
      */
     public function check(ServerRequestInterface $request, $loginUrls, array $options = [])
     {
+        $options = $this->_mergeDefaultOptions($options);
+
         $loginUrls = (array)$loginUrls;
 
         if (empty($loginUrls)) {
@@ -43,6 +55,20 @@ class LoginUrlChecker implements LoginUrlCheckerInterface
         }
 
         return false;
+    }
+
+    /**
+     * Merges given options with the defaults.
+     *
+     * The reason this method exists is that it makes it easy to override the
+     * method and inject additional options without the need to use the
+     * MergeVarsTrait.
+     *
+     * @param array $options Options to merge in
+     * @return array
+     */
+    protected function _mergeDefaultOptions($options) {
+        return $options += $this->_defaultOptions;
     }
 
     /**
