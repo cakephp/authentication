@@ -47,10 +47,11 @@ class LoginUrlChecker implements LoginUrlCheckerInterface
     /**
      * Gets the checker function name or a callback
      *
-     * @param array $options
+     * @param array $options Array of options
      * @return string|callable
      */
-    protected function _getChecker(array $options = []) {
+    protected function _getChecker(array $options = [])
+    {
         if (isset($options['useRegex']) && $options['useRegex']) {
             return 'preg_match';
         }
@@ -64,7 +65,7 @@ class LoginUrlChecker implements LoginUrlCheckerInterface
      * Returns current url.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Server Request
-     * @param bool $getFullUrl
+     * @param bool $getFullUrl Get the full URL or just the path
      * @return string
      */
     protected function _getUrlFromRequest(ServerRequestInterface $request, $getFullUrl = false)
