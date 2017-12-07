@@ -58,7 +58,6 @@ class PasswordIdentifierTest extends TestCase
 
         $this->assertInstanceOf('\ArrayAccess', $result);
         $this->assertSame($user, $result);
-        $this->assertArrayNotHasKey('password', $result);
     }
 
     /**
@@ -304,7 +303,6 @@ class PasswordIdentifierTest extends TestCase
 
         $this->assertInstanceOf('\ArrayAccess', $result);
         $this->assertSame($user, $result);
-        $this->assertArrayNotHasKey('password', $result);
     }
 
     /**

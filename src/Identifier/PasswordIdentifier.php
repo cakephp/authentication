@@ -129,7 +129,6 @@ class PasswordIdentifier extends AbstractIdentifier
         }
 
         $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
-        unset($identity[$passwordField]);
 
         return true;
     }

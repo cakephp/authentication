@@ -97,7 +97,6 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
 
         $field = $this->_config['fields'][IdentifierInterface::CREDENTIAL_PASSWORD];
         $password = $user[$field];
-        unset($user[$field]);
 
         $server = $request->getServerParams();
         if (!isset($server['ORIGINAL_REQUEST_METHOD'])) {
