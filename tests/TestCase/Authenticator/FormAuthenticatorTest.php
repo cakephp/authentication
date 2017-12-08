@@ -85,6 +85,33 @@ class FormAuthenticatorTest extends TestCase
     }
 
     /**
+     * testCredentialsEmpty
+     *
+     * @return void
+     */
+    public function testCredentialsEmpty()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match'],
+            [],
+            ['username' => '', 'password' => '']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND, $result->getCode());
+        $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
+    }
+
+    /**
      * testSingleLoginUrlMismatch
      *
      * @return void
@@ -301,5 +328,77 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals([], $result->getErrors());
+    }
+
+    /**
+     * testAuthenticateCustomFields
+     *
+     * @return void
+     */
+    public function testAuthenticateCustomFields()
+    {
+        $identifiers = $this->createMock(IdentifierCollection::class);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+            [],
+            ['email' => 'mariano@cakephp.org', 'secret' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/users/login',
+            'fields' => [
+                'username' => 'email',
+                'password' => 'secret'
+            ]
+        ]);
+
+        $identifiers->expects($this->once())
+            ->method('identify')
+            ->with([
+                'username' => 'mariano@cakephp.org',
+                'password' => 'password'
+            ])
+            ->willReturn([
+                'username' => 'mariano@cakephp.org',
+                'password' => 'password'
+            ]);
+
+        $form->authenticate($request, $response);
+    }
+
+    /**
+     * testAuthenticateValidData
+     *
+     * @return void
+     */
+    public function testAuthenticateValidData()
+    {
+        $identifiers = $this->createMock(IdentifierCollection::class);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+            [],
+            ['id' => 1, 'username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/users/login'
+        ]);
+
+        $identifiers->expects($this->once())
+            ->method('identify')
+            ->with([
+                'username' => 'mariano',
+                'password' => 'password'
+            ])
+            ->willReturn([
+                'username' => 'mariano',
+                'password' => 'password'
+            ]);
+
+        $form->authenticate($request, $response);
     }
 }

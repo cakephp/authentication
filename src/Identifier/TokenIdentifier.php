@@ -29,7 +29,7 @@ class TokenIdentifier extends AbstractIdentifier
      */
     protected $_defaultConfig = [
         'tokenField' => 'token',
-        'dataField' => 'token',
+        'dataField' => self::CREDENTIAL_TOKEN,
         'resolver' => 'Authentication.Orm'
     ];
 

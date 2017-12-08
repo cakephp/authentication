@@ -170,7 +170,7 @@ DIGEST;
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
-        $this->assertEquals($expected, $result->getData()->toArray());
+        $this->assertArraySubset($expected, $result->getData()->toArray());
     }
 
     /**

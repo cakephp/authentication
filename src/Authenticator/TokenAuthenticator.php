@@ -12,6 +12,7 @@
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -29,8 +30,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     protected $_defaultConfig = [
         'header' => null,
         'queryParam' => null,
-        'tokenPrefix' => null,
-        'dataKey' => 'token'
+        'tokenPrefix' => null
     ];
 
     /**
@@ -120,7 +120,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
         }
 
         $user = $this->identifiers()->identify([
-            $this->getConfig('dataKey') => $token
+            IdentifierInterface::CREDENTIAL_TOKEN => $token
         ]);
 
         if (empty($user)) {

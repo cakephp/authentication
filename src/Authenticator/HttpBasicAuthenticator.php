@@ -13,6 +13,7 @@
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -64,8 +65,8 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
         }
 
         return $this->identifiers()->identify([
-            'username' => $username,
-            'password' => $password
+            IdentifierInterface::CREDENTIAL_USERNAME => $username,
+            IdentifierInterface::CREDENTIAL_PASSWORD => $password
         ]);
     }
 
