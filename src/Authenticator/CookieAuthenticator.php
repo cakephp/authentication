@@ -13,6 +13,7 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\ResponseInterface;
@@ -41,8 +42,8 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         ],
         'rememberMeField' => 'remember_me',
         'fields' => [
-            'username' => 'username',
-            'password' => 'password'
+            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
         ],
         'cookie' => [
             'name' => 'CookieAuth',
@@ -52,10 +53,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             'secure' => false,
             'httpOnly' => false
         ],
-        'passwordHasher' => 'Authentication.Default',
-        'loginUrl' => null,
-        'useRegex' => false,
-        'checkFullUrl' => false
+        'passwordHasher' => 'Authentication.Default'
     ];
 
     /**
