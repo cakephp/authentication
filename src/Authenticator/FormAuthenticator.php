@@ -80,17 +80,10 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected function _buildLoginUrlErrorResult($request)
     {
-        $config = $this->getConfig('urlChecker');
-        if (isset($config['checkFullUrl']) && $config['checkFullUrl']) {
-            $url = (string)$request->getUri();
-        } else {
-            $url = $request->getUri()->getPath();
-        }
-
         $errors = [
             sprintf(
                 'Login URL `%s` did not match `%s`.',
-                $url,
+                (string)$request->getUri(),
                 implode('` or `', (array)$this->getConfig('loginUrl'))
             )
         ];
