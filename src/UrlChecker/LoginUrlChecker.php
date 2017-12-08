@@ -25,7 +25,6 @@ class LoginUrlChecker implements UrlCheckerInterface
      * @var array
      */
     protected $_defaultOptions = [
-        'loginUrl' => '/users/login',
         'useRegex' => false,
         'checkFullUrl' => false
     ];

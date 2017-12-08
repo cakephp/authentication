@@ -30,12 +30,10 @@ trait CheckLoginUrlTrait
      */
     protected function _checkLoginUrl(ServerRequestInterface $request)
     {
-        $config = (array)$this->getConfig('loginUrlChecker');
-
         return $this->_getLoginUrlChecker()->check(
             $request,
-            $config['loginUrl'],
-            $config
+            $this->getConfig('loginUrl'),
+            (array)$this->getConfig('urlChecker')
         );
     }
 
@@ -46,7 +44,10 @@ trait CheckLoginUrlTrait
      */
     protected function _getLoginUrlChecker()
     {
-        $options = $this->getConfig('loginUrlChecker');
+        $options = $this->getConfig('urlChecker');
+        if (is_string($options)) {
+            $options['className'] = $options;
+        }
         if (!isset($options['className'])) {
             $options['className'] = LoginUrlChecker::class;
         }
