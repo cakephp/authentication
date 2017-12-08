@@ -31,7 +31,6 @@ Configuration options:
 * **queryParam**: Name of the query parameter. Configure it if you want to get the token from the query parameters.
 * **header**: Name of the header. Configure it if you want to get the token from the header.
 * **tokenPrefix**: The optional token prefix.
-* **dataField**: The data key passed to the identifier. Default is `token`.
 
 ## JWT
 

@@ -50,8 +50,8 @@ class LdapIdentifier extends AbstractIdentifier
     protected $_defaultConfig = [
         'ldap' => ExtensionAdapter::class,
         'fields' => [
-            'username' => 'username',
-            'password' => 'password'
+            self::CREDENTIAL_USERNAME => 'username',
+            self::CREDENTIAL_PASSWORD => 'password'
         ],
         'port' => 389
     ];
@@ -135,8 +135,8 @@ class LdapIdentifier extends AbstractIdentifier
         $this->_connectLdap();
         $fields = $this->getConfig('fields');
 
-        if (isset($data[$fields['username']]) && isset($data[$fields['password']])) {
-            return $this->_bindUser($data[$fields['username']], $data[$fields['password']]);
+        if (isset($data[$fields[self::CREDENTIAL_USERNAME]]) && isset($data[$fields[self::CREDENTIAL_PASSWORD]])) {
+            return $this->_bindUser($data[$fields[self::CREDENTIAL_USERNAME]], $data[$fields[self::CREDENTIAL_PASSWORD]]);
         }
 
         return null;
@@ -184,7 +184,7 @@ class LdapIdentifier extends AbstractIdentifier
                 $this->_ldap->unbind();
 
                 return new ArrayObject([
-                    $config['fields']['username'] => $username
+                    $config['fields'][self::CREDENTIAL_USERNAME] => $username
                 ]);
             }
         } catch (ErrorException $e) {

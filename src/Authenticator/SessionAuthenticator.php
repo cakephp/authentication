@@ -15,7 +15,7 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use ArrayObject;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -26,18 +26,20 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 {
 
     /**
-     * Constructor
+     * Default config for this object.
+     * - `fields` The fields to use to verify a user by.
+     * - `sessionKey` Session key.
+     * - `identify` Whether or not to identify user data stored in a session.
      *
-     * @param array $identifiers Array of config to use.
-     * @param array $config Configuration settings.
+     * @var array
      */
-    public function __construct(IdentifierCollection $identifiers, array $config = [])
-    {
-        $this->_defaultConfig['sessionKey'] = 'Auth';
-        $this->_defaultConfig['identify'] = false;
-
-        parent::__construct($identifiers, $config);
-    }
+    protected $_defaultConfig = [
+        'fields' => [
+            IdentifierInterface::CREDENTIAL_USERNAME => 'username'
+        ],
+        'sessionKey' => 'Auth',
+        'identify' => false
+    ];
 
     /**
      * Authenticate a user using session data.
@@ -57,10 +59,11 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         }
 
         if ($this->getConfig('identify') === true) {
-            $user = $this->identifiers()->identify([
-                'username' => $user[$this->getConfig('fields')['username']],
-                'password' => $user[$this->getConfig('fields')['password']]
-            ]);
+            $credentials = [];
+            foreach ($this->getConfig('fields') as $key => $field) {
+                $credentials[$key] = $user[$field];
+            }
+            $user = $this->identifiers()->identify($credentials);
 
             if (empty($user)) {
                 return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);

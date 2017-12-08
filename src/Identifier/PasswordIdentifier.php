@@ -56,8 +56,8 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     protected $_defaultConfig = [
         'fields' => [
-            'username' => 'username',
-            'password' => 'password'
+            self::CREDENTIAL_USERNAME => 'username',
+            self::CREDENTIAL_PASSWORD => 'password'
         ],
         'resolver' => 'Authentication.Orm',
         'passwordHasher' => null
@@ -88,20 +88,19 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     public function identify(array $data)
     {
-        $fields = $this->getConfig('fields');
-
-        $usernameFields = (array)$fields['username'];
-        $found = array_intersect_key(array_flip($usernameFields), $data);
-        if (empty($found)) {
+        if (!isset($data[self::CREDENTIAL_USERNAME])) {
             return null;
         }
 
-        $password = null;
-        if (!empty($data[$fields['password']])) {
-            $password = $data[$fields['password']];
+        $identity = $this->_findIdentity($data[self::CREDENTIAL_USERNAME]);
+        if (array_key_exists(self::CREDENTIAL_PASSWORD, $data)) {
+            $password = $data[self::CREDENTIAL_PASSWORD];
+            if (!$this->_checkPassword($identity, $password)) {
+                return null;
+            }
         }
 
-        return $this->_findIdentity($data[key($found)], $password);
+        return $identity;
     }
 
     /**
@@ -109,42 +108,40 @@ class PasswordIdentifier extends AbstractIdentifier
      * Input passwords will be hashed even when a user doesn't exist. This
      * helps mitigate timing attacks that are attempting to find valid usernames.
      *
-     * @param string $identifier The username/identifier.
-     * @param string|null $password The password, if not provided password checking is skipped
-     *   and result of find is returned.
-     * @return \ArrayAccess|null User data entity or null on failure.
+     * @param array|\ArrayAccess|null $identity The identity or null.
+     * @param string|null $password The password.
+     * @return bool
      */
-    protected function _findIdentity($identifier, $password = null)
+    protected function _checkPassword($identity, $password)
     {
-        $result = $this->_findUser($identifier);
-        if (empty($result)) {
-            return null;
+        $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
+
+        if ($identity === null) {
+            $identity = [
+                $passwordField => ''
+            ];
         }
 
-        if ($password !== null) {
-            $passwordField = $this->getConfig('fields.password');
-            $hasher = $this->getPasswordHasher();
-            $hashedPassword = $result[$passwordField];
-            if (!$hasher->check($password, $hashedPassword)) {
-                return null;
-            }
-
-            $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
-            unset($result[$passwordField]);
+        $hasher = $this->getPasswordHasher();
+        $hashedPassword = $identity[$passwordField];
+        if (!$hasher->check($password, $hashedPassword)) {
+            return false;
         }
 
-        return $result;
+        $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
+
+        return true;
     }
 
     /**
-     * Get query object for fetching user from database.
+     * Find a user record using the username/identifier provided.
      *
      * @param string $identifier The username/identifier.
-     * @return \ArrayAccess|null
+     * @return \ArrayAccess|array|null
      */
-    protected function _findUser($identifier)
+    protected function _findIdentity($identifier)
     {
-        $fields = $this->getConfig('fields.username');
+        $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
         $conditions = [];
         foreach ((array)$fields as $field) {
             $conditions[$field] = $identifier;

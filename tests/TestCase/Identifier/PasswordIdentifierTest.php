@@ -58,7 +58,6 @@ class PasswordIdentifierTest extends TestCase
 
         $this->assertInstanceOf('\ArrayAccess', $result);
         $this->assertSame($user, $result);
-        $this->assertArrayNotHasKey('password', $result);
     }
 
     /**
@@ -114,8 +113,10 @@ class PasswordIdentifierTest extends TestCase
             ->with(['username' => 'does-not'])
             ->willReturn(null);
 
-        $hasher->expects($this->never())
-            ->method('check');
+        $hasher->expects($this->once())
+            ->method('check')
+            ->with('exist', '')
+            ->willReturn(false);
 
         $identifier = new PasswordIdentifier();
         $identifier->setResolver($resolver)->setPasswordHasher($hasher);
@@ -162,6 +163,75 @@ class PasswordIdentifierTest extends TestCase
         ]);
 
         $this->assertNull($result);
+    }
+
+    /**
+     * testIdentifyEmptyPassword
+     *
+     * @return void
+     */
+    public function testIdentifyEmptyPassword()
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+        $hasher = $this->createMock(PasswordHasherInterface::class);
+
+        $user = new ArrayObject([
+            'username' => 'mariano',
+            'password' => 'h45hedpa55w0rd'
+        ]);
+
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with(['username' => 'mariano'])
+            ->willReturn($user);
+
+        $hasher->expects($this->once())
+            ->method('check')
+            ->with('', 'h45hedpa55w0rd')
+            ->willReturn(false);
+
+        $identifier = new PasswordIdentifier();
+        $identifier->setResolver($resolver)->setPasswordHasher($hasher);
+
+        $result = $identifier->identify([
+            'username' => 'mariano',
+            'password' => ''
+        ]);
+
+        $this->assertNull($result);
+    }
+
+    /**
+     * testIdentifyNoPassword
+     *
+     * @return void
+     */
+    public function testIdentifyNoPassword()
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+        $hasher = $this->createMock(PasswordHasherInterface::class);
+
+        $user = new ArrayObject([
+            'username' => 'mariano',
+            'password' => 'h45hedpa55w0rd'
+        ]);
+
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with(['username' => 'mariano'])
+            ->willReturn($user);
+
+        $hasher->expects($this->never())
+            ->method('check');
+
+        $identifier = new PasswordIdentifier();
+        $identifier->setResolver($resolver)->setPasswordHasher($hasher);
+
+        $result = $identifier->identify([
+            'username' => 'mariano'
+        ]);
+
+        $this->assertInstanceOf('\ArrayAccess', $result);
     }
 
     /**
@@ -233,7 +303,6 @@ class PasswordIdentifierTest extends TestCase
 
         $this->assertInstanceOf('\ArrayAccess', $result);
         $this->assertSame($user, $result);
-        $this->assertArrayNotHasKey('password', $result);
     }
 
     /**
