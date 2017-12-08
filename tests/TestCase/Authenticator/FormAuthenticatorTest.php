@@ -18,6 +18,7 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
+use RuntimeException;
 
 class FormAuthenticatorTest extends TestCase
 {
@@ -404,6 +405,63 @@ class FormAuthenticatorTest extends TestCase
                 'username' => 'mariano',
                 'password' => 'password'
             ]);
+
+        $form->authenticate($request, $response);
+    }
+
+    /**
+     * testAuthenticateValidData
+     *
+     * @return void
+     */
+    public function testAuthenticateMissingChecker()
+    {
+        $identifiers = $this->createMock(IdentifierCollection::class);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+            [],
+            ['id' => 1, 'username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/users/login',
+            'urlChecker' => 'Foo'
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('URL checker class `Foo` was not found.');
+
+        $form->authenticate($request, $response);
+    }
+
+    /**
+     * testAuthenticateValidData
+     *
+     * @return void
+     */
+    public function testAuthenticateInvalidChecker()
+    {
+        $identifiers = $this->createMock(IdentifierCollection::class);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+            [],
+            ['id' => 1, 'username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/users/login',
+            'urlChecker' => self::class
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(
+            'The provided URL checker class `Authentication\Test\TestCase\Authenticator\FormAuthenticatorTest` ' .
+            'does not implement the `Authentication\UrlChecker\UrlCheckerInterface` interface.'
+        );
 
         $form->authenticate($request, $response);
     }

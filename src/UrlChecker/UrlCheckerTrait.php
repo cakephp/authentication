@@ -41,7 +41,7 @@ trait UrlCheckerTrait
     /**
      * Gets the login URL checker
      *
-     * @return \Authentication\Authenticator\UrlCheckerInterface
+     * @return \Authentication\UrlChecker\UrlCheckerInterface
      */
     protected function _getUrlChecker()
     {
@@ -56,11 +56,15 @@ trait UrlCheckerTrait
         }
 
         $className = App::className($options['className'], 'UrlChecker', 'UrlChecker');
+        if ($className === false) {
+            throw new RuntimeException(sprintf('URL checker class `%s` was not found.', $options['className']));
+        }
+
         $checker = new $className();
 
         if (!$checker instanceof UrlCheckerInterface) {
             throw new RuntimeException(sprintf(
-                'The provided login URL checker `%s` does not implement the `%s` interface',
+                'The provided URL checker class `%s` does not implement the `%s` interface.',
                 $options['className'],
                 UrlCheckerInterface::class
             ));
