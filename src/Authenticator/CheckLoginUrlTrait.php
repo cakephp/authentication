@@ -45,8 +45,10 @@ trait CheckLoginUrlTrait
     protected function _getLoginUrlChecker()
     {
         $options = $this->getConfig('urlChecker');
-        if (is_string($options)) {
-            $options['className'] = $options;
+        if (!is_array($options)) {
+            $options = [
+                'className' => $options
+            ];
         }
         if (!isset($options['className'])) {
             $options['className'] = LoginUrlChecker::class;
