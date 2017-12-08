@@ -70,7 +70,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request to get authentication information from.
      * @param \Psr\Http\Message\ResponseInterface $response A response object that can have headers added.
-     * @return \ArrayAccess|null Either null on failure, or \ArrayAccess data on success.
+     * @return \Authentication\Authenticator\ResultInterface Returns a result object.
      */
     abstract public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
 }
