@@ -31,8 +31,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * Default config for this object.
      * - `fields` The fields to use to identify a user by.
      * - `loginUrl` Login URL or an array of URLs.
-     * - `useRegex` Whether or not to use `loginUrl` as regular expression(s).
-     * - `checkFullUrl` Whether or not to check the full request URI.
+     * - `urlChecker` Url checker config.
      *
      * @var array
      */

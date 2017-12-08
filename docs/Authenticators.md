@@ -93,8 +93,6 @@ Configuration options:
   * **value**: Value, default is an empty string ``
 * **fields**: Array that maps `username` and `password` to the specified identity fields.
 * **loginUrl**: The login URL, string or array of URLs. Default is `null` and all pages will be checked.
-* **useRegex**: Whether or not to use regular expressions for URL matching. Default is `false`.
-* **checkFullUrl**: Whether or not to check full URL. Useful when a login form is on a different subdomain. Default is `false`.
 * **passwordHasher**: Password hasher to use for token hashing. Default is `DefaultPasswordHasher::class`.
 
 ## OAuth
@@ -125,3 +123,17 @@ The subject of the event will be the current controller instance the Authenticat
 But the event is only fired if the authenticator that was used to identify the identity is *not* persistent and *not* stateless. The reason for this is that the event would be fired every time because the session authenticator or token for example would trigger it every time for every request.
 
 From the included authenticators only the FormAuthenticator will cause the event to be fired. After that the session authenticator will provide the identity.
+
+## Url Checkers
+
+Some authenticators like `Form` or `Cookie` should be executed only on certain pages like `/login` page. This can be achieved using Url Checkers.
+
+By default a `DefaultUrlChecker` is used, which uses string URLs for comparison with support for regex check.
+
+Configuration options:
+
+* **useRegex**: Whether or not to use regular expressions for URL matching. Default is `false`.
+* **checkFullUrl**: Whether or not to check full URL. Useful when a login form is on a different subdomain. Default is `false`.
+
+A custom url checker can be implemented for example if a support for framework specific URLs is needed. 
+In this case the `Authentication\UrlChecker\UrlCheckerInterface should be implemented.

@@ -23,6 +23,9 @@ class DefaultUrlChecker implements UrlCheckerInterface
     /**
      * Default Options
      *
+     * - `urlChecker` Whether or not to use `loginUrl` as regular expression(s).
+     * - `checkFullUrl` Whether or not to check the full request URI.
+     *
      * @var array
      */
     protected $_defaultOptions = [
