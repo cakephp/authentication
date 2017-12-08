@@ -12,6 +12,8 @@
  */
 namespace Authentication\Authenticator;
 
+use Authentication\UrlChecker\LoginUrlChecker;
+use Authentication\UrlChecker\UrlCheckerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
@@ -40,7 +42,7 @@ trait CheckLoginUrlTrait
     /**
      * Gets the login URL checker
      *
-     * @return \Authentication\Authenticator\LoginUrlCheckerInterface
+     * @return \Authentication\Authenticator\UrlCheckerInterface
      */
     protected function _getLoginUrlChecker()
     {
@@ -51,11 +53,11 @@ trait CheckLoginUrlTrait
 
         $checker = new $options['className']();
 
-        if (!$checker instanceof LoginUrlCheckerInterface) {
+        if (!$checker instanceof UrlCheckerInterface) {
             throw new RuntimeException(sprintf(
                 'The provided login URL checker `%s` does not implement the `%s` interface',
                 $options['className'],
-                LoginUrlCheckerInterface::class
+                UrlCheckerInterface::class
             ));
         }
 

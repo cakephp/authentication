@@ -10,10 +10,10 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Authenticator;
+namespace Authentication\Test\TestCase\UrlChecker;
 
-use Authentication\Authenticator\LoginUrlChecker;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\UrlChecker\LoginUrlChecker;
 use Cake\Http\ServerRequestFactory;
 
 /**

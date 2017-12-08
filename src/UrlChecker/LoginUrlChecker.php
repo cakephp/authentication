@@ -10,14 +10,14 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Authenticator;
+namespace Authentication\UrlChecker;
 
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Checks if a request object contains a valid login URL
  */
-class LoginUrlChecker implements LoginUrlCheckerInterface
+class LoginUrlChecker implements UrlCheckerInterface
 {
     /**
      * Default Options

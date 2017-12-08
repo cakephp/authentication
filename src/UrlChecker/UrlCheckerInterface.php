@@ -10,14 +10,14 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Authenticator;
+namespace Authentication\UrlChecker;
 
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * LoginUrlCheckerInterface
+ * UrlCheckerInterface
  */
-interface LoginUrlCheckerInterface
+interface UrlCheckerInterface
 {
     /**
      * Checks the requests if it is the configured login action
