@@ -23,25 +23,32 @@ class DefaultUrlCheckerTest extends TestCase
 {
 
     /**
-     * testCheck
+     * testCheckFailure
      *
      * @return void
      */
-    public function testCheck()
+    public function testCheckFailure()
     {
         $checker = new DefaultUrlChecker();
 
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/users/does-not-match'],
-            []
+            ['REQUEST_URI' => '/users/does-not-match']
         );
 
         $result = $checker->check($request, '/users/login');
         $this->assertFalse($result);
+    }
 
+    /**
+     * testCheckSimple
+     *
+     * @return void
+     */
+    public function testCheckSimple()
+    {
+        $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/users/login'],
-            []
+            ['REQUEST_URI' => '/users/login']
         );
         $result = $checker->check($request, '/users/login');
         $this->assertTrue($result);
@@ -49,6 +56,61 @@ class DefaultUrlCheckerTest extends TestCase
         $result = $checker->check($request, [
             '/users/login',
             '/admin/login'
+        ]);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testCheckArray
+     *
+     * @return void
+     */
+    public function testCheckArray()
+    {
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+
+        $result = $checker->check($request, [
+            '/users/login',
+            '/admin/login'
+        ]);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testCheckArray
+     *
+     * @return void
+     */
+    public function testCheckRegexp()
+    {
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/en/users/login']
+        );
+
+        $result = $checker->check($request, '%^/[a-z]{2}/users/login/?$%', [
+            'useRegex' => true
+        ]);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testCheckArray
+     *
+     * @return void
+     */
+    public function testCheckFull()
+    {
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+
+        $result = $checker->check($request, 'http://localhost/users/login', [
+            'checkFullUrl' => true
         ]);
         $this->assertTrue($result);
     }
