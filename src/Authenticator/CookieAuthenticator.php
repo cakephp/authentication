@@ -15,6 +15,7 @@ namespace Authentication\Authenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
+use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,15 +29,15 @@ use RuntimeException;
 class CookieAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {
 
-    use CheckLoginUrlTrait;
     use PasswordHasherTrait;
+    use UrlCheckerTrait;
 
     /**
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
         'loginUrl' => null,
-        'urlChecker' => null,
+        'urlChecker' => 'Authentication.Default',
         'rememberMeField' => 'remember_me',
         'fields' => [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
@@ -124,7 +125,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $field = $this->getConfig('rememberMeField');
         $bodyData = $request->getParsedBody();
 
-        if (!$this->_checkLoginUrl($request) || !is_array($bodyData) || empty($bodyData[$field])) {
+        if (!$this->_checkUrl($request) || !is_array($bodyData) || empty($bodyData[$field])) {
             return [
                 'request' => $request,
                 'response' => $response

@@ -10,17 +10,18 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Authenticator;
+namespace Authentication\UrlChecker;
 
 use Authentication\UrlChecker\DefaultUrlChecker;
 use Authentication\UrlChecker\UrlCheckerInterface;
+use Cake\Core\App;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
 /**
- * CheckLoginUrlTrait
+ * UrlCheckerTrait
  */
-trait CheckLoginUrlTrait
+trait UrlCheckerTrait
 {
     /**
      * Checks the Login URL
@@ -28,9 +29,9 @@ trait CheckLoginUrlTrait
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return bool
      */
-    protected function _checkLoginUrl(ServerRequestInterface $request)
+    protected function _checkUrl(ServerRequestInterface $request)
     {
-        return $this->_getLoginUrlChecker()->check(
+        return $this->_getUrlChecker()->check(
             $request,
             $this->getConfig('loginUrl'),
             (array)$this->getConfig('urlChecker')
@@ -42,7 +43,7 @@ trait CheckLoginUrlTrait
      *
      * @return \Authentication\Authenticator\UrlCheckerInterface
      */
-    protected function _getLoginUrlChecker()
+    protected function _getUrlChecker()
     {
         $options = $this->getConfig('urlChecker');
         if (!is_array($options)) {
@@ -54,7 +55,8 @@ trait CheckLoginUrlTrait
             $options['className'] = DefaultUrlChecker::class;
         }
 
-        $checker = new $options['className']();
+        $className = App::className($options['className'], 'UrlChecker', 'UrlChecker');
+        $checker = new $className();
 
         if (!$checker instanceof UrlCheckerInterface) {
             throw new RuntimeException(sprintf(

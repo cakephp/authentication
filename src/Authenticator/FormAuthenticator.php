@@ -13,6 +13,7 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\UrlChecker\UrlCheckerTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -24,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class FormAuthenticator extends AbstractAuthenticator
 {
 
-    use CheckLoginUrlTrait;
+    use UrlCheckerTrait;
 
     /**
      * Default config for this object.
@@ -37,7 +38,7 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected $_defaultConfig = [
         'loginUrl' => null,
-        'urlChecker' => null,
+        'urlChecker' => 'Authentication.Default',
         'fields' => [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
@@ -102,7 +103,7 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        if (!$this->_checkLoginUrl($request)) {
+        if (!$this->_checkUrl($request)) {
             return $this->_buildLoginUrlErrorResult($request);
         }
 
