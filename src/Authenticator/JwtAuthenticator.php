@@ -13,7 +13,6 @@
 namespace Authentication\Authenticator;
 
 use ArrayObject;
-use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Exception;
 use Firebase\JWT\JWT;
@@ -47,9 +46,9 @@ class JwtAuthenticator extends TokenAuthenticator
     /**
      * {@inheritDoc}
      */
-    public function __construct(IdentifierCollection $identifiers, array $config = [])
+    public function __construct(IdentifierInterface $identifier, array $config = [])
     {
-        parent::__construct($identifiers, $config);
+        parent::__construct($identifier, $config);
 
         if (empty($this->_config['secretKey'])) {
             if (!class_exists('Cake\Utility\Security')) {
@@ -99,12 +98,12 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result($user, Result::SUCCESS);
         }
 
-        $user = $this->identifiers()->identify([
+        $user = $this->_identifier->identify([
             $key => $result[$key]
         ]);
 
         if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->identifiers()->getErrors());
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
         return new Result($user, Result::SUCCESS);
