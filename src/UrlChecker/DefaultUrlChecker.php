@@ -13,11 +13,12 @@
 namespace Authentication\UrlChecker;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
- * Checks if a request object contains a valid login URL
+ * Checks if a request object contains a valid URL
  */
-class LoginUrlChecker implements UrlCheckerInterface
+class DefaultUrlChecker implements UrlCheckerInterface
 {
     /**
      * Default Options
@@ -32,23 +33,22 @@ class LoginUrlChecker implements UrlCheckerInterface
     /**
      * {@inheritdoc}
      */
-    public function check(ServerRequestInterface $request, $loginUrls, array $options = [])
+    public function check(ServerRequestInterface $request, $urls, array $options = [])
     {
         $options = $this->_mergeDefaultOptions($options);
 
-        $loginUrls = (array)$loginUrls;
+        $urls = (array)$urls;
 
-        if (empty($loginUrls)) {
+        if (empty($urls)) {
             return true;
         }
 
-        $check = $this->_getChecker($options);
+        $checker = $this->_getChecker($options);
 
-        $getFullUrl = (isset($options['checkFullUrl']) && $options['checkFullUrl']);
-        $url = $this->_getUrlFromRequest($request, $getFullUrl);
+        $url = $this->_getUrlFromRequest($request->getUri(), $options['checkFullUrl']);
 
-        foreach ($loginUrls as $loginUrl) {
-            if ($check($loginUrl, $url)) {
+        foreach ($urls as $validUrl) {
+            if ($checker($validUrl, $url)) {
                 return true;
             }
         }
@@ -83,24 +83,24 @@ class LoginUrlChecker implements UrlCheckerInterface
             return 'preg_match';
         }
 
-        return function ($loginUrl, $url) {
-            return $loginUrl === $url;
+        return function ($validUrl, $url) {
+            return $validUrl === $url;
         };
     }
 
     /**
      * Returns current url.
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request Server Request
+     * @param \Psr\Http\Message\UriInterface $uri Server Request
      * @param bool $getFullUrl Get the full URL or just the path
      * @return string
      */
-    protected function _getUrlFromRequest(ServerRequestInterface $request, $getFullUrl = false)
+    protected function _getUrlFromRequest(UriInterface $uri, $getFullUrl = false)
     {
         if ($getFullUrl) {
-            return (string)$request->getUri();
+            return (string)$uri;
         }
 
-        return $request->getUri()->getPath();
+        return $uri->getPath();
     }
 }

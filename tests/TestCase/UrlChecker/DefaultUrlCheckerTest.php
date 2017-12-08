@@ -13,13 +13,13 @@
 namespace Authentication\Test\TestCase\UrlChecker;
 
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Authentication\UrlChecker\LoginUrlChecker;
+use Authentication\UrlChecker\DefaultUrlChecker;
 use Cake\Http\ServerRequestFactory;
 
 /**
- * LoginUrlCheckerTest
+ * DefaultUrlCheckerTest
  */
-class LoginUrlCheckerTest extends TestCase
+class DefaultUrlCheckerTest extends TestCase
 {
 
     /**
@@ -29,7 +29,7 @@ class LoginUrlCheckerTest extends TestCase
      */
     public function testCheck()
     {
-        $checker = new LoginUrlChecker();
+        $checker = new DefaultUrlChecker();
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/does-not-match'],

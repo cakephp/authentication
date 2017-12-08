@@ -12,7 +12,7 @@
  */
 namespace Authentication\Authenticator;
 
-use Authentication\UrlChecker\LoginUrlChecker;
+use Authentication\UrlChecker\DefaultUrlChecker;
 use Authentication\UrlChecker\UrlCheckerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -51,7 +51,7 @@ trait CheckLoginUrlTrait
             ];
         }
         if (!isset($options['className'])) {
-            $options['className'] = LoginUrlChecker::class;
+            $options['className'] = DefaultUrlChecker::class;
         }
 
         $checker = new $options['className']();
