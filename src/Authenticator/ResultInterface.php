@@ -17,32 +17,32 @@ interface ResultInterface
     /**
      * General Failure
      */
-    const FAILURE = 0;
+    const FAILURE = 'FAILURE';
 
     /**
      * Failure due to identity not being found.
      */
-    const FAILURE_IDENTITY_NOT_FOUND = -1;
+    const FAILURE_IDENTITY_NOT_FOUND = 'FAILURE_IDENTITY_NOT_FOUND';
 
     /**
-     * Failure due to invalid credential being supplied.
+     * Failure due to invalid credentials being supplied.
      */
-    const FAILURE_CREDENTIAL_INVALID = -2;
-
-    /**
-     * Failure due to other circumstances.
-     */
-    const FAILURE_OTHER = -3;
+    const FAILURE_CREDENTIALS_INVALID = 'FAILURE_CREDENTIALS_INVALID';
 
     /**
      * The authentication credentials were not found in the request.
      */
-    const FAILURE_CREDENTIALS_NOT_FOUND = -4;
+    const FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST = 'FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST';
+
+    /**
+     * Failure due to other circumstances.
+     */
+    const FAILURE_OTHER = 'FAILURE_OTHER';
 
     /**
      * Authentication success.
      */
-    const SUCCESS = 1;
+    const SUCCESS = 'SUCCESS';
 
     /**
      * Returns whether the result represents a successful authentication attempt.
@@ -54,7 +54,7 @@ interface ResultInterface
     /**
      * Get the result code for this authentication attempt.
      *
-     * @return int
+     * @return string
      */
     public function getCode();
 

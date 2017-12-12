@@ -23,7 +23,7 @@ class Result implements ResultInterface
     /**
      * Authentication result code
      *
-     * @var int
+     * @var string
      */
     protected $_code;
 
@@ -74,13 +74,13 @@ class Result implements ResultInterface
      */
     public function isValid()
     {
-        return $this->_code > 0;
+        return strpos($this->_code, 'SUCCESS') === 0;
     }
 
     /**
      * Get the result code for this authentication attempt.
      *
-     * @return int
+     * @return string
      */
     public function getCode()
     {

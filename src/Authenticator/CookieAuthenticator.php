@@ -84,7 +84,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $cookies = $request->getCookieParams();
         $cookieName = $this->getConfig('cookie.name');
         if (!isset($cookies[$cookieName])) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND, [
+            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST, [
                 'Login credentials not found'
             ]);
         }
@@ -92,7 +92,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $token = json_decode($cookies[$cookieName], true);
 
         if ($token === null || count($token) !== 2) {
-            return new Result(null, Result::FAILURE_CREDENTIAL_INVALID, [
+            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
                 'Cookie token is invalid.'
             ]);
         }
@@ -109,7 +109,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         }
 
         if (!$this->_checkToken($identity, $tokenHash)) {
-            return new Result(null, Result::FAILURE_CREDENTIAL_INVALID, [
+            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
                 'Cookie token does not match'
             ]);
         }

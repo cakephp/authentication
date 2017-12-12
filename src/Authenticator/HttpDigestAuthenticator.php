@@ -91,7 +91,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         }
 
         if (!$this->validNonce($digest['nonce'])) {
-            return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
+            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
         $field = $this->_config['fields'][IdentifierInterface::CREDENTIAL_PASSWORD];
@@ -107,7 +107,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result($user, Result::SUCCESS);
         }
 
-        return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
+        return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
     }
 
     /**

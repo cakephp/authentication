@@ -42,7 +42,7 @@ class ResultTest extends TestCase
      */
     public function testConstructorInvalidData()
     {
-        new Result(new stdClass, Result::FAILURE_CREDENTIAL_INVALID);
+        new Result(new stdClass, Result::FAILURE_CREDENTIALS_INVALID);
     }
 
     /**
@@ -55,7 +55,7 @@ class ResultTest extends TestCase
         $result = new Result(null, Result::FAILURE);
         $this->assertFalse($result->isValid());
 
-        $result = new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
+        $result = new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         $this->assertFalse($result->isValid());
 
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);

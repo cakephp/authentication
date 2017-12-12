@@ -73,7 +73,7 @@ class JwtAuthenticator extends TokenAuthenticator
         } catch (Exception $e) {
             return new Result(
                 null,
-                Result::FAILURE_CREDENTIAL_INVALID,
+                Result::FAILURE_CREDENTIALS_INVALID,
                 [
                     'message' => $e->getMessage(),
                     'exception' => $e
@@ -82,14 +82,14 @@ class JwtAuthenticator extends TokenAuthenticator
         }
 
         if (!$result instanceof stdClass) {
-            return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
+            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
         $result = json_decode(json_encode($result), true);
 
         $key = IdentifierInterface::CREDENTIAL_JWT_SUBJECT;
         if (empty($result[$key])) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND);
+            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST);
         }
 
         if ($this->getConfig('returnPayload')) {

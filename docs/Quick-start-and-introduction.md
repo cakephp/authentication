@@ -145,12 +145,12 @@ if ($result->isValid()) {
 
 The result sets objects code returned from `getCode()` will match one of these codes. The codes are implemented as class constants in the Result object.
 
- * **1**: Success (Result::SUCCESS)
- * **0**: Failure (Result::FAILURE)
- * **-1**: Identify not found (Result::FAILURE_IDENTITY_NOT_FOUND)
- * **-2**: Credentials invalid (Result::FAILURE_CREDENTIAL_INVALID)
- * **-3**: Any other kind of failure (Result::FAILURE_OTHER)
- * **-4**: Credentials not found (Result::FAILURE_CREDENTIALS_NOT_FOUND)
+ * **`'SUCCESS'`** aka `Result::SUCCESS`, when successful.
+ * **`'FAILURE'`** aka `Result::FAILURE`, on any general failure.
+ * **`'FAILURE_IDENTITY_NOT_FOUND'`** aka `Result::FAILURE_IDENTITY_NOT_FOUND`, when identify could not be found.
+ * **`'FAILURE_CREDENTIALS_INVALID'`** aka `Result::FAILURE_CREDENTIALS_INVALID`, when credentials are invalid.
+ * **`'FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST_IN_REQUEST'`**: `Result::FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST`, when credentials are not found in request.
+ * **`'FAILURE_OTHER'`**: aka `Result::FAILURE_OTHER`, on any other kind of failure.
 
 The error array returned by `getErrors()` contains *additional* information coming from the specific system against which the authentication attempt was made. For example LDAP or OAuth would put errors specific to their implementation in here for easier logging and debugging the cause. But most of the included authenticators don't put anything in here.
 
