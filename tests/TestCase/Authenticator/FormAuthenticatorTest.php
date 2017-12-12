@@ -81,7 +81,7 @@ class FormAuthenticatorTest extends TestCase
         $result = $form->authenticate($request, $response);
 
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST, $result->getCode());
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST, $result->getCode());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
     }
 
@@ -108,7 +108,7 @@ class FormAuthenticatorTest extends TestCase
         $result = $form->authenticate($request, $response);
 
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST, $result->getCode());
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST, $result->getCode());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
     }
 

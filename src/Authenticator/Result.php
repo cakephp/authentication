@@ -74,7 +74,7 @@ class Result implements ResultInterface
      */
     public function isValid()
     {
-        return strpos($this->_code, 'SUCCESS') === 0;
+        return $this->_code === ResultInterface::SUCCESS;
     }
 
     /**

@@ -149,7 +149,7 @@ The result sets objects code returned from `getCode()` will match one of these c
  * `'FAILURE'`, value of `Result::FAILURE`, on any general failure.
  * `'FAILURE_IDENTITY_NOT_FOUND'`, value of `Result::FAILURE_IDENTITY_NOT_FOUND`, when identify could not be found.
  * `'FAILURE_CREDENTIALS_INVALID'`, value of `Result::FAILURE_CREDENTIALS_INVALID`, when credentials are invalid.
- * `'FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST_IN_REQUEST'`, value of `Result::FAILURE_CREDENTIALS_NOT_FOUND_IN_REQUEST`, when credentials are not found in request.
+ * `'FAILURE_CREDENTIALS_NOT_IN_REQUEST_IN_REQUEST'`, value of `Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST`, when credentials are not found in request.
  * `'FAILURE_OTHER'`, value of `Result::FAILURE_OTHER`, on any other kind of failure.
 
 The error array returned by `getErrors()` contains *additional* information coming from the specific system against which the authentication attempt was made. For example LDAP or OAuth would put errors specific to their implementation in here for easier logging and debugging the cause. But most of the included authenticators don't put anything in here.
