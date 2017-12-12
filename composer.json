@@ -8,6 +8,7 @@
         "middleware"
     ],
     "type": "cakephp-plugin",
+    "homepage": "https://cakephp.org",
     "require": {
         "cakephp/core": "~3.4",
         "psr/http-message": "~1.0"
@@ -48,6 +49,12 @@
             "homepage": "https://github.com/cakephp/authentication/graphs/contributors"
         }
     ],
+    "support": {
+        "issues": "https://github.com/cakephp/authentication/issues",
+        "forum": "https://stackoverflow.com/tags/cakephp",
+        "irc": "irc://irc.freenode.org/cakephp",
+        "source": "https://github.com/cakephp/authentication"
+    },
     "scripts": {
         "check": [
             "@cs-check",
