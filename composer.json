@@ -44,14 +44,8 @@
     },
     "authors": [
         {
-            "name": "Florian Krämer",
-            "homepage": "http://florian-kraemer.net",
-            "role": "Developer"
-        },
-        {
-            "name": "Admad",
-            "homepage": "http://github.com/admad",
-            "role": "Developer"
+            "name": "CakePHP Community",
+            "homepage": "https://github.com/cakephp/authentication/graphs/contributors"
         }
     ],
     "scripts": {
