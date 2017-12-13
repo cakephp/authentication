@@ -11,7 +11,6 @@
  * @link          https://cakephp.org CakePHP(tm) Project
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace TestApp\Identifier\Resolver;
 
 class InvalidResolver
