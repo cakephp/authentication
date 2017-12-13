@@ -147,7 +147,7 @@ The result sets objects status returned from `getStatus()` will match one of the
 
 * `ResultInterface::SUCCESS`, when successful.
 * `ResultInterface::FAILURE`, on any general failure.
-* `ResultInterface::FAILURE_IDENTITY_NOT_FOUND`, when identify could not be found.
+* `ResultInterface::FAILURE_IDENTITY_NOT_FOUND`, when identity could not be found.
 * `ResultInterface::FAILURE_CREDENTIALS_INVALID`, when credentials are invalid.
 * `ResultInterface::FAILURE_CREDENTIALS_NOT_IN_REQUEST`, when credentials are missing in the request.
 * `ResultInterface::FAILURE_OTHER`, on any other kind of failure.
