@@ -11,7 +11,8 @@
     "homepage": "https://cakephp.org",
     "require": {
         "cakephp/core": "~3.4",
-        "psr/http-message": "~1.0"
+        "psr/http-message": "~1.0",
+        "zendframework/zend-diactoros": "^1.4.0"
     },
     "require-dev": {
         "cakephp/cakephp": "~3.4",
