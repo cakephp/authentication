@@ -48,7 +48,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
-     * @return \ArrayAccess|null User entity or null on failure.
+     * @return \ArrayAccess|array|null User entity or null on failure.
      */
     public function getUser(ServerRequestInterface $request)
     {

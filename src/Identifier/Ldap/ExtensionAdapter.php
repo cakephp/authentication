@@ -30,7 +30,7 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * LDAP Object
      *
-     * @var object
+     * @var object|null
      */
     protected $_connection;
 
