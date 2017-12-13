@@ -47,11 +47,11 @@ interface ResultInterface
     public function isValid();
 
     /**
-     * Get the result code for this authentication attempt.
+     * Get the result status for this authentication attempt.
      *
      * @return string
      */
-    public function getCode();
+    public function getStatus();
 
     /**
      * Returns the identity data used in the authentication attempt.

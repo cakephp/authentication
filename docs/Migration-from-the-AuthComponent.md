@@ -37,13 +37,13 @@ $user = $request->getAttribute('identity');
 For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible on the `authentication` attribute.
 
 ```php
-$authResult = $request->getAttribute('authentication')->getResult();
-// Bool if the result is valid
-debug($authResult->isValid());
+$result = $request->getAttribute('authentication')->getResult();
+// Boolean if the result is valid
+debug($result->isValid());
 // A status code
-debug($authResult->getCode());
+debug($result->getStatus());
 // An array of error messages or data if the identifier provided any
-debug($authResult->getErrors());
+debug($result->getErrors());
 ```
 
 The huge config array from the AuthComponent needs to be split into identifiers and authenticators when configuring the service. So when you had your AuthComponent configured this way
@@ -54,7 +54,7 @@ $this->loadComponent('Auth', [
         'Form' => [
             'fields' => [
                 'username' => 'email',
-                'password' => 'password'
+                'password' => 'password',
             ]
         ]
     ]
@@ -71,7 +71,7 @@ $service = new AuthenticationService();
 $service->loadIdentifier('Authentication.Password', [
     'fields' => [
         'username' => 'email',
-        'password' => 'password'
+        'password' => 'password',
     ]
 ]);
 
@@ -94,7 +94,7 @@ $service->loadIdentifier('Authentication.Password', [
     ],
     'fields' => [
         'username' => 'email',
-        'password' => 'password'
+        'password' => 'password',
     ]
 ]);
 ```

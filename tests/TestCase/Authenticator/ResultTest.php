@@ -101,11 +101,11 @@ class ResultTest extends TestCase
     public function testGetCode()
     {
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
-        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
+        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
 
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::SUCCESS);
-        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals(Result::SUCCESS, $result->getStatus());
     }
 
     /**
