@@ -45,7 +45,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Authenticator that successfully authenticated the identity.
      *
-     * @param \Authentication\Authenticator\AuthenticatorInterface
+     * @var \Authentication\Authenticator\AuthenticatorInterface|null
      */
     protected $_successfulAuthenticator;
 

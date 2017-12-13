@@ -145,7 +145,7 @@ class Identity implements IdentityInterface
     /**
      * Gets the original data object.
      *
-     * @return \ArrayAccess
+     * @return \ArrayAccess|array
      */
     public function getOriginalData()
     {

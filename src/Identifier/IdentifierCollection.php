@@ -34,6 +34,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      */
     public function identify(array $credentials)
     {
+        /** @var \Authentication\Identifier\IdentifierInterface $identifier */
         foreach ($this->_loaded as $name => $identifier) {
             $result = $identifier->identify($credentials);
             if ($result) {
@@ -86,7 +87,9 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      */
     protected function _resolveClassName($class)
     {
-        return App::className($class, 'Identifier', 'Identifier') ?: null;
+        $className = App::className($class, 'Identifier', 'Identifier');
+
+        return is_string($className) ? $className : null;
     }
 
     /**
