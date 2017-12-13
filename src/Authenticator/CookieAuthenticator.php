@@ -84,7 +84,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $cookies = $request->getCookieParams();
         $cookieName = $this->getConfig('cookie.name');
         if (!isset($cookies[$cookieName])) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST, [
+            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Login credentials not found'
             ]);
         }

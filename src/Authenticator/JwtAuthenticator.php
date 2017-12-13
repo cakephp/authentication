@@ -89,7 +89,7 @@ class JwtAuthenticator extends TokenAuthenticator
 
         $key = IdentifierInterface::CREDENTIAL_JWT_SUBJECT;
         if (empty($result[$key])) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST);
+            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
         if ($this->getConfig('returnPayload')) {

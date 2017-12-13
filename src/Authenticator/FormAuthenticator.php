@@ -108,7 +108,7 @@ class FormAuthenticator extends AbstractAuthenticator
 
         $data = $this->_getData($request);
         if ($data === null) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST, [
+            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Login credentials not found'
             ]);
         }

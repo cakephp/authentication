@@ -213,7 +213,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $result = $authenticator->authenticate($request, $response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST, $result->getStatus());
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertNUll($result->getData());
     }
 

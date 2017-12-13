@@ -22,7 +22,7 @@ interface ResultInterface
     /**
      * The authentication credentials were not found in the request.
      */
-    const FAILURE_CREDENTIALS_NOT_IN_REQUEST = 'FAILURE_CREDENTIALS_NOT_IN_REQUEST';
+    const FAILURE_CREDENTIALS_MISSING = 'FAILURE_CREDENTIALS_MISSING';
 
     /**
      * Failure due to identity not being found.

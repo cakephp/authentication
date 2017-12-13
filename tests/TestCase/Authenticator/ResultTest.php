@@ -55,7 +55,7 @@ class ResultTest extends TestCase
         $result = new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         $this->assertFalse($result->isValid());
 
-        $result = new Result(null, Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST);
+        $result = new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         $this->assertFalse($result->isValid());
 
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);

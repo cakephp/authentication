@@ -149,7 +149,7 @@ The result sets objects status returned from `getStatus()` will match one of the
 * `ResultInterface::FAILURE`, on any general failure.
 * `ResultInterface::FAILURE_IDENTITY_NOT_FOUND`, when identity could not be found.
 * `ResultInterface::FAILURE_CREDENTIALS_INVALID`, when credentials are invalid.
-* `ResultInterface::FAILURE_CREDENTIALS_NOT_IN_REQUEST`, when credentials are missing in the request.
+* `ResultInterface::FAILURE_CREDENTIALS_MISSING`, when credentials are missing in the request.
 * `ResultInterface::FAILURE_OTHER`, on any other kind of failure.
 
 The error array returned by `getErrors()` contains *additional* information coming from the specific system against which the authentication attempt was made. For example LDAP or OAuth would put errors specific to their implementation in here for easier logging and debugging the cause. But most of the included authenticators don't put anything in here.
