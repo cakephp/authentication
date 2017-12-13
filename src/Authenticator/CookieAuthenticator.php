@@ -192,7 +192,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * @param array|\ArrayAccess $identity Identity data.
      * @param string $tokenHash Hashed part of a cookie token.
-     * @return string
+     * @return bool
      */
     protected function _checkToken($identity, $tokenHash)
     {
