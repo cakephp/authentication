@@ -34,7 +34,7 @@ class ResultTest extends TestCase
     }
 
     /**
-     * testConstructorEmptyData
+     * testConstructorInvalidData
      *
      * @return void
      * @expectedException InvalidArgumentException
@@ -52,13 +52,16 @@ class ResultTest extends TestCase
      */
     public function testIsValid()
     {
-        $result = new Result(null, Result::FAILURE);
-        $this->assertFalse($result->isValid());
-
         $result = new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         $this->assertFalse($result->isValid());
 
+        $result = new Result(null, Result::FAILURE_CREDENTIALS_NOT_IN_REQUEST);
+        $this->assertFalse($result->isValid());
+
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+        $this->assertFalse($result->isValid());
+
+        $result = new Result(null, Result::FAILURE_OTHER);
         $this->assertFalse($result->isValid());
 
         $entity = new Entity(['user' => 'florian']);
@@ -106,7 +109,7 @@ class ResultTest extends TestCase
     }
 
     /**
-     * testGetCode
+     * testGetErrors
      *
      * @return void
      */
@@ -117,7 +120,7 @@ class ResultTest extends TestCase
             'Out of beer!'
         ];
         $entity = new Entity(['user' => 'florian']);
-        $result = new Result($entity, Result::FAILURE, $messages);
+        $result = new Result($entity, Result::FAILURE_OTHER, $messages);
         $this->assertEquals($messages, $result->getErrors());
     }
 }

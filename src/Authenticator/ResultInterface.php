@@ -15,16 +15,6 @@ namespace Authentication\Authenticator;
 interface ResultInterface
 {
     /**
-     * General Failure
-     */
-    const FAILURE = 'FAILURE';
-
-    /**
-     * Failure due to identity not being found.
-     */
-    const FAILURE_IDENTITY_NOT_FOUND = 'FAILURE_IDENTITY_NOT_FOUND';
-
-    /**
      * Failure due to invalid credentials being supplied.
      */
     const FAILURE_CREDENTIALS_INVALID = 'FAILURE_CREDENTIALS_INVALID';
@@ -35,7 +25,12 @@ interface ResultInterface
     const FAILURE_CREDENTIALS_NOT_IN_REQUEST = 'FAILURE_CREDENTIALS_NOT_IN_REQUEST';
 
     /**
-     * Failure due to other circumstances.
+     * Failure due to identity not being found.
+     */
+    const FAILURE_IDENTITY_NOT_FOUND = 'FAILURE_IDENTITY_NOT_FOUND';
+
+    /**
+     * General failure due to any other circumstances.
      */
     const FAILURE_OTHER = 'FAILURE_OTHER';
 
