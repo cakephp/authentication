@@ -130,6 +130,15 @@ class CakeRouterCheckerTest extends TestCase
         );
         $result = $checker->check($request, $url);
         $this->assertTrue($result);
+
+        $url = ['_name' => 'does-not-exist'];
+
+        $checker = new CakeRouterChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/login']
+        );
+        $result = $checker->check($request, $url);
+        $this->assertFalse($result);
     }
 
     /**
