@@ -22,7 +22,16 @@ use ArrayAccess;
 interface IdentityInterface extends ArrayAccess
 {
     /**
+     * Get the primary key/id field for the identity.
+     *
      * @return string|int|null
      */
     public function getIdentifier();
+
+    /**
+     * Gets the original data object.
+     *
+     * @return \ArrayAccess|array
+     */
+    public function getOriginalData();
 }
