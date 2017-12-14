@@ -81,7 +81,6 @@ class CakeRouterChecker implements UrlCheckerInterface
      */
     protected function _getUrlFromRequest(UriInterface $uri, $getFullUrl = false)
     {
-        debug($getFullUrl);
         if ($getFullUrl) {
             return (string)$uri;
         }
