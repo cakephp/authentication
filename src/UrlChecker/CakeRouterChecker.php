@@ -14,6 +14,7 @@
  */
 namespace Authentication\UrlChecker;
 
+use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
