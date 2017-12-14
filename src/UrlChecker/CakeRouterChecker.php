@@ -16,6 +16,7 @@ namespace Authentication\UrlChecker;
 
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -48,11 +49,8 @@ class CakeRouterChecker implements UrlCheckerInterface
             return ($loginUrls === $url);
         }
 
-        if (!is_array($loginUrls)) {
-            return false;
-        }
-        if (empty($loginUrls)) {
-            return true;
+        if (!is_array($loginUrls) || empty($loginUrls)) {
+            throw new InvalidArgumentException('The $loginUrls parameter is empty or not of type array.');
         }
 
         // If it's a single route array add to another

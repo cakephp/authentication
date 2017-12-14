@@ -99,6 +99,23 @@ class CakeRouterCheckerTest extends TestCase
     }
 
     /**
+     * testEmptyUrl
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The $loginUrls parameter is empty or not of type array.
+     * @return void
+     */
+    public function testEmptyUrl()
+    {
+        $checker = new CakeRouterChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+        $result = $checker->check($request, []);
+        $this->assertFalse($result);
+    }
+
+    /**
      * testNamedRoute
      *
      * @return void
