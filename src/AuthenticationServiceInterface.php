@@ -14,7 +14,6 @@
  */
 namespace Authentication;
 
-use ArrayAccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -44,7 +43,7 @@ interface AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\Authenticator\ResultInterface A result object. If none of
+     * @return array An array consisting of a result object, a modified request and response. If none of
      * the adapters was a success the last failed result is returned.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response);

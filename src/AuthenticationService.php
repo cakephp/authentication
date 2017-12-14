@@ -153,12 +153,8 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * Authenticate the request against the configured authentication adapters.
+     * {@inheritDoc}
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\Authenticator\ResultInterface A result object. If none of
-     * the adapters was a success the last failed result is returned.
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
@@ -174,12 +170,19 @@ class AuthenticationService implements AuthenticationServiceInterface
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
                 if (!($authenticator instanceof StatelessInterface)) {
-                    $this->setIdentity($request, $response, $result->getData());
+                    $requestResponse = $this->setIdentity($request, $response, $result->getData());
+                    $request = $requestResponse['request'];
+                    $response = $requestResponse['response'];
                 }
 
                 $this->_successfulAuthenticator = $authenticator;
+                $this->_result = $result;
 
-                return $this->_result = $result;
+                return [
+                    'result' => $result,
+                    'request' => $request,
+                    'response' => $response
+                ];
             }
 
             if (!$result->isValid() && $authenticator instanceof StatelessInterface) {
@@ -188,8 +191,13 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         $this->_successfulAuthenticator = null;
+        $this->_result = $result;
 
-        return $this->_result = $result;
+        return [
+            'result' => $result,
+            'request' => $request,
+            'response' => $response
+        ];
     }
 
     /**
