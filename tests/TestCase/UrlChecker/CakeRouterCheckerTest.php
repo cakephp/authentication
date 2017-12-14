@@ -33,8 +33,13 @@ class CakeRouterCheckerTest extends TestCase
         parent::setUp();
 
         Router::reload();
-        Router::connect('/:controller/:action');
         Router::fullBaseUrl('http://localhost');
+        Router::connect(
+            '/login',
+            ['controller' => 'Users', 'action' => 'login'],
+            ['_name' => 'login']
+        );
+        Router::connect('/:controller/:action');
     }
 
     /**
@@ -91,6 +96,23 @@ class CakeRouterCheckerTest extends TestCase
             'checkFullUrl' => true
         ]);
         $this->assertFalse($result);
+    }
+
+    /**
+     * testNamedRoute
+     *
+     * @return void
+     */
+    public function testNamedRoute()
+    {
+        $url = ['_name' => 'login'];
+
+        $checker = new CakeRouterChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/login']
+        );
+        $result = $checker->check($request, $url);
+        $this->assertTrue($result);
     }
 
     /**
