@@ -18,23 +18,12 @@ use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * Checks if a request object contains a valid URL
  */
-class CakeRouterChecker implements UrlCheckerInterface
+class CakeRouterChecker extends DefaultUrlChecker
 {
-    /**
-     * Default Options
-     *
-     * - `checkFullUrl` Whether or not to check the full request URI.
-     *
-     * @var array
-     */
-    protected $_defaultOptions = [
-        'checkFullUrl' => false
-    ];
 
     /**
      * {@inheritdoc}
@@ -69,36 +58,5 @@ class CakeRouterChecker implements UrlCheckerInterface
         }
 
         return false;
-    }
-
-    /**
-     * Returns current url.
-     *
-     * @param \Psr\Http\Message\UriInterface $uri Server Request
-     * @param bool $getFullUrl Get the full URL or just the path
-     * @return string
-     */
-    protected function _getUrlFromRequest(UriInterface $uri, $getFullUrl = false)
-    {
-        if ($getFullUrl) {
-            return (string)$uri;
-        }
-
-        return $uri->getPath();
-    }
-
-    /**
-     * Merges given options with the defaults.
-     *
-     * The reason this method exists is that it makes it easy to override the
-     * method and inject additional options without the need to use the
-     * MergeVarsTrait.
-     *
-     * @param array $options Options to merge in
-     * @return array
-     */
-    protected function _mergeDefaultOptions(array $options)
-    {
-        return $options += $this->_defaultOptions;
     }
 }
