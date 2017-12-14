@@ -134,18 +134,8 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             ];
         }
 
-        $data = $this->getConfig('cookie');
         $value = $this->_createToken($identity);
-
-        $cookie = new Cookie(
-            $data['name'],
-            $value,
-            $data['expire'],
-            $data['path'],
-            $data['domain'],
-            $data['secure'],
-            $data['httpOnly']
-        );
+        $cookie = $this->_createCookie($value);
 
         return [
             'request' => $request,
@@ -206,11 +196,34 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $cookie = (new Cookie($this->getConfig('cookie.name')))->withExpired();
+        $cookie = $this->_createCookie(null)->withExpired();
 
         return [
             'request' => $request,
             'response' => $response->withAddedHeader('Set-Cookie', $cookie->toHeaderValue())
         ];
+    }
+
+    /**
+     * Creates a cookie instance with configured defaults.
+     *
+     * @param mixed $value Cookie value.
+     * @return \Cake\Http\Cookie\CookieInterface
+     */
+    protected function _createCookie($value)
+    {
+        $data = $this->getConfig('cookie');
+
+        $cookie = new Cookie(
+            $data['name'],
+            $value,
+            $data['expire'],
+            $data['path'],
+            $data['domain'],
+            $data['secure'],
+            $data['httpOnly']
+        );
+
+        return $cookie;
     }
 }
