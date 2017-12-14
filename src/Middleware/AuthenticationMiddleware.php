@@ -92,9 +92,13 @@ class AuthenticationMiddleware
 
             return $response;
         }
+
+        $request = $result['request'];
         $request = $request->withAttribute('identity', $service->getIdentity());
         $request = $request->withAttribute('authentication', $service);
-        $request = $request->withAttribute('authenticationResult', $result);
+        $request = $request->withAttribute('authenticationResult', $result['result']);
+
+        $response = $result['response'];
 
         return $next($request, $response);
     }

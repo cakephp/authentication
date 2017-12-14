@@ -16,6 +16,7 @@ namespace Authentication\Test\TestCase\Middleware;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
@@ -110,6 +111,13 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $service = $this->createMock(AuthenticationServiceInterface::class);
+
+        $service->method('authenticate')
+            ->willReturn([
+                'result' => $this->createMock(ResultInterface::class),
+                'request' => $request,
+                'response' => $response
+            ]);
 
         $application = $this->getMockBuilder(BaseApplication::class)
             ->disableOriginalConstructor()
@@ -363,5 +371,45 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertTrue($service->getResult()->isValid());
         $this->assertEquals($data, $identity->getOriginalData()->getArrayCopy());
+    }
+
+    /**
+     * testCookieAuthorizationThroughTheMiddlewareStack
+     *
+     * @return void
+     */
+    public function testCookieAuthorizationThroughTheMiddlewareStack()
+    {
+        $this->service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+                'Authentication.Cookie'
+            ]
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            [],
+            [
+                'username' => 'mariano',
+                'password' => 'password',
+                'remember_me' => true
+            ]
+        );
+
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service);
+
+        $next = function ($request, $response) {
+            return $response;
+        };
+
+        $response = $middleware($request, $response, $next);
+
+        $this->assertContains('CookieAuth=%5B%22mariano%22', $response->getHeaderLine('Set-Cookie'));
     }
 }
