@@ -40,8 +40,8 @@ class CakeRouterChecker implements UrlCheckerInterface
     public function check(ServerRequestInterface $request, $loginUrls, array $options = [])
     {
         $options = $this->_mergeDefaultOptions($options);
-        $url = $request->getUri()->getPath();
-
+        $url = $this->_getUrlFromRequest($request->getUri(), $options['checkFullUrl']);
+debug($url);
         // Support string loginUrls
         if (is_string($loginUrls)) {
             return ($loginUrls === $url);
@@ -81,6 +81,7 @@ class CakeRouterChecker implements UrlCheckerInterface
      */
     protected function _getUrlFromRequest(UriInterface $uri, $getFullUrl = false)
     {
+        debug($getFullUrl);
         if ($getFullUrl) {
             return (string)$uri;
         }

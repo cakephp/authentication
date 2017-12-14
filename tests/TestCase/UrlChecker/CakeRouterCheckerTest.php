@@ -60,4 +60,27 @@ class CakeRouterCheckerTest extends TestCase
         ]);
         $this->assertFalse($result);
     }
+
+    /**
+     * checkFullUrls
+     *
+     * @return void
+     */
+    public function testCheckFullUrls()
+    {
+        $checker = new CakeRouterChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+
+        $result = $checker->check($request, '/users/login', [
+            'checkFullUrl' => true
+        ]);
+        $this->assertFalse($result);
+
+        $result = $checker->check($request, 'http://localhost/users/login', [
+            'checkFullUrl' => true
+        ]);
+        $this->assertTrue($result);
+    }
 }
