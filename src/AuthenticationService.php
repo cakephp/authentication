@@ -170,7 +170,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
                 if (!($authenticator instanceof StatelessInterface)) {
-                    $requestResponse = $this->setIdentity($request, $response, $result->getData());
+                    $requestResponse = $this->persistIdentity($request, $response, $result->getData());
                     $request = $requestResponse['request'];
                     $response = $requestResponse['response'];
                 }
@@ -231,7 +231,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \ArrayAccess|array $identity Identity data.
      * @return array
      */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {

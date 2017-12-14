@@ -198,11 +198,11 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
-     * testSetIdentity
+     * testPersistIdentity
      *
      * @return void
      */
-    public function testSetIdentity()
+    public function testPersistIdentity()
     {
         $service = new AuthenticationService([
             'identifiers' => [
@@ -223,7 +223,7 @@ class AuthenticationServiceTest extends TestCase
         $this->assertEmpty($request->getAttribute('identity'));
 
         $data = new ArrayObject(['username' => 'florian']);
-        $result = $service->setIdentity($request, $response, $data);
+        $result = $service->persistIdentity($request, $response, $data);
 
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('request', $result);
@@ -242,11 +242,11 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
-     * testSetIdentityInterface
+     * testPersistIdentityInterface
      *
      * @return void
      */
-    public function testSetIdentityInterface()
+    public function testPersistIdentityInterface()
     {
         $request = new ServerRequest();
         $response = new Response();
@@ -254,17 +254,17 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService();
 
-        $result = $service->setIdentity($request, $response, $identity);
+        $result = $service->persistIdentity($request, $response, $identity);
 
         $this->assertSame($identity, $result['request']->getAttribute('identity'));
     }
 
     /**
-     * testSetIdentityInterface
+     * testPersistIdentityInterface
      *
      * @return void
      */
-    public function testSetIdentityArray()
+    public function testPersistIdentityArray()
     {
         $request = new ServerRequest();
         $response = new Response();
@@ -274,7 +274,7 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService();
 
-        $result = $service->setIdentity($request, $response, $data);
+        $result = $service->persistIdentity($request, $response, $data);
         $this->assertInstanceOf(IdentityInterface::class, $result['request']->getAttribute('identity'));
     }
 

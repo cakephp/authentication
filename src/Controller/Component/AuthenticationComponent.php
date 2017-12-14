@@ -141,7 +141,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $controller = $this->getController();
 
-        $result = $this->_authentication->setIdentity(
+        $result = $this->_authentication->persistIdentity(
             $controller->request,
             $controller->response,
             $identity
