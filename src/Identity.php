@@ -145,9 +145,7 @@ class Identity implements IdentityInterface
     }
 
     /**
-     * Gets the original data object.
-     *
-     * @return \ArrayAccess|array
+     * {@inheritDoc}
      */
     public function getOriginalData()
     {
