@@ -14,11 +14,11 @@
  */
 namespace Authentication;
 
-use ArrayAccess;
+use Authentication\Authenticator\PersistenceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface AuthenticationServiceInterface
+interface AuthenticationServiceInterface extends PersistenceInterface
 {
 
     /**
@@ -44,7 +44,7 @@ interface AuthenticationServiceInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return \Authentication\Authenticator\ResultInterface A result object. If none of
+     * @return array An array consisting of a result object, a modified request and response. If none of
      * the adapters was a success the last failed result is returned.
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
@@ -55,25 +55,6 @@ interface AuthenticationServiceInterface
      * @return null|\Authentication\IdentityInterface
      */
     public function getIdentity();
-
-    /**
-     * Clears the identity from authenticators that store them and the request.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return array Return an array containing the request and response objects.
-     */
-    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response);
-
-    /**
-     * Persists the given identity data in the authenticators that support persistence.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param \ArrayAccess|array $identity Identity data.
-     * @return array Return an array containing the request and response objects.
-     */
-    public function setIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
 
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
