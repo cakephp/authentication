@@ -92,4 +92,48 @@ class CakeRouterCheckerTest extends TestCase
         ]);
         $this->assertFalse($result);
     }
+
+    /**
+     * testMultipleUrls
+     *
+     * @return void
+     */
+    public function testMultipleUrls()
+    {
+        $url = [
+            [
+                'controller' => 'users',
+                'action' => 'login'
+            ],
+            [
+                'controller' => 'admins',
+                'action' => 'login'
+            ]
+        ];
+
+        $checker = new CakeRouterChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+        $result = $checker->check($request, $url, [
+            'checkFullUrl' => true
+        ]);
+        $this->assertTrue($result);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/admins/login']
+        );
+        $result = $checker->check($request, $url, [
+            'checkFullUrl' => true
+        ]);
+        $this->assertTrue($result);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/invalid']
+        );
+        $result = $checker->check($request, $url, [
+            'checkFullUrl' => true
+        ]);
+        $this->assertFalse($result);
+    }
 }
