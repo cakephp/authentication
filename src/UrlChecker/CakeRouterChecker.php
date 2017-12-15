@@ -33,11 +33,6 @@ class CakeRouterChecker extends DefaultUrlChecker
         $options = $this->_mergeDefaultOptions($options);
         $url = $this->_getUrlFromRequest($request->getUri(), $options['checkFullUrl']);
 
-        // Support string loginUrls
-        if (is_string($loginUrls)) {
-            return ($loginUrls === $url);
-        }
-
         if (!is_array($loginUrls) || empty($loginUrls)) {
             throw new InvalidArgumentException('The $loginUrls parameter is empty or not of type array.');
         }
