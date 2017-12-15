@@ -152,6 +152,7 @@ class Identity implements IdentityInterface
         if (isset($map[$offset])) {
             $offset = $map[$offset];
         }
+
         return $this->data[$offset] = $value;
     }
 
@@ -165,7 +166,7 @@ class Identity implements IdentityInterface
     public function offsetUnset($offset)
     {
         $map = $this->_config['fieldMap'];
-        if (isset($map[$field])) {
+        if (isset($map[$offset])) {
             $offset = $map[$offset];
         }
         unset($this->data[$offset]);
