@@ -51,13 +51,6 @@ class CakeRouterCheckerTest extends TestCase
     {
         $checker = new CakeRouterChecker();
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/users/login']
-        );
-        $result = $checker->check($request, '/users/login');
-        $this->assertTrue($result);
-
-        $checker = new CakeRouterChecker();
-        $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/invalid']
         );
         $result = $checker->check($request, [
@@ -112,6 +105,23 @@ class CakeRouterCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/login']
         );
         $result = $checker->check($request, []);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * testEmptyUrl
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The $loginUrls parameter is empty or not of type array.
+     * @return void
+     */
+    public function testStringUrl()
+    {
+        $checker = new CakeRouterChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+        $result = $checker->check($request, '/users/login');
         $this->assertFalse($result);
     }
 
