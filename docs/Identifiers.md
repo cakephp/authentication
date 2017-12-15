@@ -1,6 +1,29 @@
 # Identifiers
 
-Identifiers will identify an user or service based on the information that was extracted from the request by the authenticators.
+Identifiers will identify an user or service based on the information that was extracted from the request by the authenticators. Identifiers can take options in the `loadIdentifier` method. A holistic example of using the Password Identifier looks like:
+
+```php
+$service->loadIdentifier('Authentication.Password', [
+    'fields' => [
+        'username' => 'email',
+        'password' => 'passwd',
+    ],
+    'resolver' => [
+        'className' => 'Authentiation.Orm',
+        'finder' => 'active'
+    ],
+    'passwordHasher' => [
+        'className' => 'Authentication.Fallback',
+        'hashers' => [
+            ['Authentication.Default'],
+            [
+                'className' => 'Authentication.Legacy',
+                'hashType' => 'md5'
+            ],
+        ]
+    ]
+]);
+```
 
 ## Password
 
@@ -81,7 +104,12 @@ Resolver can be configured using `resolver` config option:
 
 ```php
 $service->loadIdentifier('Authentication.Password', [
-    'resolver' => 'Custom' //or full class name: \Some\Other\Custom\Resolver::class
+    'resolver' => [
+         // can be a full class name: \Some\Other\Custom\Resolver::class
+        'className' => 'MyResolver',
+        // Pass additional options to the resolver constructor.
+        'option' => 'value'
+    ]
 ]);
 ```
 
