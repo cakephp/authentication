@@ -12,7 +12,7 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Authenticator;
+namespace Authentication\Test\TestCase;
 
 use ArrayObject;
 use Authentication\Identity;
@@ -38,8 +38,7 @@ class IdentityTest extends TestCase
         $result = $identity->getIdentifier();
         $this->assertEquals(1, $result);
 
-        $result = $identity->get('username');
-        $this->assertEquals('florian', $result);
+        $this->assertEquals('florian', $identity->username);
     }
 
     /**
@@ -62,11 +61,25 @@ class IdentityTest extends TestCase
             ]
         ]);
 
-        $result = $identity->get('username');
-        $this->assertEquals('florian', $result);
+        $this->assertTrue(isset($identity['username']), 'Renamed field responds to isset');
+        $this->assertTrue(isset($identity['first_name']), 'old alias responds to isset.');
+        $this->assertFalse(isset($identity['missing']));
 
-        $result = $identity->get('email');
-        $this->assertEquals('info@cakephp.org', $result);
+        $this->assertTrue(isset($identity->username), 'Renamed field responds to isset');
+        $this->assertTrue(isset($identity->first_name), 'old alias responds to isset.');
+        $this->assertFalse(isset($identity->missing));
+
+        $this->assertSame('florian', $identity['username'], 'renamed field responsds to offsetget');
+        $this->assertSame('florian', $identity->username, 'renamed field responds to__get');
+        $this->assertNull($identity->missing);
+
+        $identity['username'] = 'mark';
+        $this->assertSame('mark', $identity->username);
+        $this->assertSame('mark', $identity->first_name);
+
+        $identity->username = 'nope';
+        $this->assertSame('mark', $identity->first_name);
+        $this->assertSame('nope', $identity->username, 'adding public properties works');
     }
 
     /**

@@ -111,7 +111,7 @@ class AuthenticationComponentTest extends TestCase
 
         $result = $component->getIdentity();
         $this->assertInstanceOf(IdentityInterface::class, $result);
-        $this->assertEquals('florian', $result->get('username'));
+        $this->assertEquals('florian', $result->username);
     }
 
     /**
@@ -203,7 +203,7 @@ class AuthenticationComponentTest extends TestCase
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
-        $this->assertEquals('florian', $controller->request->getAttribute('identity')->get('username'));
+        $this->assertEquals('florian', $controller->request->getAttribute('identity')->username);
         $component->logout();
         $this->assertNull($controller->request->getAttribute('identity'));
         $this->assertInstanceOf(Event::class, $result);
