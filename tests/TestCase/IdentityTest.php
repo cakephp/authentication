@@ -16,6 +16,7 @@ namespace Authentication\Test\TestCase;
 
 use ArrayObject;
 use Authentication\Identity;
+use BadMethodCallException;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 
@@ -72,14 +73,38 @@ class IdentityTest extends TestCase
         $this->assertSame('florian', $identity['username'], 'renamed field responsds to offsetget');
         $this->assertSame('florian', $identity->username, 'renamed field responds to__get');
         $this->assertNull($identity->missing);
+    }
+
+    /**
+     * Identities disallow data being unset.
+     *
+     * @return void
+     */
+    public function testOffsetUnsetError()
+    {
+        $this->setExpectedException(BadMethodCallException::class);
+        $data = [
+            'id' => 1,
+        ];
+        $identity = new Identity($data);
+        unset($identity['id']);
 
         $identity['username'] = 'mark';
-        $this->assertSame('mark', $identity->username);
-        $this->assertSame('mark', $identity->first_name);
+    }
 
-        $identity->username = 'nope';
-        $this->assertSame('mark', $identity->first_name);
-        $this->assertSame('nope', $identity->username, 'adding public properties works');
+    /**
+     * Identities disallow data being set.
+     *
+     * @return void
+     */
+    public function testOffsetSetError()
+    {
+        $this->setExpectedException(BadMethodCallException::class);
+        $data = [
+            'id' => 1,
+        ];
+        $identity = new Identity($data);
+        $identity['username'] = 'mark';
     }
 
     /**

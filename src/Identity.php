@@ -15,6 +15,7 @@
 namespace Authentication;
 
 use ArrayAccess;
+use BadMethodCallException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 
@@ -144,16 +145,12 @@ class Identity implements IdentityInterface
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value Value
+     * @throws \BadMethodCallException
      * @return mixed
      */
     public function offsetSet($offset, $value)
     {
-        $map = $this->_config['fieldMap'];
-        if (isset($map[$offset])) {
-            $offset = $map[$offset];
-        }
-
-        return $this->data[$offset] = $value;
+        throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
 
     /**
@@ -161,15 +158,12 @@ class Identity implements IdentityInterface
      *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset Offset
+     * @throws \BadMethodCallException
      * @return void
      */
     public function offsetUnset($offset)
     {
-        $map = $this->_config['fieldMap'];
-        if (isset($map[$offset])) {
-            $offset = $map[$offset];
-        }
-        unset($this->data[$offset]);
+        throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
 
     /**
