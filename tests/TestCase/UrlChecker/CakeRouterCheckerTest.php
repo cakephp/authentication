@@ -132,23 +132,26 @@ class CakeRouterCheckerTest extends TestCase
      */
     public function testNamedRoute()
     {
-        $url = ['_name' => 'login'];
-
         $checker = new CakeRouterChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/login']
         );
-        $result = $checker->check($request, $url);
+        $result = $checker->check($request, ['_name' => 'login']);
         $this->assertTrue($result);
+    }
 
-        $url = ['_name' => 'does-not-exist'];
-
+    /**
+     * testInvalidNamedRoute
+     *
+     * @expectedException \Cake\Routing\Exception\MissingRouteException
+     */
+    public function testInvalidNamedRoute()
+    {
         $checker = new CakeRouterChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/login']
         );
-        $result = $checker->check($request, $url);
-        $this->assertFalse($result);
+        $checker->check($request, ['_name' => 'login-does-not-exist']);
     }
 
     /**

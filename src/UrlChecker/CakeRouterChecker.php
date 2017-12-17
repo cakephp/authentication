@@ -43,10 +43,8 @@ class CakeRouterChecker extends DefaultUrlChecker
         }
 
         foreach ($loginUrls as $validUrl) {
-            try {
-                $validUrl = Router::url($validUrl, $options['checkFullUrl']);
-            } catch (MissingRouteException $e) {
-            }
+            $validUrl = Router::url($validUrl, $options['checkFullUrl']);
+
             if ($validUrl === $url) {
                 return true;
             }
