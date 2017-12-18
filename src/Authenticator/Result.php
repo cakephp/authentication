@@ -23,11 +23,11 @@ use InvalidArgumentException;
 class Result implements ResultInterface
 {
     /**
-     * Authentication result code
+     * Authentication result status
      *
-     * @var int
+     * @var string
      */
-    protected $_code;
+    protected $_status;
 
     /**
      * The identity data used in the authentication attempt
@@ -46,25 +46,28 @@ class Result implements ResultInterface
     protected $_errors = [];
 
     /**
-     * Sets the result code, identity, and failure messages
+     * Sets the result status, identity, and failure messages
      *
      * @param null|array|\ArrayAccess $data The identity data
-     * @param int $code Error code.
+     * @param string $status Status constant equivalent.
      * @param array $messages Messages.
      * @throws InvalidArgumentException When invalid identity data is passed.
      */
-    public function __construct($data, $code, array $messages = [])
+    public function __construct($data, $status, array $messages = [])
     {
-        if (empty($data) && $code === self::SUCCESS) {
+        if ($status === self::SUCCESS && empty($data)) {
             throw new InvalidArgumentException('Identity data can not be empty with status success.');
         }
-        if ($data !== null && !is_array($data) && !$data instanceof ArrayAccess) {
+        if ($data !== null && !is_array($data) && !($data instanceof ArrayAccess)) {
             $type = is_object($data) ? get_class($data) : gettype($data);
-            $message = sprintf('Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
+            $message = sprintf(
+                'Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `%s` given.',
+                $type
+            );
             throw new InvalidArgumentException($message);
         }
 
-        $this->_code = $code;
+        $this->_status = $status;
         $this->_data = $data;
         $this->_errors = $messages;
     }
@@ -76,17 +79,17 @@ class Result implements ResultInterface
      */
     public function isValid()
     {
-        return $this->_code > 0;
+        return $this->_status === ResultInterface::SUCCESS;
     }
 
     /**
-     * Get the result code for this authentication attempt.
+     * Get the result status for this authentication attempt.
      *
-     * @return int
+     * @return string
      */
-    public function getCode()
+    public function getStatus()
     {
-        return $this->_code;
+        return $this->_status;
     }
 
     /**

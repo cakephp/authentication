@@ -66,11 +66,11 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             $user = $this->_identifier->identify($credentials);
 
             if (empty($user)) {
-                return new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
+                return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
             }
         }
 
-        if (!$user instanceof ArrayAccess) {
+        if (!($user instanceof ArrayAccess)) {
             $user = new ArrayObject($user);
         }
 

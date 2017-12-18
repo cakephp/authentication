@@ -241,7 +241,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             }
         }
 
-        if (!$identity instanceof IdentityInterface) {
+        if (!($identity instanceof IdentityInterface)) {
             $identity = $this->buildIdentity($identity);
         }
 
@@ -283,7 +283,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         $identity = $this->_result->getData();
-        if (!$identity instanceof IdentityInterface) {
+        if (!($identity instanceof IdentityInterface)) {
             $identity = $this->buildIdentity($identity);
         }
 
@@ -306,7 +306,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             $identity = new $class($identityData);
         }
 
-        if (!$identity instanceof IdentityInterface) {
+        if (!($identity instanceof IdentityInterface)) {
             throw new RuntimeException(sprintf(
                 'Object `%s` does not implement `%s`',
                 get_class($identity),

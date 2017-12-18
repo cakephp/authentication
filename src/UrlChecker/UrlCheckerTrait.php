@@ -64,7 +64,7 @@ trait UrlCheckerTrait
 
         $checker = new $className();
 
-        if (!$checker instanceof UrlCheckerInterface) {
+        if (!($checker instanceof UrlCheckerInterface)) {
             throw new RuntimeException(sprintf(
                 'The provided URL checker class `%s` does not implement the `%s` interface.',
                 $options['className'],

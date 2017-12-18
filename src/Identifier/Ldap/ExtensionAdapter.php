@@ -23,7 +23,7 @@ use RuntimeException;
  *
  * We don't need and want a huge LDAP lib for our purpose.
  *
- * But this makes it easier to unit test code that is using ldap because we can
+ * But this makes it easier to unit test code that is using LDAP because we can
  * mock it very easy. It also provides some convenience.
  */
 class ExtensionAdapter implements AdapterInterface

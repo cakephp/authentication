@@ -17,34 +17,29 @@ namespace Authentication\Authenticator;
 interface ResultInterface
 {
     /**
-     * General Failure
+     * Failure due to invalid credentials being supplied.
      */
-    const FAILURE = 0;
-
-    /**
-     * Failure due to identity not being found.
-     */
-    const FAILURE_IDENTITY_NOT_FOUND = -1;
-
-    /**
-     * Failure due to invalid credential being supplied.
-     */
-    const FAILURE_CREDENTIAL_INVALID = -2;
-
-    /**
-     * Failure due to other circumstances.
-     */
-    const FAILURE_OTHER = -3;
+    const FAILURE_CREDENTIALS_INVALID = 'FAILURE_CREDENTIALS_INVALID';
 
     /**
      * The authentication credentials were not found in the request.
      */
-    const FAILURE_CREDENTIALS_NOT_FOUND = -4;
+    const FAILURE_CREDENTIALS_MISSING = 'FAILURE_CREDENTIALS_MISSING';
+
+    /**
+     * Failure due to identity not being found.
+     */
+    const FAILURE_IDENTITY_NOT_FOUND = 'FAILURE_IDENTITY_NOT_FOUND';
+
+    /**
+     * General failure due to any other circumstances.
+     */
+    const FAILURE_OTHER = 'FAILURE_OTHER';
 
     /**
      * Authentication success.
      */
-    const SUCCESS = 1;
+    const SUCCESS = 'SUCCESS';
 
     /**
      * Returns whether the result represents a successful authentication attempt.
@@ -54,11 +49,11 @@ interface ResultInterface
     public function isValid();
 
     /**
-     * Get the result code for this authentication attempt.
+     * Get the result status for this authentication attempt.
      *
-     * @return int
+     * @return string
      */
-    public function getCode();
+    public function getStatus();
 
     /**
      * Returns the identity data used in the authentication attempt.

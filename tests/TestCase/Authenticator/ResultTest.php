@@ -36,7 +36,7 @@ class ResultTest extends TestCase
     }
 
     /**
-     * testConstructorEmptyData
+     * testConstructorInvalidData
      *
      * @return void
      * @expectedException InvalidArgumentException
@@ -44,7 +44,7 @@ class ResultTest extends TestCase
      */
     public function testConstructorInvalidData()
     {
-        new Result(new stdClass, Result::FAILURE_CREDENTIAL_INVALID);
+        new Result(new stdClass, Result::FAILURE_CREDENTIALS_INVALID);
     }
 
     /**
@@ -54,13 +54,16 @@ class ResultTest extends TestCase
      */
     public function testIsValid()
     {
-        $result = new Result(null, Result::FAILURE);
+        $result = new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         $this->assertFalse($result->isValid());
 
-        $result = new Result(null, Result::FAILURE_CREDENTIAL_INVALID);
+        $result = new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         $this->assertFalse($result->isValid());
 
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+        $this->assertFalse($result->isValid());
+
+        $result = new Result(null, Result::FAILURE_OTHER);
         $this->assertFalse($result->isValid());
 
         $entity = new Entity(['user' => 'florian']);
@@ -100,15 +103,15 @@ class ResultTest extends TestCase
     public function testGetCode()
     {
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
-        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
+        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
 
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::SUCCESS);
-        $this->assertEquals(Result::SUCCESS, $result->getCode());
+        $this->assertEquals(Result::SUCCESS, $result->getStatus());
     }
 
     /**
-     * testGetCode
+     * testGetErrors
      *
      * @return void
      */
@@ -119,7 +122,7 @@ class ResultTest extends TestCase
             'Out of beer!'
         ];
         $entity = new Entity(['user' => 'florian']);
-        $result = new Result($entity, Result::FAILURE, $messages);
+        $result = new Result($entity, Result::FAILURE_OTHER, $messages);
         $this->assertEquals($messages, $result->getErrors());
     }
 }

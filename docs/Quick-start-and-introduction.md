@@ -138,19 +138,18 @@ $result = $request->getAttribute('authentication')->getResult();
 if ($result->isValid()) {
     $user = $request->getAttribute('identity');
 } else {
-    $this->log($result->getCode());
+    $this->log($result->getStatus());
     $this->log($result->getErrors());
 }
 ```
 
-The result sets objects code returned from `getCode()` will match one of these codes. The codes are implemented as class constants in the Result object.
+The result sets objects status returned from `getStatus()` will match one of these these constants in the Result object:
 
- * **1**: Success (Result::SUCCESS)
- * **0**: Failure (Result::FAILURE)
- * **-1**: Identify not found (Result::FAILURE_IDENTITY_NOT_FOUND)
- * **-2**: Credentials invalid (Result::FAILURE_CREDENTIAL_INVALID)
- * **-3**: Any other kind of failure (Result::FAILURE_OTHER)
- * **-4**: Credentials not found (Result::FAILURE_CREDENTIALS_NOT_FOUND)
+* `ResultInterface::SUCCESS`, when successful.
+* `ResultInterface::FAILURE_IDENTITY_NOT_FOUND`, when identity could not be found.
+* `ResultInterface::FAILURE_CREDENTIALS_INVALID`, when credentials are invalid.
+* `ResultInterface::FAILURE_CREDENTIALS_MISSING`, when credentials are missing in the request.
+* `ResultInterface::FAILURE_OTHER`, on any other kind of failure.
 
 The error array returned by `getErrors()` contains *additional* information coming from the specific system against which the authentication attempt was made. For example LDAP or OAuth would put errors specific to their implementation in here for easier logging and debugging the cause. But most of the included authenticators don't put anything in here.
 
