@@ -53,7 +53,7 @@ trait UrlCheckerTrait
                 'className' => $options
             ];
         }
-        if (!isset($options['className'])) {
+        if (!array_key_exists('className', $options)) {
             $options['className'] = DefaultUrlChecker::class;
         }
 

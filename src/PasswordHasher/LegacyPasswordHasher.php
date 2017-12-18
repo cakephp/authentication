@@ -57,7 +57,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      */
     public function hash($password)
     {
-        return Security::hash($password, $this->_config['hashType'], true);
+        return Security::hash($password, $this->getConfig('hashType'), true);
     }
 
     /**

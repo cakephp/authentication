@@ -84,7 +84,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     protected function _getChecker(array $options = [])
     {
-        if (isset($options['useRegex']) && $options['useRegex']) {
+        if (array_key_exists('useRegex', $options) && $options['useRegex'] === true) {
             return 'preg_match';
         }
 

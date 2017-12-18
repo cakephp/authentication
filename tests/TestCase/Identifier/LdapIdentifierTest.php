@@ -137,7 +137,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Config `bindDN` is not set.
+     * @expectedExceptionMessage Config key `bindDN` is not set.
      */
     public function testMissingBindDN()
     {
@@ -151,7 +151,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The `bindDN` config is not a callable. Got `string` instead.
+     * @expectedExceptionMessage The value of `bindDN` config key is not a callable. Got `string` instead.
      */
     public function testUncallableDN()
     {
@@ -166,7 +166,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Config `host` is not set.
+     * @expectedExceptionMessage Config key `host` is not set.
      */
     public function testMissingHost()
     {

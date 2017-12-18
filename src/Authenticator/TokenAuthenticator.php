@@ -98,11 +98,11 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     {
         $queryParams = $request->getQueryParams();
 
-        if (isset($queryParams[$queryParam])) {
-            return $queryParams[$queryParam];
+        if (!array_key_exists($queryParam, $queryParams)) {
+            return null;
         }
 
-        return null;
+        return $queryParams[$queryParam];
     }
 
     /**

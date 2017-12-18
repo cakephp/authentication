@@ -53,7 +53,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
     public function getUser(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
-        if (!isset($server['PHP_AUTH_USER']) || !isset($server['PHP_AUTH_PW'])) {
+        if (!array_key_exists('PHP_AUTH_USER', $server) || !array_key_exists('PHP_AUTH_PW', $server)) {
             return null;
         }
 
