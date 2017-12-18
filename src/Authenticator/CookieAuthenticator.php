@@ -73,7 +73,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     protected function _checkCakeVersion()
     {
-        if (!class_exists('Cake\Http\Cookie\Cookie')) {
+        if (!class_exists(Cookie::class)) {
             throw new RuntimeException('Install CakePHP version >=3.5.0 to use the `CookieAuthenticator`.');
         }
     }
