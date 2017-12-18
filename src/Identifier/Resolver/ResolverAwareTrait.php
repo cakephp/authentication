@@ -88,7 +88,7 @@ trait ResolverAwareTrait
         }
         $instance = new $class($config);
 
-        if (!$instance instanceof ResolverInterface) {
+        if (!($instance instanceof ResolverInterface)) {
             $message = sprintf('Resolver must implement `%s`.', ResolverInterface::class);
             throw new RuntimeException($message);
         }

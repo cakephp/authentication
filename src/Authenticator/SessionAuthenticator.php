@@ -70,7 +70,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             }
         }
 
-        if (!$user instanceof ArrayAccess) {
+        if (!($user instanceof ArrayAccess)) {
             $user = new ArrayObject($user);
         }
 

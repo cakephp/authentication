@@ -51,7 +51,7 @@ class Identity implements IdentityInterface
      */
     public function __construct($data, array $config = [])
     {
-        if (!is_array($data) && !$data instanceof ArrayAccess) {
+        if (!is_array($data) && !($data instanceof ArrayAccess)) {
             $type = is_object($data) ? get_class($data) : gettype($data);
             $message = sprintf('Identity data must be an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
             throw new InvalidArgumentException($message);

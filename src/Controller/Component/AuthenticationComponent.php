@@ -58,7 +58,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             throw new Exception('The request object does not contain the required `authentication` attribute');
         }
 
-        if (!$this->_authentication instanceof AuthenticationServiceInterface) {
+        if (!($this->_authentication instanceof AuthenticationServiceInterface)) {
             throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
         }
 

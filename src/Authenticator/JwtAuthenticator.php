@@ -81,7 +81,7 @@ class JwtAuthenticator extends TokenAuthenticator
             );
         }
 
-        if (!$result instanceof stdClass) {
+        if (!($result instanceof stdClass)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 

@@ -51,7 +51,7 @@ class AuthenticationMiddleware
      */
     public function __construct($subject, $name = null)
     {
-        if (!$subject instanceof AuthenticationServiceInterface && !$subject instanceof HttpApplicationInterface) {
+        if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof HttpApplicationInterface)) {
             $expected = implode('` or `', [
                 AuthenticationServiceInterface::class,
                 HttpApplicationInterface::class
