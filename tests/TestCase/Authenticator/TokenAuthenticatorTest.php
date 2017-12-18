@@ -67,7 +67,7 @@ class TokenAuthenticatorTest extends TestCase
         ]);
         $result = $tokenAuth->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_OTHER, $result->getStatus());
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
 
         // Test header token
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'mariano');
