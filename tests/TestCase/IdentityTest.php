@@ -19,6 +19,7 @@ use Authentication\Identity;
 use BadMethodCallException;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 class IdentityTest extends TestCase
 {
@@ -82,7 +83,7 @@ class IdentityTest extends TestCase
      */
     public function testOffsetUnsetError()
     {
-        $this->setExpectedException(BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $data = [
             'id' => 1,
         ];
@@ -99,7 +100,7 @@ class IdentityTest extends TestCase
      */
     public function testOffsetSetError()
     {
-        $this->setExpectedException(BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $data = [
             'id' => 1,
         ];
@@ -117,12 +118,10 @@ class IdentityTest extends TestCase
         $this->assertEquals($data['username'], $identity['username']);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedException Array data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.
-     */
     public function testBuildInvalidArgument()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.');
         new Identity(new \stdClass);
     }
 
