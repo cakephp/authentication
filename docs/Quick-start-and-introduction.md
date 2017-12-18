@@ -146,7 +146,6 @@ if ($result->isValid()) {
 The result sets objects status returned from `getStatus()` will match one of these these constants in the Result object:
 
 * `ResultInterface::SUCCESS`, when successful.
-* `ResultInterface::FAILURE`, on any general failure.
 * `ResultInterface::FAILURE_IDENTITY_NOT_FOUND`, when identity could not be found.
 * `ResultInterface::FAILURE_CREDENTIALS_INVALID`, when credentials are invalid.
 * `ResultInterface::FAILURE_CREDENTIALS_MISSING`, when credentials are missing in the request.
