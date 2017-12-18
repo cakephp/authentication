@@ -115,12 +115,12 @@ class FormAuthenticator extends AbstractAuthenticator
             ]);
         }
 
-        $user = $this->_identifier->identify($data);
+        $identity = $this->_identifier->identify($data);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($identity, Result::SUCCESS);
     }
 }

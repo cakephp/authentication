@@ -44,12 +44,12 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     protected function getToken(ServerRequestInterface $request)
     {
         $token = $this->getTokenFromHeader($request, $this->getConfig('header'));
-        if (empty($token)) {
+        if ($token === null) {
             $token = $this->getTokenFromQuery($request, $this->getConfig('queryParam'));
         }
 
         $prefix = $this->getConfig('tokenPrefix');
-        if (is_string($token) && !empty($prefix)) {
+        if ($prefix !== null && is_string($token)) {
             return $this->stripTokenPrefix($token, $prefix);
         }
 
@@ -72,14 +72,14 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * Gets the token from the request headers
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @param string $headerLine Header name
+     * @param string|null $headerLine Header name
      * @return string|null
      */
     protected function getTokenFromHeader(ServerRequestInterface $request, $headerLine)
     {
-        if (!empty($headerLine)) {
+        if ($headerLine !== null) {
             $header = $request->getHeaderLine($headerLine);
-            if (!empty($header)) {
+            if ($header !== '' && $header !== null) {
                 return $header;
             }
         }
@@ -117,19 +117,17 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $token = $this->getToken($request);
-        if (empty($token)) {
+        if ($token === null || $token === '') {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        $user = $this->_identifier->identify([
-            IdentifierInterface::CREDENTIAL_TOKEN => $token
-        ]);
+        $identity = $this->_identifier->identify([IdentifierInterface::CREDENTIAL_TOKEN => $token]);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($identity, Result::SUCCESS);
     }
 
     /**

@@ -44,7 +44,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
 
         $urls = (array)$urls;
 
-        if (empty($urls)) {
+        if ($urls === []) {
             return true;
         }
 

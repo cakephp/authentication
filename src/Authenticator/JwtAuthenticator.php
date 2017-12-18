@@ -16,6 +16,7 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
+use Cake\Utility\Security;
 use Exception;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
@@ -52,8 +53,8 @@ class JwtAuthenticator extends TokenAuthenticator
     {
         parent::__construct($identifier, $config);
 
-        if (empty($this->_config['secretKey'])) {
-            if (!class_exists('Cake\Utility\Security')) {
+        if ($this->getConfig('secretKey') === null) {
+            if (!class_exists(Security::class)) {
                 throw new RuntimeException('You must set the `secretKey` config key for JWT authentication.');
             }
             $this->setConfig('secretKey', \Cake\Utility\Security::salt());
@@ -78,7 +79,7 @@ class JwtAuthenticator extends TokenAuthenticator
                 Result::FAILURE_CREDENTIALS_INVALID,
                 [
                     'message' => $e->getMessage(),
-                    'exception' => $e
+                    'exception' => $e,
                 ]
             );
         }
@@ -90,25 +91,23 @@ class JwtAuthenticator extends TokenAuthenticator
         $result = json_decode(json_encode($result), true);
 
         $key = IdentifierInterface::CREDENTIAL_JWT_SUBJECT;
-        if (empty($result[$key])) {
+        if (!array_key_exists($key, $result)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
         if ($this->getConfig('returnPayload')) {
-            $user = new ArrayObject($result);
+            $identity = new ArrayObject($result);
 
-            return new Result($user, Result::SUCCESS);
+            return new Result($identity, Result::SUCCESS);
         }
 
-        $user = $this->_identifier->identify([
-            $key => $result[$key]
-        ]);
+        $identity = $this->_identifier->identify([$key => $result[$key]]);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($identity, Result::SUCCESS);
     }
 
     /**

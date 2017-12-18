@@ -78,15 +78,13 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $digest = $this->_getDigest($request);
-        if (empty($digest)) {
+        if ($digest === null) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        $user = $this->_identifier->identify([
-            IdentifierInterface::CREDENTIAL_USERNAME => $digest['username']
-        ]);
+        $identity = $this->_identifier->identify([IdentifierInterface::CREDENTIAL_USERNAME => $digest['username']]);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
@@ -94,17 +92,17 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
-        $field = $this->_config['fields'][IdentifierInterface::CREDENTIAL_PASSWORD];
-        $password = $user[$field];
+        $passwordField = $this->getConfig('fields')[IdentifierInterface::CREDENTIAL_PASSWORD];
+        $password = $identity[$passwordField];
 
         $server = $request->getServerParams();
-        if (!isset($server['ORIGINAL_REQUEST_METHOD'])) {
+        if (!array_key_exists('ORIGINAL_REQUEST_METHOD', $server)) {
             $server['ORIGINAL_REQUEST_METHOD'] = $server['REQUEST_METHOD'];
         }
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
         if (hash_equals($hash, $digest['response'])) {
-            return new Result($user, Result::SUCCESS);
+            return new Result($identity, Result::SUCCESS);
         }
 
         return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
@@ -114,20 +112,20 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * Gets the digest headers from the request/environment.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array Array of digest information.
+     * @return array|null Array of digest information.
      */
     protected function _getDigest(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
-        $digest = empty($server['PHP_AUTH_DIGEST']) ? null : $server['PHP_AUTH_DIGEST'];
-        if (empty($digest) && function_exists('apache_request_headers')) {
+        $digest = array_key_exists('PHP_AUTH_DIGEST', $server) ? $server['PHP_AUTH_DIGEST'] : null;
+        if ($digest === null && function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
-            if (!empty($headers['Authorization']) && substr($headers['Authorization'], 0, 7) === 'Digest ') {
+            if (array_key_exists('Authorization', $headers) && substr($headers['Authorization'], 0, 7) === 'Digest ') {
                 $digest = substr($headers['Authorization'], 7);
             }
         }
-        if (empty($digest)) {
-            return [];
+        if ($digest === null) {
+            return null;
         }
 
         return $this->parseAuthData($digest);
@@ -153,7 +151,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             unset($req[$i[1]]);
         }
 
-        if (empty($req)) {
+        if ($req === []) {
             return $keys;
         }
 
@@ -199,17 +197,17 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     protected function loginHeaders(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
-        $realm = $this->_config['realm'] ?: $server['SERVER_NAME'];
+        $realm = $this->getConfig('realm') === null ? $server['SERVER_NAME'] : $this->getConfig('realm');
 
         $options = [
             'realm' => $realm,
-            'qop' => $this->_config['qop'],
+            'qop' => $this->getConfig('qop'),
             'nonce' => $this->generateNonce(),
-            'opaque' => $this->_config['opaque'] ?: md5($realm)
+            'opaque' => $this->getConfig('opaque') === null ? md5($realm) : $this->getConfig('opaque'),
         ];
 
         $digest = $this->_getDigest($request);
-        if ($digest && isset($digest['nonce']) && !$this->validNonce($digest['nonce'])) {
+        if ($digest !== null && array_key_exists('nonce', $digest) && !$this->validNonce($digest['nonce'])) {
             $options['stale'] = true;
         }
 

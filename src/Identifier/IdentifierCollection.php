@@ -29,6 +29,13 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     protected $_errors = [];
 
     /**
+     * Map of loaded objects.
+     *
+     * @var object[]
+     */
+    protected $_loaded = [];
+
+    /**
      * Identifies an user or service by the passed credentials
      *
      * @param array $credentials Authentication credentials

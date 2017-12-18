@@ -35,13 +35,13 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $user = $this->getUser($request);
+        $identity = $this->getUser($request);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($identity, Result::SUCCESS);
     }
 
     /**
@@ -66,7 +66,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
 
         return $this->_identifier->identify([
             IdentifierInterface::CREDENTIAL_USERNAME => $username,
-            IdentifierInterface::CREDENTIAL_PASSWORD => $password
+            IdentifierInterface::CREDENTIAL_PASSWORD => $password,
         ]);
     }
 
