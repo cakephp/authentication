@@ -17,6 +17,7 @@ Configuration options:
 
 * **loginUrl**: The login URL, string or array of URLs. Default is `null` and all pages will be checked.
 * **fields**: Array that maps `username` and `password` to the specified POST data fields.
+* **urlChecker**: The URL checker class or object. Default is `DefaultUrlChecker`.
 * **useRegex**: Whether or not to use regular expressions for URL matching. Default is `false`.
 * **checkFullUrl**: Whether or not to check full URL. Useful when a login form is on a different subdomain. Default is `false`.
 
@@ -92,6 +93,7 @@ Configuration options:
   * **httpOnly**: Bool, default is `false`
   * **value**: Value, default is an empty string ``
 * **fields**: Array that maps `username` and `password` to the specified identity fields.
+* **urlChecker**: The URL checker class or object. Default is `DefaultUrlChecker`.
 * **loginUrl**: The login URL, string or array of URLs. Default is `null` and all pages will be checked.
 * **passwordHasher**: Password hasher to use for token hashing. Default is `DefaultPasswordHasher::class`.
 
@@ -137,3 +139,5 @@ Configuration options:
 
 A custom url checker can be implemented for example if a support for framework specific URLs is needed. 
 In this case the `Authentication\UrlChecker\UrlCheckerInterface should be implemented.
+
+For more details about URL Checkers [see this documentation page](URL-Checkers.md). 

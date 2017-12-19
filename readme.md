@@ -22,3 +22,4 @@ This plugin intentionally **does not** handle authorization. It was [decoupled](
  * [Authenticators](docs/Authenticators.md)
  * [Identifiers](docs/Identifiers.md)
  * [Identity Objects](docs/Identity-Object.md)
+ * [URL Checkers](docs/URL-Checkers.md)
