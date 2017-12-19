@@ -14,7 +14,6 @@
  */
 namespace Authentication\UrlChecker;
 
-use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,6 +23,16 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class CakeRouterChecker extends DefaultUrlChecker
 {
+    /**
+     * Default Options
+     *
+     * - `checkFullUrl` Whether or not to check the full request URI.
+     *
+     * @var array
+     */
+    protected $_defaultOptions = [
+        'checkFullUrl' => false,
+    ];
 
     /**
      * {@inheritdoc}
