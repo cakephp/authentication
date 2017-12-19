@@ -80,7 +80,7 @@ class Identity implements IdentityInterface
     public function get($field)
     {
         $map = $this->getConfig('fieldMap');
-        if (isset($map[$field])) {
+        if (array_key_exists($field, $map)) {
             $field = $map[$field];
         }
 

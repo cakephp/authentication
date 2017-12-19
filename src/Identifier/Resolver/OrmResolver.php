@@ -53,10 +53,10 @@ class OrmResolver implements ResolverInterface
      */
     public function find(array $conditions, $type = self::TYPE_AND)
     {
-        $table = $this->tableLocator()->get($this->_config['userModel']);
+        $table = $this->tableLocator()->get($this->getConfig('userModel'));
 
         $query = $table->query();
-        $finders = (array)$this->_config['finder'];
+        $finders = (array)$this->getConfig('finder');
         foreach ($finders as $finder => $options) {
             if (is_string($options)) {
                 $query->find($options);

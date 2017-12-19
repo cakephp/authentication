@@ -77,7 +77,7 @@ trait ResolverAwareTrait
             ];
         }
 
-        if (!isset($config['className'])) {
+        if (!array_key_exists('className', $config)) {
             $message = 'Option `className` is not present.';
             throw new InvalidArgumentException($message);
         }

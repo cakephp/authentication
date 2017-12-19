@@ -47,8 +47,8 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
     public function __construct(array $config = [])
     {
         parent::__construct($config);
-        foreach ($this->_config['hashers'] as $key => $hasher) {
-            if (is_array($hasher) && !isset($hasher['className'])) {
+        foreach ($this->getConfig('hashers') as $key => $hasher) {
+            if (is_array($hasher) && !array_key_exists('className', $hasher)) {
                 $hasher['className'] = $key;
             }
             $this->_hashers[] = PasswordHasherFactory::build($hasher);

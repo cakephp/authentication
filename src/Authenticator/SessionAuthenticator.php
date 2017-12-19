@@ -52,29 +52,30 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     {
         $sessionKey = $this->getConfig('sessionKey');
         $session = $request->getAttribute('session');
-        $user = $session->read($sessionKey);
+        $identity = $session->read($sessionKey);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
         if ($this->getConfig('identify') === true) {
             $credentials = [];
             foreach ($this->getConfig('fields') as $key => $field) {
-                $credentials[$key] = $user[$field];
+                $credentials[$key] = $identity[$field];
             }
-            $user = $this->_identifier->identify($credentials);
 
-            if (empty($user)) {
+            $identity = $this->_identifier->identify($credentials);
+
+            if (empty($identity)) {
                 return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
             }
         }
 
-        if (!($user instanceof ArrayAccess)) {
-            $user = new ArrayObject($user);
+        if (!($identity instanceof ArrayAccess)) {
+            $identity = new ArrayObject($identity);
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($identity, Result::SUCCESS);
     }
 
     /**

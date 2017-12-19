@@ -54,7 +54,7 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected function _getData(ServerRequestInterface $request)
     {
-        $fields = $this->_config['fields'];
+        $fields = $this->getConfig('fields');
         $body = $request->getParsedBody();
 
         $data = [];
@@ -115,12 +115,12 @@ class FormAuthenticator extends AbstractAuthenticator
             ]);
         }
 
-        $user = $this->_identifier->identify($data);
+        $identity = $this->_identifier->identify($data);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($identity, Result::SUCCESS);
     }
 }

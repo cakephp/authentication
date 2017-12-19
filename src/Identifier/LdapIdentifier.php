@@ -92,17 +92,17 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _checkLdapConfig()
     {
-        if (!isset($this->_config['bindDN'])) {
-            throw new RuntimeException('Config `bindDN` is not set.');
+        if ($this->getConfig('bindDN') === null) {
+            throw new RuntimeException('Config key `bindDN` is not set.');
         }
-        if (!is_callable($this->_config['bindDN'])) {
+        if (!is_callable($this->getConfig('bindDN'))) {
             throw new InvalidArgumentException(sprintf(
-                'The `bindDN` config is not a callable. Got `%s` instead.',
-                gettype($this->_config['bindDN'])
+                'The value of `bindDN` config key is not a callable. Got `%s` instead.',
+                gettype($this->getConfig('bindDN'))
             ));
         }
-        if (!isset($this->_config['host'])) {
-            throw new RuntimeException('Config `host` is not set.');
+        if ($this->getConfig('host') === null || trim($this->getConfig('host') === '')) {
+            throw new RuntimeException('Config key `host` is not set.');
         }
     }
 
@@ -114,7 +114,7 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _buildLdapObject()
     {
-        $ldap = $this->_config['ldap'];
+        $ldap = $this->getConfig('ldap');
 
         if (is_string($ldap)) {
             $class = App::className($ldap, 'Identifier/Ldap');
@@ -137,8 +137,13 @@ class LdapIdentifier extends AbstractIdentifier
         $this->_connectLdap();
         $fields = $this->getConfig('fields');
 
-        if (isset($data[$fields[self::CREDENTIAL_USERNAME]]) && isset($data[$fields[self::CREDENTIAL_PASSWORD]])) {
-            return $this->_bindUser($data[$fields[self::CREDENTIAL_USERNAME]], $data[$fields[self::CREDENTIAL_PASSWORD]]);
+        if (array_key_exists($fields[self::CREDENTIAL_USERNAME], $data)
+            && array_key_exists($fields[self::CREDENTIAL_PASSWORD], $data)
+        ) {
+            return $this->_bindUser(
+                $data[$fields[self::CREDENTIAL_USERNAME]],
+                $data[$fields[self::CREDENTIAL_PASSWORD]]
+            );
         }
 
         return null;

@@ -44,7 +44,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
         if (Configure::read('debug')) {
             Debugger::checkSecurityKeys();
         }
-        if (!class_exists('Cake\Utility\Security')) {
+        if (!class_exists(Security::class)) {
             throw new RuntimeException('You must install the cakephp/utility dependency to use this password hasher');
         };
     }
@@ -57,7 +57,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      */
     public function hash($password)
     {
-        return Security::hash($password, $this->_config['hashType'], true);
+        return Security::hash($password, $this->getConfig('hashType'), true);
     }
 
     /**

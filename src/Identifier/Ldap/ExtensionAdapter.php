@@ -32,9 +32,9 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * LDAP Object
      *
-     * @var object|null
+     * @var object|false|null
      */
-    protected $_connection;
+    protected $_connection = null;
 
     /**
      * Constructor
@@ -76,7 +76,7 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function getConnection()
     {
-        if (empty($this->_connection)) {
+        if ($this->_connection === false || $this->_connection === null) {
             throw new RuntimeException('You are not connected to a LDAP server.');
         }
 

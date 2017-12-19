@@ -25,9 +25,9 @@ interface UrlCheckerInterface
      * Checks the requests if it is the configured login action
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Server Request
-     * @param string|array $loginUrls Login URL string or array of URLs
+     * @param string|array $urls Login URL string or array of URLs
      * @param array $options Array of options
      * @return bool
      */
-    public function check(ServerRequestInterface $request, $loginUrls, array $options = []);
+    public function check(ServerRequestInterface $request, $urls, array $options = []);
 }

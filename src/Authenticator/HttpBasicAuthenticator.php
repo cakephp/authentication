@@ -35,13 +35,13 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $user = $this->getUser($request);
+        $identity = $this->getUser($request);
 
-        if (empty($user)) {
+        if (empty($identity)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($identity, Result::SUCCESS);
     }
 
     /**
@@ -53,7 +53,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
     public function getUser(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
-        if (!isset($server['PHP_AUTH_USER']) || !isset($server['PHP_AUTH_PW'])) {
+        if (!array_key_exists('PHP_AUTH_USER', $server) || !array_key_exists('PHP_AUTH_PW', $server)) {
             return null;
         }
 
@@ -66,7 +66,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
 
         return $this->_identifier->identify([
             IdentifierInterface::CREDENTIAL_USERNAME => $username,
-            IdentifierInterface::CREDENTIAL_PASSWORD => $password
+            IdentifierInterface::CREDENTIAL_PASSWORD => $password,
         ]);
     }
 
@@ -91,7 +91,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
     protected function loginHeaders(ServerRequestInterface $request)
     {
         $server = $request->getServerParams();
-        $realm = $this->getConfig('realm') ?: $server['SERVER_NAME'];
+        $realm = $this->getConfig('realm') === null ? $server['SERVER_NAME'] : $this->getConfig('realm');
 
         return ['WWW-Authenticate' => sprintf('Basic realm="%s"', $realm)];
     }

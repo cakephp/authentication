@@ -49,13 +49,13 @@ abstract class AbstractCollection extends ObjectRegistry implements IteratorAggr
     }
 
     /**
-     * Returns true if a collection is empty.
+     * Returns true if the map of identifier objects is empty.
      *
      * @return bool
      */
     public function isEmpty()
     {
-        return empty($this->_loaded);
+        return $this->_loaded === [];
     }
 
     /**

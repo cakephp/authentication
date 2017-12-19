@@ -73,7 +73,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     protected function _checkCakeVersion()
     {
-        if (!class_exists('Cake\Http\Cookie\Cookie')) {
+        if (!class_exists(Cookie::class)) {
             throw new RuntimeException('Install CakePHP version >=3.5.0 to use the `CookieAuthenticator`.');
         }
     }
@@ -85,7 +85,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     {
         $cookies = $request->getCookieParams();
         $cookieName = $this->getConfig('cookie.name');
-        if (!isset($cookies[$cookieName])) {
+        if (!array_key_exists($cookieName, $cookies)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Login credentials not found'
             ]);
@@ -101,10 +101,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         list($username, $tokenHash) = $token;
 
-        $credentials = [
-            'username' => $username
-        ];
-        $identity = $this->_identifier->identify($credentials);
+        $identity = $this->_identifier->identify(['username' => $username]);
 
         if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
@@ -127,7 +124,9 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $field = $this->getConfig('rememberMeField');
         $bodyData = $request->getParsedBody();
 
-        if (!$this->_checkUrl($request) || !is_array($bodyData) || empty($bodyData[$field])) {
+        if (!$this->_checkUrl($request) || !is_array($bodyData) || !array_key_exists($field, $bodyData)
+            || in_array($bodyData[$field], [false, null, ''], true)
+        ) {
             return [
                 'request' => $request,
                 'response' => $response
