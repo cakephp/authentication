@@ -12,12 +12,14 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Authenticator;
+namespace Authentication\Test\TestCase;
 
 use ArrayObject;
 use Authentication\Identity;
+use BadMethodCallException;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 class IdentityTest extends TestCase
 {
@@ -38,8 +40,7 @@ class IdentityTest extends TestCase
         $result = $identity->getIdentifier();
         $this->assertEquals(1, $result);
 
-        $result = $identity->get('username');
-        $this->assertEquals('florian', $result);
+        $this->assertEquals('florian', $identity->username);
     }
 
     /**
@@ -62,11 +63,49 @@ class IdentityTest extends TestCase
             ]
         ]);
 
-        $result = $identity->get('username');
-        $this->assertEquals('florian', $result);
+        $this->assertTrue(isset($identity['username']), 'Renamed field responds to isset');
+        $this->assertTrue(isset($identity['first_name']), 'old alias responds to isset.');
+        $this->assertFalse(isset($identity['missing']));
 
-        $result = $identity->get('email');
-        $this->assertEquals('info@cakephp.org', $result);
+        $this->assertTrue(isset($identity->username), 'Renamed field responds to isset');
+        $this->assertTrue(isset($identity->first_name), 'old alias responds to isset.');
+        $this->assertFalse(isset($identity->missing));
+
+        $this->assertSame('florian', $identity['username'], 'renamed field responsds to offsetget');
+        $this->assertSame('florian', $identity->username, 'renamed field responds to__get');
+        $this->assertNull($identity->missing);
+    }
+
+    /**
+     * Identities disallow data being unset.
+     *
+     * @return void
+     */
+    public function testOffsetUnsetError()
+    {
+        $this->expectException(BadMethodCallException::class);
+        $data = [
+            'id' => 1,
+        ];
+        $identity = new Identity($data);
+        unset($identity['id']);
+
+        $identity['username'] = 'mark';
+    }
+
+    /**
+     * Identities disallow data being set.
+     *
+     * @return void
+     */
+    public function testOffsetSetError()
+    {
+        $this->expectException(BadMethodCallException::class);
+        $data = [
+            'id' => 1,
+        ];
+        $identity = new Identity($data);
+        $identity['username'] = 'mark';
     }
 
     /**
@@ -79,12 +118,10 @@ class IdentityTest extends TestCase
         $this->assertEquals($data['username'], $identity['username']);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedException Array data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.
-     */
     public function testBuildInvalidArgument()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.');
         new Identity(new \stdClass);
     }
 

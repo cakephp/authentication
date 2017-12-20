@@ -15,6 +15,7 @@
 namespace Authentication;
 
 use ArrayAccess;
+use BadMethodCallException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 
@@ -27,6 +28,7 @@ class Identity implements IdentityInterface
 
     /**
      * Default configuration.
+     *
      * - `fieldMap` Mapping of fields
      *
      * @var array
@@ -72,14 +74,36 @@ class Identity implements IdentityInterface
     }
 
     /**
+     * Get data from the identity using object access.
+     *
+     * @param string $field Field in the user data.
+     * @return mixed
+     */
+    public function __get($field)
+    {
+        return $this->get($field);
+    }
+
+    /**
+     * Check if the field isset() using object access.
+     *
+     * @param string $field Field in the user data.
+     * @return mixed
+     */
+    public function __isset($field)
+    {
+        return $this->get($field) !== null;
+    }
+
+    /**
      * Get data from the identity
      *
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function get($field)
+    protected function get($field)
     {
-        $map = $this->getConfig('fieldMap');
+        $map = $this->_config['fieldMap'];
         if (isset($map[$field])) {
             $field = $map[$field];
         }
@@ -100,7 +124,7 @@ class Identity implements IdentityInterface
      */
     public function offsetExists($offset)
     {
-        return isset($this->data[$offset]);
+        return $this->get($offset) !== null;
     }
 
     /**
@@ -112,11 +136,7 @@ class Identity implements IdentityInterface
      */
     public function offsetGet($offset)
     {
-        if (isset($this->data[$offset])) {
-            return $this->data[$offset];
-        }
-
-        return null;
+        return $this->get($offset);
     }
 
     /**
@@ -125,11 +145,12 @@ class Identity implements IdentityInterface
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value Value
+     * @throws \BadMethodCallException
      * @return mixed
      */
     public function offsetSet($offset, $value)
     {
-        return $this->data[$offset] = $value;
+        throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
 
     /**
@@ -137,11 +158,12 @@ class Identity implements IdentityInterface
      *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset Offset
+     * @throws \BadMethodCallException
      * @return void
      */
     public function offsetUnset($offset)
     {
-        unset($this->data[$offset]);
+        throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
 
     /**
