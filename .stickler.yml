@@ -2,3 +2,8 @@ linters:
   phpcs:
     standard: CakePHP
     extensions: 'php,ctp'
+    fixer: true
+
+fixers:
+  enable: true
+  workflow: commit
