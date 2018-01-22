@@ -99,4 +99,18 @@ $service->loadIdentifier('Authentication.Password', [
 ]);
 ```
 
-While this seems to be a little more to write, the benefit is a greater flexibility and better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
+Any place you were calling `AuthComponent::setUser()`, you should now use
+``setIdentity()``
+
+```php
+// Assume you need to read a user by access token
+$user = $this->Users->find('byToken', ['token' => $token])->first();
+
+// Persist the user into configured authenticators.
+$this->Authentication->setIdentity($user);
+```
+
+While there is a bit more code than before, you have more flexibility in how
+your authentication is handled.
+
+
