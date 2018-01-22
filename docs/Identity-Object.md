@@ -39,11 +39,11 @@ The default Identity object class can be configured to map fields. This is prett
     ]);
 };
 ```
-## Creating your own identity object
+## Creating your own Identity Object
 
 If you want to create your own identity object, your object must implement the IdentityInterface.
 
-## Using another identity object
+## Using your Identity Object
 
 ```php
 // You can use a callable...
