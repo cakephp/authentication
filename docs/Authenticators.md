@@ -1,8 +1,15 @@
 # Authenticators
 
+Authenticators handle convert request data into an authentication operations.
+They leverage [Identifiers](./Identifiers.md) to find a known
+[Identity](./Identity-Object.md).
+
 ## Session
 
-This authenticator will check the session if it contains user data or credentials. When using any stateful authenticators like `Form` listed below, be sure to load `Session` authenticator first so that once logged in user data is fetched from session itself on subsequent requests.
+This authenticator will check the session if it contains user data or
+credentials. When using any stateful authenticators like `Form` listed below, be
+sure to load `Session` authenticator first so that once logged in user data is
+fetched from session itself on subsequent requests.
 
 Configuration options:
 
