@@ -38,11 +38,7 @@ class Application extends BaseApplication
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => [
-                'plugin' => false,
-                'controller' => 'Users',
-                'action' => 'login',
-            ]
+            'loginUrl' => '/users/login'
         ]);
 
         return $service;
