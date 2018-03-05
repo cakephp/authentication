@@ -13,9 +13,11 @@
  */
 namespace Authentication\View\Helper;
 
+use Authentication\IdentityInterface;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\View\Helper;
+use RuntimeException;
 
 /**
  * Identity Helper
@@ -44,24 +46,20 @@ class IdentityHelper extends Helper
      */
     public function initialize(array $config)
     {
-        $this->_userData = $this->getView()->request->getAttribute('identity');
-    }
-
-    /**
-     * Convenience method to the the user data in any case as array.
-     *
-     * @param bool $asArray Return as array, default true.
-     * @return array
-     */
-    protected function _userData($asArray = true)
-    {
-        if ($asArray === true) {
-            if ($this->_userData instanceof Entity) {
-                $this->_userData = $this->_userData->toArray();
-            }
+        $identity = $this->getView()->request->getAttribute('identity');
+        if (empty($identity)) {
+            return;
         }
 
-        return (array)$this->_userData;
+        if (!$identity instanceof IdentityInterface) {
+            throw new RuntimeException(sprintf('Identity found in request does not implement %s', IdentityInterface::class));
+        }
+
+        $this->_userData = $identity->getOriginalData();
+
+        if ($this->_userData instanceof Entity) {
+            $this->_userData = $this->_userData->toArray();
+        }
     }
 
     /**
@@ -73,7 +71,7 @@ class IdentityHelper extends Helper
     {
         $field = $this->getConfig('idField');
         if (is_callable($field)) {
-            return $field($this->_userData());
+            return $field($this->_userData);
         }
 
         return $this->get($field);
@@ -114,6 +112,6 @@ class IdentityHelper extends Helper
             return $this->_userData();
         }
 
-        return Hash::get((array)$this->_userData(true), $key);
+        return Hash::get($this->_userData, $key);
     }
 }
