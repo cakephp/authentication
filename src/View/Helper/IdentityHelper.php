@@ -91,7 +91,7 @@ class IdentityHelper extends Helper
      * This check can be used to tell if a record that belongs to some user is the
      * current logged in user
      *
-     * @param string|integer $userId
+     * @param int $userId
      * @param string $field Name of the field in the user record to check against, id by default
      * @return bool
      */
