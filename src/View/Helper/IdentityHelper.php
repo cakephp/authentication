@@ -26,6 +26,13 @@ class IdentityHelper extends Helper
 {
 
     /**
+     * @inheritDoc
+     */
+    protected $_defaultConfig = [
+        'idField' => 'id'
+    ];
+
+    /**
      * User data
      *
      * @array
@@ -55,6 +62,21 @@ class IdentityHelper extends Helper
         }
 
         return (array)$this->_userData;
+    }
+
+    /**
+     * Gets the id of the current logged in identity
+     *
+     * @return int|null|string
+     */
+    public function getId()
+    {
+        $field = $this->getConfig('idField');
+        if (is_callable($field)) {
+            return $field($this->_userData());
+        }
+
+        return $this->get($field);
     }
 
     /**
