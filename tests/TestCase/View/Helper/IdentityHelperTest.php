@@ -25,15 +25,6 @@ use Cake\View\View;
  */
 class IdentityHelperTest extends TestCase
 {
-
-    /**
-     * @inheritDoc
-     */
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     /**
      * testWithIdentity
      *

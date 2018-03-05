@@ -26,7 +26,6 @@ use RuntimeException;
  */
 class IdentityHelper extends Helper
 {
-
     /**
      * User data
      *
@@ -42,7 +41,12 @@ class IdentityHelper extends Helper
     protected $_identity;
 
     /**
-     * @inheritDoc
+     * Constructor hook method.
+     *
+     * Implement this method to avoid having to overwrite the constructor and call parent.
+     *
+     * @param array $config The configuration settings provided to this helper.
+     * @return void
      */
     public function initialize(array $config)
     {
@@ -91,19 +95,19 @@ class IdentityHelper extends Helper
      * This check can be used to tell if a record that belongs to some user is the
      * current logged in user
      *
-     * @param int $userId
-     * @param string $field Name of the field in the user record to check against, id by default
+     * @param int|string $id Identity id to check against
+     * @param string $field Name of the field in the identity data to check against, id by default
      * @return bool
      */
-    public function is($userId, $field = 'id')
+    public function is($id, $field = 'id')
     {
-        return ($userId === $this->get($field));
+        return ($id === $this->get($field));
     }
 
     /**
      * Gets user data
      *
-     * @param string $key
+     * @param string $key Key of something you want to get from the identity data
      * @return mixed
      */
     public function get($key = null)
