@@ -28,13 +28,6 @@ class IdentityHelper extends Helper
 {
 
     /**
-     * @inheritDoc
-     */
-    protected $_defaultConfig = [
-        'idField' => 'id'
-    ];
-
-    /**
      * User data
      *
      * @array
@@ -42,20 +35,28 @@ class IdentityHelper extends Helper
     protected $_userData = [];
 
     /**
+     * Identity Object
+     *
+     * @var null|\Authentication\IdentityInterface
+     */
+    protected $_identity;
+
+    /**
      * @inheritDoc
      */
     public function initialize(array $config)
     {
-        $identity = $this->getView()->request->getAttribute('identity');
-        if (empty($identity)) {
+        $this->_identity = $this->getView()->request->getAttribute('identity');
+
+        if (empty($this->_identity)) {
             return;
         }
 
-        if (!$identity instanceof IdentityInterface) {
+        if (!$this->_identity instanceof IdentityInterface) {
             throw new RuntimeException(sprintf('Identity found in request does not implement %s', IdentityInterface::class));
         }
 
-        $this->_userData = $identity->getOriginalData();
+        $this->_userData = $this->_identity->getOriginalData();
 
         if ($this->_userData instanceof Entity) {
             $this->_userData = $this->_userData->toArray();
@@ -69,22 +70,21 @@ class IdentityHelper extends Helper
      */
     public function getId()
     {
-        $field = $this->getConfig('idField');
-        if (is_callable($field)) {
-            return $field($this->_userData);
+        if (empty($this->_identity)) {
+            return null;
         }
 
-        return $this->get($field);
+        return $this->_identity->getIdentifier();
     }
 
     /**
      * Checks if a user is logged in
      *
-     * @return boolean
+     * @return bool
      */
     public function isLoggedIn()
     {
-        return (!empty($this->_userData));
+        return !empty($this->_identity);
     }
 
     /**
@@ -93,7 +93,7 @@ class IdentityHelper extends Helper
      *
      * @param string|integer $userId
      * @param string $field Name of the field in the user record to check against, id by default
-     * @return boolean
+     * @return bool
      */
     public function is($userId, $field = 'id')
     {
@@ -109,7 +109,7 @@ class IdentityHelper extends Helper
     public function get($key = null)
     {
         if ($key === null) {
-            return $this->_userData();
+            return $this->_userData;
         }
 
         return Hash::get($this->_userData, $key);

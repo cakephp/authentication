@@ -57,6 +57,9 @@ class IdentityHelperTest extends TestCase
 
         $this->assertTrue($helper->isLoggedIn());
         $this->assertEquals(1, $helper->getId());
+
+        $this->assertTrue($helper->is(1));
+        $this->assertFalse($helper->is(2));
     }
 
     /**
@@ -75,5 +78,7 @@ class IdentityHelperTest extends TestCase
 
         $this->assertFalse($helper->isLoggedIn());
         $this->assertNull($helper->getId());
+
+        $this->assertFalse($helper->is(1));
     }
 }
