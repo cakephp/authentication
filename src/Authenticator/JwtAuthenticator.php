@@ -16,6 +16,7 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
+use Cake\Utility\Security;
 use Exception;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
