@@ -14,7 +14,6 @@
 namespace Authentication\View\Helper;
 
 use Authentication\IdentityInterface;
-use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\View\Helper;
 use RuntimeException;
@@ -26,13 +25,6 @@ use RuntimeException;
  */
 class IdentityHelper extends Helper
 {
-    /**
-     * User data
-     *
-     * @array
-     */
-    protected $_userData = [];
-
     /**
      * Identity Object
      *
@@ -59,12 +51,6 @@ class IdentityHelper extends Helper
         if (!$this->_identity instanceof IdentityInterface) {
             throw new RuntimeException(sprintf('Identity found in request does not implement %s', IdentityInterface::class));
         }
-
-        $this->_userData = $this->_identity->getOriginalData();
-
-        if ($this->_userData instanceof Entity) {
-            $this->_userData = $this->_userData->toArray();
-        }
     }
 
     /**
@@ -74,7 +60,7 @@ class IdentityHelper extends Helper
      */
     public function getId()
     {
-        if (empty($this->_identity)) {
+        if ($this->_identity === null) {
             return null;
         }
 
@@ -88,7 +74,7 @@ class IdentityHelper extends Helper
      */
     public function isLoggedIn()
     {
-        return !empty($this->_identity);
+        return $this->_identity !== null;
     }
 
     /**
@@ -107,15 +93,19 @@ class IdentityHelper extends Helper
     /**
      * Gets user data
      *
-     * @param string $key Key of something you want to get from the identity data
+     * @param string|null $key Key of something you want to get from the identity data
      * @return mixed
      */
     public function get($key = null)
     {
-        if ($key === null) {
-            return $this->_userData;
+        if (empty($this->_identity)) {
+            return null;
         }
 
-        return Hash::get($this->_userData, $key);
+        if ($key === null) {
+            return $this->_identity->getOriginalData();
+        }
+
+        return Hash::get($this->_identity, $key);
     }
 }
