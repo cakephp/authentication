@@ -20,6 +20,7 @@ use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
+use Cake\Http\Cookie\Cookie;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -41,7 +42,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function setUp()
     {
-        $this->skipIf(!class_exists('\Cake\Http\Cookie\Cookie'));
+        $this->skipIf(!class_exists(Cookie::class));
 
         parent::setUp();
     }

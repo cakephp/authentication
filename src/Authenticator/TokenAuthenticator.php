@@ -44,12 +44,12 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     protected function getToken(ServerRequestInterface $request)
     {
         $token = $this->getTokenFromHeader($request, $this->getConfig('header'));
-        if (empty($token)) {
+        if ($token === null) {
             $token = $this->getTokenFromQuery($request, $this->getConfig('queryParam'));
         }
 
         $prefix = $this->getConfig('tokenPrefix');
-        if (is_string($token) && !empty($prefix)) {
+        if ($prefix !== null && is_string($token)) {
             return $this->stripTokenPrefix($token, $prefix);
         }
 
@@ -98,11 +98,11 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     {
         $queryParams = $request->getQueryParams();
 
-        if (isset($queryParams[$queryParam])) {
-            return $queryParams[$queryParam];
+        if (!array_key_exists($queryParam, $queryParams)) {
+            return null;
         }
 
-        return null;
+        return $queryParams[$queryParam];
     }
 
     /**
@@ -117,7 +117,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $token = $this->getToken($request);
-        if (empty($token)) {
+        if ($token === null) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
