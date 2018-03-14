@@ -14,7 +14,12 @@ fetched from session itself on subsequent requests.
 Configuration options:
 
 * **sessionKey**: The session key for the user data, default is `Auth`
-* **identify**: Set this key with a value of bool `true` to enable checking the session credentials against the identifiers. Default is `false`. 
+* **identify**: Set this key with a value of bool `true` to enable checking the
+  session credentials against the identifiers. When `true`, the configured
+  [Identifiers](./Identifers.md) are used to identify the user using data stored
+  in the session. Default value is `false`. 
+* **fields**: Allows you to map the `username` field to the unique identifier in
+  your user storage. Defaults to `username`.
 
 ## Form
 
