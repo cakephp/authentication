@@ -41,9 +41,48 @@ The default Identity object class can be configured to map fields. This is prett
 ```
 ## Creating your own Identity Object
 
-If you want to create your own identity object, your object must implement the IdentityInterface.
+If you want to create your own identity object, your object must implement the
+`IdentityInterface`.
 
-## Using your Identity Object
+## Implementing the IdentityInterface on your User class
+
+If you'd like to continue using your existing User class with this plugin you
+can implement the `Authentication\IdentityInterface`:
+
+```php
+namespace App\Model\Entity;
+
+use Authentication\IdentityInterface;
+use Cake\ORM\Entity;
+
+class User extends Entity implements IdentityInterface
+{
+
+    /**
+     * Authentication\IdentityInterface method
+     */
+    public function getIdentifier()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Authentication\IdentityInterface method
+     */
+    public function getOriginalData()
+    {
+        return $this;
+    }
+
+    // Other methods
+}
+```
+
+## Using a Custom Identity Decorator
+
+If your identifiers cannot have their resulting objects modified to implement
+the `IdentityInterface` you can implement a custom decorator that implements the
+required interface:
 
 ```php
 // You can use a callable...
@@ -51,7 +90,7 @@ $identityResolver = function ($data) {
     return new MyCustomIdentity($data);
 };
 
-//...or a class name to inject your custom identity object.
+//...or a class name to set the identity wrapper.
 $identityResolver = MyCustomIdentity::class;
 
 // Then pass it to the service configuration
