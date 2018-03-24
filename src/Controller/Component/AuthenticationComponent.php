@@ -64,7 +64,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
         }
 
-        $this->eventManager($controller->eventManager());
+        $this->setEventManager($controller->getEventManager());
     }
 
     /**
