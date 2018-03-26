@@ -9,7 +9,7 @@ $service->loadIdentifier('Authentication.Password', [
         'password' => 'passwd',
     ],
     'resolver' => [
-        'className' => 'Authentiation.Orm',
+        'className' => 'Authentication.Orm',
         'finder' => 'active'
     ],
     'passwordHasher' => [
