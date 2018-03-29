@@ -21,7 +21,6 @@ use RuntimeException;
 
 class AuthenticatorCollection extends AbstractCollection
 {
-
     /**
      * Identifier collection.
      *
