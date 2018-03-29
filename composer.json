@@ -17,7 +17,7 @@
     "require-dev": {
         "cakephp/cakephp": "~3.4",
         "cakephp/cakephp-codesniffer": "^3.0",
-        "phpunit/phpunit": "^5.7|^6.0",
+        "phpunit/phpunit": "^5.7.14|^6.0",
         "firebase/php-jwt": "~4.0"
     },
     "suggest": {
@@ -61,8 +61,8 @@
             "@cs-check",
             "@test"
         ],
-        "cs-check": "phpcs --colors -p ./src ./tests",
-        "cs-fix": "phpcbf --colors ./src ./tests",
+        "cs-check": "phpcs --colors -p src/ tests/",
+        "cs-fix": "phpcbf --colors src/ tests/",
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-clover=clover.xml"
     }
