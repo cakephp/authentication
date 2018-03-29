@@ -20,11 +20,12 @@ Example of configuring the authentication middleware using `authentication` appl
 
 ```php
 use Authentication\AuthenticationService;
+use Authentication\AuthenticationServiceInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 
 class Application extends BaseApplication
 {
-    public function authentication($service)
+    public function authentication(AuthenticationServiceInterface $service)
     {
         $fields = [
             'username' => 'email',
@@ -44,7 +45,7 @@ class Application extends BaseApplication
         return $service;
     }
 
-    public function middleware($middleware)
+    public function middleware($middlewareQueue)
     {
         // Various other middlewares for error handling, routing etc. added here.
 
@@ -52,9 +53,9 @@ class Application extends BaseApplication
         $authentication = new AuthenticationMiddleware($this);
 
         // Add the middleware to the middleware queue
-        $middleware->add($authentication);
+        $middlewareQueue->add($authentication);
 
-        return $middleware;
+        return $middlewareQueue;
     }
 }
 ```
