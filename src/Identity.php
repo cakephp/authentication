@@ -51,7 +51,7 @@ class Identity implements IdentityInterface
      *
      * @param array|\ArrayAccess $data Identity data
      * @param array $config Config options
-     * @throws InvalidArgumentException When invalid identity data is passed.
+     * @throws \InvalidArgumentException When invalid identity data is passed.
      */
     public function __construct($data, array $config = [])
     {

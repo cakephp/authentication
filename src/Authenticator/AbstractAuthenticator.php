@@ -21,7 +21,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
-
     use InstanceConfigTrait;
 
     /**
@@ -52,8 +51,8 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     public function __construct(IdentifierInterface $identifier, array $config = [])
     {
-        $this->setConfig($config);
         $this->_identifier = $identifier;
+        $this->setConfig($config);
     }
 
     /**

@@ -28,7 +28,6 @@ use RuntimeException;
 
 class AuthenticationComponent extends Component implements EventDispatcherInterface
 {
-
     use EventDispatcherTrait;
 
     /**
@@ -158,7 +157,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * Triggers the `Authentication.logout` event.
      *
-     * @return void|string|array
+     * @return string|null
      */
     public function logout()
     {
@@ -174,8 +173,10 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $this->dispatchEvent('Authentication.logout', [], $controller);
 
         $logoutRedirect = $this->getConfig('logoutRedirect');
-        if ($logoutRedirect !== false) {
-            return Router::normalize($logoutRedirect);
+        if ($logoutRedirect === false) {
+            return null;
         }
+
+        return Router::normalize($logoutRedirect);
     }
 }
