@@ -17,6 +17,7 @@ namespace Authentication\Test\TestCase\Identifier;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
+use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
@@ -248,5 +249,83 @@ class AuthenticationComponentTest extends TestCase
         $this->assertInstanceOf(AuthenticatorInterface::class, $result->data['provider']);
         $this->assertInstanceOf(IdentityInterface::class, $result->data['identity']);
         $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
+    }
+
+    /**
+     * test unauthenticated actions ok
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsOk()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $controller->Authentication->allowUnauthenticated(['view']);
+        $controller->startupProcess();
+        $this->assertTrue(true, 'No exception should be raised');
+    }
+
+    /**
+     * test unauthenticated actions mismatched action
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsMismatchAction()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $this->expectException(UnauthorizedException::class);
+        $controller->Authentication->allowUnauthenticated(['index', 'add']);
+        $controller->startupProcess();
+    }
+
+    /**
+     * test unauthenticated actions ok
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsNoActionsFails()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $this->expectException(UnauthorizedException::class);
+        $controller->startupProcess();
+    }
+
+    /**
+     * test disabling requireidentity via settings
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsDisabledOptions()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication', [
+            'requireIdentity' => false
+        ]);
+
+        // Mismatched actions would normally cause an error.
+        $controller->Authentication->allowUnauthenticated(['index', 'add']);
+        $controller->startupProcess();
+        $this->assertTrue(true, 'No exception should be raised as require identity is off.');
     }
 }
