@@ -106,7 +106,16 @@ $this->loadComponent('Authentication.Authentication', [
 ]);
 ```
 
-## Accessing the user / identity data
+Once loaded, the `AuthenticationComponent` will require that all actions have an
+authenticated user present, but perform no other access control checks. You can
+disable this check for specific actions using `allowUnauthorized()`:
+
+```php
+// In your controller's beforeFilter method.
+$this->Authentication->allowUnauthorized(['view']);
+```
+
+### Accessing the user / identity data
 
 You can get the authenticated identity data using the authentication component:
 
@@ -120,7 +129,7 @@ You can also get the identity directly from the request instance:
 $user = $request->getAttribute('identity');
 ```
 
-## Checking the login status
+### Checking the login status
 
 You can check if the authentication process was successful by accessing the result
 object:
@@ -150,7 +159,7 @@ The result sets objects status returned from `getStatus()` will match one of the
 
 The error array returned by `getErrors()` contains *additional* information coming from the specific system against which the authentication attempt was made. For example LDAP or OAuth would put errors specific to their implementation in here for easier logging and debugging the cause. But most of the included authenticators don't put anything in here.
 
-## Clearing the identity / logging the user out
+### Clearing the identity / logging the user out
 
 To log an identity out just do:
 

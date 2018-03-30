@@ -113,4 +113,15 @@ $this->Authentication->setIdentity($user);
 While there is a bit more code than before, you have more flexibility in how
 your authentication is handled.
 
+## Migrating allow/deny logic
 
+Like `AuthComponent` the `AuthenticationComponent` makes it easy to make
+specific actions 'public' and not require a valid identity to be present:
+
+
+```php
+// In your controller's beforeFilter method.
+$this->Authentication->allowUnauthorized(['view']);
+```
+
+Each call to `allowUnauthorized()` will overwrite the current action list.
