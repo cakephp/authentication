@@ -121,7 +121,7 @@ specific actions 'public' and not require a valid identity to be present:
 
 ```php
 // In your controller's beforeFilter method.
-$this->Authentication->allowUnauthorized(['view']);
+$this->Authentication->allowUnauthenticated(['view']);
 ```
 
-Each call to `allowUnauthorized()` will overwrite the current action list.
+Each call to `allowUnauthenticated()` will overwrite the current action list.

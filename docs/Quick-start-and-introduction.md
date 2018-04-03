@@ -108,11 +108,11 @@ $this->loadComponent('Authentication.Authentication', [
 
 Once loaded, the `AuthenticationComponent` will require that all actions have an
 authenticated user present, but perform no other access control checks. You can
-disable this check for specific actions using `allowUnauthorized()`:
+disable this check for specific actions using `allowUnauthenticated()`:
 
 ```php
 // In your controller's beforeFilter method.
-$this->Authentication->allowUnauthorized(['view']);
+$this->Authentication->allowUnauthenticated(['view']);
 ```
 
 ### Accessing the user / identity data
