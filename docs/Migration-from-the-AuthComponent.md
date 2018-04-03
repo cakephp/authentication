@@ -26,6 +26,22 @@ If you want to implement your own identifiers, your identifier must implement th
 
 ## Migrating your authentication setup
 
+### Login action
+
+The AuthenticationMiddleware will handle checking and setting the identity based on your authenticators. Usually after logging in, the AuthComponent would redirect to a configured location. To redirect upon a successful login, change your login action to check the new identity results:
+
+```php
+function login()
+{
+    // regardless of POST or GET, redirect if user is logged in
+    if ($this->Authentication->getResult()->isValid()) {
+        return $this->redirect('/');
+    }
+}
+```
+
+### Checking identity
+
 Remove authentication from the AuthComponent and put the middleware in place like shown above. Then configure your authenticators the same way as you did for the AuthComponent before.
 
 Change your code to use the identity data from the `identity` request attribute instead of using `$this->Auth->user();`. The returned value is null if no identity was found or the identification of the provided credentials failed.
@@ -45,6 +61,19 @@ debug($result->getStatus());
 // An array of error messages or data if the identifier provided any
 debug($result->getErrors());
 ```
+
+Any place you were calling `AuthComponent::setUser()`, you should now use
+``setIdentity()``
+
+```php
+// Assume you need to read a user by access token
+$user = $this->Users->find('byToken', ['token' => $token])->first();
+
+// Persist the user into configured authenticators.
+$this->Authentication->setIdentity($user);
+```
+
+### Migrate AuthComponent settings
 
 The huge config array from the AuthComponent needs to be split into identifiers and authenticators when configuring the service. So when you had your AuthComponent configured this way
 
@@ -97,17 +126,6 @@ $service->loadIdentifier('Authentication.Password', [
         'password' => 'password',
     ]
 ]);
-```
-
-Any place you were calling `AuthComponent::setUser()`, you should now use
-``setIdentity()``
-
-```php
-// Assume you need to read a user by access token
-$user = $this->Users->find('byToken', ['token' => $token])->first();
-
-// Persist the user into configured authenticators.
-$this->Authentication->setIdentity($user);
 ```
 
 While there is a bit more code than before, you have more flexibility in how
