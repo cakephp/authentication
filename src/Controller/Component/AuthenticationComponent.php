@@ -151,6 +151,16 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
+     * Get the current list of actions that don't require authentication.
+     *
+     * @return array
+     */
+    public function getUnauthenticatedActions()
+    {
+        return $this->unauthenticatedActions;
+    }
+
+    /**
      * Gets the result of the last authenticate() call.
      *
      * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface

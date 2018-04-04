@@ -266,6 +266,7 @@ class AuthenticationComponentTest extends TestCase
         $controller->loadComponent('Authentication.Authentication');
 
         $controller->Authentication->allowUnauthenticated(['view']);
+        $this->assertSame(['view'], $controller->Authentication->getUnauthenticatedActions());
         $controller->startupProcess();
         $this->assertTrue(true, 'No exception should be raised');
     }
