@@ -15,14 +15,14 @@
 namespace Authentication\Test\TestCase\UrlChecker;
 
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Authentication\UrlChecker\CakeRouterChecker;
+use Authentication\UrlChecker\CakeRouterUrlChecker;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
 
 /**
  * CakeRouterChecker
  */
-class CakeRouterCheckerTest extends TestCase
+class CakeRouterUrlCheckerTest extends TestCase
 {
 
     /**
@@ -58,7 +58,7 @@ class CakeRouterCheckerTest extends TestCase
      */
     public function testCheckSimple()
     {
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/invalid']
         );
@@ -81,7 +81,7 @@ class CakeRouterCheckerTest extends TestCase
             'action' => 'login'
         ];
 
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login']
         );
@@ -90,7 +90,7 @@ class CakeRouterCheckerTest extends TestCase
         ]);
         $this->assertTrue($result);
 
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/invalid']
         );
@@ -99,7 +99,7 @@ class CakeRouterCheckerTest extends TestCase
         ]);
         $this->assertFalse($result);
 
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/login']
         );
@@ -108,7 +108,7 @@ class CakeRouterCheckerTest extends TestCase
         ]);
         $this->assertFalse($result);
 
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             [
                 'REQUEST_URI' => '/login',
@@ -130,7 +130,7 @@ class CakeRouterCheckerTest extends TestCase
      */
     public function testEmptyUrl()
     {
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login']
         );
@@ -147,7 +147,7 @@ class CakeRouterCheckerTest extends TestCase
      */
     public function testStringUrl()
     {
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login']
         );
@@ -162,7 +162,7 @@ class CakeRouterCheckerTest extends TestCase
      */
     public function testNamedRoute()
     {
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/login']
         );
@@ -177,7 +177,7 @@ class CakeRouterCheckerTest extends TestCase
      */
     public function testInvalidNamedRoute()
     {
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/login']
         );
@@ -202,7 +202,7 @@ class CakeRouterCheckerTest extends TestCase
             ]
         ];
 
-        $checker = new CakeRouterChecker();
+        $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login']
         );
