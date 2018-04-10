@@ -91,7 +91,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             ]);
         }
 
-        $token = json_decode($cookies[$cookieName], true);
+        if (is_array($cookies[$cookieName])) {
+            $token = $cookies[$cookieName];
+        } else {
+            $token = json_decode($cookies[$cookieName], true);
+        }
 
         if ($token === null || count($token) !== 2) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
