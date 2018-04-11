@@ -13,7 +13,7 @@ Options:
  * **checkFullUrl**: To compare the full URL, including protocol, host and port or not. Default is `false`
  * **useRegex**: Compares the URL by a regular expression provided in the `$loginUrls` argument of the checker.
  
-### CakeRouterChecker
+### CakeRouterUrlChecker
 
 Options:
 
