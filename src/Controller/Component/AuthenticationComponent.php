@@ -151,6 +151,20 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
+     * Add to the list of actions that don't require an authentication identity to be present.
+     *
+     * @param array $actions The action or actions to append.
+     * @return $this
+     */
+    public function addUnauthenticatedActions(array $actions)
+    {
+        $this->unauthenticatedActions = array_merge($this->unauthenticatedActions, $actions);
+        $this->unauthenticatedActions = array_values(array_unique($this->unauthenticatedActions));
+
+        return $this;
+    }
+
+    /**
      * Get the current list of actions that don't require authentication.
      *
      * @return array

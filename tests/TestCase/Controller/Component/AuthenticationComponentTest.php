@@ -252,6 +252,37 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * test unauthenticated actions methods
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActions()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $controller->Authentication->allowUnauthenticated(['view']);
+        $this->assertSame(['view'], $controller->Authentication->getUnauthenticatedActions());
+
+        $controller->Authentication->allowUnauthenticated(['add', 'delete']);
+        $this->assertSame(['add', 'delete'], $controller->Authentication->getUnauthenticatedActions());
+
+        $controller->Authentication->addUnauthenticatedActions(['index']);
+        $this->assertSame(['add', 'delete', 'index'], $controller->Authentication->getUnauthenticatedActions());
+
+        $controller->Authentication->addUnauthenticatedActions(['index', 'view']);
+        $this->assertSame(
+            ['add', 'delete', 'index', 'view'],
+            $controller->Authentication->getUnauthenticatedActions(),
+            'Should contain unique set.'
+        );
+    }
+
+    /**
      * test unauthenticated actions ok
      *
      * @return void
@@ -266,7 +297,6 @@ class AuthenticationComponentTest extends TestCase
         $controller->loadComponent('Authentication.Authentication');
 
         $controller->Authentication->allowUnauthenticated(['view']);
-        $this->assertSame(['view'], $controller->Authentication->getUnauthenticatedActions());
         $controller->startupProcess();
         $this->assertTrue(true, 'No exception should be raised');
     }
