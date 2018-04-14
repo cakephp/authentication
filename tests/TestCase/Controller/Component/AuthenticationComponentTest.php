@@ -17,6 +17,7 @@ namespace Authentication\Test\TestCase\Identifier;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
+use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
@@ -30,6 +31,9 @@ use Cake\Network\Response;
 use Cake\ORM\Entity;
 use TestApp\Authentication\InvalidAuthenticationService;
 
+/**
+ * Authentication component test.
+ */
 class AuthenticationComponentTest extends TestCase
 {
 
@@ -89,8 +93,8 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testInitializeInvalidServiceObject()
     {
-        $this->request = $this->request->withAttribute('authentication', new InvalidAuthenticationService());
-        $controller = new Controller($this->request, $this->response);
+        $request = $this->request->withAttribute('authentication', new InvalidAuthenticationService());
+        $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         new AuthenticationComponent($registry);
     }
@@ -102,10 +106,11 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testGetIdentity()
     {
-        $this->request = $this->request->withAttribute('identity', $this->identity);
-        $this->request = $this->request->withAttribute('authentication', $this->service);
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service);
 
-        $controller = new Controller($this->request, $this->response);
+        $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -142,9 +147,9 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testSetIdentity()
     {
-        $this->request = $this->request->withAttribute('authentication', $this->service);
+        $request = $this->request->withAttribute('authentication', $this->service);
 
-        $controller = new Controller($this->request, $this->response);
+        $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -160,10 +165,11 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testGetIdentityData()
     {
-        $this->request = $this->request->withAttribute('identity', $this->identity);
-        $this->request = $this->request->withAttribute('authentication', $this->service);
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service);
 
-        $controller = new Controller($this->request, $this->response);
+        $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -180,9 +186,9 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testGetMissingIdentityData()
     {
-        $this->request = $this->request->withAttribute('authentication', $this->service);
+        $request = $this->request->withAttribute('authentication', $this->service);
 
-        $controller = new Controller($this->request, $this->response);
+        $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -196,10 +202,11 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testGetResult()
     {
-        $this->request = $this->request->withAttribute('identity', $this->identity);
-        $this->request = $this->request->withAttribute('authentication', $this->service);
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service);
 
-        $controller = new Controller($this->request, $this->response);
+        $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
         $this->assertNull($component->getResult());
@@ -217,10 +224,11 @@ class AuthenticationComponentTest extends TestCase
             $result = $event;
         });
 
-        $this->request = $this->request->withAttribute('identity', $this->identity);
-        $this->request = $this->request->withAttribute('authentication', $this->service);
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service);
 
-        $controller = new Controller($this->request, $this->response);
+        $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -248,10 +256,11 @@ class AuthenticationComponentTest extends TestCase
             $this->response
         );
 
-        $this->request = $this->request->withAttribute('identity', $this->identity);
-        $this->request = $this->request->withAttribute('authentication', $this->service);
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service);
 
-        $controller = new Controller($this->request, $this->response);
+        $controller = new Controller($request, $this->response);
         $controller->loadComponent('Authentication.Authentication');
         $controller->startupProcess();
 
@@ -261,5 +270,114 @@ class AuthenticationComponentTest extends TestCase
         $this->assertInstanceOf(AuthenticatorInterface::class, $result->data['provider']);
         $this->assertInstanceOf(IdentityInterface::class, $result->data['identity']);
         $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
+    }
+
+    /**
+     * test unauthenticated actions methods
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActions()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $controller->Authentication->allowUnauthenticated(['view']);
+        $this->assertSame(['view'], $controller->Authentication->getUnauthenticatedActions());
+
+        $controller->Authentication->allowUnauthenticated(['add', 'delete']);
+        $this->assertSame(['add', 'delete'], $controller->Authentication->getUnauthenticatedActions());
+
+        $controller->Authentication->addUnauthenticatedActions(['index']);
+        $this->assertSame(['add', 'delete', 'index'], $controller->Authentication->getUnauthenticatedActions());
+
+        $controller->Authentication->addUnauthenticatedActions(['index', 'view']);
+        $this->assertSame(
+            ['add', 'delete', 'index', 'view'],
+            $controller->Authentication->getUnauthenticatedActions(),
+            'Should contain unique set.'
+        );
+    }
+
+    /**
+     * test unauthenticated actions ok
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsOk()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $controller->Authentication->allowUnauthenticated(['view']);
+        $controller->startupProcess();
+        $this->assertTrue(true, 'No exception should be raised');
+    }
+
+    /**
+     * test unauthenticated actions mismatched action
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsMismatchAction()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $this->expectException(UnauthorizedException::class);
+        $controller->Authentication->allowUnauthenticated(['index', 'add']);
+        $controller->startupProcess();
+    }
+
+    /**
+     * test unauthenticated actions ok
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsNoActionsFails()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $this->expectException(UnauthorizedException::class);
+        $controller->startupProcess();
+    }
+
+    /**
+     * test disabling requireidentity via settings
+     *
+     * @return void
+     */
+    public function testUnauthenticatedActionsDisabledOptions()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $controller->loadComponent('Authentication.Authentication', [
+            'requireIdentity' => false
+        ]);
+
+        // Mismatched actions would normally cause an error.
+        $controller->Authentication->allowUnauthenticated(['index', 'add']);
+        $controller->startupProcess();
+        $this->assertTrue(true, 'No exception should be raised as require identity is off.');
     }
 }
