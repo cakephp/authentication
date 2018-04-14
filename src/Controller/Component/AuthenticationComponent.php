@@ -34,7 +34,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
-        'logoutRedirect' => false
+        'logoutRedirect' => false,
+        'identityAttribute' => 'identity'
     ];
 
     /**
@@ -107,7 +108,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function getIdentity()
     {
         $controller = $this->getController();
-        $identity = $controller->request->getAttribute('identity');
+        $identity = $controller->request->getAttribute($this->getConfig('identityAttribute'));
 
         return $identity;
     }

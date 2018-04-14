@@ -115,6 +115,27 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * testGetIdentity with custom attribute
+     *
+     * @eturn void
+     */
+    public function testGetIdentityWithCustomAttribute()
+    {
+        $this->request = $this->request->withAttribute('customIdentity', $this->identity);
+        $this->request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($this->request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry, [
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $result = $component->getIdentity();
+        $this->assertInstanceOf(IdentityInterface::class, $result);
+        $this->assertEquals('florian', $result->username);
+    }
+
+    /**
      * testGetIdentity
      *
      * @eturn void
