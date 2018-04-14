@@ -267,6 +267,37 @@ class AuthenticationMiddlewareTest extends TestCase
     }
 
     /**
+     * testSuccessfulAuthentication with custom identity attribute
+     *
+     * @return void
+     */
+    public function testSuccessfulAuthenticationWithCustomIdentityAttribute()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service, [
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $request = $middleware($request, $response, $next);
+        $identity = $request->getAttribute('customIdentity');
+        $service = $request->getAttribute('authentication');
+
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+        $this->assertTrue($service->getResult()->isValid());
+    }
+
+    /**
      * testSuccessfulAuthenticationApplicationHook
      *
      * @return void
