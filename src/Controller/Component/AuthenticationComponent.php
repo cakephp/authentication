@@ -18,6 +18,7 @@ use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
+use Authentication\Authenticator\UnauthorizedException;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
@@ -26,16 +27,35 @@ use Cake\Utility\Hash;
 use Exception;
 use RuntimeException;
 
+/**
+ * Controller Component for interacting with Authentication.
+ *
+ */
 class AuthenticationComponent extends Component implements EventDispatcherInterface
 {
     use EventDispatcherTrait;
 
     /**
-     * {@inheritDoc}
+     * Configuration options
+     *
+     * - `logoutRedirect` - The route/URL to direct users to after logout()
+     * - `requireIdentity` - By default AuthenticationComponent will require an
+     *   identity to be present whenever it is active. You can set the option to
+     *   false to disable that behavior. See allowUnauthenticated() as well.
+     *
+     * @var array
      */
     protected $_defaultConfig = [
-        'logoutRedirect' => false
+        'logoutRedirect' => false,
+        'requireIdentity' => true,
     ];
+
+    /**
+     * List of actions that don't require authentication.
+     *
+     * @var array
+     */
+    protected $unauthenticatedActions = [];
 
     /**
      * Authentication service instance.
@@ -87,6 +107,71 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             'identity' => $this->getIdentity(),
             'service' => $this->_authentication
         ], $this->getController());
+    }
+
+    /**
+     * Start up event handler
+     *
+     * If `requireIdentity` is true, the action will be compared to the
+     * allowed actions.
+     *
+     * @return void
+     */
+    public function startup()
+    {
+        if (!$this->getConfig('requireIdentity')) {
+            return;
+        }
+        $request = $this->getController()->request;
+        $action = $request->getParam('action');
+        if (in_array($action, $this->unauthenticatedActions)) {
+            return;
+        }
+
+        $identity = $request->getAttribute('identity');
+        if (!$identity) {
+            throw new UnauthorizedException([]);
+        }
+    }
+
+    /**
+     * Set the list of actions that don't require an authentication identity to be present.
+     *
+     * Actions not in this list will require an identity to be present. Any
+     * valid identity will pass this constraint.
+     *
+     * @param array $actions The action list.
+     * @return $this
+     */
+    public function allowUnauthenticated(array $actions)
+    {
+        $this->unauthenticatedActions = $actions;
+
+        return $this;
+    }
+
+    /**
+     * Add to the list of actions that don't require an authentication identity to be present.
+     *
+     * @param array $actions The action or actions to append.
+     * @return $this
+     */
+    public function addUnauthenticatedActions(array $actions)
+    {
+        $this->unauthenticatedActions = array_merge($this->unauthenticatedActions, $actions);
+        $this->unauthenticatedActions = array_values(array_unique($this->unauthenticatedActions));
+
+        return $this;
+    }
+
+    /**
+     * Get the current list of actions that don't require authentication.
+     *
+     * @return array
+     */
+    public function getUnauthenticatedActions()
+    {
+        return $this->unauthenticatedActions;
     }
 
     /**
@@ -157,7 +242,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * Triggers the `Authentication.logout` event.
      *
-     * @return string|null
+     * @return string|null Returns null or `logoutRedirect`.
      */
     public function logout()
     {
