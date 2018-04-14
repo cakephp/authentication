@@ -58,7 +58,7 @@ class AuthenticationMiddleware
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
-     * @param array $config Array of configuration settings.
+     * @param array|string $config Array of configuration settings or string with authentication service provider name.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
     public function __construct($subject, $config = null)
