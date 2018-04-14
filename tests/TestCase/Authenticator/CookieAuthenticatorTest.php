@@ -104,6 +104,34 @@ class CookieAuthenticatorTest extends TestCase
     }
 
     /**
+     * testAuthenticateSuccess
+     *
+     * @return void
+     */
+    public function testAuthenticateExpandedCookie()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                'CookieAuth' => ["mariano", "$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]
+            ]
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+        $result = $authenticator->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
      * testAuthenticateUnknownUser
      *
      * @return void

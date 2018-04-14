@@ -21,7 +21,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Checks if a request object contains a valid URL
  */
-class CakeRouterChecker extends DefaultUrlChecker
+class CakeRouterUrlChecker extends DefaultUrlChecker
 {
     /**
      * Default Options
