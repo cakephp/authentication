@@ -63,7 +63,6 @@ class AuthenticationMiddleware
      */
     public function __construct($subject, $config = null)
     {
-
         if (is_string($config)) {
             $config = ['name' => $config];
         }
