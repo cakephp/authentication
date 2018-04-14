@@ -48,13 +48,6 @@ class AuthenticationMiddleware
     protected $subject;
 
     /**
-     * Authentication service provider name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
