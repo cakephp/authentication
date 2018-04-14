@@ -18,6 +18,7 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\UnauthorizedException;
 use Cake\Core\HttpApplicationInterface;
+use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,6 +30,15 @@ use Zend\Diactoros\Stream;
  */
 class AuthenticationMiddleware
 {
+    use InstanceConfigTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_defaultConfig = [
+        'identityAttribute' => 'identity',
+        'name' => null
+    ];
 
     /**
      * Authentication service or application instance.
@@ -48,11 +58,17 @@ class AuthenticationMiddleware
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
-     * @param string|null $name Authentication service provider name.
+     * @param array $config Array of configuration settings.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct($subject, $name = null)
+    public function __construct($subject, $config = null)
     {
+
+        if (is_string($config)) {
+            $config = ['name' => $config];
+        }
+        $this->setConfig($config);
+
         if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof HttpApplicationInterface)) {
             $expected = implode('` or `', [
                 AuthenticationServiceInterface::class,
@@ -65,7 +81,6 @@ class AuthenticationMiddleware
         }
 
         $this->subject = $subject;
-        $this->name = $name;
     }
 
     /**
@@ -117,10 +132,11 @@ class AuthenticationMiddleware
             return $this->subject;
         }
 
-        $method = 'authentication' . ucfirst($this->name);
+        $name = $this->getConfig('name');
+        $method = 'authentication' . ucfirst($name);
         if (!method_exists($this->subject, $method)) {
-            if (strlen($this->name)) {
-                $message = sprintf('Method `%s` for `%s` authentication service has not been defined in your `Application` class.', $method, $this->name);
+            if (strlen($name)) {
+                $message = sprintf('Method `%s` for `%s` authentication service has not been defined in your `Application` class.', $method, $name);
             } else {
                 $message = sprintf('Method `%s` has not been defined in your `Application` class.', $method);
             }
