@@ -78,8 +78,16 @@ class IdentityHelper extends Helper
     }
 
     /**
-     * This check can be used to tell if a record that belongs to some user is the
-     * current logged in user
+     * This check can be used to tell if a record that belongs to some user is
+     * the current logged in user and compare other fields as well
+     *
+     * If you have more complex requirements on visibility checks based on some
+     * kind of permission you should use the Authorization plugin instead:
+     *
+     * https://github.com/cakephp/authorization
+     *
+     * This method is mostly a convenience method for simple cases and not
+     * intended to replace any kind of proper authorization implementation.
      *
      * @param int|string $id Identity id to check against
      * @param string $field Name of the field in the identity data to check against, id by default
