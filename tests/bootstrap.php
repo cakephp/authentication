@@ -52,7 +52,7 @@ Configure::write('App', [
 if (!getenv('db_dsn')) {
     putenv('db_dsn=sqlite:///:memory:');
 }
-ConnectionManager::config('test', ['url' => getenv('db_dsn')]);
+ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 
 Plugin::load('Auth', [
     'path' => dirname(dirname(__FILE__)) . DS,
