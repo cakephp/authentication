@@ -81,7 +81,8 @@ class AuthenticationComponentTest extends TestCase
     {
         $controller = new Controller($this->request, $this->response);
         $registry = new ComponentRegistry($controller);
-        new AuthenticationComponent($registry);
+        $component = new AuthenticationComponent($registry);
+        $component->startup();
     }
 
     /**
@@ -96,7 +97,8 @@ class AuthenticationComponentTest extends TestCase
         $request = $this->request->withAttribute('authentication', new InvalidAuthenticationService());
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
-        new AuthenticationComponent($registry);
+        $component = new AuthenticationComponent($registry);
+        $component->startup();
     }
 
     /**
