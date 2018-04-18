@@ -82,10 +82,10 @@ class HttpDigestAuthenticatorTest extends TestCase
             'nonce' => 123456
         ]);
 
-        $this->assertEquals('AuthUser', $object->config('userModel'));
-        $this->assertEquals(['username' => 'user', 'password' => 'pass'], $object->config('fields'));
-        $this->assertEquals(123456, $object->config('nonce'));
-        $this->assertEquals(env('SERVER_NAME'), $object->config('realm'));
+        $this->assertEquals('AuthUser', $object->getConfig('userModel'));
+        $this->assertEquals(['username' => 'user', 'password' => 'pass'], $object->getConfig('fields'));
+        $this->assertEquals(123456, $object->getConfig('nonce'));
+        $this->assertEquals(env('SERVER_NAME'), $object->getConfig('realm'));
         $this->assertInstanceOf(StatelessInterface::class, $object, 'Should be a stateless authenticator');
     }
 
@@ -255,7 +255,7 @@ DIGEST;
             'qop' => 'auth',
         ];
         $data['response'] = $this->auth->generateResponseHash($data, '09faa9931501bf30f0d4253fa7763022', 'GET');
-        $request->env('PHP_AUTH_DIGEST', $this->digestHeader($data));
+        $request = $request->withEnv('PHP_AUTH_DIGEST', $this->digestHeader($data));
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
@@ -293,7 +293,7 @@ DIGEST;
      */
     public function testUnauthorizedFailReChallenge()
     {
-        $this->auth->config('scope.username', 'nate');
+        $this->auth->setConfig('scope.username', 'nate');
 
         $nonce = $this->generateNonce();
         $digest = <<<DIGEST
@@ -348,7 +348,7 @@ DIGEST;
             'qop' => 'auth',
         ];
         $data['response'] = $this->auth->generateResponseHash($data, '09faa9931501bf30f0d4253fa7763022', 'GET');
-        $request->env('PHP_AUTH_DIGEST', $this->digestHeader($data));
+        $request = $request->withEnv('PHP_AUTH_DIGEST', $this->digestHeader($data));
 
         try {
             $this->auth->unauthorizedChallenge($request);

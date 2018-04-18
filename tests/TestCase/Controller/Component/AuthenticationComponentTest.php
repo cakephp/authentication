@@ -215,7 +215,7 @@ class AuthenticationComponentTest extends TestCase
         $component->logout();
         $this->assertNull($controller->request->getAttribute('identity'));
         $this->assertInstanceOf(Event::class, $result);
-        $this->assertEquals('Authentication.logout', $result->name());
+        $this->assertEquals('Authentication.logout', $result->getName());
     }
 
     /**
@@ -244,11 +244,11 @@ class AuthenticationComponentTest extends TestCase
         $controller->startupProcess();
 
         $this->assertInstanceOf(Event::class, $result);
-        $this->assertEquals('Authentication.afterIdentify', $result->name());
-        $this->assertNotEmpty($result->data);
-        $this->assertInstanceOf(AuthenticatorInterface::class, $result->data['provider']);
-        $this->assertInstanceOf(IdentityInterface::class, $result->data['identity']);
-        $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->data['service']);
+        $this->assertEquals('Authentication.afterIdentify', $result->getName());
+        $this->assertNotEmpty($result->getData());
+        $this->assertInstanceOf(AuthenticatorInterface::class, $result->getData('provider'));
+        $this->assertInstanceOf(IdentityInterface::class, $result->getData('identity'));
+        $this->assertInstanceOf(AuthenticationServiceInterface::class, $result->getData('service'));
     }
 
     /**
