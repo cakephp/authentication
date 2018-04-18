@@ -74,15 +74,6 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $controller = $this->getController();
         $this->_authentication = $controller->request->getAttribute('authentication');
-
-        if ($this->_authentication === null) {
-            throw new Exception('The request object does not contain the required `authentication` attribute');
-        }
-
-        if (!($this->_authentication instanceof AuthenticationServiceInterface)) {
-            throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
-        }
-
         $this->setEventManager($controller->getEventManager());
     }
 
@@ -112,16 +103,24 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * Start up event handler
      *
-     * If `requireIdentity` is true, the action will be compared to the
-     * allowed actions.
-     *
      * @return void
+     * @throws Exception when request is missing or has an invalid AuthenticationService
+     * @throws UnauthorizedException when requireIdentity is true and request is missing an identity
      */
     public function startup()
     {
+        if ($this->_authentication === null) {
+            throw new Exception('The request object does not contain the required `authentication` attribute');
+        }
+
+        if (!($this->_authentication instanceof AuthenticationServiceInterface)) {
+            throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
+        }
+
         if (!$this->getConfig('requireIdentity')) {
             return;
         }
+
         $request = $this->getController()->request;
         $action = $request->getParam('action');
         if (in_array($action, $this->unauthenticatedActions)) {
