@@ -48,6 +48,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     protected $_defaultConfig = [
         'logoutRedirect' => false,
         'requireIdentity' => true,
+        'identityAttribute' => 'identity'
     ];
 
     /**
@@ -127,7 +128,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             return;
         }
 
-        $identity = $request->getAttribute('identity');
+        $identity = $request->getAttribute($this->getConfig('identityAttribute'));
         if (!$identity) {
             throw new UnauthorizedException([]);
         }
@@ -191,7 +192,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function getIdentity()
     {
         $controller = $this->getController();
-        $identity = $controller->request->getAttribute('identity');
+        $identity = $controller->request->getAttribute($this->getConfig('identityAttribute'));
 
         return $identity;
     }

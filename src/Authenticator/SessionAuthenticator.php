@@ -38,7 +38,8 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             IdentifierInterface::CREDENTIAL_USERNAME => 'username'
         ],
         'sessionKey' => 'Auth',
-        'identify' => false
+        'identify' => false,
+        'identityAttribute' => 'identity',
     ];
 
     /**
@@ -100,7 +101,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         $request->getAttribute('session')->delete($sessionKey);
 
         return [
-            'request' => $request->withoutAttribute('identity'),
+            'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
             'response' => $response
         ];
     }

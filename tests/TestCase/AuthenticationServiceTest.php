@@ -198,6 +198,73 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * testClearIdentity, with custom identity attribute
+     *
+     * @return void
+     */
+    public function testClearIdentityWithCustomIdentityAttribute()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Form'
+            ],
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/']
+        );
+        $response = new Response();
+
+        $request = $request->withAttribute('customIdentity', ['username' => 'florian']);
+        $this->assertNotEmpty($request->getAttribute('customIdentity'));
+        $result = $service->clearIdentity($request, $response);
+        $this->assertInternalType('array', $result);
+        $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertNull($result['request']->getAttribute('customIdentity'));
+    }
+
+    /**
+     * testClearIdentity, with custom identity attribute
+     *
+     * @return void
+     */
+    public function testClearIdentityWithCustomIdentityAttributeShouldPreserveDefault()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Form'
+            ],
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/']
+        );
+        $response = new Response();
+
+        $request = $request->withAttribute('identity', ['username' => 'johndoe']);
+        $this->assertNotEmpty($request->getAttribute('identity'));
+        $request = $request->withAttribute('customIdentity', ['username' => 'florian']);
+        $this->assertNotEmpty($request->getAttribute('customIdentity'));
+        $result = $service->clearIdentity($request, $response);
+        $this->assertInternalType('array', $result);
+        $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertNull($result['request']->getAttribute('customIdentity'));
+
+        $data = ['username' => 'johndoe'];
+        $this->assertEquals($data, $result['request']->getAttribute('identity'));
+    }
+
+    /**
      * testPersistIdentity
      *
      * @return void
@@ -239,6 +306,103 @@ class AuthenticationServiceTest extends TestCase
         $identity = $result['request']->getAttribute('identity');
         $this->assertInstanceOf(IdentityInterface::class, $identity);
         $this->assertEquals($data, $identity->getOriginalData());
+    }
+
+    /**
+     * testPersistIdentity, with custom identity attribute
+     *
+     * @return void
+     */
+    public function testPersistIdentityWithCustomIdentityAttribute()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+                'Authentication.Form'
+            ],
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/']
+        );
+
+        $response = new Response();
+
+        $this->assertEmpty($request->getAttribute('identity'));
+        $this->assertEmpty($request->getAttribute('customIdentity'));
+
+        $data = new ArrayObject(['username' => 'florian']);
+        $result = $service->persistIdentity($request, $response, $data);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        $this->assertEquals(
+            'florian',
+            $result['request']->getAttribute('session')->read('Auth.username')
+        );
+
+        $identity = $result['request']->getAttribute('customIdentity');
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
+        $this->assertEquals($data, $identity->getOriginalData());
+        $this->assertEmpty($result['request']->getAttribute('identity'));
+    }
+
+    /**
+     * testPersistIdentity, with custom identity attribute
+     *
+     * @return void
+     */
+    public function testPersistIdentityWithCustomIdentityAttributeShouldPreserveDefault()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password'
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+                'Authentication.Form'
+            ],
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/']
+        );
+
+        $response = new Response();
+        $request = $request->withAttribute('identity', ['username' => 'johndoe']);
+        $this->assertNotEmpty($request->getAttribute('identity'));
+
+        $this->assertEmpty($request->getAttribute('customIdentity'));
+
+        $data = new ArrayObject(['username' => 'florian']);
+        $result = $service->persistIdentity($request, $response, $data);
+
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        $this->assertEquals(
+            'florian',
+            $result['request']->getAttribute('session')->read('Auth.username')
+        );
+
+        $identity = $result['request']->getAttribute('customIdentity');
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
+        $this->assertEquals($data, $identity->getOriginalData());
+
+        $data = ['username' => 'johndoe'];
+        $this->assertEquals($data, $result['request']->getAttribute('identity'));
     }
 
     /**
