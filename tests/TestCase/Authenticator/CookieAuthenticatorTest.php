@@ -73,6 +73,7 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -101,6 +102,7 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -129,6 +131,7 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -157,6 +160,7 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -180,6 +184,7 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -208,6 +213,7 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**

@@ -58,6 +58,7 @@ class FormAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -85,6 +86,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -112,6 +114,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -141,6 +144,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getStatus());
         $this->assertEquals([0 => 'Login URL `http://localhost/users/does-not-match` did not match `/users/login`.'], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -173,6 +177,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getStatus());
         $this->assertEquals([0 => 'Login URL `http://localhost/users/does-not-match` did not match `/en/users/login` or `/de/users/login`.'], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -202,6 +207,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertEquals([], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -234,6 +240,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertEquals([], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -266,6 +273,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertEquals([], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -301,6 +309,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getStatus());
         $this->assertEquals([0 => 'Login URL `http://localhost/de/users/login` did not match `%auth\.localhost/[a-z]{2}/users/login/?$%`.'], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -337,6 +346,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertEquals([], $result->getErrors());
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -374,7 +384,9 @@ class FormAuthenticatorTest extends TestCase
                 'password' => 'password'
             ]);
 
-        $form->authenticate($request, $response);
+        $result = $form->authenticate($request, $response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**
@@ -408,7 +420,9 @@ class FormAuthenticatorTest extends TestCase
                 'password' => 'password'
             ]);
 
-        $form->authenticate($request, $response);
+        $result = $form->authenticate($request, $response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame($result, $form->getLastResult());
     }
 
     /**

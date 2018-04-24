@@ -96,6 +96,7 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -143,6 +144,7 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**

@@ -85,6 +85,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -103,6 +104,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -121,6 +123,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -140,6 +143,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -177,6 +181,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertTrue($result->isValid());
         $this->assertArraySubset($expected, $result->getData()->toArray());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -228,5 +233,6 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $this->assertArraySubset($expected, $result->getData()->toArray());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 }

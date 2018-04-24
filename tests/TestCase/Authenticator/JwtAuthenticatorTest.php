@@ -91,6 +91,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -113,6 +114,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -149,6 +151,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -184,6 +187,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
         $this->assertNull($result->getData());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**
@@ -217,6 +221,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertNUll($result->getData());
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     public function testInvalidToken()
@@ -238,6 +243,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('message', $errors);
         $this->assertArrayHasKey('exception', $errors);
         $this->assertInstanceOf(Exception::class, $errors['exception']);
+        $this->assertSame($result, $authenticator->getLastResult());
     }
 
     /**

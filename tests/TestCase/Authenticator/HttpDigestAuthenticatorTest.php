@@ -103,6 +103,7 @@ class HttpDigestAuthenticatorTest extends TestCase
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -133,6 +134,7 @@ DIGEST;
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertFalse($result->isValid(), 'Should fail');
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -171,6 +173,7 @@ DIGEST;
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
         $this->assertArraySubset($expected, $result->getData()->toArray());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -202,6 +205,7 @@ DIGEST;
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -233,6 +237,7 @@ DIGEST;
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
@@ -260,6 +265,7 @@ DIGEST;
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertSame($result, $this->auth->getLastResult());
     }
 
     /**
