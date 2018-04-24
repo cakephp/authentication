@@ -118,7 +118,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     {
         $token = $this->getToken($request);
         if ($token === null) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
+            return $this->_buildLastResult(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
         $user = $this->_identifier->identify([
@@ -126,10 +126,10 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
         ]);
 
         if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return $this->_buildLastResult(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
-        return new Result($user, Result::SUCCESS);
+        return $this->_buildLastResult($user, Result::SUCCESS);
     }
 
     /**

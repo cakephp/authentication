@@ -90,7 +90,7 @@ class FormAuthenticator extends AbstractAuthenticator
             )
         ];
 
-        return new Result(null, Result::FAILURE_OTHER, $errors);
+        return $this->_buildLastResult(null, Result::FAILURE_OTHER, $errors);
     }
 
     /**
@@ -110,7 +110,7 @@ class FormAuthenticator extends AbstractAuthenticator
 
         $data = $this->_getData($request);
         if ($data === null) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
+            return $this->_buildLastResult(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Login credentials not found'
             ]);
         }
@@ -118,9 +118,9 @@ class FormAuthenticator extends AbstractAuthenticator
         $user = $this->_identifier->identify($data);
 
         if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return $this->_buildLastResult(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
-        return new Result($user, Result::SUCCESS);
+        return $this->_buildLastResult($user, Result::SUCCESS);
     }
 }

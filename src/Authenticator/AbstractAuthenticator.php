@@ -44,6 +44,13 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     protected $_identifier;
 
     /**
+     * Last authentication result stored.
+     *
+     * @var \Authentication\Authenticator\ResultInterface
+     */
+    protected $_lastResult;
+
+    /**
      * Constructor
      *
      * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
@@ -76,6 +83,32 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
         $this->_identifier = $identifier;
 
         return $this;
+    }
+
+    /**
+     * Get the last authentication result instance stored or null if none.
+     *
+     * @return ResultInterface|null
+     */
+    public function getLastResult()
+    {
+        return $this->_lastResult;
+    }
+
+    /**
+     * Build the result and set as last
+     *
+     * @param null|array|\ArrayAccess $data The identity data
+     * @param string $status Status constant equivalent.
+     * @param array $messages Messages.
+     * @throws \InvalidArgumentException When invalid identity data is passed.
+     * @return ResultInterface
+     */
+    protected function _buildLastResult($data, $status, array $messages = [])
+    {
+        $this->_lastResult = new Result($data, $status, $messages);
+
+        return $this->_lastResult;
     }
 
     /**

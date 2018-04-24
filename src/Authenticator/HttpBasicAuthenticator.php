@@ -38,10 +38,10 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
         $user = $this->getUser($request);
 
         if (empty($user)) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
+            return $this->_buildLastResult(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        return new Result($user, Result::SUCCESS);
+        return $this->_buildLastResult($user, Result::SUCCESS);
     }
 
     /**
