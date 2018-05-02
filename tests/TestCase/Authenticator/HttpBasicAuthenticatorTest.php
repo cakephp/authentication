@@ -66,8 +66,8 @@ class HttpBasicAuthenticatorTest extends TestCase
             ]
         ]);
 
-        $this->assertEquals('AuthUser', $object->config('userModel'));
-        $this->assertEquals(['username' => 'user', 'password' => 'password'], $object->config('fields'));
+        $this->assertEquals('AuthUser', $object->getConfig('userModel'));
+        $this->assertEquals(['username' => 'user', 'password' => 'password'], $object->getConfig('fields'));
     }
 
     /**

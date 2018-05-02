@@ -67,6 +67,44 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $middleware = new AuthenticationMiddleware($this->application);
+        $expected = 'identity';
+        $actual = $middleware->getConfig("identityAttribute");
+        $this->assertEquals($expected, $actual);
+
+        $request = $middleware($request, $response, $next);
+
+        /* @var $service AuthenticationService */
+        $service = $request->getAttribute('authentication');
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+
+        $this->assertTrue($service->identifiers()->has('Password'));
+        $this->assertTrue($service->authenticators()->has('Form'));
+    }
+
+    /**
+     * test middleware call with custom identity attribute
+     *
+     * @return void
+     */
+    public function testApplicationAuthenticationCustomIdentityAttribute()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $middleware = new AuthenticationMiddleware($this->application, [
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $expected = 'customIdentity';
+        $actual = $middleware->getConfig("identityAttribute");
+        $this->assertEquals($expected, $actual);
 
         $request = $middleware($request, $response, $next);
 
@@ -221,6 +259,37 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $request = $middleware($request, $response, $next);
         $identity = $request->getAttribute('identity');
+        $service = $request->getAttribute('authentication');
+
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+        $this->assertTrue($service->getResult()->isValid());
+    }
+
+    /**
+     * testSuccessfulAuthentication with custom identity attribute
+     *
+     * @return void
+     */
+    public function testSuccessfulAuthenticationWithCustomIdentityAttribute()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service, [
+            'identityAttribute' => 'customIdentity'
+        ]);
+
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $request = $middleware($request, $response, $next);
+        $identity = $request->getAttribute('customIdentity');
         $service = $request->getAttribute('authentication');
 
         $this->assertInstanceOf(IdentityInterface::class, $identity);

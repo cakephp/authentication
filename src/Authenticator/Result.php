@@ -51,7 +51,7 @@ class Result implements ResultInterface
      * @param null|array|\ArrayAccess $data The identity data
      * @param string $status Status constant equivalent.
      * @param array $messages Messages.
-     * @throws InvalidArgumentException When invalid identity data is passed.
+     * @throws \InvalidArgumentException When invalid identity data is passed.
      */
     public function __construct($data, $status, array $messages = [])
     {

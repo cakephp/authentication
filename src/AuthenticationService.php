@@ -85,7 +85,8 @@ class AuthenticationService implements AuthenticationServiceInterface
     protected $_defaultConfig = [
         'authenticators' => [],
         'identifiers' => [],
-        'identityClass' => Identity::class
+        'identityClass' => Identity::class,
+        'identityAttribute' => 'identity',
     ];
 
     /**
@@ -218,7 +219,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return [
-            'request' => $request->withoutAttribute('identity'),
+            'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
             'response' => $response
         ];
     }
@@ -246,7 +247,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return [
-            'request' => $request->withAttribute('identity', $identity),
+            'request' => $request->withAttribute($this->getConfig('identityAttribute'), $identity),
             'response' => $response
         ];
     }

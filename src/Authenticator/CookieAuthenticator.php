@@ -73,7 +73,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     protected function _checkCakeVersion()
     {
-        if (!class_exists('Cake\Http\Cookie\Cookie')) {
+        if (!class_exists(Cookie::class)) {
             throw new RuntimeException('Install CakePHP version >=3.5.0 to use the `CookieAuthenticator`.');
         }
     }
@@ -91,7 +91,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             ]);
         }
 
-        $token = json_decode($cookies[$cookieName], true);
+        if (is_array($cookies[$cookieName])) {
+            $token = $cookies[$cookieName];
+        } else {
+            $token = json_decode($cookies[$cookieName], true);
+        }
 
         if ($token === null || count($token) !== 2) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
@@ -101,10 +105,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         list($username, $tokenHash) = $token;
 
-        $credentials = [
-            'username' => $username
-        ];
-        $identity = $this->_identifier->identify($credentials);
+        $identity = $this->_identifier->identify(compact('username'));
 
         if (empty($identity)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());

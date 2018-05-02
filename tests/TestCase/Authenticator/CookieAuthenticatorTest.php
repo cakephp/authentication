@@ -17,6 +17,7 @@ use ArrayObject;
 use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
+use Cake\Http\Cookie\Cookie;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
@@ -41,7 +42,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function setUp()
     {
-        $this->skipIf(!class_exists('\Cake\Http\Cookie\Cookie'));
+        $this->skipIf(!class_exists(Cookie::class));
 
         parent::setUp();
     }
@@ -91,6 +92,34 @@ class CookieAuthenticatorTest extends TestCase
             null,
             [
                 'CookieAuth' => '["mariano","$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]'
+            ]
+        );
+        $response = new Response();
+
+        $authenticator = new CookieAuthenticator($identifiers);
+        $result = $authenticator->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * testAuthenticateSuccess
+     *
+     * @return void
+     */
+    public function testAuthenticateExpandedCookie()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password'
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                'CookieAuth' => ["mariano", "$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]
             ]
         );
         $response = new Response();
