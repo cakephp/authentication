@@ -39,5 +39,6 @@ Plugin::load('Authentication');
  * [Authenticators](docs/Authenticators.md)
  * [Identifiers](docs/Identifiers.md)
  * [Identity Objects](docs/Identity-Object.md)
+ * [Helper for the View Layer](docs/View-Helper.md)
  * [URL Checkers](docs/URL-Checkers.md)
  * [Migration from the AuthComponent](docs/Migration-from-the-AuthComponent.md)
