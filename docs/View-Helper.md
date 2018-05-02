@@ -7,12 +7,12 @@ $this->loadHelper('Authentication.Identity');
 
 For very simple checking whether the user is logged in you can use
 ```php
-if ($this->Identify->isLoggedIn()) {
+if ($this->Identity->isLoggedIn()) {
     ...
 }
 ```
 
-Getting user data is as as easy as
+Getting user data is as easy as
 ```php
 $username = $this->Identity->get('username');
 ```
