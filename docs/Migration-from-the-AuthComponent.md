@@ -33,9 +33,17 @@ The AuthenticationMiddleware will handle checking and setting the identity based
 ```php
 function login()
 {
+    $result = $this->Authentication->getResult();
+
     // regardless of POST or GET, redirect if user is logged in
-    if ($this->Authentication->getResult()->isValid()) {
-        return $this->redirect('/');
+    if ($result->isValid()) {
+        $redirect = $this->request->getQuery('redirect', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        return $this->redirect($redirect);
+    }
+
+    // display error if user submitted and authentication failed
+    if ($this->request->is(['post']) && !$result->isValid()) {
+        $this->Flash->error('Invalid username or password');
     }
 }
 ```
