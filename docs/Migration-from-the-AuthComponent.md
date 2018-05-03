@@ -31,7 +31,7 @@ If you want to implement your own identifiers, your identifier must implement th
 The AuthenticationMiddleware will handle checking and setting the identity based on your authenticators. Usually after logging in, the AuthComponent would redirect to a configured location. To redirect upon a successful login, change your login action to check the new identity results:
 
 ```php
-function login()
+public function login()
 {
     $result = $this->Authentication->getResult();
 
