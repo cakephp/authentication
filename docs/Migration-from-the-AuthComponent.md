@@ -175,11 +175,12 @@ public function middleware($middlewareQueue)
     $middlewareQueue->add($authentication);
 
     // Add unauthorized redirect handling
-    $middleware->add(new UnauthorizedRedirectMiddleware('/users/login'));
+    $middlewareQueue->add(new UnauthorizedRedirectMiddleware('/users/login'));
 
     return $middlewareQueue;
 }
 ```
+
 The `UnauthorizedRedirectMiddleware` needs to be applied *after* the
 `AuthenticationMiddleware` if you are using any stateless authenticators.
 
