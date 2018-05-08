@@ -26,9 +26,11 @@ If you want to implement your own identifiers, your identifier must implement th
 
 ## Migrating your authentication setup
 
+### Adding the authentication middleware
+
 ### Login action
 
-The AuthenticationMiddleware will handle checking and setting the identity based on your authenticators. Usually after logging in, the AuthComponent would redirect to a configured location. To redirect upon a successful login, change your login action to check the new identity results:
+The `AuthenticationMiddleware` will handle checking and setting the identity based on your authenticators. Usually after logging in, `AuthComponent` would redirect to a configured location. To redirect upon a successful login, change your login action to check the new identity results:
 
 ```php
 public function login()
@@ -48,17 +50,15 @@ public function login()
 }
 ```
 
-### Checking identity
+### Checking identities
 
-Remove authentication from the AuthComponent and put the middleware in place like shown above. Then configure your authenticators the same way as you did for the AuthComponent before.
-
-Change your code to use the identity data from the `identity` request attribute instead of using `$this->Auth->user();`. The returned value is null if no identity was found or the identification of the provided credentials failed.
+After applying the middleware you can use identity data by using the `identity` request attribute. This replaces the `$this->Auth->user()` calls you are be using now. If the the current user is unauthenticaed or if the provided credentials were invalid, the `identity` attribute will be `null`.
 
 ```php
 $user = $request->getAttribute('identity');
 ```
 
-For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible on the `authentication` attribute.
+For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible on the `authentication` attribute:
 
 ```php
 $result = $request->getAttribute('authentication')->getResult();
@@ -71,7 +71,7 @@ debug($result->getErrors());
 ```
 
 Any place you were calling `AuthComponent::setUser()`, you should now use
-``setIdentity()``
+`setIdentity()`:
 
 ```php
 // Assume you need to read a user by access token
@@ -151,3 +151,35 @@ $this->Authentication->allowUnauthenticated(['view']);
 ```
 
 Each call to `allowUnauthenticated()` will overwrite the current action list.
+
+# Migrating Unauthorized Redirects
+
+By default `AuthComponent` redirects users back to the login page when
+authentication is required. In contrast, the `AuthenticationComponent` in this 
+plugin will raise an exception in this scenario. You can convert this exception
+into a redirect by using the `UnauthorizedRedirectMiddleware` in your application.
+
+```php
+// in src/Application.php
+use Authentication\Middleware\AuthenticationMiddleware;
+use Authentication\Middleware\UnauthorizedRedirectMiddleware;
+
+public function middleware($middlewareQueue)
+{
+    // Various other middlewares for error handling, routing etc. added here.
+
+    // Add the authentication middleware
+    $authentication = new AuthenticationMiddleware($this);
+
+    // Add authentication
+    $middlewareQueue->add($authentication);
+
+    // Add unauthorized redirect handling
+    $middleware->add(new UnauthorizedRedirectMiddleware('/users/login'));
+
+    return $middlewareQueue;
+}
+```
+The `UnauthorizedRedirectMiddleware` needs to be applied *after* the
+`AuthenticationMiddleware` if you are using any stateless authenticators.
+
