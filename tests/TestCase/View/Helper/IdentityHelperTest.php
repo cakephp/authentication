@@ -12,19 +12,39 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\UrlChecker;
+namespace Authentication\Test\TestCase\View\Helper;
 
 use Authentication\Identity;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Authentication\View\Helper\IdentityHelper;
 use Cake\Http\ServerRequest;
 use Cake\View\View;
+use RuntimeException;
 
 /**
  * IdentityHelperTest
  */
 class IdentityHelperTest extends TestCase
 {
+    /**
+     * test bad identity
+     *
+     * @return void
+     */
+    public function testBadIdentityError()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Identity found in request does not');
+
+        $identity = [
+            'id' => 1,
+        ];
+        $request = (new ServerRequest())->withAttribute('identity', $identity);
+        $view = new View($request);
+
+        $helper = new IdentityHelper($view);
+    }
+
     /**
      * testWithIdentity
      *
@@ -45,6 +65,7 @@ class IdentityHelperTest extends TestCase
         $helper = new IdentityHelper($view);
         $this->assertEquals(1, $helper->get('id'));
         $this->assertEquals('cake', $helper->get('profile.first_name'));
+        $this->assertEquals($identity->getOriginalData(), $helper->get());
 
         $this->assertTrue($helper->isLoggedIn());
         $this->assertEquals(1, $helper->getId());
