@@ -16,13 +16,13 @@ namespace Authentication\Test\TestCase\Middleware;
 
 use Authentication\AuthenticationService;
 use Authentication\Authenticator\UnauthorizedException;
-use Authentication\Middleware\UnauthorizedRedirectMiddleware;
+use Authentication\Middleware\UnauthenticatedRedirectMiddleware;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use RuntimeException;
 
-class UnauthorizedRedirectMiddlewareTest extends TestCase
+class UnauthenticatedRedirectMiddlewareTest extends TestCase
 {
     public function testInvokeSuccess()
     {
@@ -33,7 +33,7 @@ class UnauthorizedRedirectMiddlewareTest extends TestCase
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
 
-        $middleware = new UnauthorizedRedirectMiddleware('/users/login');
+        $middleware = new UnauthenticatedRedirectMiddleware('/users/login');
         $res = $middleware($request, $response, $next);
         $this->assertTrue($res->hasHeader('X-pass'));
     }
@@ -47,7 +47,7 @@ class UnauthorizedRedirectMiddlewareTest extends TestCase
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
 
-        $middleware = new UnauthorizedRedirectMiddleware('/users/login');
+        $middleware = new UnauthenticatedRedirectMiddleware('/users/login');
         $res = $middleware($request, $response, $next);
         $this->assertTrue($res->hasHeader('Location'));
         $this->assertEquals('/users/login', $res->getHeaderLine('Location'));
@@ -64,7 +64,7 @@ class UnauthorizedRedirectMiddlewareTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('oh no');
-        $middleware = new UnauthorizedRedirectMiddleware('/users/login');
+        $middleware = new UnauthenticatedRedirectMiddleware('/users/login');
         $middleware($request, $response, $next);
     }
 }

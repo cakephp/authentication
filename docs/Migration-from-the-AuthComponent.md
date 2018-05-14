@@ -152,17 +152,17 @@ $this->Authentication->allowUnauthenticated(['view']);
 
 Each call to `allowUnauthenticated()` will overwrite the current action list.
 
-# Migrating Unauthorized Redirects
+# Migrating Unauthenticated Redirects
 
 By default `AuthComponent` redirects users back to the login page when
 authentication is required. In contrast, the `AuthenticationComponent` in this 
 plugin will raise an exception in this scenario. You can convert this exception
-into a redirect by using the `UnauthorizedRedirectMiddleware` in your application.
+into a redirect by using the `UnauthenticatedRedirectMiddleware` in your application.
 
 ```php
 // in src/Application.php
 use Authentication\Middleware\AuthenticationMiddleware;
-use Authentication\Middleware\UnauthorizedRedirectMiddleware;
+use Authentication\Middleware\UnauthenticatedRedirectMiddleware;
 
 public function middleware($middlewareQueue)
 {
@@ -174,13 +174,13 @@ public function middleware($middlewareQueue)
     // Add authentication
     $middlewareQueue->add($authentication);
 
-    // Add unauthorized redirect handling
-    $middlewareQueue->add(new UnauthorizedRedirectMiddleware('/users/login'));
+    // Add unauthenticated redirect handling
+    $middlewareQueue->add(new UnauthenticatedRedirectMiddleware('/users/login'));
 
     return $middlewareQueue;
 }
 ```
 
-The `UnauthorizedRedirectMiddleware` needs to be applied *after* the
+The `UnauthenticatedRedirectMiddleware` needs to be applied *after* the
 `AuthenticationMiddleware` if you are using any stateless authenticators.
 

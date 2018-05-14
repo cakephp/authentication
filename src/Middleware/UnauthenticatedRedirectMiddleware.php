@@ -21,9 +21,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Stream;
 
 /**
- * Convert UnauthorizedExceptions into redirects.
+ * Catches UnauthenticatedException and converts
+ * them into redirects. The redirect target is provided as a constructor
+ * argument.
  */
-class UnauthorizedRedirectMiddleware
+class UnauthenticatedRedirectMiddleware
 {
     /**
      * The target URL to redirect to.
