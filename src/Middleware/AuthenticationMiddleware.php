@@ -16,6 +16,7 @@ namespace Authentication\Middleware;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Authenticator\UnauthorizedException;
 use Cake\Core\HttpApplicationInterface;
 use Cake\Core\InstanceConfigTrait;
@@ -33,11 +34,17 @@ class AuthenticationMiddleware
     use InstanceConfigTrait;
 
     /**
-     * {@inheritDoc}
+     * Configuration options
+     *
+     * - `identityAttribute` - The request attribute to store the identity in.
+     * - `name` the application hook method to call. Will be prefixed with `authentication`
+     * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
+     *    AuthenticationComponent::allowUnauthenticated()
      */
     protected $_defaultConfig = [
         'identityAttribute' => 'identity',
-        'name' => null
+        'name' => null,
+        'unauthenticatedRedirect' => null,
     ];
 
     /**
@@ -107,7 +114,17 @@ class AuthenticationMiddleware
 
         $response = $result['response'];
 
-        return $next($request, $response);
+        try {
+            return $next($request, $response);
+        } catch (UnauthenticatedException $e) {
+            $target = $this->getConfig('unauthenticatedRedirect');
+            if ($target) {
+                return $response
+                    ->withStatus(301)
+                    ->withHeader('Location', $target);
+            }
+            throw $e;
+        }
     }
 
     /**
