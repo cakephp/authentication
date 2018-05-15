@@ -170,7 +170,7 @@ public function middleware($middlewareQueue)
 
     // Add the authentication middleware
     $authentication = new AuthenticationMiddleware($this, [
-        'unauthorizedRedirect' => Router::url('users:login')
+        'unauthenticatedRedirect' => Router::url('users:login')
     ]);
 
     // Add authentication
