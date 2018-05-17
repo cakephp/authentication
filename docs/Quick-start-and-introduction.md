@@ -149,6 +149,43 @@ if ($result->isValid()) {
 }
 ```
 
+### Checking login failures with multiple authenticators
+
+When you are working with many authenticators you can check all failures result
+produced and maybe give a better feedback to your users:
+
+```php
+// Using Authentication component
+$result = $this->Authentication->getResult();
+
+// Using request object
+$result = $request->getAttribute('authentication')->getResult();
+
+if ($result->isValid()) {
+    $user = $request->getAttribute('identity');
+} else {
+    $messages = [
+        'Authentication\Authenticator\TokenAuthenticator' => [
+            Result::FAILURE_IDENTITY_NOT_FOUND => 'Token invalid or expired'
+        ],        
+        'App\Authenticator\CustomAuthenticator' => [
+            Result::FAILURE_IDENTITY_NOT_FOUND => 'Username or password is incorrect',
+            'FAILURE_INVALID_RECAPTCHA' => 'Invalid reCaptcha'
+        ],
+        'App\Authenticator\AnotherAuthenticator' => [
+            'SOME_ERROR_STRING' => 'Your custom message'
+        ]
+    ];
+    foreach ($service->authenticators() as $authenticator) {
+        $name = get_class($authenticator);
+        $result = $authenticator->getLastResult();
+        if ($result && isset($messages[$name][$result->getStatus()])) {
+            $this->Flash->error($messages[$name][$result->getStatus()]);
+        }
+    }
+}
+```
+
 The result sets objects status returned from `getStatus()` will match one of these these constants in the Result object:
 
 * `ResultInterface::SUCCESS`, when successful.
