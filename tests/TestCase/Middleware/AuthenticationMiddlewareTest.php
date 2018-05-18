@@ -440,9 +440,9 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $response = $middleware($request, $response, $next);
-        $this->assertEquals(301, $response->getStatusCode());
-        $this->assertEquals('/users/login', $response->getHeaderLine('Location'));
-        $this->assertEquals('', $response->getBody() . '');
+        $this->assertSame(301, $response->getStatusCode());
+        $this->assertSame('/users/login', $response->getHeaderLine('Location'));
+        $this->assertSame('', $response->getBody() . '');
     }
 
     /**
