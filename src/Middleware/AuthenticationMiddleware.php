@@ -16,6 +16,7 @@ namespace Authentication\Middleware;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\UnauthorizedException;
 use Cake\Core\HttpApplicationInterface;
 use InvalidArgumentException;
@@ -113,22 +114,12 @@ class AuthenticationMiddleware
      */
     protected function getAuthenticationService($request, $response)
     {
+        if ($this->subject instanceof AuthenticationServiceProviderInterface) {
+            return $this->subject->getAuthenticationService($request, $response);
+        }
+
         if ($this->subject instanceof AuthenticationServiceInterface) {
             return $this->subject;
         }
-
-        $method = 'authentication' . ucfirst($this->name);
-        if (!method_exists($this->subject, $method)) {
-            if (strlen($this->name)) {
-                $message = sprintf('Method `%s` for `%s` authentication service has not been defined in your `Application` class.', $method, $this->name);
-            } else {
-                $message = sprintf('Method `%s` has not been defined in your `Application` class.', $method);
-            }
-            throw new RuntimeException($message);
-        }
-
-        $service = new AuthenticationService();
-
-        return $this->subject->$method($service, $request, $response);
     }
 }
