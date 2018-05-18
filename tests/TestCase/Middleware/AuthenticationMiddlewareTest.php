@@ -17,6 +17,7 @@ namespace Authentication\Test\TestCase\Middleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\ResultInterface;
+use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
@@ -388,6 +389,60 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
         $this->assertTrue($response->hasHeader('WWW-Authenticate'));
         $this->assertSame('', $response->getBody()->getContents());
+    }
+
+    /**
+     * test unauthenticated errors being bubbled up when not caught.
+     *
+     * @return void
+     */
+    public function testUnauthenticatedNoRedirect()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service, [
+            'unauthenticatedRedirect' => false,
+        ]);
+
+        $next = function ($request, $response) {
+            throw new UnauthenticatedException();
+        };
+
+        $this->expectException(UnauthenticatedException::class);
+        $middleware($request, $response, $next);
+    }
+
+    /**
+     * test unauthenticated errors being converted into redirects when configured
+     *
+     * @return void
+     */
+    public function testUnauthenticatedRedirect()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service, [
+            'unauthenticatedRedirect' => '/users/login',
+        ]);
+
+        $next = function ($request, $response) {
+            throw new UnauthenticatedException();
+        };
+
+        $response = $middleware($request, $response, $next);
+        $this->assertSame(301, $response->getStatusCode());
+        $this->assertSame('/users/login', $response->getHeaderLine('Location'));
+        $this->assertSame('', $response->getBody() . '');
     }
 
     /**

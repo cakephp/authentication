@@ -17,7 +17,7 @@ namespace Authentication\Test\TestCase\Identifier;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
-use Authentication\Authenticator\UnauthorizedException;
+use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
@@ -26,8 +26,8 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Cake\Network\Response;
 use Cake\ORM\Entity;
 use TestApp\Authentication\InvalidAuthenticationService;
 
@@ -338,7 +338,7 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request, $this->response);
         $controller->loadComponent('Authentication.Authentication');
 
-        $this->expectException(UnauthorizedException::class);
+        $this->expectException(UnauthenticatedException::class);
         $controller->Authentication->allowUnauthenticated(['index', 'add']);
         $controller->startupProcess();
     }
@@ -357,7 +357,7 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request, $this->response);
         $controller->loadComponent('Authentication.Authentication');
 
-        $this->expectException(UnauthorizedException::class);
+        $this->expectException(UnauthenticatedException::class);
         $controller->startupProcess();
     }
 

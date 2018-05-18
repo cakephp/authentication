@@ -18,7 +18,7 @@ use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\StatelessInterface;
-use Authentication\Authenticator\UnauthorizedException;
+use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
@@ -106,7 +106,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return void
      * @throws Exception when request is missing or has an invalid AuthenticationService
-     * @throws UnauthorizedException when requireIdentity is true and request is missing an identity
+     * @throws UnauthenticatedException when requireIdentity is true and request is missing an identity
      */
     public function startup()
     {
@@ -130,7 +130,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $identity = $request->getAttribute($this->getConfig('identityAttribute'));
         if (!$identity) {
-            throw new UnauthorizedException([]);
+            throw new UnauthenticatedException();
         }
     }
 
