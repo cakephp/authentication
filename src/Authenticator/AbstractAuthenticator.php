@@ -88,7 +88,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Get the last authentication result instance stored or null if none.
      *
-     * @return ResultInterface|null
+     * @return \Authentication\Authenticator\ResultInterface|null
      */
     public function getLastResult()
     {
@@ -102,7 +102,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      * @param string $status Status constant equivalent.
      * @param array $messages Messages.
      * @throws \InvalidArgumentException When invalid identity data is passed.
-     * @return ResultInterface
+     * @return \Authentication\Authenticator\ResultInterface
      */
     protected function _buildLastResult($data, $status, array $messages = [])
     {
