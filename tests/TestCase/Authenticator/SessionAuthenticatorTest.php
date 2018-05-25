@@ -48,7 +48,11 @@ class SessionAuthenticatorTest extends TestCase
            'Authentication.Password'
         ]);
 
-        $this->sessionMock = $this->getMockBuilder('\Cake\Network\Session')
+        $class = 'Cake\Http\Session';
+        if (!class_exists($class)) {
+            $class = '\Cake\Network\Session';
+        }
+        $this->sessionMock = $this->getMockBuilder($class)
             ->disableOriginalConstructor()
             ->setMethods(['read', 'write', 'delete'])
             ->getMock();

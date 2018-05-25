@@ -9,7 +9,7 @@ $service->loadIdentifier('Authentication.Password', [
         'password' => 'passwd',
     ],
     'resolver' => [
-        'className' => 'Authentiation.Orm',
+        'className' => 'Authentication.Orm',
         'finder' => 'active'
     ],
     'passwordHasher' => [
@@ -77,9 +77,9 @@ Configuration options:
 
 * **callback**: Default is `null` and will cause an exception. You're required to pass a valid callback to this option to use the authenticator.
 
-# Identifier resolvers
+# Identity resolvers
 
-Identifier resolvers provide adapters for different datasources. They allow
+Identity resolvers provide adapters for different datasources. They allow
 you to control which source identities are searched in. They are separate from
 the identifiers so that they can be swapped out independently from the
 identifier method (form, jwt, basic auth).
@@ -97,8 +97,10 @@ In order to use ORM resolver you must require `cakephp/orm` in your `composer.js
 
 ## Writing your own resolver
 
-Authentication plugin can work with any ORM or datasource. All you need is to write your own resolver.
-Resolvers must implement `Authentication\Identifier\Resolver\ResolverInterface` and should reside under `App\Identifier\Resolver` namespace.
+Any ORM or datasource can be adapted to work with authentication by creating
+a resolver.  Resolvers must implement
+`Authentication\Identifier\Resolver\ResolverInterface` and should reside under
+`App\Identifier\Resolver` namespace.
 
 Resolver can be configured using `resolver` config option:
 

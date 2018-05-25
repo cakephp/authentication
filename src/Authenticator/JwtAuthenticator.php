@@ -16,6 +16,7 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
+use Cake\Utility\Security;
 use Exception;
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ResponseInterface;
@@ -53,10 +54,10 @@ class JwtAuthenticator extends TokenAuthenticator
         parent::__construct($identifier, $config);
 
         if (empty($this->_config['secretKey'])) {
-            if (!class_exists('Cake\Utility\Security')) {
+            if (!class_exists(Security::class)) {
                 throw new RuntimeException('You must set the `secretKey` config key for JWT authentication.');
             }
-            $this->setConfig('secretKey', \Cake\Utility\Security::salt());
+            $this->setConfig('secretKey', \Cake\Utility\Security::getSalt());
         }
     }
 
@@ -126,11 +127,13 @@ class JwtAuthenticator extends TokenAuthenticator
         $payload = null;
         $token = $this->getToken($request);
 
-        if ($token) {
+        if ($token !== null) {
             $payload = $this->decodeToken($token);
         }
 
-        return $this->payload = $payload;
+        $this->payload = $payload;
+
+        return $this->payload;
     }
 
     /**

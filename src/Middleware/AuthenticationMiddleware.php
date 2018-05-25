@@ -17,8 +17,10 @@ namespace Authentication\Middleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Authenticator\UnauthorizedException;
 use Cake\Core\HttpApplicationInterface;
+use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,6 +32,21 @@ use Zend\Diactoros\Stream;
  */
 class AuthenticationMiddleware
 {
+    use InstanceConfigTrait;
+
+    /**
+     * Configuration options
+     *
+     * - `identityAttribute` - The request attribute to store the identity in.
+     * - `name` the application hook method to call. Will be prefixed with `authentication`
+     * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
+     *    AuthenticationComponent::allowUnauthenticated()
+     */
+    protected $_defaultConfig = [
+        'identityAttribute' => 'identity',
+        'name' => null,
+        'unauthenticatedRedirect' => null,
+    ];
 
     /**
      * Authentication service or application instance.
@@ -39,21 +56,19 @@ class AuthenticationMiddleware
     protected $subject;
 
     /**
-     * Authentication service provider name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
-     * @param string|null $name Authentication service provider name.
+     * @param array|string $config Array of configuration settings or string with authentication service provider name.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct($subject, $name = null)
+    public function __construct($subject, $config = null)
     {
+        if (is_string($config)) {
+            $config = ['name' => $config];
+        }
+        $this->setConfig($config);
+
         if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof HttpApplicationInterface)) {
             $expected = implode('` or `', [
                 AuthenticationServiceInterface::class,
@@ -66,7 +81,6 @@ class AuthenticationMiddleware
         }
 
         $this->subject = $subject;
-        $this->name = $name;
     }
 
     /**
@@ -80,6 +94,7 @@ class AuthenticationMiddleware
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
         $service = $this->getAuthenticationService($request, $response);
+
         try {
             $result = $service->authenticate($request, $response);
         } catch (UnauthorizedException $e) {
@@ -95,13 +110,23 @@ class AuthenticationMiddleware
         }
 
         $request = $result['request'];
-        $request = $request->withAttribute('identity', $service->getIdentity());
+        $request = $request->withAttribute($this->getConfig('identityAttribute'), $service->getIdentity());
         $request = $request->withAttribute('authentication', $service);
         $request = $request->withAttribute('authenticationResult', $result['result']);
 
         $response = $result['response'];
 
+        try {
         return $next($request, $response);
+        } catch (UnauthenticatedException $e) {
+            $target = $this->getConfig('unauthenticatedRedirect');
+            if ($target) {
+                return $response
+                    ->withStatus(301)
+                    ->withHeader('Location', $target);
+    }
+            throw $e;
+        }
     }
 
     /**
@@ -121,5 +146,7 @@ class AuthenticationMiddleware
         if ($this->subject instanceof AuthenticationServiceInterface) {
             return $this->subject;
         }
+
+        throw new RuntimeException(sprintf('`%s` does not implement `\Authentication\AuthenticationServiceProvider`', get_class($this->subject)));
     }
 }

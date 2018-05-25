@@ -78,7 +78,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $digest = $this->_getDigest($request);
-        if (empty($digest)) {
+        if ($digest === null) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
@@ -114,7 +114,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * Gets the digest headers from the request/environment.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array Array of digest information.
+     * @return array|null Array of digest information.
      */
     protected function _getDigest(ServerRequestInterface $request)
     {
@@ -127,7 +127,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             }
         }
         if (empty($digest)) {
-            return [];
+            return null;
         }
 
         return $this->parseAuthData($digest);
@@ -209,7 +209,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         ];
 
         $digest = $this->_getDigest($request);
-        if ($digest && isset($digest['nonce']) && !$this->validNonce($digest['nonce'])) {
+        if ($digest !== null && isset($digest['nonce']) && !$this->validNonce($digest['nonce'])) {
             $options['stale'] = true;
         }
 

@@ -26,15 +26,39 @@ If you want to implement your own identifiers, your identifier must implement th
 
 ## Migrating your authentication setup
 
-Remove authentication from the AuthComponent and put the middleware in place like shown above. Then configure your authenticators the same way as you did for the AuthComponent before.
+### Adding the authentication middleware
 
-Change your code to use the identity data from the `identity` request attribute instead of using `$this->Auth->user();`. The returned value is null if no identity was found or the identification of the provided credentials failed.
+### Login action
+
+The `AuthenticationMiddleware` will handle checking and setting the identity based on your authenticators. Usually after logging in, `AuthComponent` would redirect to a configured location. To redirect upon a successful login, change your login action to check the new identity results:
+
+```php
+public function login()
+{
+    $result = $this->Authentication->getResult();
+
+    // regardless of POST or GET, redirect if user is logged in
+    if ($result->isValid()) {
+        $redirect = $this->request->getQuery('redirect', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        return $this->redirect($redirect);
+    }
+
+    // display error if user submitted and authentication failed
+    if ($this->request->is(['post']) && !$result->isValid()) {
+        $this->Flash->error('Invalid username or password');
+    }
+}
+```
+
+### Checking identities
+
+After applying the middleware you can use identity data by using the `identity` request attribute. This replaces the `$this->Auth->user()` calls you are be using now. If the the current user is unauthenticaed or if the provided credentials were invalid, the `identity` attribute will be `null`.
 
 ```php
 $user = $request->getAttribute('identity');
 ```
 
-For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible on the `authentication` attribute.
+For more details about the result of the authentication process you can access the result object that also comes with the request and is accessible on the `authentication` attribute:
 
 ```php
 $result = $request->getAttribute('authentication')->getResult();
@@ -45,6 +69,19 @@ debug($result->getStatus());
 // An array of error messages or data if the identifier provided any
 debug($result->getErrors());
 ```
+
+Any place you were calling `AuthComponent::setUser()`, you should now use
+`setIdentity()`:
+
+```php
+// Assume you need to read a user by access token
+$user = $this->Users->find('byToken', ['token' => $token])->first();
+
+// Persist the user into configured authenticators.
+$this->Authentication->setIdentity($user);
+```
+
+### Migrate AuthComponent settings
 
 The huge config array from the AuthComponent needs to be split into identifiers and authenticators when configuring the service. So when you had your AuthComponent configured this way
 
@@ -99,18 +136,46 @@ $service->loadIdentifier('Authentication.Password', [
 ]);
 ```
 
-Any place you were calling `AuthComponent::setUser()`, you should now use
-``setIdentity()``
-
-```php
-// Assume you need to read a user by access token
-$user = $this->Users->find('byToken', ['token' => $token])->first();
-
-// Persist the user into configured authenticators.
-$this->Authentication->setIdentity($user);
-```
-
 While there is a bit more code than before, you have more flexibility in how
 your authentication is handled.
 
+## Migrating allow/deny logic
 
+Like `AuthComponent` the `AuthenticationComponent` makes it easy to make
+specific actions 'public' and not require a valid identity to be present:
+
+
+```php
+// In your controller's beforeFilter method.
+$this->Authentication->allowUnauthenticated(['view']);
+```
+
+Each call to `allowUnauthenticated()` will overwrite the current action list.
+
+# Migrating Unauthenticated Redirects
+
+By default `AuthComponent` redirects users back to the login page when
+authentication is required. In contrast, the `AuthenticationComponent` in this 
+plugin will raise an exception in this scenario. You can convert this exception
+into a redirect using the `unauthenticatedRedirect` when configuring the
+AuthenticationMiddleware.
+
+```php
+// in src/Application.php
+use Authentication\Middleware\AuthenticationMiddleware;
+
+public function middleware($middlewareQueue)
+{
+    // Various other middlewares for error handling, routing etc. added here.
+
+    // Add the authentication middleware
+    $authentication = new AuthenticationMiddleware($this, [
+        'unauthenticatedRedirect' => Router::url('users:login')
+    ]);
+
+    // Add authentication
+    $middlewareQueue->add($authentication);
+
+    return $middlewareQueue;
+}
+```
