@@ -117,14 +117,14 @@ class AuthenticationMiddleware
         $response = $result['response'];
 
         try {
-        return $next($request, $response);
+            return $next($request, $response);
         } catch (UnauthenticatedException $e) {
             $target = $this->getConfig('unauthenticatedRedirect');
             if ($target) {
                 return $response
                     ->withStatus(301)
                     ->withHeader('Location', $target);
-    }
+            }
             throw $e;
         }
     }
