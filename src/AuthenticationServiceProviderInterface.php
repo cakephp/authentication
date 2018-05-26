@@ -23,7 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
 interface AuthenticationServiceProviderInterface
 {
     /**
-     * Returns a service provider instance.
+     * Returns an authentication service instance.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
      * @param \Psr\Http\Message\ResponseInterface $response Response

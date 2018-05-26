@@ -16,6 +16,7 @@ namespace Authentication\Test\TestCase\Middleware;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
@@ -134,7 +135,7 @@ class AuthenticationMiddlewareTest extends TestCase
                 'response' => $response
             ]);
 
-        $application = $this->getMockBuilder(BaseApplication::class)
+        $application = $this->getMockBuilder(TestApp\Application::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAuthenticationService', 'middleware'])
             ->getMock();
