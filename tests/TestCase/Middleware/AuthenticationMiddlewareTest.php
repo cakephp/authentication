@@ -26,6 +26,7 @@ use Cake\Http\BaseApplication;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
+use RuntimeException;
 use TestApp\Application;
 
 class AuthenticationMiddlewareTest extends TestCase
@@ -114,6 +115,35 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $this->assertTrue($service->identifiers()->has('Password'));
         $this->assertTrue($service->authenticators()->has('Form'));
+    }
+
+    public function testProviderInvalidService()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $app = $this->createMock(BaseApplication::class);
+        $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
+        $provider
+            ->method('getAuthenticationService')
+            ->willReturn($app);
+
+        $middleware = new AuthenticationMiddleware($provider);
+        $expected = 'identity';
+        $actual = $middleware->getConfig("identityAttribute");
+        $this->assertEquals($expected, $actual);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Service provided by a subject must be an instance of `Authentication\AuthenticationServiceInterface`, `Mock_BaseApplication_');
+
+        $middleware($request, $response, $next);
     }
 
     /**

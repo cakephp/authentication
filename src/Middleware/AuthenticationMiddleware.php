@@ -137,14 +137,19 @@ class AuthenticationMiddleware
      */
     protected function getAuthenticationService($request, $response)
     {
-        if ($this->subject instanceof AuthenticationServiceProviderInterface) {
-            return $this->subject->getAuthenticationService($request, $response);
+        $subject = $this->subject;
+
+        if ($subject instanceof AuthenticationServiceProviderInterface) {
+            $subject = $this->subject->getAuthenticationService($request, $response);
         }
 
-        if ($this->subject instanceof AuthenticationServiceInterface) {
-            return $this->subject;
+        if (!$subject instanceof AuthenticationServiceInterface) {
+            $type = is_object($subject) ? get_class($subject) : gettype($subject);
+            $message = sprintf('Service provided by a subject must be an instance of `%s`, `%s` given.', AuthenticationServiceInterface::class, $type);
+
+            throw new RuntimeException($message);
         }
 
-        throw new RuntimeException(sprintf('`%s` does not implement `\Authentication\AuthenticationServiceProvider`', get_class($this->subject)));
+        return $subject;
     }
 }
