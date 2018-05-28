@@ -83,6 +83,39 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertTrue($service->authenticators()->has('Form'));
     }
 
+    public function testProviderAuthentication()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
+        $provider
+            ->method('getAuthenticationService')
+            ->willReturn($this->service);
+
+        $middleware = new AuthenticationMiddleware($provider);
+        $expected = 'identity';
+        $actual = $middleware->getConfig("identityAttribute");
+        $this->assertEquals($expected, $actual);
+
+        $request = $middleware($request, $response, $next);
+
+        /* @var $service AuthenticationService */
+        $service = $request->getAttribute('authentication');
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+        $this->assertSame($this->service, $service);
+
+        $this->assertTrue($service->identifiers()->has('Password'));
+        $this->assertTrue($service->authenticators()->has('Form'));
+    }
+
     /**
      * test middleware call with custom identity attribute
      *
@@ -135,7 +168,7 @@ class AuthenticationMiddlewareTest extends TestCase
                 'response' => $response
             ]);
 
-        $application = $this->getMockBuilder(TestApp\Application::class)
+        $application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAuthenticationService', 'middleware'])
             ->getMock();
@@ -155,7 +188,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Cake\Core\HttpApplicationInterface`, `stdClass` given.
+     * @expectedExceptionMessage Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Authentication\AuthenticationServiceProviderInterface`, `stdClass` given.
      */
     public function testInvalidSubject()
     {
@@ -170,26 +203,6 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $middleware = new AuthenticationMiddleware(new \stdClass());
-        $middleware($request, $response, $next);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     */
-    public function testInvalidApplication()
-    {
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-        $response = new Response();
-        $next = function ($request, $response) {
-            return $request;
-        };
-
-        $application = $this->createMock(BaseApplication::class);
-        $middleware = new AuthenticationMiddleware($application);
         $middleware($request, $response, $next);
     }
 

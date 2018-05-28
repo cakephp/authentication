@@ -14,12 +14,10 @@
  */
 namespace Authentication\Middleware;
 
-use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Authenticator\UnauthorizedException;
-use Cake\Core\HttpApplicationInterface;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -51,14 +49,14 @@ class AuthenticationMiddleware
     /**
      * Authentication service or application instance.
      *
-     * @var \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface
+     * @var \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface
      */
     protected $subject;
 
     /**
      * Constructor
      *
-     * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
+     * @param \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface $subject Authentication service or application instance.
      * @param array|string $config Array of configuration settings or string with authentication service provider name.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
@@ -69,10 +67,10 @@ class AuthenticationMiddleware
         }
         $this->setConfig($config);
 
-        if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof HttpApplicationInterface)) {
+        if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof AuthenticationServiceProviderInterface)) {
             $expected = implode('` or `', [
                 AuthenticationServiceInterface::class,
-                HttpApplicationInterface::class
+                AuthenticationServiceProviderInterface::class
             ]);
             $type = is_object($subject) ? get_class($subject) : gettype($subject);
             $message = sprintf('Subject must be an instance of `%s`, `%s` given.', $expected, $type);
