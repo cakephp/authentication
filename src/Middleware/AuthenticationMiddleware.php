@@ -45,6 +45,7 @@ class AuthenticationMiddleware
         'identityAttribute' => 'identity',
         'name' => null,
         'unauthenticatedRedirect' => null,
+        'queryParam' => null,
     ];
 
     /**
@@ -119,12 +120,39 @@ class AuthenticationMiddleware
         } catch (UnauthenticatedException $e) {
             $target = $this->getConfig('unauthenticatedRedirect');
             if ($target) {
+                $url = $this->getRedirectUrl($target, $request);
+
                 return $response
                     ->withStatus(301)
-                    ->withHeader('Location', $target);
+                    ->withHeader('Location', $url);
             }
             throw $e;
         }
+    }
+
+    /**
+     * Returns redirect URL.
+     *
+     * @param string $target Redirect target.
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request instance.
+     * @return string
+     */
+    protected function getRedirectUrl($target, ServerRequestInterface $request)
+    {
+        $param = $this->getConfig('queryParam');
+        if ($param === null) {
+            return $target;
+        }
+
+        $query = urlencode($param) . '=' . urlencode($request->getUri());
+
+        if (strpos($target, '?') !== false) {
+            $query = '&' . $query;
+        } else {
+            $query = '?' . $query;
+        }
+
+        return $target . $query;
     }
 
     /**

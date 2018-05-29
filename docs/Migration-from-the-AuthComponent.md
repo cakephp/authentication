@@ -160,6 +160,9 @@ plugin will raise an exception in this scenario. You can convert this exception
 into a redirect using the `unauthenticatedRedirect` when configuring the
 AuthenticationMiddleware.
 
+You can also pass the current request target URI as a query parameter using
+the `queryParam` option.
+
 ```php
 // in src/Application.php
 use Authentication\Middleware\AuthenticationMiddleware;
@@ -170,7 +173,8 @@ public function middleware($middlewareQueue)
 
     // Add the authentication middleware
     $authentication = new AuthenticationMiddleware($this, [
-        'unauthenticatedRedirect' => Router::url('users:login')
+        'unauthenticatedRedirect' => Router::url('users:login'),
+        'queryParam' => 'redirect',
     ]);
 
     // Add authentication
