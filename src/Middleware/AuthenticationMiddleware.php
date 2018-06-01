@@ -14,11 +14,10 @@
  */
 namespace Authentication\Middleware;
 
-use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Authenticator\UnauthorizedException;
-use Cake\Core\HttpApplicationInterface;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -51,14 +50,14 @@ class AuthenticationMiddleware
     /**
      * Authentication service or application instance.
      *
-     * @var \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface
+     * @var \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface
      */
     protected $subject;
 
     /**
      * Constructor
      *
-     * @param \Authentication\AuthenticationServiceInterface|\Cake\Core\HttpApplicationInterface $subject Authentication service or application instance.
+     * @param \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface $subject Authentication service or application instance.
      * @param array|string $config Array of configuration settings or string with authentication service provider name.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
@@ -69,10 +68,10 @@ class AuthenticationMiddleware
         }
         $this->setConfig($config);
 
-        if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof HttpApplicationInterface)) {
+        if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof AuthenticationServiceProviderInterface)) {
             $expected = implode('` or `', [
                 AuthenticationServiceInterface::class,
-                HttpApplicationInterface::class
+                AuthenticationServiceProviderInterface::class
             ]);
             $type = is_object($subject) ? get_class($subject) : gettype($subject);
             $message = sprintf('Subject must be an instance of `%s`, `%s` given.', $expected, $type);
@@ -94,6 +93,7 @@ class AuthenticationMiddleware
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
     {
         $service = $this->getAuthenticationService($request, $response);
+
         try {
             $result = $service->authenticate($request, $response);
         } catch (UnauthorizedException $e) {
@@ -165,23 +165,19 @@ class AuthenticationMiddleware
      */
     protected function getAuthenticationService($request, $response)
     {
-        if ($this->subject instanceof AuthenticationServiceInterface) {
-            return $this->subject;
+        $subject = $this->subject;
+
+        if ($subject instanceof AuthenticationServiceProviderInterface) {
+            $subject = $this->subject->getAuthenticationService($request, $response);
         }
 
-        $name = $this->getConfig('name');
-        $method = 'authentication' . ucfirst($name);
-        if (!method_exists($this->subject, $method)) {
-            if (strlen($name)) {
-                $message = sprintf('Method `%s` for `%s` authentication service has not been defined in your `Application` class.', $method, $name);
-            } else {
-                $message = sprintf('Method `%s` has not been defined in your `Application` class.', $method);
-            }
+        if (!$subject instanceof AuthenticationServiceInterface) {
+            $type = is_object($subject) ? get_class($subject) : gettype($subject);
+            $message = sprintf('Service provided by a subject must be an instance of `%s`, `%s` given.', AuthenticationServiceInterface::class, $type);
+
             throw new RuntimeException($message);
         }
 
-        $service = new AuthenticationService();
-
-        return $this->subject->$method($service, $request, $response);
+        return $subject;
     }
 }

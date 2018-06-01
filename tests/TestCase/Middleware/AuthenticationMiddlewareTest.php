@@ -16,6 +16,7 @@ namespace Authentication\Test\TestCase\Middleware;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
@@ -25,6 +26,7 @@ use Cake\Http\BaseApplication;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
+use RuntimeException;
 use TestApp\Application;
 
 class AuthenticationMiddlewareTest extends TestCase
@@ -82,6 +84,68 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertTrue($service->authenticators()->has('Form'));
     }
 
+    public function testProviderAuthentication()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
+        $provider
+            ->method('getAuthenticationService')
+            ->willReturn($this->service);
+
+        $middleware = new AuthenticationMiddleware($provider);
+        $expected = 'identity';
+        $actual = $middleware->getConfig("identityAttribute");
+        $this->assertEquals($expected, $actual);
+
+        $request = $middleware($request, $response, $next);
+
+        /* @var $service AuthenticationService */
+        $service = $request->getAttribute('authentication');
+        $this->assertInstanceOf(AuthenticationService::class, $service);
+        $this->assertSame($this->service, $service);
+
+        $this->assertTrue($service->identifiers()->has('Password'));
+        $this->assertTrue($service->authenticators()->has('Form'));
+    }
+
+    public function testProviderInvalidService()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+        $next = function ($request, $response) {
+            return $request;
+        };
+
+        $app = $this->createMock(BaseApplication::class);
+        $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
+        $provider
+            ->method('getAuthenticationService')
+            ->willReturn($app);
+
+        $middleware = new AuthenticationMiddleware($provider);
+        $expected = 'identity';
+        $actual = $middleware->getConfig("identityAttribute");
+        $this->assertEquals($expected, $actual);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Service provided by a subject must be an instance of `Authentication\AuthenticationServiceInterface`, `Mock_BaseApplication_');
+
+        $middleware($request, $response, $next);
+    }
+
     /**
      * test middleware call with custom identity attribute
      *
@@ -117,30 +181,6 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertTrue($service->authenticators()->has('Form'));
     }
 
-    public function testApplicationAuthenticationApi()
-    {
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-        $response = new Response();
-        $next = function ($request, $response) {
-            return $request;
-        };
-
-        $middleware = new AuthenticationMiddleware($this->application, 'api');
-
-        $request = $middleware($request, $response, $next);
-
-        /* @var $service AuthenticationService */
-        $service = $request->getAttribute('authentication');
-        $this->assertInstanceOf(AuthenticationService::class, $service);
-
-        $this->assertTrue($service->identifiers()->has('Token'));
-        $this->assertTrue($service->authenticators()->has('Token'));
-    }
-
     public function testApplicationAuthenticationRequestResponse()
     {
         $request = ServerRequestFactory::fromGlobals();
@@ -158,15 +198,14 @@ class AuthenticationMiddlewareTest extends TestCase
                 'response' => $response
             ]);
 
-        $application = $this->getMockBuilder(BaseApplication::class)
+        $application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
-            ->setMethods(['authentication', 'middleware'])
+            ->setMethods(['getAuthenticationService', 'middleware'])
             ->getMock();
 
         $application->expects($this->once())
-            ->method('authentication')
+            ->method('getAuthenticationService')
             ->with(
-                $this->isInstanceOf(AuthenticationServiceInterface::class),
                 $request,
                 $response
             )
@@ -179,7 +218,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Cake\Core\HttpApplicationInterface`, `stdClass` given.
+     * @expectedExceptionMessage Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Authentication\AuthenticationServiceProviderInterface`, `stdClass` given.
      */
     public function testInvalidSubject()
     {
@@ -194,47 +233,6 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $middleware = new AuthenticationMiddleware(new \stdClass());
-        $middleware($request, $response, $next);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Method `authentication` has not been defined in your `Application` class.
-     */
-    public function testInvalidApplication()
-    {
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-        $response = new Response();
-        $next = function ($request, $response) {
-            return $request;
-        };
-
-        $application = $this->createMock(BaseApplication::class);
-        $middleware = new AuthenticationMiddleware($application);
-        $middleware($request, $response, $next);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Method `authenticationMissing` for `missing` authentication service has not been defined in your `Application` class.
-     */
-    public function testMissingMethod()
-    {
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-        $response = new Response();
-        $next = function ($request, $response) {
-            return $request;
-        };
-
-        $middleware = new AuthenticationMiddleware($this->application, 'missing');
         $middleware($request, $response, $next);
     }
 
