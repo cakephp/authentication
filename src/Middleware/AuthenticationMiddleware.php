@@ -39,6 +39,8 @@ class AuthenticationMiddleware
      * - `name` the application hook method to call. Will be prefixed with `authentication`
      * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
      *    AuthenticationComponent::allowUnauthenticated()
+     * - `queryParam` - Set to true to have unauthenticated redirects contain a `redirect` query string
+     *   parameter with the previously blocked URL.
      */
     protected $_defaultConfig = [
         'identityAttribute' => 'identity',
