@@ -27,4 +27,11 @@ interface AuthenticatorInterface
      * @return \Authentication\Authenticator\ResultInterface
      */
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+
+    /**
+     * Get the last authentication result instance stored or null if none.
+     *
+     * @return \Authentication\Authenticator\ResultInterface|null
+     */
+    public function getLastResult();
 }
