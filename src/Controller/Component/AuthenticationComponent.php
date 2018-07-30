@@ -85,6 +85,14 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function beforeFilter()
     {
+        if ($this->_authentication === null) {
+            throw new Exception('The request object does not contain the required `authentication` attribute');
+        }
+
+        if (!($this->_authentication instanceof AuthenticationServiceInterface)) {
+            throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
+        }
+
         $provider = $this->_authentication->getAuthenticationProvider();
 
         if ($provider === null ||
@@ -110,14 +118,6 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function startup()
     {
-        if ($this->_authentication === null) {
-            throw new Exception('The request object does not contain the required `authentication` attribute');
-        }
-
-        if (!($this->_authentication instanceof AuthenticationServiceInterface)) {
-            throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
-        }
-
         if (!$this->getConfig('requireIdentity')) {
             return;
         }
