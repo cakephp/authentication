@@ -125,7 +125,7 @@ class AuthenticationMiddleware
                 $url = $this->getRedirectUrl($target, $request);
 
                 return $response
-                    ->withStatus(301)
+                    ->withStatus(302)
                     ->withHeader('Location', $url);
             }
             throw $e;

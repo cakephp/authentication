@@ -438,7 +438,7 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $response = $middleware($request, $response, $next);
-        $this->assertSame(301, $response->getStatusCode());
+        $this->assertSame(302, $response->getStatusCode());
         $this->assertSame('/users/login', $response->getHeaderLine('Location'));
         $this->assertSame('', $response->getBody() . '');
     }
@@ -467,7 +467,7 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $response = $middleware($request, $response, $next);
-        $this->assertSame(301, $response->getStatusCode());
+        $this->assertSame(302, $response->getStatusCode());
         $this->assertSame('/users/login?redirect=http%3A%2F%2Flocalhost%2Ftestpath', $response->getHeaderLine('Location'));
         $this->assertSame('', $response->getBody() . '');
     }
@@ -496,7 +496,7 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $response = $middleware($request, $response, $next);
-        $this->assertSame(301, $response->getStatusCode());
+        $this->assertSame(302, $response->getStatusCode());
         $this->assertSame('/users/login?hello=world&redirect=http%3A%2F%2Flocalhost%2Ftestpath', $response->getHeaderLine('Location'));
         $this->assertSame('', $response->getBody() . '');
     }
