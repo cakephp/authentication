@@ -82,7 +82,7 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($this->request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-        $component->startup();
+        $component->beforeFilter();
     }
 
     /**
@@ -98,7 +98,7 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-        $component->startup();
+        $component->beforeFilter();
     }
 
     /**
