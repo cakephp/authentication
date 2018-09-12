@@ -71,34 +71,50 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
-     * testInitializeMissingServiceAttribute
+     * testGetAuthenticationService
+     *
+     * @return void
+     */
+    public function testGetAuthenticationService()
+    {
+        $service = new AuthenticationService();
+        $request = $this->request->withAttribute('authentication', $service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $result = $component->getAuthenticationService();
+        $this->assertSame($service, $result);
+    }
+
+    /**
+     * testGetAuthenticationServiceMissingServiceAttribute
      *
      * @expectedException \Exception
      * @expectedExceptionMessage The request object does not contain the required `authentication` attribute
      * @return void
      */
-    public function testInitializeMissingServiceAttribute()
+    public function testGetAuthenticationServiceMissingServiceAttribute()
     {
         $controller = new Controller($this->request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-        $component->beforeFilter();
+        $component->getAuthenticationService();
     }
 
     /**
-     * testInitializeInvalidServiceObject
+     * testGetAuthenticationServiceInvalidServiceObject
      *
      * @expectedException \Exception
      * @expectedExceptionMessage Authentication service does not implement Authentication\AuthenticationServiceInterface
      * @return void
      */
-    public function testInitializeInvalidServiceObject()
+    public function testGetAuthenticationServiceInvalidServiceObject()
     {
         $request = $this->request->withAttribute('authentication', new InvalidAuthenticationService());
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-        $component->beforeFilter();
+        $component->getAuthenticationService();
     }
 
     /**

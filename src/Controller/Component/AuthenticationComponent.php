@@ -74,7 +74,6 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function initialize(array $config)
     {
         $controller = $this->getController();
-        $this->_authentication = $controller->request->getAttribute('authentication');
         $this->setEventManager($controller->getEventManager());
     }
 
@@ -85,15 +84,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function beforeFilter()
     {
-        if ($this->_authentication === null) {
-            throw new Exception('The request object does not contain the required `authentication` attribute');
-        }
-
-        if (!($this->_authentication instanceof AuthenticationServiceInterface)) {
-            throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
-        }
-
-        $provider = $this->_authentication->getAuthenticationProvider();
+        $authentication = $this->getAuthenticationService();
+        $provider = $authentication->getAuthenticationProvider();
 
         if ($provider === null ||
             $provider instanceof PersistenceInterface ||
@@ -105,8 +97,29 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $this->dispatchEvent('Authentication.afterIdentify', [
             'provider' => $provider,
             'identity' => $this->getIdentity(),
-            'service' => $this->_authentication
+            'service' => $authentication
         ], $this->getController());
+    }
+
+    /**
+     * Returns authentication service.
+     *
+     * @return \Authentication\AuthenticationServiceInterface
+     * @throws \Exception
+     */
+    public function getAuthenticationService()
+    {
+        $controller = $this->getController();
+        $service = $controller->request->getAttribute('authentication');
+        if ($service === null) {
+            throw new Exception('The request object does not contain the required `authentication` attribute');
+        }
+
+        if (!($service instanceof AuthenticationServiceInterface)) {
+            throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
+        }
+
+        return $service;
     }
 
     /**
@@ -181,7 +194,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function getResult()
     {
-        return $this->_authentication->getResult();
+        return $this->getAuthenticationService()->getResult();
     }
 
     /**
@@ -225,7 +238,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $controller = $this->getController();
 
-        $result = $this->_authentication->persistIdentity(
+        $result = $this->getAuthenticationService()->persistIdentity(
             $controller->request,
             $controller->response,
             $identity
@@ -247,7 +260,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function logout()
     {
         $controller = $this->getController();
-        $result = $this->_authentication->clearIdentity(
+        $result = $this->getAuthenticationService()->clearIdentity(
             $controller->request,
             $controller->response
         );
