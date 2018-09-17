@@ -355,6 +355,7 @@ class AuthenticationComponentTest extends TestCase
         $controller->loadComponent('Authentication.Authentication');
 
         $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionCode(401);
         $controller->Authentication->allowUnauthenticated(['index', 'add']);
         $controller->startupProcess();
     }
@@ -374,6 +375,7 @@ class AuthenticationComponentTest extends TestCase
         $controller->loadComponent('Authentication.Authentication');
 
         $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionCode(401);
         $controller->startupProcess();
     }
 
