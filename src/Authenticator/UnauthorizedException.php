@@ -18,6 +18,9 @@ use RuntimeException;
 
 /**
  * An exception that holds onto the headers/body for an unauthorized response.
+ *
+ * Unlike `UnauthenticatedException` this class can carry authentication challenge headers.
+ * and is used by stateless authenticators.
  */
 class UnauthorizedException extends RuntimeException
 {

@@ -412,6 +412,7 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionCode(401);
         $middleware($request, $response, $next);
     }
 
