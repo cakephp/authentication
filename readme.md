@@ -49,3 +49,4 @@ Plugin::load('Authentication');
  * [Helper for the View Layer](docs/View-Helper.md)
  * [URL Checkers](docs/URL-Checkers.md)
  * [Migration from the AuthComponent](docs/Migration-from-the-AuthComponent.md)
+ * [Testing with Authentication](docs/Testing.md)
