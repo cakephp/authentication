@@ -15,7 +15,7 @@ that lets you 'login':
 protected function login($userId = 1)
 {
     $users = TableRegistry::get('Users');
-    $user = $users->get(1);
+    $user = $users->get($userId);
     $this->session(['Auth' => $user]);
 }
 ```
