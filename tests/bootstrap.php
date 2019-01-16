@@ -57,3 +57,5 @@ ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Plugin::load('Auth', [
     'path' => dirname(dirname(__FILE__)) . DS,
 ]);
+
+$_SERVER['PHP_SELF'] = '/';
