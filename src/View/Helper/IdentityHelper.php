@@ -42,7 +42,7 @@ class IdentityHelper extends Helper
      */
     public function initialize(array $config)
     {
-        $this->_identity = $this->getView()->request->getAttribute('identity');
+        $this->_identity = $this->getView()->getRequest()->getAttribute('identity');
 
         if (empty($this->_identity)) {
             return;
