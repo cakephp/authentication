@@ -32,8 +32,8 @@ class HttpBasicAuthenticatorTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'core.auth_users',
-        'core.users'
+        'core.AuthUsers',
+        'core.Users'
     ];
 
     /**

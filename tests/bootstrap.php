@@ -17,6 +17,7 @@
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\Routing\Router;
 
 $findRoot = function ($root) {
     do {
@@ -53,7 +54,6 @@ if (!getenv('db_dsn')) {
     putenv('db_dsn=sqlite:///:memory:');
 }
 ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
+Router::reload();
 
-Plugin::load('Auth', [
-    'path' => dirname(dirname(__FILE__)) . DS,
-]);
+Plugin::getCollection()->add(new \Authentication\Plugin());

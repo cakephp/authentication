@@ -36,8 +36,8 @@ class AuthenticationMiddlewareTest extends TestCase
      * Fixtures
      */
     public $fixtures = [
-        'core.auth_users',
-        'core.users'
+        'core.AuthUsers',
+        'core.Users'
     ];
 
     /**
