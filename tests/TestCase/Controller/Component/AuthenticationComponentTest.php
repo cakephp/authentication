@@ -250,9 +250,9 @@ class AuthenticationComponentTest extends TestCase
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
-        $this->assertEquals('florian', $controller->request->getAttribute('identity')->username);
+        $this->assertEquals('florian', $controller->getRequest()->getAttribute('identity')->username);
         $component->logout();
-        $this->assertNull($controller->request->getAttribute('identity'));
+        $this->assertNull($controller->getRequest()->getAttribute('identity'));
         $this->assertInstanceOf(Event::class, $result);
         $this->assertEquals('Authentication.logout', $result->getName());
     }

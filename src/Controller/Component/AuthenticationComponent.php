@@ -110,7 +110,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function getAuthenticationService()
     {
         $controller = $this->getController();
-        $service = $controller->request->getAttribute('authentication');
+        $service = $controller->getRequest()->getAttribute('authentication');
         if ($service === null) {
             throw new Exception('The request object does not contain the required `authentication` attribute');
         }
@@ -135,7 +135,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             return;
         }
 
-        $request = $this->getController()->request;
+        $request = $this->getController()->getRequest();
         $action = $request->getParam('action');
         if (in_array($action, $this->unauthenticatedActions)) {
             return;
@@ -205,7 +205,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function getIdentity()
     {
         $controller = $this->getController();
-        $identity = $controller->request->getAttribute($this->getConfig('identityAttribute'));
+        $identity = $controller->getRequest()->getAttribute($this->getConfig('identityAttribute'));
 
         return $identity;
     }
@@ -239,13 +239,13 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $controller = $this->getController();
 
         $result = $this->getAuthenticationService()->persistIdentity(
-            $controller->request,
-            $controller->response,
+            $controller->getRequest(),
+            $controller->getResponse(),
             $identity
         );
 
         $controller->setRequest($result['request']);
-        $controller->response = $result['response'];
+        $controller->setResponse($result['response']);
 
         return $this;
     }
@@ -261,12 +261,12 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $controller = $this->getController();
         $result = $this->getAuthenticationService()->clearIdentity(
-            $controller->request,
-            $controller->response
+            $controller->getRequest(),
+            $controller->getResponse()
         );
 
-        $controller->request = $result['request'];
-        $controller->response = $result['response'];
+        $controller->setRequest($result['request']);
+        $controller->setResponse($result['response']);
 
         $this->dispatchEvent('Authentication.logout', [], $controller);
 
