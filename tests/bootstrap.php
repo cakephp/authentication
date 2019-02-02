@@ -46,7 +46,7 @@ Configure::write('App', [
     'namespace' => 'TestApp',
     'paths' => [
         'plugins' => [ROOT . 'Plugin' . DS],
-        'templates' => [ROOT . 'App' . DS . 'Template' . DS]
+        'templates' => [ROOT . 'templates' . DS]
     ]
 ]);
 
