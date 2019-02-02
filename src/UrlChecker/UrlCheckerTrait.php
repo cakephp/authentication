@@ -58,7 +58,7 @@ trait UrlCheckerTrait
         }
 
         $className = App::className($options['className'], 'UrlChecker', 'UrlChecker');
-        if ($className === false) {
+        if ($className === null) {
             throw new RuntimeException(sprintf('URL checker class `%s` was not found.', $options['className']));
         }
 

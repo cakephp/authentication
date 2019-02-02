@@ -76,14 +76,13 @@ trait ResolverAwareTrait
                 'className' => $config
             ];
         }
-
         if (!isset($config['className'])) {
             $message = 'Option `className` is not present.';
             throw new InvalidArgumentException($message);
         }
 
         $class = App::className($config['className'], 'Identifier/Resolver', 'Resolver');
-        if ($class === false) {
+        if ($class === null) {
             $message = sprintf('Resolver class `%s` does not exist.', $config['className']);
             throw new InvalidArgumentException($message);
         }
