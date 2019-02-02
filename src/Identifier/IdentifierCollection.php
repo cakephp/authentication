@@ -101,7 +101,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @return void
      * @throws \RuntimeException
      */
-    protected function _throwMissingClassError($class, $plugin)
+    protected function _throwMissingClassError($class, $plugin): void
     {
         $message = sprintf('Identifier class `%s` was not found.', $class);
         throw new RuntimeException($message);

@@ -83,7 +83,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return void
      * @throws \RuntimeException
      */
-    protected function _throwMissingClassError($class, $plugin)
+    protected function _throwMissingClassError($class, $plugin): void
     {
         $message = sprintf('Authenticator class `%s` was not found.', $class);
         throw new RuntimeException($message);

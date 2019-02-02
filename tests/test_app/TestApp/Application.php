@@ -15,13 +15,14 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Cake\Http\BaseApplication;
+use Cake\Http\MiddlewareQueue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 {
 
-    public function middleware($middleware)
+    public function middleware($middleware): MiddlewareQueue
     {
         return $middleware;
     }

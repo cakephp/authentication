@@ -63,7 +63,7 @@ abstract class AbstractCollection extends ObjectRegistry implements IteratorAggr
      *
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->_loaded);
     }

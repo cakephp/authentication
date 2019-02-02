@@ -40,7 +40,7 @@ class IdentityHelper extends Helper
      * @param array $config The configuration settings provided to this helper.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $this->_identity = $this->getView()->getRequest()->getAttribute('identity');
 

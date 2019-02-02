@@ -8,7 +8,7 @@
 
 Don't know what middleware is? [Check the CakePHP documentation](https://book.cakephp.org/3.0/en/controllers/middleware.html) and additionally [read this.](https://philsturgeon.uk/php/2016/05/31/why-care-about-php-middleware/)
 
-This branch is for CakePHP 3.x. Please make sure your application has been adjusted to leverage middleware as described in the [docs](https://book.cakephp.org/3.0/en/controllers/middleware.html#adding-the-new-http-stack-to-an-existing-application).
+This branch is for CakePHP 4.x. Please make sure your application has been adjusted to leverage middleware as described in the [docs](https://book.cakephp.org/4.0/en/controllers/middleware.html#adding-the-new-http-stack-to-an-existing-application).
 
 ## Authentication, not Authorization
 
@@ -34,10 +34,6 @@ public function bootstrap()
     parent::bootstrap();
     $this->addPlugin('Authentication');
 }
-```
-Prior to 3.6.0
-```php
-Plugin::load('Authentication');
 ```
 
 ## Documentation

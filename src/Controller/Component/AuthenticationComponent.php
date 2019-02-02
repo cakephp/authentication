@@ -71,7 +71,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @param array $config The config data.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $controller = $this->getController();
         $this->setEventManager($controller->getEventManager());
