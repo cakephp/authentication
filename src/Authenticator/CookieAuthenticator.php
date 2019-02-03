@@ -197,7 +197,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $cookie = $this->_createCookie(null)->withExpired();
+        $cookie = $this->_createCookie('')->withExpired();
 
         return [
             'request' => $request,
