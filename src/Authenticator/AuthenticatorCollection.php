@@ -50,7 +50,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
      */
-    protected function _create($className, $alias, $config)
+    protected function _create($className, string $alias, array $config)
     {
         $authenticator = new $className($this->_identifiers, $config);
         if (!($authenticator instanceof AuthenticatorInterface)) {
@@ -83,7 +83,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return void
      * @throws \RuntimeException
      */
-    protected function _throwMissingClassError($class, $plugin): void
+    protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
         $message = sprintf('Authenticator class `%s` was not found.', $class);
         throw new RuntimeException($message);

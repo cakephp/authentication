@@ -57,7 +57,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
      */
-    protected function _create($className, $alias, $config)
+    protected function _create($className, string $alias, array  $config)
     {
         $identifier = new $className($config);
         if (!($identifier instanceof IdentifierInterface)) {
@@ -101,7 +101,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @return void
      * @throws \RuntimeException
      */
-    protected function _throwMissingClassError($class, $plugin): void
+    protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
         $message = sprintf('Identifier class `%s` was not found.', $class);
         throw new RuntimeException($message);

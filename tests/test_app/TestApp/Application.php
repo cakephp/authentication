@@ -22,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 {
 
-    public function middleware($middleware): MiddlewareQueue
+    public function middleware(MiddlewareQueue $middleware): MiddlewareQueue
     {
         return $middleware;
     }
