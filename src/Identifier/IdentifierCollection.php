@@ -57,7 +57,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
      */
-    protected function _create($className, string $alias, array  $config)
+    protected function _create($className, string $alias, array $config)
     {
         $identifier = new $className($config);
         if (!($identifier instanceof IdentifierInterface)) {
