@@ -147,7 +147,7 @@ class AuthenticationMiddleware
             return $target;
         }
 
-        $query = urlencode($param) . '=' . urlencode($request->getUri());
+        $query = urlencode($param) . '=' . urlencode((string)$request->getUri());
 
         if (strpos($target, '?') !== false) {
             $query = '&' . $query;
