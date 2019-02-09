@@ -14,6 +14,7 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
+use Cake\Utility\Security;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -57,15 +58,25 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      */
     public function __construct(IdentifierInterface $identifier, array $config = [])
     {
+        $secret = '';
+        if (class_exists(Security::class)) {
+            $secret = Security::getSalt();
+        }
         $this->setConfig([
             'realm' => null,
             'qop' => 'auth',
             'nonceLifetime' => 300,
             'opaque' => null,
+            'secret' => $secret,
         ]);
 
         $this->setConfig($config);
         parent::__construct($identifier, $config);
+
+        $secret = $this->getConfig('secret');
+        if (!is_string($secret) || strlen($secret) === 0) {
+            throw new InvalidArgumentException('Secret key must be a non-empty string.');
+        }
     }
 
     /**
