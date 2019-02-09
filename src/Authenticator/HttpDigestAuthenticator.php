@@ -15,6 +15,7 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Utility\Security;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
