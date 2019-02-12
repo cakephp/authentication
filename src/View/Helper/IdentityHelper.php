@@ -50,7 +50,9 @@ class IdentityHelper extends Helper
         }
 
         if (!$this->_identity instanceof IdentityInterface) {
-            throw new RuntimeException(sprintf('Identity found in request does not implement %s', IdentityInterface::class));
+            throw new RuntimeException(
+                sprintf('Identity found in request does not implement %s', IdentityInterface::class)
+            );
         }
     }
 

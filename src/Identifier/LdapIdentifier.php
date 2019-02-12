@@ -138,7 +138,10 @@ class LdapIdentifier extends AbstractIdentifier
         $fields = $this->getConfig('fields');
 
         if (isset($data[$fields[self::CREDENTIAL_USERNAME]]) && isset($data[$fields[self::CREDENTIAL_PASSWORD]])) {
-            return $this->_bindUser($data[$fields[self::CREDENTIAL_USERNAME]], $data[$fields[self::CREDENTIAL_PASSWORD]]);
+            return $this->_bindUser(
+                $data[$fields[self::CREDENTIAL_USERNAME]],
+                $data[$fields[self::CREDENTIAL_PASSWORD]]
+            );
         }
 
         return null;
