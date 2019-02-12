@@ -26,7 +26,7 @@ class OrmResolverTest extends AuthenticationTestCase
         $resolver = new OrmResolver();
 
         $user = $resolver->find([
-            'username' => 'mariano'
+            'username' => 'mariano',
         ]);
 
         $this->assertInstanceOf(EntityInterface::class, $user);
@@ -39,12 +39,12 @@ class OrmResolverTest extends AuthenticationTestCase
             'userModel' => 'AuthUsers',
             'finder' => [
                 'all',
-                'auth' => ['return_created' => true]
-            ]
+                'auth' => ['return_created' => true],
+            ],
         ]);
 
         $user = $resolver->find([
-            'username' => 'mariano'
+            'username' => 'mariano',
         ]);
 
         $this->assertNotEmpty($user->created);
@@ -56,7 +56,7 @@ class OrmResolverTest extends AuthenticationTestCase
 
         $user = $resolver->find([
             'id' => 1,
-            'username' => 'mariano'
+            'username' => 'mariano',
         ]);
 
         $this->assertEquals(1, $user['id']);
@@ -68,7 +68,7 @@ class OrmResolverTest extends AuthenticationTestCase
 
         $user = $resolver->find([
             'id' => 1,
-            'username' => 'luigiano'
+            'username' => 'luigiano',
         ], 'OR');
 
         $this->assertEquals(1, $user['id']);
@@ -80,7 +80,7 @@ class OrmResolverTest extends AuthenticationTestCase
 
         $user = $resolver->find([
             'id' => 1,
-            'username' => 'luigiano'
+            'username' => 'luigiano',
         ]);
 
         $this->assertNull($user);
@@ -93,8 +93,8 @@ class OrmResolverTest extends AuthenticationTestCase
         $user = $resolver->find([
             'username' => [
                 'luigiano',
-                'mariano'
-            ]
+                'mariano',
+            ],
         ]);
 
         $this->assertEquals(1, $user['id']);

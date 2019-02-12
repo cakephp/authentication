@@ -21,7 +21,6 @@ use Cake\Core\InstanceConfigTrait;
  */
 abstract class AbstractPasswordHasher implements PasswordHasherInterface
 {
-
     use InstanceConfigTrait;
 
     /**

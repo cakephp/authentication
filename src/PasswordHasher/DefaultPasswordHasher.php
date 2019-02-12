@@ -19,7 +19,6 @@ namespace Authentication\PasswordHasher;
  */
 class DefaultPasswordHasher extends AbstractPasswordHasher
 {
-
     /**
      * Default config for this object.
      *
@@ -34,7 +33,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      */
     protected $_defaultConfig = [
         'hashType' => PASSWORD_DEFAULT,
-        'hashOptions' => []
+        'hashOptions' => [],
     ];
 
     /**

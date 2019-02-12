@@ -26,14 +26,13 @@ use RuntimeException;
  */
 class LegacyPasswordHasher extends AbstractPasswordHasher
 {
-
     /**
      * Default config for this object.
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'hashType' => null
+        'hashType' => null,
     ];
 
     /**
@@ -47,7 +46,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
         }
         if (!class_exists(Security::class)) {
             throw new RuntimeException('You must install the cakephp/utility dependency to use this password hasher');
-        };
+        }
     }
 
     /**

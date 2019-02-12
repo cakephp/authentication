@@ -96,7 +96,7 @@ class IdentityHelper extends Helper
      */
     public function is($id, $field = 'id')
     {
-        return ($id === $this->get($field));
+        return $id === $this->get($field);
     }
 
     /**

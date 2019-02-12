@@ -15,7 +15,6 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier\Ldap;
 
-use Authentication\Identifier\Ldap\AdapterInterface;
 use ErrorException;
 use RuntimeException;
 
@@ -29,7 +28,6 @@ use RuntimeException;
  */
 class ExtensionAdapter implements AdapterInterface
 {
-
     /**
      * LDAP Object
      *

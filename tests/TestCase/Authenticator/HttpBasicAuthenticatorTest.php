@@ -26,7 +26,6 @@ use Cake\ORM\TableRegistry;
 
 class HttpBasicAuthenticatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -34,7 +33,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -45,7 +44,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $this->auth = new HttpBasicAuthenticator($this->identifiers);
@@ -63,8 +62,8 @@ class HttpBasicAuthenticatorTest extends TestCase
             'userModel' => 'AuthUser',
             'fields' => [
                 'username' => 'user',
-                'password' => 'password'
-            ]
+                'password' => 'password',
+            ],
         ]);
 
         $this->assertEquals('AuthUser', $object->getConfig('userModel'));
@@ -135,7 +134,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             [
                 'REQUEST_URI' => '/posts/index',
                 'PHP_AUTH_USER' => '> 1',
-                'PHP_AUTH_PW' => "' OR 1 = 1"
+                'PHP_AUTH_PW' => "' OR 1 = 1",
             ]
         );
 
@@ -161,11 +160,11 @@ class HttpBasicAuthenticatorTest extends TestCase
                 'REQUEST_URI' => '/posts/index',
                 'SERVER_NAME' => 'localhost',
                 'PHP_AUTH_USER' => '0',
-                'PHP_AUTH_PW' => 'password'
+                'PHP_AUTH_PW' => 'password',
             ],
             [
                 'user' => '0',
-                'password' => 'password'
+                'password' => 'password',
             ]
         );
 
@@ -215,7 +214,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             [
                 'REQUEST_URI' => '/posts/index',
                 'PHP_AUTH_USER' => 'mariano',
-                'PHP_AUTH_PW' => 'password'
+                'PHP_AUTH_PW' => 'password',
             ]
         );
 
@@ -224,7 +223,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             'id' => 1,
             'username' => 'mariano',
             'created' => new Time('2007-03-17 01:16:23'),
-            'updated' => new Time('2007-03-17 01:18:31')
+            'updated' => new Time('2007-03-17 01:18:31'),
         ];
 
         $this->assertTrue($result->isValid());

@@ -49,7 +49,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     protected $_defaultConfig = [
         'logoutRedirect' => false,
         'requireIdentity' => true,
-        'identityAttribute' => 'identity'
+        'identityAttribute' => 'identity',
     ];
 
     /**
@@ -98,7 +98,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $this->dispatchEvent('Authentication.afterIdentify', [
             'provider' => $provider,
             'identity' => $this->getIdentity(),
-            'service' => $authentication
+            'service' => $authentication,
         ], $this->getController());
     }
 
@@ -127,8 +127,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * Start up event handler
      *
      * @return void
-     * @throws Exception when request is missing or has an invalid AuthenticationService
-     * @throws UnauthenticatedException when requireIdentity is true and request is missing an identity
+     * @throws \Exception when request is missing or has an invalid AuthenticationService
+     * @throws \Authentication\Authenticator\UnauthenticatedException when requireIdentity is true and request is missing an identity
      */
     public function startup()
     {

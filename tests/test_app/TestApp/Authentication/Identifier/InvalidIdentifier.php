@@ -17,5 +17,4 @@ namespace TestApp\Authentication\Identifier;
  */
 class InvalidIdentifier
 {
-
 }

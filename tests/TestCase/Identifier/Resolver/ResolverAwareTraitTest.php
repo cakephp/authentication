@@ -18,8 +18,6 @@ namespace Authentication\Test\TestCase\Identifier\Resolver;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 use TestApp\Identifier\Resolver\TestResolver;
 
 class ResolverAwareTraitTest extends TestCase
@@ -47,7 +45,7 @@ class ResolverAwareTraitTest extends TestCase
         $object->expects($this->once())
             ->method('getConfig')
             ->willReturn([
-                'className' => 'Test'
+                'className' => 'Test',
             ]);
 
         $resolver = $object->getResolver();

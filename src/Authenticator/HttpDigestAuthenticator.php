@@ -42,7 +42,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class HttpDigestAuthenticator extends HttpBasicAuthenticator
 {
-
     /**
      * Constructor
      *
@@ -96,7 +95,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         }
 
         $user = $this->_identifier->identify([
-            IdentifierInterface::CREDENTIAL_USERNAME => $digest['username']
+            IdentifierInterface::CREDENTIAL_USERNAME => $digest['username'],
         ]);
 
         if (empty($user)) {
@@ -218,7 +217,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             'realm' => $realm,
             'qop' => $this->_config['qop'],
             'nonce' => $this->generateNonce(),
-            'opaque' => $this->_config['opaque'] ?: md5($realm)
+            'opaque' => $this->_config['opaque'] ?: md5($realm),
         ];
 
         $digest = $this->_getDigest($request);

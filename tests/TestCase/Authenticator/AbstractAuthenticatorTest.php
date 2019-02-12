@@ -21,7 +21,6 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
 class AbstractAuthenticatorTest extends TestCase
 {
-
     /**
      * testGetIdentifier
      *

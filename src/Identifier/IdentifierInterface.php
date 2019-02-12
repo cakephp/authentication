@@ -17,13 +17,13 @@ namespace Authentication\Identifier;
 
 interface IdentifierInterface
 {
-    const CREDENTIAL_USERNAME = 'username';
+    public const CREDENTIAL_USERNAME = 'username';
 
-    const CREDENTIAL_PASSWORD = 'password';
+    public const CREDENTIAL_PASSWORD = 'password';
 
-    const CREDENTIAL_TOKEN = 'token';
+    public const CREDENTIAL_TOKEN = 'token';
 
-    const CREDENTIAL_JWT_SUBJECT = 'sub';
+    public const CREDENTIAL_JWT_SUBJECT = 'sub';
 
     /**
      * Identifies an user or service by the passed credentials

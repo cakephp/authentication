@@ -25,7 +25,6 @@ use RuntimeException;
 
 class FormAuthenticatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -33,7 +32,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -44,7 +43,7 @@ class FormAuthenticatorTest extends TestCase
     public function testAuthenticate()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -69,7 +68,7 @@ class FormAuthenticatorTest extends TestCase
     public function testCredentialsNotPresent()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -96,7 +95,7 @@ class FormAuthenticatorTest extends TestCase
     public function testCredentialsEmpty()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -123,7 +122,7 @@ class FormAuthenticatorTest extends TestCase
     public function testSingleLoginUrlMismatch()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -134,7 +133,7 @@ class FormAuthenticatorTest extends TestCase
         $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
-            'loginUrl' => '/users/login'
+            'loginUrl' => '/users/login',
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -152,7 +151,7 @@ class FormAuthenticatorTest extends TestCase
     public function testMultipleLoginUrlMismatch()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -166,7 +165,7 @@ class FormAuthenticatorTest extends TestCase
             'loginUrl' => [
                 '/en/users/login',
                 '/de/users/login',
-            ]
+            ],
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -184,7 +183,7 @@ class FormAuthenticatorTest extends TestCase
     public function testSingleLoginUrlSuccess()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -195,7 +194,7 @@ class FormAuthenticatorTest extends TestCase
         $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
-            'loginUrl' => '/Users/login'
+            'loginUrl' => '/Users/login',
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -213,7 +212,7 @@ class FormAuthenticatorTest extends TestCase
     public function testMultipleLoginUrlSuccess()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -227,7 +226,7 @@ class FormAuthenticatorTest extends TestCase
             'loginUrl' => [
                 '/en/users/login',
                 '/de/users/login',
-            ]
+            ],
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -245,7 +244,7 @@ class FormAuthenticatorTest extends TestCase
     public function testRegexLoginUrlSuccess()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -258,8 +257,8 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '%^/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
-                'useRegex' => true
-            ]
+                'useRegex' => true,
+            ],
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -277,12 +276,12 @@ class FormAuthenticatorTest extends TestCase
     public function testFullRegexLoginUrlFailure()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
             [
-                'REQUEST_URI' => '/de/users/login'
+                'REQUEST_URI' => '/de/users/login',
             ],
             [],
             ['username' => 'mariano', 'password' => 'password']
@@ -293,8 +292,8 @@ class FormAuthenticatorTest extends TestCase
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
                 'useRegex' => true,
-                'checkFullUrl' => true
-            ]
+                'checkFullUrl' => true,
+            ],
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -312,13 +311,13 @@ class FormAuthenticatorTest extends TestCase
     public function testFullRegexLoginUrlSuccess()
     {
         $identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
             [
                 'REQUEST_URI' => '/de/users/login',
-                'SERVER_NAME' => 'auth.localhost'
+                'SERVER_NAME' => 'auth.localhost',
             ],
             [],
             ['username' => 'mariano', 'password' => 'password']
@@ -329,8 +328,8 @@ class FormAuthenticatorTest extends TestCase
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
                 'useRegex' => true,
-                'checkFullUrl' => true
-            ]
+                'checkFullUrl' => true,
+            ],
         ]);
 
         $result = $form->authenticate($request, $response);
@@ -360,19 +359,19 @@ class FormAuthenticatorTest extends TestCase
             'loginUrl' => '/users/login',
             'fields' => [
                 'username' => 'email',
-                'password' => 'secret'
-            ]
+                'password' => 'secret',
+            ],
         ]);
 
         $identifiers->expects($this->once())
             ->method('identify')
             ->with([
                 'username' => 'mariano@cakephp.org',
-                'password' => 'password'
+                'password' => 'password',
             ])
             ->willReturn([
                 'username' => 'mariano@cakephp.org',
-                'password' => 'password'
+                'password' => 'password',
             ]);
 
         $form->authenticate($request, $response);
@@ -395,18 +394,18 @@ class FormAuthenticatorTest extends TestCase
         $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
-            'loginUrl' => '/users/login'
+            'loginUrl' => '/users/login',
         ]);
 
         $identifiers->expects($this->once())
             ->method('identify')
             ->with([
                 'username' => 'mariano',
-                'password' => 'password'
+                'password' => 'password',
             ])
             ->willReturn([
                 'username' => 'mariano',
-                'password' => 'password'
+                'password' => 'password',
             ]);
 
         $form->authenticate($request, $response);
@@ -430,7 +429,7 @@ class FormAuthenticatorTest extends TestCase
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
-            'urlChecker' => 'Foo'
+            'urlChecker' => 'Foo',
         ]);
 
         $this->expectException(RuntimeException::class);
@@ -457,7 +456,7 @@ class FormAuthenticatorTest extends TestCase
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
-            'urlChecker' => self::class
+            'urlChecker' => self::class,
         ]);
 
         $this->expectException(RuntimeException::class);

@@ -33,7 +33,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     protected $_defaultOptions = [
         'useRegex' => false,
-        'checkFullUrl' => false
+        'checkFullUrl' => false,
     ];
 
     /**

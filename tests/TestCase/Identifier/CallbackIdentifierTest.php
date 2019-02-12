@@ -23,7 +23,6 @@ use stdClass;
 
 class MyCallback
 {
-
     public static function callme($data)
     {
         return new Entity();
@@ -48,7 +47,7 @@ class CallbackIdentifierTest extends TestCase
         };
 
         $identifier = new CallbackIdentifier([
-            'callback' => $callback
+            'callback' => $callback,
         ]);
 
         $result = $identifier->identify([]);
@@ -71,14 +70,14 @@ class CallbackIdentifierTest extends TestCase
         $identifier = new CallbackIdentifier([
             'callback' => function () {
                 return new Entity();
-            }
+            },
         ]);
         $result = $identifier->identify([]);
 
         $this->assertInstanceOf(ArrayAccess::class, $result);
 
         $identifier = new CallbackIdentifier([
-            'callback' => [MyCallback::class, 'callme']
+            'callback' => [MyCallback::class, 'callme'],
         ]);
         $result = $identifier->identify([]);
 
@@ -93,7 +92,7 @@ class CallbackIdentifierTest extends TestCase
     public function testInvalidCallbackTypeString()
     {
         new CallbackIdentifier([
-            'callback' => 'no'
+            'callback' => 'no',
         ]);
     }
 
@@ -105,7 +104,7 @@ class CallbackIdentifierTest extends TestCase
     public function testInvalidCallbackTypeObject()
     {
         new CallbackIdentifier([
-            'callback' => new stdClass()
+            'callback' => new stdClass(),
         ]);
     }
 
@@ -119,7 +118,7 @@ class CallbackIdentifierTest extends TestCase
         $identifier = new CallbackIdentifier([
             'callback' => function ($data) {
                 return 'no';
-            }
+            },
         ]);
         $identifier->identify([]);
     }

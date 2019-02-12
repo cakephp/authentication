@@ -23,7 +23,6 @@ use Cake\Utility\Security;
  */
 class LegacyPasswordHasherTest extends TestCase
 {
-
     /**
      * setUp method
      *

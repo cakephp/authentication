@@ -4,7 +4,6 @@ namespace Authentication\PasswordHasher;
 
 trait PasswordHasherTrait
 {
-
     /**
      * Password hasher instance.
      *

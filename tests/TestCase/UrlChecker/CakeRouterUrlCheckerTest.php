@@ -25,7 +25,6 @@ use Cake\Routing\Router;
  */
 class CakeRouterUrlCheckerTest extends TestCase
 {
-
     /**
      * {@inheritDoc}
      */
@@ -65,7 +64,7 @@ class CakeRouterUrlCheckerTest extends TestCase
         );
         $result = $checker->check($request, [
             'controller' => 'Users',
-            'action' => 'login'
+            'action' => 'login',
         ]);
         $this->assertFalse($result);
     }
@@ -79,7 +78,7 @@ class CakeRouterUrlCheckerTest extends TestCase
     {
         $url = [
             'controller' => 'users',
-            'action' => 'login'
+            'action' => 'login',
         ];
 
         $checker = new CakeRouterUrlChecker();
@@ -87,7 +86,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/login']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
 
@@ -96,7 +95,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/invalid']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertFalse($result);
 
@@ -105,7 +104,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/login']
         );
         $result = $checker->check($request, ['_name' => 'secureLogin'], [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertFalse($result);
 
@@ -117,7 +116,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ]
         );
         $result = $checker->check($request, ['_name' => 'secureLogin'], [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
     }
@@ -195,12 +194,12 @@ class CakeRouterUrlCheckerTest extends TestCase
         $url = [
             [
                 'controller' => 'users',
-                'action' => 'login'
+                'action' => 'login',
             ],
             [
                 'controller' => 'admins',
-                'action' => 'login'
-            ]
+                'action' => 'login',
+            ],
         ];
 
         $checker = new CakeRouterUrlChecker();
@@ -208,7 +207,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/login']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
 
@@ -216,7 +215,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/admins/login']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
 
@@ -224,7 +223,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/invalid']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertFalse($result);
     }

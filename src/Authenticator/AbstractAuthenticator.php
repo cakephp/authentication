@@ -33,8 +33,8 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     protected $_defaultConfig = [
         'fields' => [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
-        ]
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        ],
     ];
 
     /**

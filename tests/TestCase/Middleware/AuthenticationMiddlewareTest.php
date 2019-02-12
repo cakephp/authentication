@@ -32,13 +32,12 @@ use TestApp\Application;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
-
     /**
      * Fixtures
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -49,11 +48,11 @@ class AuthenticationMiddlewareTest extends TestCase
         parent::setUp();
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.Form'
-            ]
+                'Authentication.Form',
+            ],
         ]);
         $this->application = new Application('config');
     }
@@ -165,7 +164,7 @@ class AuthenticationMiddlewareTest extends TestCase
         };
 
         $middleware = new AuthenticationMiddleware($this->application, [
-            'identityAttribute' => 'customIdentity'
+            'identityAttribute' => 'customIdentity',
         ]);
 
         $expected = 'customIdentity';
@@ -196,7 +195,7 @@ class AuthenticationMiddlewareTest extends TestCase
             ->willReturn([
                 'result' => $this->createMock(ResultInterface::class),
                 'request' => $request,
-                'response' => $response
+                'response' => $response,
             ]);
 
         $application = $this->getMockBuilder(Application::class)
@@ -281,7 +280,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = new Response();
 
         $middleware = new AuthenticationMiddleware($this->service, [
-            'identityAttribute' => 'customIdentity'
+            'identityAttribute' => 'customIdentity',
         ]);
 
         $next = function ($request, $response) {
@@ -371,11 +370,11 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.HttpBasic'
-            ]
+                'Authentication.HttpBasic',
+            ],
         ]);
 
         $middleware = new AuthenticationMiddleware($service);
@@ -514,7 +513,7 @@ class AuthenticationMiddlewareTest extends TestCase
             'sub' => 3,
             'id' => 3,
             'username' => 'larry',
-            'firstname' => 'larry'
+            'firstname' => 'larry',
         ];
 
         $token = JWT::encode($data, 'secretKey');
@@ -522,14 +521,14 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->service = new AuthenticationService([
             'identifiers' => [
                 'Authentication.Password',
-                'Authentication.JwtSubject'
+                'Authentication.JwtSubject',
             ],
             'authenticators' => [
                 'Authentication.Form',
                 'Authentication.Jwt' => [
-                    'secretKey' => 'secretKey'
-                ]
-            ]
+                    'secretKey' => 'secretKey',
+                ],
+            ],
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -564,12 +563,12 @@ class AuthenticationMiddlewareTest extends TestCase
     {
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
                 'Authentication.Form',
-                'Authentication.Cookie'
-            ]
+                'Authentication.Cookie',
+            ],
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -578,7 +577,7 @@ class AuthenticationMiddlewareTest extends TestCase
             [
                 'username' => 'mariano',
                 'password' => 'password',
-                'remember_me' => true
+                'remember_me' => true,
             ]
         );
 

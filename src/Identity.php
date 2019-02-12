@@ -36,8 +36,8 @@ class Identity implements IdentityInterface
      */
     protected $_defaultConfig = [
         'fieldMap' => [
-            'id' => 'id'
-        ]
+            'id' => 'id',
+        ],
     ];
 
     /**
@@ -184,7 +184,7 @@ class Identity implements IdentityInterface
     {
         return [
             'config' => $this->_config,
-            'data' => $this->data
+            'data' => $this->data,
         ];
     }
 }

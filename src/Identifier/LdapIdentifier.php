@@ -44,7 +44,6 @@ use RuntimeException;
  */
 class LdapIdentifier extends AbstractIdentifier
 {
-
     /**
      * Default configuration
      *
@@ -54,9 +53,9 @@ class LdapIdentifier extends AbstractIdentifier
         'ldap' => ExtensionAdapter::class,
         'fields' => [
             self::CREDENTIAL_USERNAME => 'username',
-            self::CREDENTIAL_PASSWORD => 'password'
+            self::CREDENTIAL_PASSWORD => 'password',
         ],
-        'port' => 389
+        'port' => 389,
     ];
 
     /**
@@ -187,7 +186,7 @@ class LdapIdentifier extends AbstractIdentifier
                 $this->_ldap->unbind();
 
                 return new ArrayObject([
-                    $config['fields'][self::CREDENTIAL_USERNAME] => $username
+                    $config['fields'][self::CREDENTIAL_USERNAME] => $username,
                 ]);
             }
         } catch (ErrorException $e) {
