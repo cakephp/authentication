@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * HttpDigestAuthenticatorTest file
  *
@@ -59,7 +60,8 @@ class HttpDigestAuthenticatorTest extends TestCase
         $this->auth = new HttpDigestAuthenticator($this->identifiers, [
             'realm' => 'localhost',
             'nonce' => 123,
-            'opaque' => '123abc'
+            'opaque' => '123abc',
+            'secret' => 'foo.bar',
         ]);
 
         $password = HttpDigestAuthenticator::password('mariano', 'cake', 'localhost');
@@ -79,7 +81,8 @@ class HttpDigestAuthenticatorTest extends TestCase
         $object = new HttpDigestAuthenticator($this->identifiers, [
             'userModel' => 'AuthUser',
             'fields' => ['username' => 'user', 'password' => 'pass'],
-            'nonce' => 123456
+            'nonce' => 123456,
+            'secret' => 'foo.bar',
         ]);
 
         $this->assertEquals('AuthUser', $object->getConfig('userModel'));
@@ -503,7 +506,7 @@ DIGEST;
      */
     protected function generateNonce($secret = null, $expires = 300, $time = null)
     {
-        $secret = $secret ?: Configure::read('Security.salt');
+        $secret = $secret ?: 'foo.bar';
         $time = $time ?: microtime(true);
         $expiryTime = $time + $expires;
         $signatureValue = hash_hmac('sha1', $expiryTime . ':' . $secret, $secret);

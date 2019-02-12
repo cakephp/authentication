@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -146,7 +147,7 @@ class AuthenticationMiddleware
             return $target;
         }
 
-        $query = urlencode($param) . '=' . urlencode($request->getUri());
+        $query = urlencode($param) . '=' . urlencode((string)$request->getUri());
 
         if (strpos($target, '?') !== false) {
             $query = '&' . $query;
