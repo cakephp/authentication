@@ -15,8 +15,6 @@ declare(strict_types=1);
  */
 namespace Authentication\UrlChecker;
 
-use Authentication\UrlChecker\DefaultUrlChecker;
-use Authentication\UrlChecker\UrlCheckerInterface;
 use Cake\Core\App;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -51,7 +49,7 @@ trait UrlCheckerTrait
         $options = $this->getConfig('urlChecker');
         if (!is_array($options)) {
             $options = [
-                'className' => $options
+                'className' => $options,
             ];
         }
         if (!isset($options['className'])) {

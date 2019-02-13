@@ -20,7 +20,6 @@ use Cake\TestSuite\TestCase;
 
 class AuthenticationTestCase extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -28,7 +27,7 @@ class AuthenticationTestCase extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -54,7 +53,7 @@ class AuthenticationTestCase extends TestCase
         $Users->updateAll(['password' => $password], []);
 
         $AuthUsers = TableRegistry::get('AuthUsers', [
-            'className' => 'TestApp\Model\Table\AuthUsersTable'
+            'className' => 'TestApp\Model\Table\AuthUsersTable',
         ]);
         $AuthUsers->updateAll(['password' => $password], []);
     }

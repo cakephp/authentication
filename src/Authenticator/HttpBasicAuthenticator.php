@@ -25,7 +25,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
-
     /**
      * Authenticate a user using HTTP auth. Will use the configured User model and attempt a
      * login using HTTP auth.

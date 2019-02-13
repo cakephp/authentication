@@ -21,7 +21,6 @@ use RuntimeException;
 
 class IdentifierCollection extends AbstractCollection implements IdentifierInterface
 {
-
     /**
      * Errors
      *

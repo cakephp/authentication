@@ -21,14 +21,13 @@ namespace Authentication\PasswordHasher;
  */
 class FallbackPasswordHasher extends AbstractPasswordHasher
 {
-
     /**
      * Default config for this object.
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'hashers' => []
+        'hashers' => [],
     ];
 
     /**

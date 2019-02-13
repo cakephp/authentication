@@ -21,7 +21,6 @@ use RuntimeException;
 
 trait ResolverAwareTrait
 {
-
     /**
      * Resolver instance.
      *
@@ -74,7 +73,7 @@ trait ResolverAwareTrait
     {
         if (is_string($config)) {
             $config = [
-                'className' => $config
+                'className' => $config,
             ];
         }
         if (!isset($config['className'])) {

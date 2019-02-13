@@ -36,8 +36,8 @@ class Identity implements IdentityInterface
      */
     protected $_defaultConfig = [
         'fieldMap' => [
-            'id' => 'id'
-        ]
+            'id' => 'id',
+        ],
     ];
 
     /**
@@ -58,7 +58,10 @@ class Identity implements IdentityInterface
     {
         if (!is_array($data) && !($data instanceof ArrayAccess)) {
             $type = is_object($data) ? get_class($data) : gettype($data);
-            $message = sprintf('Identity data must be an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
+            $message = sprintf(
+                'Identity data must be an `array` or implement `ArrayAccess` interface, `%s` given.',
+                $type
+            );
             throw new InvalidArgumentException($message);
         }
 
@@ -184,7 +187,7 @@ class Identity implements IdentityInterface
     {
         return [
             'config' => $this->_config,
-            'data' => $this->data
+            'data' => $this->data,
         ];
     }
 }

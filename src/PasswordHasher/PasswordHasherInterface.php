@@ -19,7 +19,6 @@ namespace Authentication\PasswordHasher;
  */
 interface PasswordHasherInterface
 {
-
     /**
      * Generates password hash.
      *

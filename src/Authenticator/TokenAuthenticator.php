@@ -26,14 +26,13 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class TokenAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
-
     /**
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
         'header' => null,
         'queryParam' => null,
-        'tokenPrefix' => null
+        'tokenPrefix' => null,
     ];
 
     /**
@@ -123,7 +122,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
         }
 
         $user = $this->_identifier->identify([
-            IdentifierInterface::CREDENTIAL_TOKEN => $token
+            IdentifierInterface::CREDENTIAL_TOKEN => $token,
         ]);
 
         if (empty($user)) {

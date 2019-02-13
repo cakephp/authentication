@@ -21,7 +21,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface AuthenticationServiceInterface extends PersistenceInterface
 {
-
     /**
      * Loads an authenticator.
      *

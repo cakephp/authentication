@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "cakephp/cakephp": "4.x-dev as 4.0.0",
-        "cakephp/cakephp-codesniffer": "^3.0",
+        "cakephp/cakephp-codesniffer": "dev-next",
         "phpunit/phpunit": "^7.0",
         "firebase/php-jwt": "~4.0"
     },

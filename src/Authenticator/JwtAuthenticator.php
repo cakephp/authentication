@@ -27,7 +27,6 @@ use stdClass;
 
 class JwtAuthenticator extends TokenAuthenticator
 {
-
     /**
      * {@inheritDoc}
      */
@@ -80,7 +79,7 @@ class JwtAuthenticator extends TokenAuthenticator
                 Result::FAILURE_CREDENTIALS_INVALID,
                 [
                     'message' => $e->getMessage(),
-                    'exception' => $e
+                    'exception' => $e,
                 ]
             );
         }
@@ -103,7 +102,7 @@ class JwtAuthenticator extends TokenAuthenticator
         }
 
         $user = $this->_identifier->identify([
-            $key => $result[$key]
+            $key => $result[$key],
         ]);
 
         if (empty($user)) {
@@ -119,7 +118,7 @@ class JwtAuthenticator extends TokenAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface|null $request Request to get authentication information from.
      * @return object|null Payload object on success, null on failure
      */
-    public function getPayload(ServerRequestInterface $request = null)
+    public function getPayload(?ServerRequestInterface $request = null)
     {
         if (!$request) {
             return $this->payload;

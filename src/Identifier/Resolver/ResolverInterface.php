@@ -17,9 +17,8 @@ namespace Authentication\Identifier\Resolver;
 
 interface ResolverInterface
 {
-
-    const TYPE_OR = 'OR';
-    const TYPE_AND = 'AND';
+    public const TYPE_OR = 'OR';
+    public const TYPE_AND = 'AND';
 
     /**
      * Returns identity with given conditions.

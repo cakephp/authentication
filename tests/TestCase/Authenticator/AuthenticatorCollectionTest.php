@@ -24,7 +24,6 @@ use TestApp\Authentication\Identifier\InvalidIdentifier;
 
 class AuthenticatorCollectionTest extends TestCase
 {
-
     /**
      * Test constructor.
      *
@@ -34,7 +33,7 @@ class AuthenticatorCollectionTest extends TestCase
     {
         $identifiers = $this->createMock(IdentifierCollection::class);
         $collection = new AuthenticatorCollection($identifiers, [
-            'Authentication.Form'
+            'Authentication.Form',
         ]);
         $result = $collection->get('Form');
         $this->assertInstanceOf(FormAuthenticator::class, $result);

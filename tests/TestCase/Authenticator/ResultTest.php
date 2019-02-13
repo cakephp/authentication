@@ -18,12 +18,10 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Authenticator\Result;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
 use stdClass;
 
 class ResultTest extends TestCase
 {
-
     /**
      * testConstructorEmptyData
      *
@@ -45,7 +43,7 @@ class ResultTest extends TestCase
      */
     public function testConstructorInvalidData()
     {
-        new Result(new stdClass, Result::FAILURE_CREDENTIALS_INVALID);
+        new Result(new stdClass(), Result::FAILURE_CREDENTIALS_INVALID);
     }
 
     /**
@@ -120,7 +118,7 @@ class ResultTest extends TestCase
     {
         $messages = [
             'Out of coffee!',
-            'Out of beer!'
+            'Out of beer!',
         ];
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::FAILURE_OTHER, $messages);

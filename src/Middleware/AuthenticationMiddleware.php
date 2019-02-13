@@ -71,10 +71,12 @@ class AuthenticationMiddleware
         }
         $this->setConfig($config);
 
-        if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof AuthenticationServiceProviderInterface)) {
+        if (!($subject instanceof AuthenticationServiceInterface) &&
+            !($subject instanceof AuthenticationServiceProviderInterface)
+            ) {
             $expected = implode('` or `', [
                 AuthenticationServiceInterface::class,
-                AuthenticationServiceProviderInterface::class
+                AuthenticationServiceProviderInterface::class,
             ]);
             $type = is_object($subject) ? get_class($subject) : gettype($subject);
             $message = sprintf('Subject must be an instance of `%s`, `%s` given.', $expected, $type);
@@ -176,7 +178,11 @@ class AuthenticationMiddleware
 
         if (!$subject instanceof AuthenticationServiceInterface) {
             $type = is_object($subject) ? get_class($subject) : gettype($subject);
-            $message = sprintf('Service provided by a subject must be an instance of `%s`, `%s` given.', AuthenticationServiceInterface::class, $type);
+            $message = sprintf(
+                'Service provided by a subject must be an instance of `%s`, `%s` given.',
+                AuthenticationServiceInterface::class,
+                $type
+            );
 
             throw new RuntimeException($message);
         }

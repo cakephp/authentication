@@ -16,16 +16,15 @@ declare(strict_types=1);
 namespace Authentication\Test\TestCase\Identifier;
 
 use ArrayAccess;
-use Authentication\Identifier\LdapIdentifier;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
+use Authentication\Identifier\LdapIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use ErrorException;
 use stdClass;
 
 class LdapIdentifierTest extends TestCase
 {
-
     /**
      * testIdentify
      *
@@ -38,7 +37,7 @@ class LdapIdentifierTest extends TestCase
             return 'cn=' . $username . ',dc=example,dc=com';
         };
         $options = [
-            'foo' => 3
+            'foo' => 3,
         ];
 
         $ldap = $this->createMock(AdapterInterface::class);
@@ -54,12 +53,12 @@ class LdapIdentifierTest extends TestCase
             'host' => $host,
             'bindDN' => $bind,
             'ldap' => $ldap,
-            'options' => $options
+            'options' => $options,
         ]);
 
         $result = $identifier->identify([
             'username' => 'john',
-            'password' => 'doe'
+            'password' => 'doe',
         ]);
 
         $this->assertInstanceOf(ArrayAccess::class, $result);
@@ -81,12 +80,12 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldap' => $ldap
+            'ldap' => $ldap,
         ]);
 
         $result = $identifier->identify([
             'username' => 'john',
-            'password' => 'doe'
+            'password' => 'doe',
         ]);
         $this->assertNull($result);
 
@@ -107,7 +106,7 @@ class LdapIdentifierTest extends TestCase
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
-            }
+            },
         ]);
 
         $this->assertInstanceOf(ExtensionAdapter::class, $identifier->getAdapter());
@@ -122,14 +121,14 @@ class LdapIdentifierTest extends TestCase
      */
     public function testWrongLdapObject()
     {
-        $notLdap = new stdClass;
+        $notLdap = new stdClass();
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldap' => $notLdap
+            'ldap' => $notLdap,
         ]);
     }
 
@@ -143,7 +142,7 @@ class LdapIdentifierTest extends TestCase
     public function testMissingBindDN()
     {
         $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com'
+            'host' => 'ldap.example.com',
         ]);
     }
 
@@ -158,7 +157,7 @@ class LdapIdentifierTest extends TestCase
     {
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => 'Foo'
+            'bindDN' => 'Foo',
         ]);
     }
 
@@ -174,7 +173,7 @@ class LdapIdentifierTest extends TestCase
         $identifier = new LdapIdentifier([
             'bindDN' => function () {
                 return 'dc=example,dc=com';
-            }
+            },
         ]);
     }
 
@@ -196,17 +195,17 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldap' => $ldap
+            'ldap' => $ldap,
         ]);
 
         $result = $identifier->identify([
             'username' => 'john',
-            'password' => 'doe'
+            'password' => 'doe',
         ]);
 
         $this->assertSame($identifier->getErrors(), [
             'This is another error.',
-            'This is an error.'
+            'This is an error.',
         ]);
     }
 }

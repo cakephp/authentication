@@ -25,7 +25,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class SessionAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {
-
     /**
      * Default config for this object.
      * - `fields` The fields to use to verify a user by.
@@ -36,7 +35,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      */
     protected $_defaultConfig = [
         'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'username'
+            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
         ],
         'sessionKey' => 'Auth',
         'identify' => false,
@@ -103,7 +102,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
-            'response' => $response
+            'response' => $response,
         ];
     }
 }

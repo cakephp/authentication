@@ -17,5 +17,4 @@ namespace TestApp\PasswordHasher;
  */
 class InvalidPasswordHasher
 {
-
 }

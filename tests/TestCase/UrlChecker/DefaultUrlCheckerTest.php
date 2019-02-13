@@ -24,7 +24,6 @@ use Cake\Http\ServerRequestFactory;
  */
 class DefaultUrlCheckerTest extends TestCase
 {
-
     /**
      * testCheckFailure
      *
@@ -58,7 +57,7 @@ class DefaultUrlCheckerTest extends TestCase
 
         $result = $checker->check($request, [
             '/users/login',
-            '/admin/login'
+            '/admin/login',
         ]);
         $this->assertTrue($result);
     }
@@ -77,7 +76,7 @@ class DefaultUrlCheckerTest extends TestCase
 
         $result = $checker->check($request, [
             '/users/login',
-            '/admin/login'
+            '/admin/login',
         ]);
         $this->assertTrue($result);
     }
@@ -95,7 +94,7 @@ class DefaultUrlCheckerTest extends TestCase
         );
 
         $result = $checker->check($request, '%^/[a-z]{2}/users/login/?$%', [
-            'useRegex' => true
+            'useRegex' => true,
         ]);
         $this->assertTrue($result);
     }
@@ -113,7 +112,7 @@ class DefaultUrlCheckerTest extends TestCase
         );
 
         $result = $checker->check($request, 'http://localhost/users/login', [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
     }
