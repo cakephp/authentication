@@ -82,7 +82,7 @@ class DefaultUrlCheckerTest extends TestCase
     }
 
     /**
-     * testCheckArray
+     * testCheckRegexp
      *
      * @return void
      */
@@ -100,7 +100,7 @@ class DefaultUrlCheckerTest extends TestCase
     }
 
     /**
-     * testCheckArray
+     * testCheckFull
      *
      * @return void
      */
