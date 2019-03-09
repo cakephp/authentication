@@ -116,4 +116,25 @@ class DefaultUrlCheckerTest extends TestCase
         ]);
         $this->assertTrue($result);
     }
+
+    /**
+     * testCheckBase
+     *
+     * @return void
+     */
+    public function testCheckBase()
+    {
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+        $uri = $request->getUri();
+        $uri->base = '/base';
+        $request = $request->withUri($uri);
+
+        $result = $checker->check($request, 'http://localhost/base/users/login', [
+            'checkFullUrl' => true
+        ]);
+        $this->assertTrue($result);
+    }
 }
