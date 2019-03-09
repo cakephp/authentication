@@ -514,9 +514,9 @@ class AuthenticationMiddlewareTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-		$uri = $request->getUri();
-		$uri->base = '/base';
-		$request = $request->withUri($uri);
+        $uri = $request->getUri();
+        $uri->base = '/base';
+        $request = $request->withUri($uri);
 
         $response = new Response();
 
