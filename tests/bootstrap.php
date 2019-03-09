@@ -56,10 +56,6 @@ if (!getenv('db_dsn')) {
 ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Router::reload();
 
-Plugin::load('Auth', [
-    'path' => dirname(dirname(__FILE__)) . DS,
-]);
-
 Plugin::getCollection()->add(new \Authentication\Plugin());
 
 $_SERVER['PHP_SELF'] = '/';
