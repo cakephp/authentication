@@ -4,11 +4,11 @@
 [![Build Status](https://img.shields.io/travis/cakephp/authentication/master.svg?style=flat-square)](https://travis-ci.org/cakephp/authentication)
 [![Coverage Status](https://img.shields.io/codecov/c/github/cakephp/authentication.svg?style=flat-square)](https://codecov.io/github/cakephp/authentication)
 
-[PSR7](http://www.php-fig.org/psr/psr-7/) Middleware authentication stack for the CakePHP framework.
+[PSR7](https://www.php-fig.org/psr/psr-7/) Middleware authentication stack for the CakePHP framework.
 
-Don't know what middleware is? [Check the CakePHP documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html) and additionally [read this.](https://philsturgeon.uk/php/2016/05/31/why-care-about-php-middleware/)
+Don't know what middleware is? [Check the CakePHP documentation](https://book.cakephp.org/3.0/en/controllers/middleware.html) and additionally [read this.](https://philsturgeon.uk/php/2016/05/31/why-care-about-php-middleware/)
 
-This plugin is for CakePHP 3.5+. Please make sure your application has been adjusted to leverage middleware as described in the [docs](http://book.cakephp.org/3.0/en/controllers/middleware.html#adding-the-new-http-stack-to-an-existing-application).
+This branch is for CakePHP 3.x. Please make sure your application has been adjusted to leverage middleware as described in the [docs](https://book.cakephp.org/3.0/en/controllers/middleware.html#adding-the-new-http-stack-to-an-existing-application).
 
 ## Authentication, not Authorization
 
@@ -20,7 +20,7 @@ packaged into a separate [authorization plugin](https://github.com/cakephp/autho
 ## Installation
 
 You can install this plugin into your CakePHP application using 
-[composer](http://getcomposer.org):
+[composer](https://getcomposer.org):
 
 ```
 php composer.phar require cakephp/authentication
