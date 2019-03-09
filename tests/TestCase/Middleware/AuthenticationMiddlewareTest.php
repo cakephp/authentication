@@ -503,6 +503,39 @@ class AuthenticationMiddlewareTest extends TestCase
     }
 
     /**
+     * test unauthenticated errors being converted into redirects when configured, with a different URL base
+     *
+     * @return void
+     */
+    public function testUnauthenticatedRedirectWithBase()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+		$uri = $request->getUri();
+		$uri->base = '/base';
+		$request = $request->withUri($uri);
+
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service, [
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
+
+        $next = function ($request, $response) {
+            throw new UnauthenticatedException();
+        };
+
+        $response = $middleware($request, $response, $next);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/users/login?redirect=http%3A%2F%2Flocalhost%2Fbase%2Ftestpath', $response->getHeaderLine('Location'));
+        $this->assertSame('', $response->getBody() . '');
+    }
+
+    /**
      * testJwtTokenAuthorizationThroughTheMiddlewareStack
      *
      * @return void
