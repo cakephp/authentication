@@ -146,7 +146,11 @@ class AuthenticationMiddleware
             return $target;
         }
 
-        $query = urlencode($param) . '=' . urlencode($request->getUri());
+        $uri = $request->getUri();
+        if (property_exists($uri, 'base')) {
+            $uri = $uri->withPath($uri->base . $uri->getPath());
+        }
+        $query = urlencode($param) . '=' . urlencode($uri);
 
         if (strpos($target, '?') !== false) {
             $query = '&' . $query;

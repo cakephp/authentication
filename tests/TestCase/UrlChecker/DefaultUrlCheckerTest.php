@@ -82,7 +82,7 @@ class DefaultUrlCheckerTest extends TestCase
     }
 
     /**
-     * testCheckArray
+     * testCheckRegexp
      *
      * @return void
      */
@@ -100,7 +100,7 @@ class DefaultUrlCheckerTest extends TestCase
     }
 
     /**
-     * testCheckArray
+     * testCheckFull
      *
      * @return void
      */
@@ -112,6 +112,27 @@ class DefaultUrlCheckerTest extends TestCase
         );
 
         $result = $checker->check($request, 'http://localhost/users/login', [
+            'checkFullUrl' => true
+        ]);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testCheckBase
+     *
+     * @return void
+     */
+    public function testCheckBase()
+    {
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login']
+        );
+        $uri = $request->getUri();
+        $uri->base = '/base';
+        $request = $request->withUri($uri);
+
+        $result = $checker->check($request, 'http://localhost/base/users/login', [
             'checkFullUrl' => true
         ]);
         $this->assertTrue($result);

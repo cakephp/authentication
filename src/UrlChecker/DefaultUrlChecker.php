@@ -102,6 +102,10 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     protected function _getUrlFromRequest(UriInterface $uri, $getFullUrl = false)
     {
+        if (property_exists($uri, 'base')) {
+            $uri = $uri->withPath($uri->base . $uri->getPath());
+        }
+
         if ($getFullUrl) {
             return (string)$uri;
         }

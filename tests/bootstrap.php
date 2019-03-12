@@ -57,3 +57,5 @@ ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Router::reload();
 
 Plugin::getCollection()->add(new \Authentication\Plugin());
+
+$_SERVER['PHP_SELF'] = '/';
