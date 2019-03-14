@@ -133,7 +133,7 @@ class DefaultUrlCheckerTest extends TestCase
         $request = $request->withUri($uri);
 
         $result = $checker->check($request, 'http://localhost/base/users/login', [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
     }

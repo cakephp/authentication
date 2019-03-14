@@ -20,14 +20,7 @@ use Authentication\Identifier\CallbackIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\ORM\Entity;
 use stdClass;
-
-class MyCallback
-{
-    public static function callme($data)
-    {
-        return new Entity();
-    }
-}
+use TestApp\Callback\MyCallback;
 
 class CallbackIdentifierTest extends TestCase
 {

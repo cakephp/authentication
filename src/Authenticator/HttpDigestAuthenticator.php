@@ -269,7 +269,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         if (count($parts) !== 2) {
             return false;
         }
-        list($expires, $checksum) = $parts;
+        [$expires, $checksum] = $parts;
         if ($expires < microtime(true)) {
             return false;
         }
