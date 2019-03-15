@@ -160,7 +160,7 @@ class AuthenticationMiddleware
 
         $hashPos = strpos($target, '#');
         if ($hashPos !== false) {
-            $query = $query . substr($target, $hashPos);
+            $query .= substr($target, $hashPos);
             $target = substr($target, 0, $hashPos);
         }
 
