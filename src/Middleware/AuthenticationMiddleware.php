@@ -158,6 +158,12 @@ class AuthenticationMiddleware
             $query = '?' . $query;
         }
 
+        $hashPos = strpos($target, '#');
+        if ($hashPos !== false) {
+            $query .= substr($target, $hashPos);
+            $target = substr($target, 0, $hashPos);
+        }
+
         return $target . $query;
     }
 
