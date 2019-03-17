@@ -152,19 +152,15 @@ class AuthenticationMiddleware
         }
         $query = urlencode($param) . '=' . urlencode($uri);
 
-        if (strpos($target, '?') !== false) {
-            $query = '&' . $query;
+        $url = parse_url($target);
+        if (isset($url['query']) && strlen($url['query'])) {
+            $url['query'] .= '&' . $query;
         } else {
-            $query = '?' . $query;
+            $url['query'] = $query;
         }
+        $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
 
-        $hashPos = strpos($target, '#');
-        if ($hashPos !== false) {
-            $query .= substr($target, $hashPos);
-            $target = substr($target, 0, $hashPos);
-        }
-
-        return $target . $query;
+        return $url['path'] . '?' . $url['query'] . $fragment;
     }
 
     /**
