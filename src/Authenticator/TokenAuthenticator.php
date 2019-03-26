@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -111,10 +110,9 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * there is no post data, either username or password is missing, or if the scope conditions have not been met.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request)
     {
         $token = $this->getToken($request);
         if ($token === null) {

@@ -46,10 +46,9 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      * Authenticate a user using session data.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
-     * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request)
     {
         $sessionKey = $this->getConfig('sessionKey');
         $session = $request->getAttribute('session');

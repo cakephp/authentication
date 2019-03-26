@@ -17,7 +17,6 @@ namespace Authentication\Authenticator;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Utility\Security;
 use InvalidArgumentException;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -84,10 +83,9 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request)
     {
         $digest = $this->_getDigest($request);
         if ($digest === null) {

@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Authentication;
 
 use Authentication\Authenticator\PersistenceInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface AuthenticationServiceInterface extends PersistenceInterface
@@ -43,11 +42,10 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * Authenticate the request against the configured authentication adapters.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return array An array consisting of a result object, a modified request and response. If none of
      * the adapters was a success the last failed result is returned.
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+    public function authenticate(ServerRequestInterface $request);
 
     /**
      * Gets an identity object or null if identity has not been resolved.

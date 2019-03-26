@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -30,10 +29,9 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * login using HTTP auth.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
-     * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request)
     {
         $user = $this->getUser($request);
 
