@@ -34,14 +34,14 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Authenticator collection
      *
-     * @var \Authentication\Authenticator\AuthenticatorCollection
+     * @var \Authentication\Authenticator\AuthenticatorCollection|null
      */
     protected $_authenticators;
 
     /**
      * Identifier collection
      *
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierCollection|null
      */
     protected $_identifiers;
 
@@ -107,7 +107,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function identifiers()
     {
-        if (!$this->_identifiers) {
+        if ($this->_identifiers === null) {
             $this->_identifiers = new IdentifierCollection($this->getConfig('identifiers'));
         }
 
@@ -121,7 +121,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function authenticators()
     {
-        if (!$this->_authenticators) {
+        if ($this->_authenticators === null) {
             $identifiers = $this->identifiers();
             $authenticators = $this->getConfig('authenticators');
             $this->_authenticators = new AuthenticatorCollection($identifiers, $authenticators);
