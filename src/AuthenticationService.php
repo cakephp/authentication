@@ -69,6 +69,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *   and then passed to the authenticators that will pass the credentials to them and get the
      *   user data.
      * - `identityClass` - The class name of identity or a callable identity builder.
+     * - `identityAttribute` - The request attribute used to store the identity. Default to `identity`.
      *
      *   ```
      *   $service = new AuthenticationService([
