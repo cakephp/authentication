@@ -12,12 +12,9 @@ Load the plugin by adding the following statement in your project's `src/Applica
 public function bootstrap()
 {
     parent::bootstrap();
+
     $this->addPlugin('Authentication');
 }
-```
-Prior to 3.6.0
-```php
-Plugin::load('Authentication');
 ```
 
 ## Configuration
@@ -35,15 +32,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 {
-
     /**
      * Returns a service provider instance.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
-     * @param \Psr\Http\Message\ResponseInterface $response Response
      * @return \Authentication\AuthenticationServiceInterface
      */
-    public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
+    public function getAuthenticationService(ServerRequestInterface $request)
     {
         $service = new AuthenticationService();
 
@@ -148,6 +143,10 @@ You can also get the identity directly from the request instance:
 ```php
 $user = $request->getAttribute('identity');
 ```
+
+**Note:** Always use one of the above methods or the `IdentityHelper` in view to
+get identity. Do not try to access it directly from session (if using `SessionAuthenticator`)
+as the session if updated only after controller code has run.
 
 ### Checking the login status
 

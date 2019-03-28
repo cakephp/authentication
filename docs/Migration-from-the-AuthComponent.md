@@ -2,7 +2,7 @@
 
 ## Differences
 
-* This plugin intentionally **does not** handle authorization. It was [decoupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) from authorization on purpose for a clear [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns). See also [Computer access control](https://en.wikipedia.org/wiki/Computer_access_control). This plugin handles only  *identification* and *authentication*. We might have another plugin for authorization. 
+* This plugin intentionally **does not** handle authorization. It was [decoupled](https://en.wikipedia.org/wiki/Coupling_(computer_programming)) from authorization on purpose for a clear [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns). See also [Computer access control](https://en.wikipedia.org/wiki/Computer_access_control). This plugin handles only  *identification* and *authentication*. We might have another plugin for authorization.
 * There is no automatic checking of the session. To get the actual user data from the session you'll have to use the `SessionAuthenticator`. It will check the session if there is data in the configured session key and put it into the identity object.
 * The user data is no longer available through the AuthComponent but is accessible via a request attribute and encapsulated in an identity object: `$request->getAttribute('authentication')->getIdentity();`
 * The logic of the authentication process has been split into authenticators and identifiers. An authenticator will extract the credentials from the request, while identifiers verify the credentials and find the matching user.
@@ -39,7 +39,11 @@ public function login()
 
     // regardless of POST or GET, redirect if user is logged in
     if ($result->isValid()) {
-        $redirect = $this->request->getQuery('redirect', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        $redirect = $this->request->getQuery(
+            'redirect',
+            ['controller' => 'Pages', 'action' => 'display', 'home']
+        );
+
         return $this->redirect($redirect);
     }
 
@@ -155,7 +159,7 @@ Each call to `allowUnauthenticated()` will overwrite the current action list.
 # Migrating Unauthenticated Redirects
 
 By default `AuthComponent` redirects users back to the login page when
-authentication is required. In contrast, the `AuthenticationComponent` in this 
+authentication is required. In contrast, the `AuthenticationComponent` in this
 plugin will raise an exception in this scenario. You can convert this exception
 into a redirect using the `unauthenticatedRedirect` when configuring the
 AuthenticationMiddleware.
