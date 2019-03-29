@@ -1,0 +1,5 @@
+parameters:
+    level: 4
+    ignoreErrors:
+        - '#Result of && is always false#'
+        - '#Else branch is unreachable because ternary operator condition is always true#'

@@ -17,19 +17,24 @@ namespace Authentication\Middleware;
 
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Authenticator\UnauthorizedException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Stream;
 
 /**
  * Authentication Middleware
  */
-class AuthenticationMiddleware
+class AuthenticationMiddleware implements MiddlewareInterface
 {
     use InstanceConfigTrait;
 
@@ -91,19 +96,19 @@ class AuthenticationMiddleware
      * Callable implementation for the middleware stack.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param callable $next The next middleware to call.
+     * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
      * @return \Psr\Http\Message\ResponseInterface A response.
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $service = $this->getAuthenticationService($request, $response);
+        $service = $this->getAuthenticationService($request);
 
         try {
-            $result = $service->authenticate($request, $response);
+            $result = $service->authenticate($request);
         } catch (UnauthorizedException $e) {
             $body = new Stream('php://memory', 'rw');
             $body->write($e->getBody());
+            $response = new Response();
             $response = $response->withStatus($e->getCode())
                 ->withBody($body);
             foreach ($e->getHeaders() as $header => $value) {
@@ -118,21 +123,25 @@ class AuthenticationMiddleware
         $request = $request->withAttribute('authentication', $service);
         $request = $request->withAttribute('authenticationResult', $result['result']);
 
-        $response = $result['response'];
-
         try {
-            return $next($request, $response);
+            $response = $handler->handle($request);
+            $authenticator = $service->getAuthenticationProvider();
+
+            if ($authenticator !== null && !$authenticator instanceof StatelessInterface) {
+                $return = $service->persistIdentity($request, $response, $result['result']->getData());
+                $response = $return['response'];
+            }
         } catch (UnauthenticatedException $e) {
             $target = $this->getConfig('unauthenticatedRedirect');
             if ($target) {
                 $url = $this->getRedirectUrl($target, $request);
 
-                return $response
-                    ->withStatus(302)
-                    ->withHeader('Location', $url);
+                return new RedirectResponse($url);
             }
             throw $e;
         }
+
+        return $response;
     }
 
     /**
@@ -168,16 +177,15 @@ class AuthenticationMiddleware
      * Returns AuthenticationServiceInterface instance.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Server request.
-     * @param \Psr\Http\Message\ResponseInterface $response Response.
      * @return \Authentication\AuthenticationServiceInterface
      * @throws \RuntimeException When authentication method has not been defined.
      */
-    protected function getAuthenticationService($request, $response)
+    protected function getAuthenticationService($request)
     {
         $subject = $this->subject;
 
         if ($subject instanceof AuthenticationServiceProviderInterface) {
-            $subject = $this->subject->getAuthenticationService($request, $response);
+            $subject = $this->subject->getAuthenticationService($request);
         }
 
         if (!$subject instanceof AuthenticationServiceInterface) {

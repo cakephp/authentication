@@ -20,7 +20,6 @@ use Authentication\Identifier\IdentifierInterface;
 use Cake\Utility\Security;
 use Exception;
 use Firebase\JWT\JWT;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use stdClass;
@@ -66,10 +65,9 @@ class JwtAuthenticator extends TokenAuthenticator
      *
      * @link https://jwt.io/
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @param \Psr\Http\Message\ResponseInterface $response Unused response object.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request)
     {
         try {
             $result = $this->getPayload($request);

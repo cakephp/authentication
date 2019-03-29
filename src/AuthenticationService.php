@@ -34,14 +34,14 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Authenticator collection
      *
-     * @var \Authentication\Authenticator\AuthenticatorCollection
+     * @var \Authentication\Authenticator\AuthenticatorCollection|null
      */
     protected $_authenticators;
 
     /**
      * Identifier collection
      *
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierCollection|null
      */
     protected $_identifiers;
 
@@ -69,6 +69,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *   and then passed to the authenticators that will pass the credentials to them and get the
      *   user data.
      * - `identityClass` - The class name of identity or a callable identity builder.
+     * - `identityAttribute` - The request attribute used to store the identity. Default to `identity`.
      *
      *   ```
      *   $service = new AuthenticationService([
@@ -107,7 +108,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function identifiers()
     {
-        if (!$this->_identifiers) {
+        if ($this->_identifiers === null) {
             $this->_identifiers = new IdentifierCollection($this->getConfig('identifiers'));
         }
 
@@ -121,7 +122,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function authenticators()
     {
-        if (!$this->_authenticators) {
+        if ($this->_authenticators === null) {
             $identifiers = $this->identifiers();
             $authenticators = $this->getConfig('authenticators');
             $this->_authenticators = new AuthenticatorCollection($identifiers, $authenticators);
@@ -159,7 +160,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request)
     {
         if ($this->authenticators()->isEmpty()) {
             throw new RuntimeException(
@@ -169,21 +170,14 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         $result = null;
         foreach ($this->authenticators() as $authenticator) {
-            $result = $authenticator->authenticate($request, $response);
+            $result = $authenticator->authenticate($request);
             if ($result->isValid()) {
-                if (!($authenticator instanceof StatelessInterface)) {
-                    $requestResponse = $this->persistIdentity($request, $response, $result->getData());
-                    $request = $requestResponse['request'];
-                    $response = $requestResponse['response'];
-                }
-
                 $this->_successfulAuthenticator = $authenticator;
                 $this->_result = $result;
 
                 return [
                     'result' => $result,
                     'request' => $request,
-                    'response' => $response,
                 ];
             }
 
@@ -198,7 +192,6 @@ class AuthenticationService implements AuthenticationServiceInterface
         return [
             'result' => $result,
             'request' => $request,
-            'response' => $response,
         ];
     }
 
