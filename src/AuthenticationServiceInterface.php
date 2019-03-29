@@ -42,8 +42,8 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * Authenticate the request against the configured authentication adapters.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @return array An array consisting of a result object, a modified request and response. If none of
-     * the adapters was a success the last failed result is returned.
+     * @return \Authentication\Authenticator\ResultInterface The result object. If none of the adapters was a success
+     *  the last failed result is returned.
      */
     public function authenticate(ServerRequestInterface $request);
 

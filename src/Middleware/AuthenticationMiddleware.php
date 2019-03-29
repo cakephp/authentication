@@ -118,17 +118,16 @@ class AuthenticationMiddleware implements MiddlewareInterface
             return $response;
         }
 
-        $request = $result['request'];
         $request = $request->withAttribute($this->getConfig('identityAttribute'), $service->getIdentity());
         $request = $request->withAttribute('authentication', $service);
-        $request = $request->withAttribute('authenticationResult', $result['result']);
+        $request = $request->withAttribute('authenticationResult', $result);
 
         try {
             $response = $handler->handle($request);
             $authenticator = $service->getAuthenticationProvider();
 
             if ($authenticator !== null && !$authenticator instanceof StatelessInterface) {
-                $return = $service->persistIdentity($request, $response, $result['result']->getData());
+                $return = $service->persistIdentity($request, $response, $result->getData());
                 $response = $return['response'];
             }
         } catch (UnauthenticatedException $e) {
