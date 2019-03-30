@@ -70,10 +70,9 @@ class AuthenticationServiceTest extends TestCase
             ],
         ]);
 
-        $result = $service->authenticate($request, $response);
-        $this->assertInstanceOf(Result::class, $result['result']);
-        $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
-        $this->assertTrue($result['result']->isValid());
+        $result = $service->authenticate($request);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertTrue($result->isValid());
 
         $result = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $result);
@@ -92,7 +91,6 @@ class AuthenticationServiceTest extends TestCase
             'PHP_AUTH_USER' => 'mariano',
             'PHP_AUTH_PW' => 'WRONG',
         ]);
-        $response = new Response();
 
         $service = new AuthenticationService([
             'identifiers' => [
@@ -104,7 +102,7 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         try {
-            $service->authenticate($request, $response);
+            $service->authenticate($request);
             $this->fail('Challenge exception should have been raised');
         } catch (UnauthorizedException $e) {
             $expected = [
@@ -448,7 +446,6 @@ class AuthenticationServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $service = new AuthenticationService([
             'identifiers' => [
@@ -463,7 +460,7 @@ class AuthenticationServiceTest extends TestCase
         $result = $service->getResult();
         $this->assertNull($result);
 
-        $service->authenticate($request, $response);
+        $service->authenticate($request);
         $result = $service->getResult();
         $this->assertInstanceOf(Result::class, $result);
     }
@@ -482,7 +479,6 @@ class AuthenticationServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $service = new AuthenticationService([
             'identifiers' => [
@@ -490,7 +486,7 @@ class AuthenticationServiceTest extends TestCase
             ],
         ]);
 
-        $service->authenticate($request, $response);
+        $service->authenticate($request);
     }
 
     /**
@@ -540,7 +536,6 @@ class AuthenticationServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $callable = function () {
             return new Identity(new ArrayObject([
@@ -559,7 +554,7 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         // Authenticate an identity
-        $service->authenticate($request, $response);
+        $service->authenticate($request);
         $this->assertInstanceOf(Identity::class, $service->getIdentity());
         $this->assertEquals('by-callable', $service->getIdentity()->getIdentifier());
     }
@@ -576,7 +571,6 @@ class AuthenticationServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $service = new AuthenticationService([
             'identifiers' => [
@@ -591,7 +585,7 @@ class AuthenticationServiceTest extends TestCase
         $this->assertNull($service->getIdentity());
 
         // Authenticate an identity
-        $service->authenticate($request, $response);
+        $service->authenticate($request);
 
         // Now we can get the identity
         $this->assertInstanceOf(Identity::class, $service->getIdentity());
@@ -605,7 +599,6 @@ class AuthenticationServiceTest extends TestCase
     public function testGetIdentityInterface()
     {
         $request = new ServerRequest();
-        $response = new Response();
 
         $identity = $this->createMock(IdentityInterface::class);
         $result = new Result($identity, Result::SUCCESS);
@@ -617,7 +610,7 @@ class AuthenticationServiceTest extends TestCase
         $service = new AuthenticationService();
         $service->authenticators()->set('Test', $authenticator);
 
-        $service->authenticate($request, $response);
+        $service->authenticate($request);
 
         $this->assertSame($identity, $service->getIdentity());
     }

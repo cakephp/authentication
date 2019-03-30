@@ -173,12 +173,8 @@ class AuthenticationService implements AuthenticationServiceInterface
             $result = $authenticator->authenticate($request);
             if ($result->isValid()) {
                 $this->_successfulAuthenticator = $authenticator;
-                $this->_result = $result;
 
-                return [
-                    'result' => $result,
-                    'request' => $request,
-                ];
+                return $this->_result = $result;
             }
 
             if (!$result->isValid() && $authenticator instanceof StatelessInterface) {
@@ -187,12 +183,8 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         $this->_successfulAuthenticator = null;
-        $this->_result = $result;
 
-        return [
-            'result' => $result,
-            'request' => $request,
-        ];
+        return $this->_result = $result;
     }
 
     /**
