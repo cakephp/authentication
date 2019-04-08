@@ -186,7 +186,7 @@ class AuthenticationService implements AuthenticationServiceInterface
                 ];
             }
 
-            if (!$result->isValid() && $authenticator instanceof StatelessInterface) {
+            if ($authenticator instanceof StatelessInterface) {
                 $authenticator->unauthorizedChallenge($request);
             }
         }
