@@ -464,24 +464,23 @@ class AuthenticationMiddlewareTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $middleware = new AuthenticationMiddleware($this->service, [
             'unauthenticatedRedirect' => '/users/login?hello=world#frag',
             'queryParam' => 'redirect',
         ]);
 
-        $next = function ($request, $response) {
+        $handler = new TestRequestHandler(function ($request) {
             throw new UnauthenticatedException();
-        };
+        });
 
-        $response = $middleware($request, $response, $next);
+        $response = $middleware->process($request, $handler);
         $this->assertSame(302, $response->getStatusCode());
         $this->assertSame(
             '/users/login?hello=world&redirect=http%3A%2F%2Flocalhost%2Ftestpath#frag',
             $response->getHeaderLine('Location')
         );
-        $this->assertSame('', $response->getBody() . '');
+        $this->assertSame('', (string)$response->getBody());
     }
 
     /**
