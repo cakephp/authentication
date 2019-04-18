@@ -77,6 +77,55 @@ Configuration options:
 
 * **callback**: Default is `null` and will cause an exception. You're required to pass a valid callback to this option to use the authenticator.
 
+# Upgrading Hashing Algorithms
+
+CakePHP provides a clean way to migrate your users’ passwords from one algorithm
+to another, this is achieved through the `FallbackPasswordHasher` class.
+Assuming you want to migrate from a Legacy password to the Default bcrypt
+hasher, you can configure the fallback hasher as follows:
+
+```php
+$service->loadIdentifier('Authentication.Password', [
+    // Other config options
+    'passwordHasher' => [
+        'className' => 'Authentication.Fallback',
+        'hashers' => [
+            ['Authentication.Default'],
+            [
+                'className' => 'Authentication.Legacy',
+                'hashType' => 'md5'
+            ],
+        ]
+    ]
+]);
+```
+
+Then in your login action you can use the authentication service to access the
+`Password` identifier and check if the current user's password needs to be
+upgraded:
+
+```php
+public function login()
+{
+    $authentication = $this->request->getAttribute('authentication');
+    $result = $authentication->getResult();
+
+    // regardless of POST or GET, redirect if user is logged in
+    if ($result->isValid()) {
+
+        // Assuming you are using the `Password` identifier.
+        if ($authentication->identifiers()->get('Password')->needsPasswordRehash()) {
+            // Rehash happens on save.
+            $user = $this->Users->get($this->Auth->user('id'));
+            $user->password = $this->request->getData('password');
+            $this->Users->save($user);
+        }
+
+        // Redirect or display a template.
+    }
+}
+```
+
 # Identity resolvers
 
 Identity resolvers provide adapters for different datasources. They allow

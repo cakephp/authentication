@@ -453,6 +453,38 @@ class AuthenticationMiddlewareTest extends TestCase
     }
 
     /**
+     * test unauthenticated errors being converted into redirects with a query param when configured
+     *
+     * @return void
+     */
+    public function testUnauthenticatedRedirectWithFragment()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service, [
+            'unauthenticatedRedirect' => '/users/login?hello=world#frag',
+            'queryParam' => 'redirect',
+        ]);
+
+        $next = function ($request, $response) {
+            throw new UnauthenticatedException();
+        };
+
+        $response = $middleware($request, $response, $next);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame(
+            '/users/login?hello=world&redirect=http%3A%2F%2Flocalhost%2Ftestpath#frag',
+            $response->getHeaderLine('Location')
+        );
+        $this->assertSame('', $response->getBody() . '');
+    }
+
+    /**
      * test unauthenticated errors being converted into redirects when configured, with a different URL base
      *
      * @return void

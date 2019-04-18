@@ -187,3 +187,36 @@ public function middleware($middlewareQueue)
     return $middlewareQueue;
 }
 ```
+
+# Migrating Hashing Upgrade Logic
+
+If your application uses `AuthComponent`'s hash upgrade functionality. You can
+replicate that logic with this plugin by leveraging the `AuthenticationService`:
+
+```php
+public function login()
+{
+    $result = $this->Authentication->getResult();
+
+    // regardless of POST or GET, redirect if user is logged in
+    if ($result->isValid()) {
+        $authService = $this->Authentication->getAuthenticationService();
+
+        // Assuming you are using the `Password` identifier.
+        if ($authService->identifiers()->get('Password')->needsPasswordRehash()) {
+            // Rehash happens on save.
+            $user = $this->Users->get($this->Auth->user('id'));
+            $user->password = $this->request->getData('password');
+            $this->Users->save($user);
+        }
+
+        $redirect = $this->request->getQuery(
+            'redirect',
+            ['controller' => 'Pages', 'action' => 'display', 'home']
+        );
+        return $this->redirect($redirect);
+    }
+}
+```
+
+

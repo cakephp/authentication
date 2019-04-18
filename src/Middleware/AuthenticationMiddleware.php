@@ -163,13 +163,15 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
         $query = urlencode($param) . '=' . urlencode((string)$uri);
 
-        if (strpos($target, '?') !== false) {
-            $query = '&' . $query;
+        $url = parse_url($target);
+        if (isset($url['query']) && strlen($url['query'])) {
+            $url['query'] .= '&' . $query;
         } else {
-            $query = '?' . $query;
+            $url['query'] = $query;
         }
+        $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
 
-        return $target . $query;
+        return $url['path'] . '?' . $url['query'] . $fragment;
     }
 
     /**
