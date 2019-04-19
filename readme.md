@@ -42,11 +42,5 @@ Plugin::load('Authentication');
 
 ## Documentation
 
- * [Quick Start and Introduction](docs/Quick-start-and-introduction.md)
- * [Authenticators](docs/Authenticators.md)
- * [Identifiers](docs/Identifiers.md)
- * [Identity Objects](docs/Identity-Object.md)
- * [Helper for the View Layer](docs/View-Helper.md)
- * [URL Checkers](docs/URL-Checkers.md)
- * [Migration from the AuthComponent](docs/Migration-from-the-AuthComponent.md)
- * [Testing with Authentication](docs/Testing.md)
+Documentation for this plugin can be found in the [CakePHP
+Cookbook](https://book.cakephp.org/authentication/1.1/en/)
