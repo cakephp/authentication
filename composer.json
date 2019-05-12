@@ -31,8 +31,6 @@
         "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
     },
     "license": "MIT",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Authentication\\": "src/"
@@ -60,6 +58,8 @@
         "irc": "irc://irc.freenode.org/cakephp",
         "source": "https://github.com/cakephp/authentication"
     },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
     "scripts": {
         "check": [
             "@cs-check",
