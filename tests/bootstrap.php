@@ -38,7 +38,9 @@ chdir($root);
 require_once 'vendor/cakephp/cakephp/src/basics.php';
 require_once 'vendor/autoload.php';
 
-define('DS', DIRECTORY_SEPARATOR);
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
 define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
@@ -60,6 +62,8 @@ ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Router::reload();
 Security::setSalt('YJfIxfs2guVoUubWDYhG93b0qyJfIxfs2guwvniR2G0FgaC9mi');
 
+
+Security::setSalt('foo');
 
 Plugin::getCollection()->add(new \Authentication\Plugin());
 
