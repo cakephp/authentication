@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -8,10 +9,10 @@ declare(strict_types=1);
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Middleware;
 
@@ -43,7 +44,7 @@ class AuthenticationMiddlewareTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->service = new AuthenticationService([
@@ -73,7 +74,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        /* @var $service AuthenticationService */
+        /** @var AuthenticationService $service */
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
 
@@ -102,7 +103,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        /* @var $service AuthenticationService */
+        /** @var AuthenticationService $service */
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertSame($this->service, $service);
@@ -161,7 +162,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        /* @var $service AuthenticationService */
+        /** @var AuthenticationService $service */
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
 
@@ -197,12 +198,10 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $middleware->process($request, $handler);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Authentication\AuthenticationServiceProviderInterface`, `stdClass` given.
-     */
     public function testInvalidSubject()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Authentication\AuthenticationServiceProviderInterface`, `stdClass` given.');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
@@ -594,6 +593,6 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        $this->assertContains('CookieAuth=%5B%22mariano%22', $response->getHeaderLine('Set-Cookie'));
+        $this->assertStringContainsString('CookieAuth=%5B%22mariano%22', $response->getHeaderLine('Set-Cookie'));
     }
 }
