@@ -53,7 +53,7 @@ abstract class AbstractPasswordHasher implements PasswordHasherInterface
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash($password)
+    public function needsRehash(string $password): bool
     {
         return password_needs_rehash($password, PASSWORD_DEFAULT);
     }

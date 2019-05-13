@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -27,7 +28,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class TokenAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $_defaultConfig = [
         'header' => null,
@@ -41,7 +42,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return string|null
      */
-    protected function getToken(ServerRequestInterface $request)
+    protected function getToken(ServerRequestInterface $request): ?string
     {
         $token = $this->getTokenFromHeader($request, $this->getConfig('header'));
         if ($token === null) {
@@ -63,7 +64,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * @param string $prefix Prefix to strip
      * @return string
      */
-    protected function stripTokenPrefix($token, $prefix)
+    protected function stripTokenPrefix(string $token, string $prefix): string
     {
         return str_ireplace($prefix . ' ', '', $token);
     }
@@ -72,10 +73,10 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * Gets the token from the request headers
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @param string $headerLine Header name
+     * @param string|null $headerLine Header name
      * @return string|null
      */
-    protected function getTokenFromHeader(ServerRequestInterface $request, $headerLine)
+    protected function getTokenFromHeader(ServerRequestInterface $request, ?string $headerLine): ?string
     {
         if (!empty($headerLine)) {
             $header = $request->getHeaderLine($headerLine);
@@ -94,7 +95,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * @param string $queryParam Request query parameter name
      * @return string|null
      */
-    protected function getTokenFromQuery(ServerRequestInterface $request, $queryParam)
+    protected function getTokenFromQuery(ServerRequestInterface $request, string $queryParam): ?string
     {
         $queryParams = $request->getQueryParams();
 
@@ -113,7 +114,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         $token = $this->getToken($request);
         if ($token === null) {
@@ -137,7 +138,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
      * @return void
      */
-    public function unauthorizedChallenge(ServerRequestInterface $request)
+    public function unauthorizedChallenge(ServerRequestInterface $request): void
     {
     }
 }

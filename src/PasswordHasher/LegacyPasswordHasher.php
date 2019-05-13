@@ -56,7 +56,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      * @param string $password Plain text password to hash.
      * @return string Password hash
      */
-    public function hash($password)
+    public function hash($password): string
     {
         return Security::hash($password, $this->_config['hashType'], true);
     }
@@ -68,7 +68,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check($password, $hashedPassword)
+    public function check($password, string $hashedPassword): bool
     {
         return $hashedPassword === $this->hash($password);
     }

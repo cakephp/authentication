@@ -29,7 +29,7 @@ interface PersistenceInterface
      * @param \ArrayAccess|array $identity Identity data to persist.
      * @return array Returns an array containing the request and response object
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity);
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array;
 
     /**
      * Clears the identity data
@@ -38,5 +38,5 @@ interface PersistenceInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response object.
      * @return array Returns an array containing the request and response object
      */
-    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response);
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array;
 }

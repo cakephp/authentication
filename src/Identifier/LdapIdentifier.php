@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier;
 
+use ArrayAccess;
 use ArrayObject;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
@@ -91,7 +92,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    protected function _checkLdapConfig()
+    protected function _checkLdapConfig(): void
     {
         if (!isset($this->_config['bindDN'])) {
             throw new RuntimeException('Config `bindDN` is not set.');
@@ -113,7 +114,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @throws \RuntimeException
      * @return void
      */
-    protected function _buildLdapObject()
+    protected function _buildLdapObject(): void
     {
         $ldap = $this->_config['ldap'];
 
@@ -153,7 +154,7 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @return \Authentication\Identifier\Ldap\AdapterInterface
      */
-    public function getAdapter()
+    public function getAdapter(): AdapterInterface
     {
         return $this->_ldap;
     }
@@ -163,14 +164,14 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @return void
      */
-    protected function _connectLdap()
+    protected function _connectLdap(): void
     {
         $config = $this->getConfig();
 
         $this->_ldap->connect(
             $config['host'],
             $config['port'],
-            $this->getConfig('options')
+            (array)$this->getConfig('options')
         );
     }
 
@@ -181,7 +182,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @param string $password The password
      * @return \ArrayAccess|null
      */
-    protected function _bindUser($username, $password)
+    protected function _bindUser(string $username, string $password): ?ArrayAccess
     {
         $config = $this->getConfig();
         try {
@@ -207,7 +208,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @param string $message Exception message
      * @return void
      */
-    protected function _handleLdapError($message)
+    protected function _handleLdapError(string $message): void
     {
         $extendedError = $this->_ldap->getDiagnosticMessage();
         if (!is_null($extendedError)) {

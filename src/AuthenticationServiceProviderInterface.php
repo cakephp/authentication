@@ -29,5 +29,5 @@ interface AuthenticationServiceProviderInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
      * @return \Authentication\AuthenticationServiceInterface
      */
-    public function getAuthenticationService(ServerRequestInterface $request);
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface;
 }

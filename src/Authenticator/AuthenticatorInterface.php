@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Authenticator\ResultInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface AuthenticatorInterface
@@ -26,5 +27,5 @@ interface AuthenticatorInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request);
+    public function authenticate(ServerRequestInterface $request): ResultInterface;
 }

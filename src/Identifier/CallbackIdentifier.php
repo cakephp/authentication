@@ -50,7 +50,7 @@ class CallbackIdentifier extends AbstractIdentifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    protected function checkCallable()
+    protected function checkCallable(): void
     {
         $callback = $this->getConfig('callback');
 

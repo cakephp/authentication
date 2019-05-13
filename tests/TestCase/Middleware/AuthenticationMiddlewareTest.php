@@ -24,10 +24,8 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Http\BaseApplication;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
-use RuntimeException;
 use TestApp\Application;
 use TestApp\Http\TestRequestHandler;
 
@@ -112,32 +110,6 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertTrue($service->authenticators()->has('Form'));
     }
 
-    public function testProviderInvalidService()
-    {
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-        $handler = new TestRequestHandler();
-
-        $app = $this->createMock(BaseApplication::class);
-        $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
-        $provider
-            ->method('getAuthenticationService')
-            ->willReturn($app);
-
-        $middleware = new AuthenticationMiddleware($provider);
-        $expected = 'identity';
-        $actual = $middleware->getConfig("identityAttribute");
-        $this->assertEquals($expected, $actual);
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Service provided by a subject must be an instance of `Authentication\AuthenticationServiceInterface`, `Mock_BaseApplication_');
-
-        $response = $middleware->process($request, $handler);
-    }
-
     /**
      * test middleware call with custom identity attribute
      *
@@ -178,10 +150,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $service = $this->createMock(AuthenticationServiceInterface::class);
 
         $service->method('authenticate')
-            ->willReturn([
-                'result' => $this->createMock(ResultInterface::class),
-                'request' => $request,
-            ]);
+            ->willReturn($this->createMock(ResultInterface::class));
 
         $application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()

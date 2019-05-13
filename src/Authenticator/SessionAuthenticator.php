@@ -17,6 +17,7 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use ArrayObject;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -49,7 +50,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         $sessionKey = $this->getConfig('sessionKey');
         $session = $request->getAttribute('session');
@@ -79,9 +80,9 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {
         $sessionKey = $this->getConfig('sessionKey');
         $request->getAttribute('session')->write($sessionKey, $identity);
@@ -93,9 +94,9 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
-    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
         $sessionKey = $this->getConfig('sessionKey');
         $request->getAttribute('session')->delete($sessionKey);

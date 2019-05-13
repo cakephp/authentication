@@ -41,9 +41,9 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * Generates password hash.
      *
      * @param string $password Plain text password to hash.
-     * @return bool|string Password hash or false on failure.
+     * @return string Password hash or false on failure.
      */
-    public function hash($password)
+    public function hash($password): string
     {
         return password_hash(
             $password,
@@ -59,7 +59,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check($password, $hashedPassword)
+    public function check($password, string $hashedPassword): bool
     {
         return password_verify($password, $hashedPassword);
     }
@@ -71,7 +71,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash($password)
+    public function needsRehash(string $password): bool
     {
         return password_needs_rehash($password, $this->_config['hashType'], $this->_config['hashOptions']);
     }

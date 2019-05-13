@@ -49,7 +49,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
      * @return \Authentication\AuthenticationServiceInterface
      */
-    public function getAuthenticationService(ServerRequestInterface $request)
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();
         $service->loadIdentifier('Authentication.Password');

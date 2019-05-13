@@ -58,7 +58,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
      */
-    protected function _create($className, string $alias, array $config)
+    protected function _create($className, string $alias, array $config): IdentifierInterface
     {
         $identifier = new $className($config);
         if (!($identifier instanceof IdentifierInterface)) {
@@ -77,7 +77,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      *
      * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->_errors;
     }
@@ -88,7 +88,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @param string $class Class name to be resolved.
      * @return string|null
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName($class): ?string
     {
         $className = App::className($class, 'Identifier', 'Identifier');
 

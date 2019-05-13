@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use Authentication\AbstractCollection;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use RuntimeException;
@@ -52,7 +53,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
      */
-    protected function _create($className, string $alias, array $config)
+    protected function _create($className, string $alias, array $config): AuthenticatorInterface
     {
         $authenticator = new $className($this->_identifiers, $config);
         if (!($authenticator instanceof AuthenticatorInterface)) {
@@ -71,7 +72,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @param string $class Class name to be resolved.
      * @return string|null
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName($class): ?string
     {
         $className = App::className($class, 'Authenticator', 'Authenticator');
 

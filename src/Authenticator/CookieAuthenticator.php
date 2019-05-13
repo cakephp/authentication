@@ -21,6 +21,7 @@ use Authentication\Identifier\IdentifierInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Http\Cookie\Cookie;
+use Cake\Http\Cookie\CookieInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -72,7 +73,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * @return void
      */
-    protected function _checkCakeVersion()
+    protected function _checkCakeVersion(): void
     {
         if (!class_exists(Cookie::class)) {
             throw new RuntimeException('Install CakePHP version >=3.5.0 to use the `CookieAuthenticator`.');
@@ -82,7 +83,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * @inheritdoc
      */
-    public function authenticate(ServerRequestInterface $request)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         $cookies = $request->getCookieParams();
         $cookieName = $this->getConfig('cookie.name');
@@ -124,7 +125,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * @inheritdoc
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {
         $field = $this->getConfig('rememberMeField');
         $bodyData = $request->getParsedBody();
@@ -153,7 +154,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param array|\ArrayAccess $identity Identity data.
      * @return string
      */
-    protected function _createPlainToken($identity)
+    protected function _createPlainToken($identity): string
     {
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
@@ -169,7 +170,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param array|\ArrayAccess $identity Identity data.
      * @return string
      */
-    protected function _createToken($identity)
+    protected function _createToken($identity): string
     {
         $plain = $this->_createPlainToken($identity);
         $hash = $this->getPasswordHasher()->hash($plain);
@@ -186,7 +187,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param string $tokenHash Hashed part of a cookie token.
      * @return bool
      */
-    protected function _checkToken($identity, $tokenHash)
+    protected function _checkToken($identity, $tokenHash): bool
     {
         $plain = $this->_createPlainToken($identity);
 
@@ -196,7 +197,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * @inheritdoc
      */
-    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
         $cookie = $this->_createCookie('')->withExpired();
 
@@ -212,7 +213,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param mixed $value Cookie value.
      * @return \Cake\Http\Cookie\CookieInterface
      */
-    protected function _createCookie($value)
+    protected function _createCookie($value): CookieInterface
     {
         $data = $this->getConfig('cookie');
 

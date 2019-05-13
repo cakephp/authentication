@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ServerRequestInterface;
@@ -61,7 +62,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      *
      * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function getIdentifier()
+    public function getIdentifier(): IdentifierInterface
     {
         return $this->_identifier;
     }
@@ -85,5 +86,5 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request Request to get authentication information from.
      * @return \Authentication\Authenticator\ResultInterface Returns a result object.
      */
-    abstract public function authenticate(ServerRequestInterface $request);
+    abstract public function authenticate(ServerRequestInterface $request): ResultInterface;
 }

@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Psr\Http\Message\ServerRequestInterface;
@@ -52,7 +53,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return array|null Username and password retrieved from a request body.
      */
-    protected function _getData(ServerRequestInterface $request)
+    protected function _getData(ServerRequestInterface $request): ?array
     {
         $fields = $this->_config['fields'];
         $body = $request->getParsedBody();
@@ -80,7 +81,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    protected function _buildLoginUrlErrorResult($request)
+    protected function _buildLoginUrlErrorResult(ServerRequestInterface $request): ResultInterface
     {
         $errors = [
             sprintf(
@@ -101,7 +102,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         if (!$this->_checkUrl($request)) {
             return $this->_buildLoginUrlErrorResult($request);

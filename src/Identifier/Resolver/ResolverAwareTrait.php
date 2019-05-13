@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier\Resolver;
 
+use Authentication\Identifier\Resolver\ResolverInterface;
 use Cake\Core\App;
 use InvalidArgumentException;
 use RuntimeException;
@@ -35,7 +36,7 @@ trait ResolverAwareTrait
      * @return \Authentication\Identifier\Resolver\ResolverInterface
      * @throws \RuntimeException When resolver has not been set.
      */
-    public function getResolver()
+    public function getResolver(): ResolverInterface
     {
         if ($this->resolver === null) {
             $config = $this->getConfig('resolver');
@@ -70,7 +71,7 @@ trait ResolverAwareTrait
      * @throws \InvalidArgumentException When className option is missing or class name does not exist.
      * @throws \RuntimeException When resolver does not implement ResolverInterface.
      */
-    protected function buildResolver($config)
+    protected function buildResolver($config): ResolverInterface
     {
         if (is_string($config)) {
             $config = [

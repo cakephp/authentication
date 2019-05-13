@@ -55,7 +55,7 @@ abstract class AbstractCollection extends ObjectRegistry implements IteratorAggr
      *
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->_loaded);
     }

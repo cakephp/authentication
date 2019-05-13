@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use ArrayObject;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Utility\Security;
 use Exception;
@@ -28,7 +29,7 @@ use stdClass;
 class JwtAuthenticator extends TokenAuthenticator
 {
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     protected $_defaultConfig = [
         'header' => 'Authorization',
@@ -47,7 +48,7 @@ class JwtAuthenticator extends TokenAuthenticator
     protected $payload;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function __construct(IdentifierInterface $identifier, array $config = [])
     {
@@ -68,7 +69,7 @@ class JwtAuthenticator extends TokenAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         try {
             $result = $this->getPayload($request);
@@ -117,7 +118,7 @@ class JwtAuthenticator extends TokenAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface|null $request Request to get authentication information from.
      * @return object|null Payload object on success, null on failure
      */
-    public function getPayload(?ServerRequestInterface $request = null)
+    public function getPayload(?ServerRequestInterface $request = null): ?object
     {
         if (!$request) {
             return $this->payload;
@@ -141,7 +142,7 @@ class JwtAuthenticator extends TokenAuthenticator
      * @param string $token JWT token to decode.
      * @return object|null The JWT's payload as a PHP object, null on failure.
      */
-    protected function decodeToken($token)
+    protected function decodeToken(string $token): ?object
     {
         return JWT::decode(
             $token,

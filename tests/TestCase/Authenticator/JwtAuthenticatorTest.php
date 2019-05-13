@@ -179,7 +179,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator->expects($this->at(0))
             ->method('getPayLoad')
-            ->will($this->returnValue('no an object'));
+            ->willThrowException(new Exception());
 
         $result = $authenticator->authenticate($request, $response);
         $this->assertInstanceOf(Result::class, $result);

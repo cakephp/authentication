@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Authentication\PasswordHasher;
 
+use Authentication\PasswordHasher\PasswordHasherInterface;
+
 trait PasswordHasherTrait
 {
     /**
@@ -26,7 +28,7 @@ trait PasswordHasherTrait
      *
      * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
      */
-    public function getPasswordHasher()
+    public function getPasswordHasher(): PasswordHasherInterface
     {
         if ($this->_passwordHasher === null) {
             $this->_passwordHasher = new DefaultPasswordHasher();
@@ -54,7 +56,7 @@ trait PasswordHasherTrait
      *
      * @return bool
      */
-    public function needsPasswordRehash()
+    public function needsPasswordRehash(): bool
     {
         return $this->_needsPasswordRehash;
     }

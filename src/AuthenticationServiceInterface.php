@@ -16,7 +16,11 @@ declare(strict_types=1);
  */
 namespace Authentication;
 
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\PersistenceInterface;
+use Authentication\Authenticator\ResultInterface;
+use Authentication\Identifier\IdentifierInterface;
+use Authentication\IdentityInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface AuthenticationServiceInterface extends PersistenceInterface
@@ -28,7 +32,7 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * @param array $config Authenticator configuration.
      * @return \Authentication\Authenticator\AuthenticatorInterface
      */
-    public function loadAuthenticator($name, array $config = []);
+    public function loadAuthenticator(string $name, array $config = []): AuthenticatorInterface;
 
     /**
      * Loads an identifier.
@@ -37,7 +41,7 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * @param array $config Identifier configuration.
      * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function loadIdentifier($name, array $config = []);
+    public function loadIdentifier(string $name, array $config = []): IdentifierInterface;
 
     /**
      * Authenticate the request against the configured authentication adapters.
@@ -46,26 +50,26 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * @return \Authentication\Authenticator\ResultInterface The result object. If none of the adapters was a success
      *  the last failed result is returned.
      */
-    public function authenticate(ServerRequestInterface $request);
+    public function authenticate(ServerRequestInterface $request): ResultInterface;
 
     /**
      * Gets an identity object or null if identity has not been resolved.
      *
      * @return null|\Authentication\IdentityInterface
      */
-    public function getIdentity();
+    public function getIdentity(): ?IdentityInterface;
 
     /**
      * Gets the successful authenticator instance if one was successful after calling authenticate
      *
      * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
-    public function getAuthenticationProvider();
+    public function getAuthenticationProvider(): ?AuthenticatorInterface;
 
     /**
      * Gets the result of the last authenticate() call.
      *
      * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
-    public function getResult();
+    public function getResult(): ?ResultInterface;
 }

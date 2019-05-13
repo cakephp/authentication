@@ -43,7 +43,7 @@ class UnauthorizedException extends RuntimeException
      * @param string $body The response body that should be sent in the challenge response.
      * @param int $code The exception code that will be used as a HTTP status code
      */
-    public function __construct(array $headers, $body = '', $code = 401)
+    public function __construct(array $headers, string $body = '', int $code = 401)
     {
         parent::__construct('Authentication is required to continue', $code);
         $this->headers = $headers;
@@ -55,7 +55,7 @@ class UnauthorizedException extends RuntimeException
      *
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -65,7 +65,7 @@ class UnauthorizedException extends RuntimeException
      *
      * @return string
      */
-    public function getBody()
+    public function getBody(): string
     {
         return $this->body;
     }

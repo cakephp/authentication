@@ -76,7 +76,7 @@ class IdentityHelper extends Helper
      *
      * @return bool
      */
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return $this->_identity !== null;
     }
@@ -97,7 +97,7 @@ class IdentityHelper extends Helper
      * @param string $field Name of the field in the identity data to check against, id by default
      * @return bool
      */
-    public function is($id, $field = 'id')
+    public function is($id, $field = 'id'): bool
     {
         return $id === $this->get($field);
     }
@@ -108,7 +108,7 @@ class IdentityHelper extends Helper
      * @param string|null $key Key of something you want to get from the identity data
      * @return mixed
      */
-    public function get($key = null)
+    public function get(?string $key = null)
     {
         if (empty($this->_identity)) {
             return null;

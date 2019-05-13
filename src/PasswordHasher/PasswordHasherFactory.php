@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 namespace Authentication\PasswordHasher;
 
+use Authentication\PasswordHasher\PasswordHasherInterface;
 use Cake\Core\App;
 use RuntimeException;
 
@@ -32,7 +33,7 @@ class PasswordHasherFactory
      * @throws \RuntimeException If password hasher class not found or it does
      *   not implement \Authentication\PasswordHasher\PasswordHasherInterface
      */
-    public static function build($passwordHasher)
+    public static function build($passwordHasher): PasswordHasherInterface
     {
         $config = [];
         if (is_string($passwordHasher)) {

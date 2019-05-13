@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\UrlChecker;
 
+use Authentication\UrlChecker\UrlCheckerInterface;
 use Cake\Core\App;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -31,7 +32,7 @@ trait UrlCheckerTrait
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return bool
      */
-    protected function _checkUrl(ServerRequestInterface $request)
+    protected function _checkUrl(ServerRequestInterface $request): bool
     {
         return $this->_getUrlChecker()->check(
             $request,
@@ -45,7 +46,7 @@ trait UrlCheckerTrait
      *
      * @return \Authentication\UrlChecker\UrlCheckerInterface
      */
-    protected function _getUrlChecker()
+    protected function _getUrlChecker(): UrlCheckerInterface
     {
         $options = $this->getConfig('urlChecker');
         if (!is_array($options)) {

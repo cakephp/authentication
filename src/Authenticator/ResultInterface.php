@@ -48,14 +48,14 @@ interface ResultInterface
      *
      * @return bool
      */
-    public function isValid();
+    public function isValid(): bool;
 
     /**
      * Get the result status for this authentication attempt.
      *
      * @return string
      */
-    public function getStatus();
+    public function getStatus(): string;
 
     /**
      * Returns the identity data used in the authentication attempt.
@@ -71,5 +71,5 @@ interface ResultInterface
      *
      * @return array
      */
-    public function getErrors();
+    public function getErrors(): array;
 }

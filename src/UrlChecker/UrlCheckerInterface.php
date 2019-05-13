@@ -31,5 +31,5 @@ interface UrlCheckerInterface
      * @param array $options Array of options
      * @return bool
      */
-    public function check(ServerRequestInterface $request, $loginUrls, array $options = []);
+    public function check(ServerRequestInterface $request, $loginUrls, array $options = []): bool;
 }

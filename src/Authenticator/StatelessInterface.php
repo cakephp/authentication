@@ -37,5 +37,5 @@ interface StatelessInterface
      * @return void
      * @throws \Authentication\Authenticator\UnauthorizedException
      */
-    public function unauthorizedChallenge(ServerRequestInterface $request);
+    public function unauthorizedChallenge(ServerRequestInterface $request): void;
 }

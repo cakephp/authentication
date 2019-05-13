@@ -39,5 +39,5 @@ interface IdentifierInterface
      *
      * @return array
      */
-    public function getErrors();
+    public function getErrors(): array;
 }
