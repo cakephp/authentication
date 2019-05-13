@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -8,12 +9,12 @@ declare(strict_types=1);
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Identifier;
+namespace Authentication\Test\TestCase\Controller\Component;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
@@ -40,7 +41,7 @@ class AuthenticationComponentTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -89,12 +90,12 @@ class AuthenticationComponentTest extends TestCase
     /**
      * testGetAuthenticationServiceMissingServiceAttribute
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage The request object does not contain the required `authentication` attribute
      * @return void
      */
     public function testGetAuthenticationServiceMissingServiceAttribute()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('The request object does not contain the required `authentication` attribute');
         $controller = new Controller($this->request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
@@ -104,12 +105,12 @@ class AuthenticationComponentTest extends TestCase
     /**
      * testGetAuthenticationServiceInvalidServiceObject
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Authentication service does not implement Authentication\AuthenticationServiceInterface
      * @return void
      */
     public function testGetAuthenticationServiceInvalidServiceObject()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Authentication service does not implement Authentication\AuthenticationServiceInterface');
         $request = $this->request->withAttribute('authentication', new InvalidAuthenticationService());
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
@@ -199,11 +200,11 @@ class AuthenticationComponentTest extends TestCase
      * testGetMissingIdentityData
      *
      * @eturn void
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage The identity has not been found.
      */
     public function testGetMissingIdentityData()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('The identity has not been found.');
         $request = $this->request->withAttribute('authentication', $this->service);
 
         $controller = new Controller($request, $this->response);

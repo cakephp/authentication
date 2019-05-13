@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -60,7 +61,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      *
      * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function getIdentifier()
+    public function getIdentifier(): IdentifierInterface
     {
         return $this->_identifier;
     }
@@ -84,5 +85,5 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request Request to get authentication information from.
      * @return \Authentication\Authenticator\ResultInterface Returns a result object.
      */
-    abstract public function authenticate(ServerRequestInterface $request);
+    abstract public function authenticate(ServerRequestInterface $request): ResultInterface;
 }

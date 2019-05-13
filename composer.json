@@ -20,7 +20,7 @@
     "require-dev": {
         "cakephp/cakephp": "4.x-dev as 4.0.0",
         "cakephp/cakephp-codesniffer": "dev-next",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^8.0",
         "firebase/php-jwt": "^4.0"
     },
     "suggest": {
@@ -31,7 +31,8 @@
         "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
     },
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Authentication\\": "src/"

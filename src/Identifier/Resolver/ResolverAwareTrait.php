@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -34,7 +35,7 @@ trait ResolverAwareTrait
      * @return \Authentication\Identifier\Resolver\ResolverInterface
      * @throws \RuntimeException When resolver has not been set.
      */
-    public function getResolver()
+    public function getResolver(): ResolverInterface
     {
         if ($this->resolver === null) {
             $config = $this->getConfig('resolver');
@@ -69,7 +70,7 @@ trait ResolverAwareTrait
      * @throws \InvalidArgumentException When className option is missing or class name does not exist.
      * @throws \RuntimeException When resolver does not implement ResolverInterface.
      */
-    protected function buildResolver($config)
+    protected function buildResolver($config): ResolverInterface
     {
         if (is_string($config)) {
             $config = [

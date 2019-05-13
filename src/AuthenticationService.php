@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,9 +17,12 @@ declare(strict_types=1);
 namespace Authentication;
 
 use Authentication\Authenticator\AuthenticatorCollection;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\PersistenceInterface;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -106,7 +110,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return \Authentication\Identifier\IdentifierCollection
      */
-    public function identifiers()
+    public function identifiers(): IdentifierCollection
     {
         if ($this->_identifiers === null) {
             $this->_identifiers = new IdentifierCollection($this->getConfig('identifiers'));
@@ -120,7 +124,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return \Authentication\Authenticator\AuthenticatorCollection
      */
-    public function authenticators()
+    public function authenticators(): AuthenticatorCollection
     {
         if ($this->_authenticators === null) {
             $identifiers = $this->identifiers();
@@ -138,7 +142,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param array $config Authenticator configuration.
      * @return \Authentication\Authenticator\AuthenticatorInterface
      */
-    public function loadAuthenticator($name, array $config = [])
+    public function loadAuthenticator(string $name, array $config = []): AuthenticatorInterface
     {
         return $this->authenticators()->load($name, $config);
     }
@@ -150,7 +154,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param array $config Identifier configuration.
      * @return \Authentication\Identifier\IdentifierInterface Identifier instance
      */
-    public function loadIdentifier($name, array $config = [])
+    public function loadIdentifier(string $name, array $config = []): IdentifierInterface
     {
         return $this->identifiers()->load($name, $config);
     }
@@ -160,7 +164,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
-    public function authenticate(ServerRequestInterface $request)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         if ($this->authenticators()->isEmpty()) {
             throw new RuntimeException(
@@ -194,7 +198,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return array Return an array containing the request and response objects.
      */
-    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
@@ -218,7 +222,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \ArrayAccess|array $identity Identity data.
      * @return array
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
@@ -243,7 +247,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
-    public function getAuthenticationProvider()
+    public function getAuthenticationProvider(): ?AuthenticatorInterface
     {
         return $this->_successfulAuthenticator;
     }
@@ -253,7 +257,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
-    public function getResult()
+    public function getResult(): ?ResultInterface
     {
         return $this->_result;
     }
@@ -263,7 +267,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return null|\Authentication\IdentityInterface
      */
-    public function getIdentity()
+    public function getIdentity(): ?IdentityInterface
     {
         if ($this->_result === null || !$this->_result->isValid()) {
             return null;
@@ -283,7 +287,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \ArrayAccess|array $identityData Identity data
      * @return \Authentication\IdentityInterface
      */
-    public function buildIdentity($identityData)
+    public function buildIdentity($identityData): IdentityInterface
     {
         $class = $this->getConfig('identityClass');
 

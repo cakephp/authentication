@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -51,7 +52,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
      */
-    protected function _create($className, string $alias, array $config)
+    protected function _create($className, string $alias, array $config): AuthenticatorInterface
     {
         $authenticator = new $className($this->_identifiers, $config);
         if (!($authenticator instanceof AuthenticatorInterface)) {
@@ -70,7 +71,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @param string $class Class name to be resolved.
      * @return string|null
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName($class): ?string
     {
         $className = App::className($class, 'Authenticator', 'Authenticator');
 

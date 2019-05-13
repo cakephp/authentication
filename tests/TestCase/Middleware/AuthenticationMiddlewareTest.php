@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -8,10 +9,10 @@ declare(strict_types=1);
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Middleware;
 
@@ -23,10 +24,8 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Http\BaseApplication;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
-use RuntimeException;
 use TestApp\Application;
 use TestApp\Http\TestRequestHandler;
 
@@ -43,7 +42,7 @@ class AuthenticationMiddlewareTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->service = new AuthenticationService([
@@ -73,7 +72,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        /* @var $service AuthenticationService */
+        /** @var AuthenticationService $service */
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
 
@@ -102,39 +101,13 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        /* @var $service AuthenticationService */
+        /** @var AuthenticationService $service */
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertSame($this->service, $service);
 
         $this->assertTrue($service->identifiers()->has('Password'));
         $this->assertTrue($service->authenticators()->has('Form'));
-    }
-
-    public function testProviderInvalidService()
-    {
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-        $handler = new TestRequestHandler();
-
-        $app = $this->createMock(BaseApplication::class);
-        $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
-        $provider
-            ->method('getAuthenticationService')
-            ->willReturn($app);
-
-        $middleware = new AuthenticationMiddleware($provider);
-        $expected = 'identity';
-        $actual = $middleware->getConfig("identityAttribute");
-        $this->assertEquals($expected, $actual);
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Service provided by a subject must be an instance of `Authentication\AuthenticationServiceInterface`, `Mock_BaseApplication_');
-
-        $response = $middleware->process($request, $handler);
     }
 
     /**
@@ -161,7 +134,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        /* @var $service AuthenticationService */
+        /** @var AuthenticationService $service */
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
 
@@ -177,10 +150,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $service = $this->createMock(AuthenticationServiceInterface::class);
 
         $service->method('authenticate')
-            ->willReturn([
-                'result' => $this->createMock(ResultInterface::class),
-                'request' => $request,
-            ]);
+            ->willReturn($this->createMock(ResultInterface::class));
 
         $application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
@@ -197,12 +167,10 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $middleware->process($request, $handler);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Authentication\AuthenticationServiceProviderInterface`, `stdClass` given.
-     */
     public function testInvalidSubject()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Authentication\AuthenticationServiceProviderInterface`, `stdClass` given.');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
@@ -594,6 +562,6 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
 
-        $this->assertContains('CookieAuth=%5B%22mariano%22', $response->getHeaderLine('Set-Cookie'));
+        $this->assertStringContainsString('CookieAuth=%5B%22mariano%22', $response->getHeaderLine('Set-Cookie'));
     }
 }

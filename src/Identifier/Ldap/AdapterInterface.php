@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -24,7 +25,7 @@ interface AdapterInterface
      * @param string $password Bind password
      * @return bool
      */
-    public function bind($bind, $password);
+    public function bind(string $bind, string $password): bool;
 
     /**
      * Connect to an LDAP server
@@ -34,19 +35,19 @@ interface AdapterInterface
      * @param array $options Additional options
      * @return void
      */
-    public function connect($host, $port, $options);
+    public function connect(string $host, int $port, array $options): void;
 
     /**
      * Unbind from LDAP directory
      *
      * @return void
      */
-    public function unbind();
+    public function unbind(): void;
 
     /**
      * Get the diagnostic message
      *
      * @return string|null
      */
-    public function getDiagnosticMessage();
+    public function getDiagnosticMessage(): ?string;
 }

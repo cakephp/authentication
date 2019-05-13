@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -18,6 +19,7 @@ namespace Authentication\Identifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
+use Authentication\PasswordHasher\PasswordHasherInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 
 /**
@@ -70,7 +72,7 @@ class PasswordIdentifier extends AbstractIdentifier
      *
      * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
      */
-    public function getPasswordHasher()
+    public function getPasswordHasher(): PasswordHasherInterface
     {
         if ($this->_passwordHasher === null) {
             $passwordHasher = $this->getConfig('passwordHasher');
@@ -86,7 +88,7 @@ class PasswordIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function identify(array $data)
     {
@@ -114,7 +116,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string|null $password The password.
      * @return bool
      */
-    protected function _checkPassword($identity, $password)
+    protected function _checkPassword($identity, $password): bool
     {
         $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
 
@@ -141,7 +143,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string $identifier The username/identifier.
      * @return \ArrayAccess|array|null
      */
-    protected function _findIdentity($identifier)
+    protected function _findIdentity(string $identifier)
     {
         $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
         $conditions = [];

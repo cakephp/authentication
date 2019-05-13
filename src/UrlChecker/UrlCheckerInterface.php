@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -30,5 +31,5 @@ interface UrlCheckerInterface
      * @param array $options Array of options
      * @return bool
      */
-    public function check(ServerRequestInterface $request, $loginUrls, array $options = []);
+    public function check(ServerRequestInterface $request, $loginUrls, array $options = []): bool;
 }

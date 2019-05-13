@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -150,7 +151,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request Request instance.
      * @return string
      */
-    protected function getRedirectUrl($target, ServerRequestInterface $request)
+    protected function getRedirectUrl(string $target, ServerRequestInterface $request): string
     {
         $param = $this->getConfig('queryParam');
         if ($param === null) {
@@ -181,7 +182,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @return \Authentication\AuthenticationServiceInterface
      * @throws \RuntimeException When authentication method has not been defined.
      */
-    protected function getAuthenticationService($request)
+    protected function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $subject = $this->subject;
 

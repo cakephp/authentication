@@ -19,6 +19,7 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\Routing\Router;
+use Cake\Utility\Security;
 
 $findRoot = function ($root) {
     do {
@@ -37,6 +38,7 @@ chdir($root);
 require_once 'vendor/cakephp/cakephp/src/basics.php';
 require_once 'vendor/autoload.php';
 
+define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
@@ -56,6 +58,8 @@ if (!getenv('db_dsn')) {
 }
 ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Router::reload();
+Security::setSalt('YJfIxfs2guVoUubWDYhG93b0qyJfIxfs2guwvniR2G0FgaC9mi');
+
 
 Plugin::getCollection()->add(new \Authentication\Plugin());
 

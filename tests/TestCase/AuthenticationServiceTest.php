@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -8,12 +9,12 @@ declare(strict_types=1);
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Authenticator;
+namespace Authentication\Test\TestCase;
 
 use ArrayObject;
 use Authentication\AuthenticationService;
@@ -114,23 +115,21 @@ class AuthenticationServiceTest extends TestCase
 
     /**
      * testLoadAuthenticatorException
-     *
-     * @expectedException \RuntimeException
      */
     public function testLoadAuthenticatorException()
     {
+        $this->expectException('RuntimeException');
         $service = new AuthenticationService();
         $service->loadAuthenticator('does-not-exist');
     }
 
     /**
      * testLoadInvalidAuthenticatorObject
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement \Auth\Authentication\AuthenticatorInterface
      */
     public function testLoadInvalidAuthenticatorObject()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement \Auth\Authentication\AuthenticatorInterface');
         $service = new AuthenticationService();
         $service->loadAuthenticator(InvalidAuthenticator::class);
     }
@@ -183,7 +182,7 @@ class AuthenticationServiceTest extends TestCase
         $request = $request->withAttribute('identity', ['username' => 'florian']);
         $this->assertNotEmpty($request->getAttribute('identity'));
         $result = $service->clearIdentity($request, $response);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
         $this->assertNull($result['request']->getAttribute('identity'));
@@ -214,7 +213,7 @@ class AuthenticationServiceTest extends TestCase
         $request = $request->withAttribute('customIdentity', ['username' => 'florian']);
         $this->assertNotEmpty($request->getAttribute('customIdentity'));
         $result = $service->clearIdentity($request, $response);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
         $this->assertNull($result['request']->getAttribute('customIdentity'));
@@ -247,7 +246,7 @@ class AuthenticationServiceTest extends TestCase
         $request = $request->withAttribute('customIdentity', ['username' => 'florian']);
         $this->assertNotEmpty($request->getAttribute('customIdentity'));
         $result = $service->clearIdentity($request, $response);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
         $this->assertNull($result['request']->getAttribute('customIdentity'));
@@ -284,7 +283,7 @@ class AuthenticationServiceTest extends TestCase
         $data = new ArrayObject(['username' => 'florian']);
         $result = $service->persistIdentity($request, $response, $data);
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
@@ -330,7 +329,7 @@ class AuthenticationServiceTest extends TestCase
         $data = new ArrayObject(['username' => 'florian']);
         $result = $service->persistIdentity($request, $response, $data);
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
@@ -378,7 +377,7 @@ class AuthenticationServiceTest extends TestCase
         $data = new ArrayObject(['username' => 'florian']);
         $result = $service->persistIdentity($request, $response, $data);
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
@@ -468,12 +467,12 @@ class AuthenticationServiceTest extends TestCase
     /**
      * testNoAuthenticatorsLoadedException
      *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage No authenticators loaded. You need to load at least one authenticator.
      * @return void
      */
     public function testNoAuthenticatorsLoadedException()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('No authenticators loaded. You need to load at least one authenticator.');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
@@ -508,12 +507,12 @@ class AuthenticationServiceTest extends TestCase
     /**
      * testBuildIdentityRuntimeException
      *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Object `stdClass` does not implement `Authentication\IdentityInterface`
      * @return void
      */
     public function testBuildIdentityRuntimeException()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Object `stdClass` does not implement `Authentication\IdentityInterface`');
         $service = new AuthenticationService([
             'identityClass' => \stdClass::class,
             'identifiers' => [

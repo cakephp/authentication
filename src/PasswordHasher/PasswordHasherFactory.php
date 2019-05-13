@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -31,7 +32,7 @@ class PasswordHasherFactory
      * @throws \RuntimeException If password hasher class not found or it does
      *   not implement \Authentication\PasswordHasher\PasswordHasherInterface
      */
-    public static function build($passwordHasher)
+    public static function build($passwordHasher): PasswordHasherInterface
     {
         $config = [];
         if (is_string($passwordHasher)) {

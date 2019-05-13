@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -36,5 +37,5 @@ interface StatelessInterface
      * @return void
      * @throws \Authentication\Authenticator\UnauthorizedException
      */
-    public function unauthorizedChallenge(ServerRequestInterface $request);
+    public function unauthorizedChallenge(ServerRequestInterface $request): void;
 }

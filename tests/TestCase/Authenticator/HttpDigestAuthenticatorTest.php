@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * HttpDigestAuthenticatorTest file
  *
@@ -10,11 +11,11 @@ declare(strict_types=1);
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link http://cakephp.org CakePHP(tm) Project
+ * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Authentication;
+namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
@@ -47,7 +48,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -171,7 +172,12 @@ DIGEST;
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
-        $this->assertArraySubset($expected, $result->getData()->toArray());
+
+        $value = $result->getData()->toArray();
+        foreach ($expected as $key => $val) {
+            $this->assertArrayHasKey($key, $value);
+            $this->assertEquals($value[$key], $val);
+        }
     }
 
     /**
@@ -358,7 +364,7 @@ DIGEST;
         $this->assertNotEmpty($e);
 
         $header = $e->getHeaders()['WWW-Authenticate'];
-        $this->assertContains('stale=true', $header);
+        $this->assertStringContainsString('stale=true', $header);
     }
 
     /**

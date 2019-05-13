@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -63,7 +64,7 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      * @param string $password Plain text password to hash.
      * @return string Password hash
      */
-    public function hash($password)
+    public function hash($password): string
     {
         return $this->_hashers[0]->hash($password);
     }
@@ -78,7 +79,7 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check($password, $hashedPassword)
+    public function check($password, string $hashedPassword): bool
     {
         foreach ($this->_hashers as $hasher) {
             if ($hasher->check($password, $hashedPassword)) {
@@ -96,7 +97,7 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash($password)
+    public function needsRehash(string $password): bool
     {
         return $this->_hashers[0]->needsRehash($password);
     }

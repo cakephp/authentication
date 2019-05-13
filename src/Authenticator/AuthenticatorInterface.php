@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -25,5 +26,5 @@ interface AuthenticatorInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request);
+    public function authenticate(ServerRequestInterface $request): ResultInterface;
 }
