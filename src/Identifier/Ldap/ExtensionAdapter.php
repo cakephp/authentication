@@ -32,7 +32,7 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * LDAP Object
      *
-     * @var object|null
+     * @var resource|null
      */
     protected $_connection;
 
@@ -71,7 +71,7 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * Get the LDAP connection
      *
-     * @return mixed
+     * @return resource
      * @throws \RuntimeException If the connection is empty
      */
     public function getConnection()
@@ -94,7 +94,11 @@ class ExtensionAdapter implements AdapterInterface
     public function connect($host, $port, $options)
     {
         $this->_setErrorHandler();
-        $this->_connection = ldap_connect($host, $port);
+        $resource = ldap_connect($host, $port);
+        if ($resource === false) {
+            throw new RuntimeException('Unable to connect to LDAP server.');
+        }
+        $this->_connection = $resource;
         $this->_unsetErrorHandler();
 
         if (is_array($options)) {

@@ -33,14 +33,14 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Authenticator collection
      *
-     * @var \Authentication\Authenticator\AuthenticatorCollection
+     * @var \Authentication\Authenticator\AuthenticatorCollection|null
      */
     protected $_authenticators;
 
     /**
      * Identifier collection
      *
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierCollection|null
      */
     protected $_identifiers;
 
