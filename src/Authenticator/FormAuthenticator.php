@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Psr\Http\Message\ServerRequestInterface;

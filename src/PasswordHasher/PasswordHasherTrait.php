@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Authentication\PasswordHasher;
 
-use Authentication\PasswordHasher\PasswordHasherInterface;
-
 trait PasswordHasherTrait
 {
     /**

@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace Authentication\UrlChecker;
 
-use Authentication\UrlChecker\UrlCheckerInterface;
 use Cake\Core\App;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;

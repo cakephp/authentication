@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use Authentication\AbstractCollection;
-use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use RuntimeException;

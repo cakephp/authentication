@@ -15,7 +15,6 @@ declare(strict_types=1);
  */
 namespace Authentication\PasswordHasher;
 
-use Authentication\PasswordHasher\PasswordHasherInterface;
 use Cake\Core\App;
 use RuntimeException;
 

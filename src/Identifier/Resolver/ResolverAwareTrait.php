@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier\Resolver;
 
-use Authentication\Identifier\Resolver\ResolverInterface;
 use Cake\Core\App;
 use InvalidArgumentException;
 use RuntimeException;
