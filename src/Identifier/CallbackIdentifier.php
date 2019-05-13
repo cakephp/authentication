@@ -35,7 +35,7 @@ class CallbackIdentifier extends AbstractIdentifier
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function __construct(array $config)
     {
@@ -63,7 +63,7 @@ class CallbackIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function identify(array $data)
     {

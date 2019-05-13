@@ -37,7 +37,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function __construct(array $config = [])
     {

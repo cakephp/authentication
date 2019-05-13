@@ -87,7 +87,7 @@ class PasswordIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function identify(array $data)
     {

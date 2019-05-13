@@ -37,7 +37,7 @@ class TokenIdentifier extends AbstractIdentifier
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function identify(array $data)
     {

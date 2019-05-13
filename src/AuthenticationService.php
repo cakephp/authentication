@@ -157,7 +157,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      *
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */

@@ -37,7 +37,7 @@ class CakeRouterUrlChecker extends DefaultUrlChecker
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function check(ServerRequestInterface $request, $loginUrls, array $options = [])
     {
