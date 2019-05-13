@@ -24,12 +24,20 @@ implementations/sources::
        ->getAttribute('identity')
        ->getIdentifier();
 
-The identity object provides ArrayAccess but as well a ``get()`` method
-to access data. It is strongly recommended to use the ``get()`` method
-over array access because the get method is aware of the field mapping::
+The identity object provides ArrayAccess but as well a ``get()`` method to
+access data.  It is strongly recommended to use the ``get()`` method over array
+access because the get method is aware of the field mapping::
 
-   $identity->get('email');
-   $identity->get('username');
+    $identity->get('email');
+    $identity->get('username');
+
+The ``get()`` method can also be type-hinted via IDE meta file, e.g. through
+`IdeHelper <https://github.com/dereuromark/cakephp-ide-helper>`__.
+
+If you want, you can use property access, however::
+
+    $identity->email;
+    $identity->username;
 
 The default Identity object class can be configured to map fields. This
 is pretty useful if the identifier of the identity is a non-conventional
