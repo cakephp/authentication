@@ -18,7 +18,7 @@
         "cakephp/cakephp": "^3.7",
         "cakephp/cakephp-codesniffer": "^3.0",
         "phpunit/phpunit": "^5.7.14|^6.0",
-        "firebase/php-jwt": "~4.0"
+        "firebase/php-jwt": "~5.0"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
