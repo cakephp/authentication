@@ -18,7 +18,7 @@ using the Password Identifier looks like::
        'passwordHasher' => [
            'className' => 'Authentication.Fallback',
            'hashers' => [
-               ['Authentication.Default'],
+               'Authentication.Default',
                [
                    'className' => 'Authentication.Legacy',
                    'hashType' => 'md5'
