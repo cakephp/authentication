@@ -106,7 +106,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    protected function get(string $field)
+    public function get($field)
     {
         $map = $this->_config['fieldMap'];
         if (isset($map[$field])) {

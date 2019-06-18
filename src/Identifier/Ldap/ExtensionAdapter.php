@@ -71,7 +71,7 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * Get the LDAP connection
      *
-     * @return mixed
+     * @return resource
      * @throws \RuntimeException If the connection is empty
      */
     public function getConnection()
