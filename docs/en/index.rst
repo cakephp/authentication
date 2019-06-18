@@ -13,12 +13,9 @@ Load the plugin by adding the following statement in your project's ``src/Applic
     public function bootstrap()
     {
         parent::bootstrap();
+        
         $this->addPlugin('Authentication');
     }
-
-Prior to 3.6.0::
-
-    Plugin::load('Authentication');
 
 Configuration
 =============
@@ -30,14 +27,15 @@ middleware if you don't know what it is or how to work with it.
 Example of configuring the authentication middleware using ``authentication`` application hook::
 
     use Authentication\AuthenticationService;
+    use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
+    use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
     {
-
         /**
          * Returns a service provider instance.
          *
@@ -45,7 +43,7 @@ Example of configuring the authentication middleware using ``authentication`` ap
          * @param \Psr\Http\Message\ResponseInterface $response Response
          * @return \Authentication\AuthenticationServiceInterface
          */
-        public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
+        public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response): AuthenticationServiceInterface
         {
             $service = new AuthenticationService();
 
@@ -67,7 +65,7 @@ Example of configuring the authentication middleware using ``authentication`` ap
             return $service;
         }
 
-        public function middleware($middlewareQueue)
+        public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
         {
             // Various other middlewares for error handling, routing etc. added here.
 
