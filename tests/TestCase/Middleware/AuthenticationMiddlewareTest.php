@@ -24,6 +24,7 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
 use TestApp\Application;
@@ -205,6 +206,43 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertInstanceOf(IdentityInterface::class, $identity);
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertTrue($service->getResult()->isValid());
+    }
+
+    /**
+     * Test that session authenticator and a clearIdentity (logout) don't
+     * result in the user still being logged in.
+     *
+     * @return void
+     */
+    public function testAuthenticationAndClearIdentityInteraction()
+    {
+        $request = ServerRequestFactory::fromGlobals([
+            'REQUEST_URI' => '/testpath',
+        ]);
+        // Setup the request with a session so we can test it being cleared
+        $request->getSession()->write('Auth', ['username' => 'mariano']);
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+            ],
+        ]);
+        $handler = new TestRequestHandler(function ($request) {
+            $this->assertNotEmpty($request->getAttribute('identity'), 'Should have an identity present.');
+            $this->assertNotEmpty($request->getSession()->read('Auth'), 'Should have session data.');
+            $response = new Response();
+            $result = $request->getAttribute('authentication')->clearIdentity($request, $response);
+
+            return $result['response'];
+        });
+        $middleware = new AuthenticationMiddleware($service);
+
+        $response = $middleware->process($request, $handler);
+        $this->assertNull($service->getAuthenticationProvider(), 'no authenticator anymore.');
+        $this->assertNull($request->getSession()->read('Auth'), 'no more session data.');
     }
 
     /**

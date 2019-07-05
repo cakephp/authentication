@@ -207,6 +207,7 @@ class AuthenticationService implements AuthenticationServiceInterface
                 $response = $result['response'];
             }
         }
+        $this->_successfulAuthenticator = null;
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
