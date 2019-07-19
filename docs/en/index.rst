@@ -6,14 +6,14 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication
+    php composer.phar require cakephp/authentication:^2.0
 
 Load the plugin by adding the following statement in your project's ``src/Application.php``::
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         parent::bootstrap();
-        
+
         $this->addPlugin('Authentication');
     }
 
@@ -21,7 +21,7 @@ Configuration
 =============
 
 Add the authentication to the middleware. See the CakePHP `documentation
-<http://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
+<http://book.cakephp.org/4.x/en/controllers/middleware.html>`_ on how to use
 middleware if you don't know what it is or how to work with it.
 
 Example of configuring the authentication middleware using ``authentication`` application hook::
