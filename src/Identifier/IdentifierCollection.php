@@ -18,6 +18,10 @@ use Authentication\AbstractCollection;
 use Cake\Core\App;
 use RuntimeException;
 
+/**
+ * Class IdentifierCollection
+ * @method \Authentication\Identifier\IdentifierInterface get($name)
+ */
 class IdentifierCollection extends AbstractCollection implements IdentifierInterface
 {
 
