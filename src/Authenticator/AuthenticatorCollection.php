@@ -21,7 +21,7 @@ use RuntimeException;
 
 /**
  * Class AuthenticatorCollection
- * @method \Authentication\Authenticator\AuthenticatorInterface get($name)
+ * @method \Authentication\Authenticator\AuthenticatorInterface|null get($name)
  */
 class AuthenticatorCollection extends AbstractCollection
 {
