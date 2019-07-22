@@ -19,7 +19,6 @@ use Cake\Core\App;
 use RuntimeException;
 
 /**
- * Class IdentifierCollection
  * @method \Authentication\Identifier\IdentifierInterface|null get($name)
  */
 class IdentifierCollection extends AbstractCollection implements IdentifierInterface
