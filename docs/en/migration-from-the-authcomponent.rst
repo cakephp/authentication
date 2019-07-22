@@ -236,7 +236,7 @@ leveraging the ``AuthenticationService``::
            // Assuming you are using the `Password` identifier.
            if ($authService->identifiers()->get('Password')->needsPasswordRehash()) {
                // Rehash happens on save.
-               $user = $this->Users->get($this->Auth->user('id'));
+               $user = $this->Users->get($this->Authentication->getIdentityData('id'));
                $user->password = $this->request->getData('password');
                $this->Users->save($user);
            }
