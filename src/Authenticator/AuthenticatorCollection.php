@@ -20,7 +20,7 @@ use Cake\Core\App;
 use RuntimeException;
 
 /**
- * @method \Authentication\Authenticator\AuthenticatorInterface|null get($name)
+ * @method \Authentication\Authenticator\AuthenticatorInterface|null get(string $name)
  */
 class AuthenticatorCollection extends AbstractCollection
 {
