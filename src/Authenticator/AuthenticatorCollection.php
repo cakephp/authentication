@@ -19,6 +19,10 @@ use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\App;
 use RuntimeException;
 
+/**
+ * Class AuthenticatorCollection
+ * @method \Authentication\Authenticator\AuthenticatorInterface get($name)
+ */
 class AuthenticatorCollection extends AbstractCollection
 {
     /**
@@ -55,8 +59,9 @@ class AuthenticatorCollection extends AbstractCollection
         $authenticator = new $className($this->_identifiers, $config);
         if (!($authenticator instanceof AuthenticatorInterface)) {
             throw new RuntimeException(sprintf(
-                'Authenticator class `%s` must implement \Auth\Authentication\AuthenticatorInterface',
-                $className
+                'Authenticator class `%s` must implement `%s`.',
+                $className,
+                AuthenticatorInterface::class
             ));
         }
 
