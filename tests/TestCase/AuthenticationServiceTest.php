@@ -135,7 +135,7 @@ class AuthenticationServiceTest extends TestCase
      * testLoadInvalidAuthenticatorObject
      *
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement \Auth\Authentication\AuthenticatorInterface
+     * @expectedExceptionMessage Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement `Authentication\Authenticator\AuthenticatorInterface`.
      */
     public function testLoadInvalidAuthenticatorObject()
     {
