@@ -54,7 +54,7 @@ class SessionAuthenticatorTest extends TestCase
         }
         $this->sessionMock = $this->getMockBuilder($class)
             ->disableOriginalConstructor()
-            ->setMethods(['read', 'write', 'delete'])
+            ->setMethods(['read', 'write', 'delete', 'renew'])
             ->getMock();
     }
 
@@ -158,7 +158,11 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
 
         $data = new ArrayObject(['username' => 'florian']);
-        $this->sessionMock->expects($this->at(0))
+        $this->sessionMock
+            ->expects($this->at(0))
+            ->method('renew');
+
+        $this->sessionMock->expects($this->at(1))
             ->method('write')
             ->with('Auth', $data);
 
@@ -186,6 +190,10 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock->expects($this->at(0))
             ->method('delete')
             ->with('Auth');
+
+        $this->sessionMock
+            ->expects($this->at(1))
+            ->method('renew');
 
         $result = $authenticator->clearIdentity($request, $response);
         $this->assertInternalType('array', $result);
