@@ -170,7 +170,7 @@ class ExtensionAdapter implements AdapterInterface
     protected function _setErrorHandler(): void
     {
         set_error_handler(
-            function ($errorNumber, $errorText): void {
+            function ($errorNumber, $errorText) {
                 throw new ErrorException($errorText);
             },
             E_ALL
