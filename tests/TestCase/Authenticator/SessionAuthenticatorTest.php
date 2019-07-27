@@ -55,7 +55,7 @@ class SessionAuthenticatorTest extends TestCase
         }
         $this->sessionMock = $this->getMockBuilder($class)
             ->disableOriginalConstructor()
-            ->setMethods(['read', 'write', 'delete', 'renew'])
+            ->setMethods(['read', 'write', 'delete', 'renew', 'check'])
             ->getMock();
     }
 
@@ -159,13 +159,27 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
 
         $data = new ArrayObject(['username' => 'florian']);
+
         $this->sessionMock
             ->expects($this->at(0))
+            ->method('check')
+            ->with('Auth')
+            ->willReturn(false);
+
+        $this->sessionMock
+            ->expects($this->once())
             ->method('renew');
 
-        $this->sessionMock->expects($this->at(1))
+        $this->sessionMock
+            ->expects($this->at(2))
             ->method('write')
             ->with('Auth', $data);
+
+        $this->sessionMock
+            ->expects($this->at(3))
+            ->method('check')
+            ->with('Auth')
+            ->willReturn(true);
 
         $result = $authenticator->persistIdentity($request, $response, $data);
         $this->assertIsArray($result);
@@ -173,6 +187,9 @@ class SessionAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        // Call again to test that session isn't renewed if identity is already persisted.
+        $authenticator->persistIdentity($request, $response, $data);
     }
 
     /**
