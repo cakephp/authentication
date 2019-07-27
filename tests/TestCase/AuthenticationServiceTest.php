@@ -129,7 +129,7 @@ class AuthenticationServiceTest extends TestCase
     public function testLoadInvalidAuthenticatorObject()
     {
         $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement \Auth\Authentication\AuthenticatorInterface');
+        $this->expectExceptionMessage('Authenticator class `TestApp\Authentication\Authenticator\InvalidAuthenticator` must implement `Authentication\Authenticator\AuthenticatorInterface`');
         $service = new AuthenticationService();
         $service->loadAuthenticator(InvalidAuthenticator::class);
     }

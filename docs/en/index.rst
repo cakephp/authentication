@@ -182,7 +182,7 @@ To log an identity out just do::
 
     $this->Authentication->logout();
 
-If you have set the ``loginRedirect`` config, ``Authentication::logout()`` will
+If you have set the ``logoutRedirect`` config, ``Authentication::logout()`` will
 return that value else will return ``false``. It won't perform any actual redirection
 in either case.
 

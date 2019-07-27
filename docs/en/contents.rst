@@ -5,6 +5,7 @@ Contents
     :maxdepth: 2
     :caption: CakePHP Authentication
 
+    /index
     /authenticators
     /identifiers
     /password-hashers

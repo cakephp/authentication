@@ -84,6 +84,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {
         $sessionKey = $this->getConfig('sessionKey');
+        $request->getAttribute('session')->renew();
         $request->getAttribute('session')->write($sessionKey, $identity);
 
         return [
@@ -99,6 +100,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     {
         $sessionKey = $this->getConfig('sessionKey');
         $request->getAttribute('session')->delete($sessionKey);
+        $request->getAttribute('session')->renew();
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),

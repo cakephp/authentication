@@ -20,6 +20,9 @@ use Authentication\AbstractCollection;
 use Cake\Core\App;
 use RuntimeException;
 
+/**
+ * @method \Authentication\Identifier\IdentifierInterface|null get(string $name)
+ */
 class IdentifierCollection extends AbstractCollection implements IdentifierInterface
 {
     /**
