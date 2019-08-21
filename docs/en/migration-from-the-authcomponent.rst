@@ -89,8 +89,8 @@ Checking identities
 
 After applying the middleware you can use identity data by using the
 ``identity`` request attribute. This replaces the
-``$this->Auth->user()`` calls you are be using now. If the the current
-user is unauthenticaed or if the provided credentials were invalid, the
+``$this->Auth->user()`` calls you are using now. If the current
+user is unauthenticated or if the provided credentials were invalid, the
 ``identity`` attribute will be ``null``::
 
    $user = $request->getAttribute('identity');
