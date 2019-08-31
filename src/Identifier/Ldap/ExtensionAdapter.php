@@ -160,6 +160,21 @@ class ExtensionAdapter implements AdapterInterface
 
         $this->_connection = null;
     }
+    
+     /**
+     * Search the LDAP directory
+     *
+     * @return array
+     */
+    public function search($baseDN, $filter)
+    {
+        $this->_setErrorHandler();
+        $result = ldap_search($this->_connection, $baseDN, $filter);
+        $entries = ldap_get_entries($this->_connection, $result);
+        $this->_unsetErrorHandler();
+
+        return $entries;
+    } 
 
     /**
      * Set an error handler to turn LDAP errors into exceptions
