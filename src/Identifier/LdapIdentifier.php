@@ -193,7 +193,6 @@ class LdapIdentifier extends AbstractIdentifier
 
                 for ($i = 0; $i < $entries['count']; $i++) {
                     if ($this->_ldap->bind($entries[$i]['dn'], $password)) {
-
                         $this->_ldap->unbind();
 
                         return new ArrayObject([
@@ -214,7 +213,7 @@ class LdapIdentifier extends AbstractIdentifier
     /**
      * Format LDAP attribute data into associative array
      *
-     * @param array $entry The entry
+     * @param array $attributes ldap entry attributes
      * @return array
      */
     protected function _formatAttributes($attributes)
