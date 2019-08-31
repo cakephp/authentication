@@ -189,7 +189,6 @@ class LdapIdentifier extends AbstractIdentifier
             $ldapBind = $this->_ldap->bind($config['bindDN'], $config['bindPassword']);
 
             if ($ldapBind === true) {
-
                 $entries = $this->_ldap->search($config['baseDN'], $config['filter']($username));
 
                 for ($i = 0; $i < $entries['count']; $i++) {
@@ -199,7 +198,7 @@ class LdapIdentifier extends AbstractIdentifier
 
                         return new ArrayObject([
                             $config['fields'][self::CREDENTIAL_USERNAME] => $username,
-                            'entry' => $this->_formatEntry($entries[$i])
+                            'ldap_attributes' => $this->_formatAttributes($entries[$i])
                         ]);
                     }
                 }
@@ -213,17 +212,17 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
-     * Format LDAP entry data into associative array
+     * Format LDAP attribute data into associative array
      *
      * @param array $entry The entry
      * @return array
      */
-    protected function _formatEntry($entry)
+    protected function _formatAttributes($attributes)
     {
         $formatted = [];
-        foreach ($entry as $name => $values) {
+        foreach ($attributes as $name => $values) {
             if (is_array($values)) {
-                foreach($values as $k => $value) {
+                foreach ($values as $k => $value) {
                     if ($k !== 'count') {
                         $formatted[$name][] = $value;
                     }
@@ -232,6 +231,7 @@ class LdapIdentifier extends AbstractIdentifier
                 $formatted[$name] = $values;
             }
         }
+
         return $formatted;
     }
 
