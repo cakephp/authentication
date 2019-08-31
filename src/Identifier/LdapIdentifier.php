@@ -197,10 +197,10 @@ class LdapIdentifier extends AbstractIdentifier
 
                         $this->_ldap->unbind();
 
-return new ArrayObject([
-    $config['fields'][self::CREDENTIAL_USERNAME] => $username,
-    'entry' => $entries[$i]
-]);
+                        return new ArrayObject([
+                            $config['fields'][self::CREDENTIAL_USERNAME] => $username,
+                            'entry' => $entries[$i]
+                        ]);
                     }
                 }
             }
