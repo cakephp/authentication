@@ -30,9 +30,13 @@ use RuntimeException;
  * ```
  *  new LdapIdentifier([
  *       'host' => 'ldap.example.com',
- *       'bindDN' => function($username) {
- *           return $username; //transform into a rdn or dn
- *       },
+ *       'port' => '389',
+ *       'bindDN' => 'uid=read-only-admin,dc=example,dc=com',
+ *       'bindPassword' => 'password',
+ *       'filter' => function($uid) {
+ *           return str_replace("%uid", $uid,
+ *               "(&(&(|(objectclass=person)))(|(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+ *           },
  *       'options' => [
  *           LDAP_OPT_PROTOCOL_VERSION => 3
  *       ]
@@ -55,7 +59,12 @@ class LdapIdentifier extends AbstractIdentifier
             self::CREDENTIAL_USERNAME => 'username',
             self::CREDENTIAL_PASSWORD => 'password'
         ],
-        'port' => 389
+        'port' => 389,
+        'filter' => function($uid) {
+            return str_replace("%uid", $uid,
+                "(&(&(|(objectclass=person)))(|(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+         },
+        'options' => [LDAP_OPT_PROTOCOL_VERSION => 3]
     ];
 
     /**
@@ -92,13 +101,13 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _checkLdapConfig()
     {
-        if (!isset($this->_config['bindDN'])) {
+        if (!isset($this->_config['filter'])) {
             throw new RuntimeException('Config `bindDN` is not set.');
         }
-        if (!is_callable($this->_config['bindDN'])) {
+        if (!is_callable($this->_config['filter'])) {
             throw new InvalidArgumentException(sprintf(
-                'The `bindDN` config is not a callable. Got `%s` instead.',
-                gettype($this->_config['bindDN'])
+                'The `filter` config is not a callable. Got `%s` instead.',
+                gettype($this->_config['filter'])
             ));
         }
         if (!isset($this->_config['host'])) {
@@ -181,13 +190,22 @@ class LdapIdentifier extends AbstractIdentifier
     {
         $config = $this->getConfig();
         try {
-            $ldapBind = $this->_ldap->bind($config['bindDN']($username), $password);
+            $ldapBind = $this->_ldap->bind($config['bindDN'], $config['bindPassword']);
             if ($ldapBind === true) {
-                $this->_ldap->unbind();
+                
+                $result = ldap_search($ldap_connection, 'DC=example,DC=com', 'mail='.$user_email);
+                $entries = ldap_get_entries($ldap_connection, $result);
+                
+                $entries = $this->_ldap->search($config['baseDN'], $config['filter']($username));
+                
+                if (isset($entries[0]['dn']) && $this->_ldap->bind($entries[0]['dn'], $password) {
+                        
+                    $this->_ldap->unbind();
 
-                return new ArrayObject([
-                    $config['fields'][self::CREDENTIAL_USERNAME] => $username
-                ]);
+                    return new ArrayObject([
+                        $config['fields'][self::CREDENTIAL_USERNAME] => $username
+                    ]);   
+                }
             }
         } catch (ErrorException $e) {
             $this->_handleLdapError($e->getMessage());
