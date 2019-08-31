@@ -164,6 +164,8 @@ class ExtensionAdapter implements AdapterInterface
      /**
      * Search the LDAP directory
      *
+     * @param string $baseDN Base DN for the directory
+     * @param string $filter Wearch filter
      * @return array
      */
     public function search($baseDN, $filter)
