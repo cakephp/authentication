@@ -199,7 +199,7 @@ class LdapIdentifier extends AbstractIdentifier
 
                         return new ArrayObject([
                             $config['fields'][self::CREDENTIAL_USERNAME] => $username,
-                            'entry' => $entries[$i]
+                            'entry' => $this->_formatEntry($entries[$i])
                         ]);
                     }
                 }
@@ -210,6 +210,29 @@ class LdapIdentifier extends AbstractIdentifier
         $this->_ldap->unbind();
 
         return null;
+    }
+
+    /**
+     * Format LDAP entry data into associative array
+     *
+     * @param array $entry The entry
+     * @return array
+     */
+    protected function _formatEntry($entry)
+    {
+        $formatted = [];
+        foreach ($entry as $name => $values) {
+            if (is_array($values)) {
+                foreach($values as $k => $value) {
+                    if ($k !== 'count') {
+                        $formatted[$name][] = $value;
+                    }
+                }
+            } elseif (is_string($name) && $name !== 'count') {
+                $formatted[$name] = $values;
+            }
+        }
+        return $formatted;
     }
 
     /**
