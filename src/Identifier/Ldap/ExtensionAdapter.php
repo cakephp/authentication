@@ -30,10 +30,10 @@ class ExtensionAdapter implements AdapterInterface
 {
 
     /**
-     * LDAP Object
-     *
-     * @var resource|null
-     */
+    * LDAP Object
+    *
+    * @var resource|null
+    */
     protected $_connection;
 
     /**
@@ -160,8 +160,8 @@ class ExtensionAdapter implements AdapterInterface
 
         $this->_connection = null;
     }
-    
-     /**
+
+    /**
      * Search the LDAP directory
      *
      * @param string $baseDN Base DN for the directory
@@ -176,7 +176,7 @@ class ExtensionAdapter implements AdapterInterface
         $this->_unsetErrorHandler();
 
         return $entries;
-    } 
+    }
 
     /**
      * Set an error handler to turn LDAP errors into exceptions
@@ -188,7 +188,7 @@ class ExtensionAdapter implements AdapterInterface
     {
         set_error_handler(
             function ($errorNumber, $errorText) {
-                 throw new ErrorException($errorText);
+                throw new ErrorException($errorText);
             },
             E_ALL
         );
