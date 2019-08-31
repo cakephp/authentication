@@ -192,7 +192,9 @@ class LdapIdentifier extends AbstractIdentifier
                 $entries = $this->_ldap->search($config['baseDN'], $config['filter']($username));
 
                 for ($i = 0; $i < $entries['count']; $i++) {
-                    if ($this->_ldap->bind($entries[$i]['dn'], $password)) {
+                    $userLdapBind = $this->_ldap->bind($entries[$i]['dn'], $password);
+
+                    if ($userLdapBind === true) {
                         $this->_ldap->unbind();
 
                         return new ArrayObject([
