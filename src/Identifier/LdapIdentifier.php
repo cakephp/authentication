@@ -12,217 +12,195 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Identifier;
+namespace Authentication\Identifier\Ldap;
 
-use ArrayObject;
 use Authentication\Identifier\Ldap\AdapterInterface;
-use Authentication\Identifier\Ldap\ExtensionAdapter;
-use Cake\Core\App;
 use ErrorException;
-use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * LDAP Identifier
+ * Provides a very thin OOP wrapper around the ldap_* functions.
  *
- * Identifies authentication credentials using LDAP.
+ * We don't need and want a huge LDAP lib for our purpose.
  *
- * ```
- *  new LdapIdentifier([
- *       'host' => 'ldap.example.com',
- *       'port' => '389',
- *       'bindDN' => 'uid=read-only-admin,dc=example,dc=com',
- *       'bindPassword' => 'password',
- *       'filter' => function($uid) {
- *           return str_replace("%uid", $uid,
- *               "(&(&(|(objectclass=person)))(|(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
- *           },
- *       'options' => [
- *           LDAP_OPT_PROTOCOL_VERSION => 3
- *       ]
- *  ]);
- * ```
- *
- * @link https://github.com/QueenCityCodeFactory/LDAP
+ * But this makes it easier to unit test code that is using LDAP because we can
+ * mock it very easy. It also provides some convenience.
  */
-class LdapIdentifier extends AbstractIdentifier
+class ExtensionAdapter implements AdapterInterface
 {
 
     /**
-     * Default configuration
+     * LDAP Object
      *
-     * @var array
+     * @var resource|null
      */
-    protected $_defaultConfig = [
-        'ldap' => ExtensionAdapter::class,
-        'fields' => [
-            self::CREDENTIAL_USERNAME => 'username',
-            self::CREDENTIAL_PASSWORD => 'password'
-        ],
-        'port' => 389
-    ];
+    protected $_connection;
 
     /**
-     * List of errors
-     *
-     * @var array
-     */
-    protected $_errors = [];
-
-    /**
-     * LDAP connection object
-     *
-     * @var \Authentication\Identifier\Ldap\AdapterInterface
-     */
-    protected $_ldap = null;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(array $config = [])
-    {
-        parent::__construct($config);
-
-        $this->_checkLdapConfig();
-        $this->_buildLdapObject();
-    }
-
-    /**
-     * Checks the LDAP config
+     * Constructor
      *
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     */
+    public function __construct()
+    {
+        if (!extension_loaded('ldap')) {
+            throw new RuntimeException('You must enable the ldap extension to use the LDAP identifier.');
+        }
+
+        if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
+            define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
+        }
+    }
+
+    /**
+     * Bind to LDAP directory
+     *
+     * @param string $bind Bind rdn
+     * @param string $password Bind password
+     * @return bool
+     */
+    public function bind($bind, $password)
+    {
+        $this->_setErrorHandler();
+        $result = ldap_bind($this->getConnection(), $bind, $password);
+        $this->_unsetErrorHandler();
+
+        return $result;
+    }
+
+    /**
+     * Get the LDAP connection
+     *
+     * @return resource
+     * @throws \RuntimeException If the connection is empty
+     */
+    public function getConnection()
+    {
+        if (empty($this->_connection)) {
+            throw new RuntimeException('You are not connected to a LDAP server.');
+        }
+
+        return $this->_connection;
+    }
+
+    /**
+     * Connect to an LDAP server
+     *
+     * @param string $host Hostname
+     * @param int $port Port
+     * @param array $options Additonal LDAP options
      * @return void
      */
-    protected function _checkLdapConfig()
+    public function connect($host, $port, $options)
     {
-        if (!isset($this->_config['filter'])) {
-            throw new RuntimeException('Config `bindDN` is not set.');
+        $this->_setErrorHandler();
+        $resource = ldap_connect($host, $port);
+        if ($resource === false) {
+            throw new RuntimeException('Unable to connect to LDAP server.');
         }
-        if (!is_callable($this->_config['filter'])) {
-            throw new InvalidArgumentException(sprintf(
-                'The `filter` config is not a callable. Got `%s` instead.',
-                gettype($this->_config['filter'])
-            ));
-        }
-        if (!isset($this->_config['host'])) {
-            throw new RuntimeException('Config `host` is not set.');
+        $this->_connection = $resource;
+        $this->_unsetErrorHandler();
+
+        if (is_array($options)) {
+            foreach ($options as $option => $value) {
+                $this->setOption($option, $value);
+            }
         }
     }
 
     /**
-     * Constructs the LDAP object and sets it to the property
+     *  Set the value of the given option
      *
-     * @throws \RuntimeException
+     * @param int $option Option to set
+     * @param mixed $value The new value for the specified option
      * @return void
      */
-    protected function _buildLdapObject()
+    public function setOption($option, $value)
     {
-        $ldap = $this->_config['ldap'];
-
-        if (is_string($ldap)) {
-            $class = App::className($ldap, 'Identifier/Ldap');
-            $ldap = new $class();
-        }
-
-        if (!($ldap instanceof AdapterInterface)) {
-            $message = sprintf('Option `ldap` must implement `%s`.', AdapterInterface::class);
-            throw new RuntimeException($message);
-        }
-
-        $this->_ldap = $ldap;
+        $this->_setErrorHandler();
+        ldap_set_option($this->getConnection(), $option, $value);
+        $this->_unsetErrorHandler();
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function identify(array $data)
-    {
-        $this->_connectLdap();
-        $fields = $this->getConfig('fields');
-
-        if (isset($data[$fields[self::CREDENTIAL_USERNAME]]) && isset($data[$fields[self::CREDENTIAL_PASSWORD]])) {
-            return $this->_bindUser($data[$fields[self::CREDENTIAL_USERNAME]], $data[$fields[self::CREDENTIAL_PASSWORD]]);
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns configured LDAP adapter.
+     * Get the current value for given option
      *
-     * @return \Authentication\Identifier\Ldap\AdapterInterface
+     * @param int $option Option to get
+     * @return mixed This will be set to the option value.
      */
-    public function getAdapter()
+    public function getOption($option)
     {
-        return $this->_ldap;
+        $this->_setErrorHandler();
+        ldap_get_option($this->getConnection(), $option, $returnValue);
+        $this->_unsetErrorHandler();
+
+        return $returnValue;
     }
 
     /**
-     * Initializes the LDAP connection
+     * Get the diagnostic message
+     *
+     * @return string|null
+     */
+    public function getDiagnosticMessage()
+    {
+        return $this->getOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
+    }
+
+    /**
+     * Unbind from LDAP directory
      *
      * @return void
      */
-    protected function _connectLdap()
+    public function unbind()
     {
-        $config = $this->getConfig();
+        $this->_setErrorHandler();
+        ldap_unbind($this->_connection);
+        $this->_unsetErrorHandler();
 
-        $this->_ldap->connect(
-            $config['host'],
-            $config['port'],
-            $this->getConfig('options')
+        $this->_connection = null;
+    }
+
+    /**
+     * Search the LDAP directory
+     *
+     * @param string $baseDN Base DN for the directory
+     * @param string $filter Wearch filter
+     * @return array
+     */
+    public function search($baseDN, $filter)
+    {
+        $this->_setErrorHandler();
+        $result = ldap_search($this->_connection, $baseDN, $filter);
+        $entries = ldap_get_entries($this->_connection, $result);
+        $this->_unsetErrorHandler();
+
+        return $entries;
+    }
+
+    /**
+     * Set an error handler to turn LDAP errors into exceptions
+     *
+     * @return void
+     * @throws \ErrorException
+     */
+    protected function _setErrorHandler()
+    {
+        set_error_handler(
+            function ($errorNumber, $errorText) {
+                throw new ErrorException($errorText);
+            },
+            E_ALL
         );
     }
 
     /**
-     * Try to bind the given user to the LDAP server
+     * Restore the error handler
      *
-     * @param string $username The username
-     * @param string $password The password
-     * @return \ArrayAccess|null
-     */
-    protected function _bindUser($username, $password)
-    {
-        $config = $this->getConfig();
-
-        try {
-            $ldapBind = $this->_ldap->bind($config['bindDN'], $config['bindPassword']);
-
-            if ($ldapBind === true) {
-
-                $entries = $this->_ldap->search($config['baseDN'], $config['filter']($username));
-
-                for ($i = 0; $i < $entries['count']; $i++) {
-                    if ($this->_ldap->bind($entries[$i]['dn'], $password)) {
-
-                        $this->_ldap->unbind();
-
-                        return new ArrayObject([
-                            $config['fields'][self::CREDENTIAL_USERNAME] => $username
-                        ]);
-                    }
-                }
-            }
-        } catch (ErrorException $e) {
-            $this->_handleLdapError($e->getMessage());
-        }
-        $this->_ldap->unbind();
-
-        return null;
-    }
-
-    /**
-     * Handles an LDAP error
-     *
-     * @param string $message Exception message
      * @return void
      */
-    protected function _handleLdapError($message)
+    protected function _unsetErrorHandler()
     {
-        $extendedError = $this->_ldap->getDiagnosticMessage();
-        if (!is_null($extendedError)) {
-            $this->_errors[] = $extendedError;
-        }
-        $this->_errors[] = $message;
+        restore_error_handler();
     }
 }
