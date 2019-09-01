@@ -40,8 +40,8 @@ class LdapIdentifierTest extends TestCase
         $baseDN = 'dc=example,dc=com';
         $filter = function ($uid) {
             return str_replace(
-                "%uid",
-                $uid,
+                "%uid", 
+                $uid, 
                 "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
         };
         $options = [
@@ -138,10 +138,10 @@ class LdapIdentifierTest extends TestCase
             'bindPassword' => 'password',
             'baseDN' => 'dc=example,dc=com',
             'filter' => function ($uid) {
-                return str_replace(
-                    "%uid",
-                    $uid,
-                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+            return str_replace(
+                "%uid",
+                $uid,
+                "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
             'ldap' => $ldap
         ]);
@@ -203,10 +203,10 @@ class LdapIdentifierTest extends TestCase
             'bindPassword' => 'password',
             'baseDN' => 'dc=example,dc=com',
             'filter' => function ($uid) {
-                return str_replace(
-                    "%uid",
-                    $uid,
-                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+            return str_replace(
+                "%uid",
+                $uid,
+                "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
             'ldap' => $notLdap
         ]);
@@ -224,10 +224,10 @@ class LdapIdentifierTest extends TestCase
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
             'filter' => function ($uid) {
-                return str_replace(
-                    "%uid",
-                    $uid,
-                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+            return str_replace(
+                "%uid",
+                $uid,
+                "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
         ]);
     }
@@ -259,10 +259,10 @@ class LdapIdentifierTest extends TestCase
         $identifier = new LdapIdentifier([
             'bindDN' => 'cn=read-only-admin,dc=example,dc=com',
             'filter' => function ($uid) {
-                return str_replace(
-                    "%uid",
-                    $uid,
-                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+            return str_replace(
+                "%uid",
+                $uid,
+                "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
         ]);
     }
@@ -286,10 +286,10 @@ class LdapIdentifierTest extends TestCase
             'bindPassword' => 'password',
             'baseDN' => 'dc=example,dc=com',
             'filter' => function ($uid) {
-                return str_replace(
-                    "%uid",
-                    $uid,
-                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+            return str_replace(
+                "%uid",
+                $uid,
+                "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
             'ldap' => $ldap
         ]);
