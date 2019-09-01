@@ -33,8 +33,13 @@ class LdapIdentifierTest extends TestCase
     public function testIdentify()
     {
         $host = 'ldap.example.com';
-        $bind = function ($username) {
-            return 'cn=' . $username . ',dc=example,dc=com';
+        $port = 389;
+        $bindDN = 'uid=einstein,dc=example,dc=com';
+        $bindPassword = 'doe';
+        $baseDN = 'dc=example,dc=com';
+        $filter = function($uid) {
+            return str_replace("%uid", $uid,
+                "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
         };
         $options = [
             'foo' => 3
@@ -43,15 +48,64 @@ class LdapIdentifierTest extends TestCase
         $ldap = $this->createMock(AdapterInterface::class);
         $ldap->expects($this->once())
             ->method('connect')
-            ->with($host, 389, $options);
-        $ldap->expects($this->once())
+            ->with($host, $port, $options);
+        $ldap->expects($this->any())
             ->method('bind')
-            ->with('cn=john,dc=example,dc=com', 'doe')
+            ->with('uid=einstein,dc=example,dc=com', 'doe')
             ->willReturn(true);
+        $ldap->expects($this->once())
+            ->method('search')
+            ->with($baseDN, $filter('john'))
+            ->willReturn([
+                    'count' => (int) 1,
+                    (int) 0 => [
+                        'objectclass' => [
+                            'count' => (int) 4,
+                            (int) 0 => 'inetOrgPerson',
+                            (int) 1 => 'organizationalPerson',
+                            (int) 2 => 'person',
+                            (int) 3 => 'top'
+                        ],
+                        (int) 0 => 'objectclass',
+                        'cn' => [
+                            'count' => (int) 1,
+                            (int) 0 => 'Albert Einstein'
+                        ],
+                        (int) 1 => 'cn',
+                        'sn' => [
+                            'count' => (int) 1,
+                            (int) 0 => 'Einstein'
+                        ],
+                        (int) 2 => 'sn',
+                        'uid' => [
+                            'count' => (int) 1,
+                            (int) 0 => 'einstein'
+                        ],
+                        (int) 3 => 'uid',
+                        'mail' => [
+                            'count' => (int) 1,
+                            (int) 0 => 'einstein@ldap.forumsys.com'
+                        ],
+                        (int) 4 => 'mail',
+                        'telephonenumber' => [
+                            'count' => (int) 1,
+                            (int) 0 => '314-159-2653'
+                        ],
+                        (int) 5 => 'telephonenumber',
+                        'count' => (int) 6,
+                        'dn' => 'uid=einstein,dc=example,dc=com'
+                    ]
+                ]
+            );
+
 
         $identifier = new LdapIdentifier([
             'host' => $host,
-            'bindDN' => $bind,
+            'port' => $port,
+            'bindDN' => $bindDN,
+            'bindPassword' => $bindPassword,
+            'baseDN' => $baseDN,
+            'filter' => $filter,
             'ldap' => $ldap,
             'options' => $options
         ]);
@@ -77,8 +131,12 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
+            'bindDN' => 'cn=read-only-admin,dc=example,dc=com',
+            'bindPassword' => 'password',
+            'baseDN' => 'dc=example,dc=com',
+            'filter' => function($uid) {
+                return str_replace("%uid", $uid,
+                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
             'ldap' => $ldap
         ]);
@@ -102,11 +160,20 @@ class LdapIdentifierTest extends TestCase
     {
         $this->skipIf(!extension_loaded('ldap'), 'LDAP extension is not loaded.');
 
+        $bindDN = 'cn=read-only-admin,dc=example,dc=com';
+        $bindPassword = 'password';
+        $baseDN = 'dc=example,dc=com';
+        $filter = function($uid) {
+            return str_replace("%uid", $uid,
+                "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+        };
+
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            }
+            'bindDN' => $bindDN,
+            'bindPassword' => $bindPassword,
+            'baseDN' => $baseDN,
+            'filter' => $filter,
         ]);
 
         $this->assertInstanceOf(ExtensionAdapter::class, $identifier->getAdapter());
@@ -125,8 +192,12 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
+            'bindDN' => 'cn=read-only-admin,dc=example,dc=com',
+            'bindPassword' => 'password',
+            'baseDN' => 'dc=example,dc=com',
+            'filter' => function($uid) {
+                return str_replace("%uid", $uid,
+                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
             'ldap' => $notLdap
         ]);
@@ -142,22 +213,26 @@ class LdapIdentifierTest extends TestCase
     public function testMissingBindDN()
     {
         $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com'
+            'host' => 'ldap.example.com',
+            'filter' => function($uid) {
+                return str_replace("%uid", $uid,
+                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+            },
         ]);
     }
 
     /**
-     * testUncallableDN
+     * testUncallableFilter
      *
      * @return void
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The `bindDN` config is not a callable. Got `string` instead.
+     * @expectedExceptionMessage The `filter` config is not a callable. Got `string` instead.
      */
-    public function testUncallableDN()
+    public function testUncallableFilter()
     {
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => 'Foo'
+            'filter' => 'Foo'
         ]);
     }
 
@@ -171,9 +246,11 @@ class LdapIdentifierTest extends TestCase
     public function testMissingHost()
     {
         $identifier = new LdapIdentifier([
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
-            }
+            'bindDN' => 'cn=read-only-admin,dc=example,dc=com',
+            'filter' => function($uid) {
+                return str_replace("%uid", $uid,
+                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+            },
         ]);
     }
 
@@ -192,8 +269,12 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
-                return 'dc=example,dc=com';
+            'bindDN' => 'cn=read-only-admin,dc=example,dc=com',
+            'bindPassword' => 'password',
+            'baseDN' => 'dc=example,dc=com',
+            'filter' => function($uid) {
+                return str_replace("%uid", $uid,
+                    "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
             },
             'ldap' => $ldap
         ]);

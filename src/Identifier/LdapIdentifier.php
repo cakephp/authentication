@@ -33,6 +33,7 @@ use RuntimeException;
  *       'port' => '389',
  *       'bindDN' => 'cn=read-only-admin,dc=example,dc=com',
  *       'bindPassword' => 'password',
+ *       'baseDN' => 'dc=example,dc=com',
  *       'filter' => function($uid) {
  *           return str_replace("%uid", $uid,
  *               "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
@@ -97,7 +98,7 @@ class LdapIdentifier extends AbstractIdentifier
     protected function _checkLdapConfig()
     {
         if (!isset($this->_config['filter'])) {
-            throw new RuntimeException('Config `bindDN` is not set.');
+            throw new RuntimeException('Config `filter` is not set.');
         }
         if (!is_callable($this->_config['filter'])) {
             throw new InvalidArgumentException(sprintf(
@@ -107,6 +108,18 @@ class LdapIdentifier extends AbstractIdentifier
         }
         if (!isset($this->_config['host'])) {
             throw new RuntimeException('Config `host` is not set.');
+        }
+
+        if (!isset($this->_config['bindDN'])) {
+            throw new RuntimeException('Config `bindDN` is not set.');
+        }
+
+        if (!isset($this->_config['bindPassword'])) {
+            throw new RuntimeException('Config `bindPassword` is not set.');
+        }
+
+        if (!isset($this->_config['baseDN'])) {
+            throw new RuntimeException('Config `baseDN` is not set.');
         }
     }
 

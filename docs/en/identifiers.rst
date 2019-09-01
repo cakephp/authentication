@@ -81,8 +81,12 @@ requires the PHP LDAP extension.
    ``['username' => 'username', 'password' => 'password']``.
 -  **host**: The FQDN of your LDAP server.
 -  **port**: The port of your LDAP server. Defaults to ``389``.
--  **bindDN**: The Distinguished Name of the user to authenticate. Must
-   be a callable. Anonymous binds are not supported.
+-  **bindDN**: The Distinguished Name of the ldap lookup user.
+   Anonymous binds are not supported.
+-  **bindPassword**: The password of the ldap lookup user.
+-  **baseDN**: The base user tree.
+-  **filter**: The filter used to search for the authenticating user.
+   Must be a callable.
 -  **ldap**: The extension adapter. Defaults to
    ``\Authentication\Identifier\Ldap\ExtensionAdapter``. You can pass a
    custom object/classname here if it implements the
