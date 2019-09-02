@@ -30,9 +30,14 @@ use RuntimeException;
  * ```
  *  new LdapIdentifier([
  *       'host' => 'ldap.example.com',
- *       'bindDN' => function($username) {
- *           return $username; //transform into a rdn or dn
- *       },
+ *       'port' => '389',
+ *       'bindDN' => 'cn=read-only-admin,dc=example,dc=com',
+ *       'bindPassword' => 'password',
+ *       'baseDN' => 'dc=example,dc=com',
+ *       'filter' => function($uid) {
+ *           return str_replace("%uid", $uid,
+ *               "(&(&(|(objectclass=person)))(|(uid=%uid)(samaccountname=%uid)(|(mailPrimaryAddress=%uid)(mail=%uid))))");
+ *           },
  *       'options' => [
  *           LDAP_OPT_PROTOCOL_VERSION => 3
  *       ]
@@ -92,17 +97,29 @@ class LdapIdentifier extends AbstractIdentifier
      */
     protected function _checkLdapConfig()
     {
-        if (!isset($this->_config['bindDN'])) {
-            throw new RuntimeException('Config `bindDN` is not set.');
+        if (!isset($this->_config['filter'])) {
+            throw new RuntimeException('Config `filter` is not set.');
         }
-        if (!is_callable($this->_config['bindDN'])) {
+        if (!is_callable($this->_config['filter'])) {
             throw new InvalidArgumentException(sprintf(
-                'The `bindDN` config is not a callable. Got `%s` instead.',
-                gettype($this->_config['bindDN'])
+                'The `filter` config is not a callable. Got `%s` instead.',
+                gettype($this->_config['filter'])
             ));
         }
         if (!isset($this->_config['host'])) {
             throw new RuntimeException('Config `host` is not set.');
+        }
+
+        if (!isset($this->_config['bindDN'])) {
+            throw new RuntimeException('Config `bindDN` is not set.');
+        }
+
+        if (!isset($this->_config['bindPassword'])) {
+            throw new RuntimeException('Config `bindPassword` is not set.');
+        }
+
+        if (!isset($this->_config['baseDN'])) {
+            throw new RuntimeException('Config `baseDN` is not set.');
         }
     }
 
@@ -180,14 +197,25 @@ class LdapIdentifier extends AbstractIdentifier
     protected function _bindUser($username, $password)
     {
         $config = $this->getConfig();
-        try {
-            $ldapBind = $this->_ldap->bind($config['bindDN']($username), $password);
-            if ($ldapBind === true) {
-                $this->_ldap->unbind();
 
-                return new ArrayObject([
-                    $config['fields'][self::CREDENTIAL_USERNAME] => $username
-                ]);
+        try {
+            $ldapBind = $this->_ldap->bind($config['bindDN'], $config['bindPassword']);
+
+            if ($ldapBind === true) {
+                $entries = $this->_ldap->search($config['baseDN'], $config['filter']($username));
+
+                for ($i = 0; $i < $entries['count']; $i++) {
+                    $userLdapBind = $this->_ldap->bind($entries[$i]['dn'], $password);
+
+                    if ($userLdapBind === true) {
+                        $this->_ldap->unbind();
+
+                        return new ArrayObject([
+                            $config['fields'][self::CREDENTIAL_USERNAME] => $username,
+                            'ldap_attributes' => $this->_formatAttributes($entries[$i])
+                        ]);
+                    }
+                }
             }
         } catch (ErrorException $e) {
             $this->_handleLdapError($e->getMessage());
@@ -195,6 +223,30 @@ class LdapIdentifier extends AbstractIdentifier
         $this->_ldap->unbind();
 
         return null;
+    }
+
+    /**
+     * Format LDAP attribute data into associative array
+     *
+     * @param array $attributes ldap entry attributes
+     * @return array
+     */
+    protected function _formatAttributes($attributes)
+    {
+        $formatted = [];
+        foreach ($attributes as $name => $values) {
+            if (is_array($values)) {
+                foreach ($values as $k => $value) {
+                    if ($k !== 'count') {
+                        $formatted[$name][] = $value;
+                    }
+                }
+            } elseif (is_string($name) && $name !== 'count') {
+                $formatted[$name] = $values;
+            }
+        }
+
+        return $formatted;
     }
 
     /**

@@ -36,6 +36,15 @@ interface AdapterInterface
     public function connect($host, $port, $options);
 
     /**
+     * Search the LDAP directory
+     *
+     * @param string $baseDN Base DN for the directory
+     * @param string $filter search filter
+     * @return array
+     */
+    public function search($baseDN, $filter);
+
+    /**
      * Unbind from LDAP directory
      *
      * @return void
