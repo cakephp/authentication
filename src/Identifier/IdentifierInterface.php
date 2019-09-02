@@ -24,6 +24,8 @@ interface IdentifierInterface
 
     const CREDENTIAL_JWT_SUBJECT = 'sub';
 
+    const CREDENTIAL_LDAP_ATTRIBUTE = 'uid';
+
     /**
      * Identifies an user or service by the passed credentials
      *

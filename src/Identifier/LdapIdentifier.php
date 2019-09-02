@@ -17,6 +17,8 @@ namespace Authentication\Identifier;
 use ArrayObject;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
+use Authentication\Identifier\Resolver\ResolverAwareTrait;
+use Authentication\Identifier\Resolver\ResolverInterface;
 use Cake\Core\App;
 use ErrorException;
 use InvalidArgumentException;
@@ -49,6 +51,8 @@ use RuntimeException;
 class LdapIdentifier extends AbstractIdentifier
 {
 
+    use ResolverAwareTrait;
+
     /**
      * Default configuration
      *
@@ -60,7 +64,10 @@ class LdapIdentifier extends AbstractIdentifier
             self::CREDENTIAL_USERNAME => 'username',
             self::CREDENTIAL_PASSWORD => 'password'
         ],
-        'port' => 389
+        'port' => 389,
+        'matchingField' => self::CREDENTIAL_LDAP_ATTRIBUTE,
+        'updateLocalIdentity' => false,
+        'createLocalIdentityIfMissing' => false
     ];
 
     /**
@@ -155,7 +162,39 @@ class LdapIdentifier extends AbstractIdentifier
         $fields = $this->getConfig('fields');
 
         if (isset($data[$fields[self::CREDENTIAL_USERNAME]]) && isset($data[$fields[self::CREDENTIAL_PASSWORD]])) {
-            return $this->_bindUser($data[$fields[self::CREDENTIAL_USERNAME]], $data[$fields[self::CREDENTIAL_PASSWORD]]);
+            $bindResult = $this->_bindUser($data[$fields[self::CREDENTIAL_USERNAME]], $data[$fields[self::CREDENTIAL_PASSWORD]]);
+
+            if ($bindResult) {
+                $matchingField = $this->getConfig('matchingField');
+                if (!isset($bindResult['ldap_attributes'][$matchingField]) || empty($bindResult['ldap_attributes'][$matchingField])) {
+                    return null;
+                }
+
+                if (is_string($bindResult['ldap_attributes'][$matchingField])) {
+                    $identity = $this->_findIdentity($bindResult['ldap_attributes'][$matchingField]);
+                } elseif (is_array($bindResult['ldap_attributes'][$matchingField])) {
+                    foreach ($bindResult['ldap_attributes'][$matchingField] as $attribute_value) {
+                        $identity = $this->_findIdentity($attribute_value);
+                        if (!is_null($identity)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (!is_null($identity)) {
+                    if (is_callable($this->getConfig('updateLocalIdentity'))) {
+                        $identity = $this->getConfig('updateLocalIdentity')($identity, $bindResult['ldap_attributes']);
+                    }
+
+                    return $identity;
+                } else {
+                    if (is_callable($this->getConfig('createLocalIdentityIfMissing'))) {
+                        $identity = $this->getConfig('createLocalIdentityIfMissing')($bindResult['ldap_attributes']);
+
+                        return $identity;
+                    }
+                }
+            }
         }
 
         return null;
@@ -262,5 +301,22 @@ class LdapIdentifier extends AbstractIdentifier
             $this->_errors[] = $extendedError;
         }
         $this->_errors[] = $message;
+    }
+
+    /**
+     * Find a user record using the ldap data provided.
+     *
+     * @param string $identifier The username/identifier.
+     * @return \ArrayAccess|array|null
+     */
+    protected function _findIdentity($identifier)
+    {
+        $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
+        $conditions = [];
+        foreach ((array)$fields as $field) {
+            $conditions[$field] = $identifier;
+        }
+
+        return $this->getResolver()->find($conditions, ResolverInterface::TYPE_OR);
     }
 }
