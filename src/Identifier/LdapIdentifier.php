@@ -231,15 +231,18 @@ class LdapIdentifier extends AbstractIdentifier
                     }
                 }
 
-                if (!is_null($identity)) {
-                    if (is_callable($this->getConfig('updateLocalIdentity'))) {
-                        $identity = $this->getConfig('updateLocalIdentity')($identity, $bindResult['ldapAttributes']);
+                $updateLocalIdentity = $this->getConfig('updateLocalIdentity');
+                $createLocalIdentityIfMissing = $this->getConfig('createLocalIdentityIfMissing');
+
+                if (isset($identity) && !is_null($identity)) {
+                    if (is_callable($updateLocalIdentity)) {
+                        $identity = $updateLocalIdentity($identity, $bindResult['ldapAttributes']);
                     }
 
                     return $identity;
                 } else {
-                    if (is_callable($this->getConfig('createLocalIdentityIfMissing'))) {
-                        $identity = $this->getConfig('createLocalIdentityIfMissing')($bindResult['ldapAttributes']);
+                    if (is_callable($createLocalIdentityIfMissing)) {
+                        $identity = $createLocalIdentityIfMissing($bindResult['ldapAttributes']);
 
                         return $identity;
                     }
