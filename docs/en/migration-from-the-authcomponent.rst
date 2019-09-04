@@ -208,7 +208,7 @@ using the ``queryParam`` option::
 
        // Add the authentication middleware
        $authentication = new AuthenticationMiddleware($this, [
-           'unauthenticatedRedirect' => Router::url('users:login'),
+           'unauthenticatedRedirect' => '/users/login',
            'queryParam' => 'redirect',
        ]);
 
@@ -217,6 +217,30 @@ using the ``queryParam`` option::
 
        return $middlewareQueue;
    }
+
+Then in your controller's login method you can use the redirect query parameter::
+
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
+
+        // Regardless of POST or GET, redirect if user is logged in
+        if ($result->isValid()) {
+            // Use the redirect parameter if present. Only use the path
+            // and query segments to prevent an open redirect.
+            if ($this->request->getQuery('redirect')) {
+                $parsed = parse_url($this->request->getQuery('redirect'));
+                if ($parsed === false) {
+                    $parsed = ['path' => '/', 'query' => ''];
+                }
+                $parsed += ['path' => '/', 'query' => ''];
+                $redirect = $parsed['path'] . '?' . $parsed['query'];
+            } else {
+                $redirect = ['controller' => 'Pages', 'action' => 'display', 'home'];
+            }
+            return $this->redirect($redirect);
+        }
+    }
 
 Migrating Hashing Upgrade Logic
 ===============================
@@ -241,10 +265,11 @@ leveraging the ``AuthenticationService``::
                $this->Users->save($user);
            }
 
-           $redirect = $this->request->getQuery(
-               'redirect',
-               ['controller' => 'Pages', 'action' => 'display', 'home']
-           );
-           return $this->redirect($redirect);
+           // Redirect to a logged in page
+           return $this->redirect([
+               'controller' => 'Pages',
+               'action' => 'display',
+               'home'
+           ]);
        }
    }
