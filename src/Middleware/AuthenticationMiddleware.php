@@ -150,7 +150,11 @@ class AuthenticationMiddleware
         if (property_exists($uri, 'base')) {
             $uri = $uri->withPath($uri->base . $uri->getPath());
         }
-        $query = urlencode($param) . '=' . urlencode($uri);
+        $redirect = $uri->getPath();
+        if ($uri->getQuery()) {
+            $redirect .= '?' . $uri->getQuery();
+        }
+        $query = urlencode($param) . '=' . urlencode($redirect);
 
         $url = parse_url($target);
         if (isset($url['query']) && strlen($url['query'])) {
