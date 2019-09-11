@@ -427,7 +427,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
         $this->assertSame(302, $response->getStatusCode());
-        $this->assertSame('/users/login?redirect=http%3A%2F%2Flocalhost%2Ftestpath', $response->getHeaderLine('Location'));
+        $this->assertSame('/users/login?redirect=%2Ftestpath', $response->getHeaderLine('Location'));
         $this->assertSame('', $response->getBody() . '');
     }
 
@@ -454,7 +454,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
         $this->assertSame(302, $response->getStatusCode());
-        $this->assertSame('/users/login?hello=world&redirect=http%3A%2F%2Flocalhost%2Ftestpath', $response->getHeaderLine('Location'));
+        $this->assertSame('/users/login?hello=world&redirect=%2Ftestpath', $response->getHeaderLine('Location'));
         $this->assertSame('', $response->getBody() . '');
     }
 
@@ -483,7 +483,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $middleware->process($request, $handler);
         $this->assertSame(302, $response->getStatusCode());
         $this->assertSame(
-            '/users/login?hello=world&redirect=http%3A%2F%2Flocalhost%2Ftestpath#frag',
+            '/users/login?hello=world&redirect=%2Ftestpath#frag',
             $response->getHeaderLine('Location')
         );
         $this->assertSame('', (string)$response->getBody());
@@ -515,7 +515,36 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $response = $middleware->process($request, $handler);
         $this->assertSame(302, $response->getStatusCode());
-        $this->assertSame('/users/login?redirect=http%3A%2F%2Flocalhost%2Fbase%2Ftestpath', $response->getHeaderLine('Location'));
+        $this->assertSame('/users/login?redirect=%2Fbase%2Ftestpath', $response->getHeaderLine('Location'));
+        $this->assertSame('', $response->getBody() . '');
+    }
+
+    /**
+     * test unauthenticated redirects preserving path and query
+     *
+     * @return void
+     */
+    public function testUnauthenticatedRedirectWithQueryStringData()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath', 'QUERY_STRING' => 'a=b&c=d'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
+
+        $middleware = new AuthenticationMiddleware($this->service, [
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
+
+        $handler = new TestRequestHandler(function ($request) {
+            throw new UnauthenticatedException();
+        });
+
+        $response = $middleware->process($request, $handler);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/users/login?redirect=%2Ftestpath%3Fa%3Db%26c%3Dd', $response->getHeaderLine('Location'));
         $this->assertSame('', $response->getBody() . '');
     }
 

@@ -103,8 +103,9 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
         $sessionKey = $this->getConfig('sessionKey');
-        $request->getAttribute('session')->delete($sessionKey);
-        $request->getAttribute('session')->renew();
+        $session = $request->getAttribute('session');
+        $session->delete($sessionKey);
+        $session->renew();
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
