@@ -158,7 +158,7 @@ class LdapIdentifier extends AbstractIdentifier
             }
 
             if (isset($this->_config['updateLocalIdentity'])) {
-                if (!($this->_config['updateLocalIdentity'] instanceof Closure)) {
+                if (!($this->_config['updateLocalIdentity'] instanceof \Closure)) {
                     throw new InvalidArgumentException(sprintf(
                         'The `updateLocalIdentity` config is not a callable. Got `%s` instead.',
                         gettype($this->_config['updateLocalIdentity'])
@@ -167,7 +167,7 @@ class LdapIdentifier extends AbstractIdentifier
             }
 
             if (isset($this->_config['createLocalIdentityIfMissing'])) {
-                if (!($this->_config['createLocalIdentityIfMissing'] instanceof Closure)) {
+                if (!($this->_config['createLocalIdentityIfMissing'] instanceof \Closure)) {
                     throw new InvalidArgumentException(sprintf(
                         'The `createLocalIdentityIfMissing` config is not a callable. Got `%s` instead.',
                         gettype($this->_config['createLocalIdentityIfMissing'])
