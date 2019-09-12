@@ -158,7 +158,7 @@ class LdapIdentifier extends AbstractIdentifier
             }
 
             if (isset($this->_config['updateLocalIdentity'])) {
-                if (!is_callable($this->_config['updateLocalIdentity'])) {
+                if (!($this->_config['updateLocalIdentity'] instanceof Closure)) {
                     throw new InvalidArgumentException(sprintf(
                         'The `updateLocalIdentity` config is not a callable. Got `%s` instead.',
                         gettype($this->_config['updateLocalIdentity'])
@@ -167,7 +167,7 @@ class LdapIdentifier extends AbstractIdentifier
             }
 
             if (isset($this->_config['createLocalIdentityIfMissing'])) {
-                if (!is_callable($this->_config['createLocalIdentityIfMissing'])) {
+                if (!($this->_config['createLocalIdentityIfMissing'] instanceof Closure)) {
                     throw new InvalidArgumentException(sprintf(
                         'The `createLocalIdentityIfMissing` config is not a callable. Got `%s` instead.',
                         gettype($this->_config['createLocalIdentityIfMissing'])
@@ -220,12 +220,13 @@ class LdapIdentifier extends AbstractIdentifier
                     return null;
                 }
 
+                $identity = null;
                 if (is_string($bindResult['ldapAttributes'][$matchingField])) {
                     $identity = $this->_findIdentity($bindResult['ldapAttributes'][$matchingField]);
                 } elseif (is_array($bindResult['ldapAttributes'][$matchingField])) {
                     foreach ($bindResult['ldapAttributes'][$matchingField] as $attribute_value) {
                         $identity = $this->_findIdentity($attribute_value);
-                        if (!is_null($identity)) {
+                        if ($identity !== null) {
                             break;
                         }
                     }
@@ -234,7 +235,7 @@ class LdapIdentifier extends AbstractIdentifier
                 $updateLocalIdentity = $this->getConfig('updateLocalIdentity');
                 $createLocalIdentityIfMissing = $this->getConfig('createLocalIdentityIfMissing');
 
-                if (isset($identity)) {
+                if ($identity !== null) {
                     if (is_callable($updateLocalIdentity)) {
                         $identity = $updateLocalIdentity($identity, $bindResult['ldapAttributes']);
                     }
@@ -377,7 +378,7 @@ class LdapIdentifier extends AbstractIdentifier
     protected function _handleLdapError($message)
     {
         $extendedError = $this->_ldap->getDiagnosticMessage();
-        if (!is_null($extendedError)) {
+        if ($extendedError !== null) {
             $this->_errors[] = $extendedError;
         }
         $this->_errors[] = $message;
