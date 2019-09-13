@@ -170,11 +170,15 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->sessionMock
             ->expects($this->once())
+            ->method('read');
+
+        $this->sessionMock
+            ->expects($this->once())
             ->method('write')
             ->with('Auth', $data);
 
         $this->sessionMock
-            ->expects($this->at(3))
+            ->expects($this->at(4))
             ->method('check')
             ->with('Auth')
             ->will($this->returnValue(true));
