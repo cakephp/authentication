@@ -627,4 +627,65 @@ class AuthenticationServiceTest extends TestCase
 
         $this->assertSame($identity, $service->getIdentity());
     }
+
+    public function testGetIdentityAttribute()
+    {
+        $service = new AuthenticationService(['identityAttribute' => 'user']);
+        $this->assertSame('user', $service->getIdentityAttribute());
+    }
+
+    public function testGetUnauthenticatedRedirectUrlNoValues()
+    {
+        $service = new AuthenticationService();
+        $request = new ServerRequest();
+
+        $this->assertNull($service->getUnauthenticatedRedirectUrl($request));
+    }
+
+    public function testGetUnauthenticatedRedirectUrl()
+    {
+        $service = new AuthenticationService();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+        );
+        $service->setConfig('unauthenticatedRedirect', '/users/login');
+        $this->assertSame('/users/login', $service->getUnauthenticatedRedirectUrl($request));
+
+        $service->setConfig('queryParam', 'redirect');
+        $this->assertSame(
+            '/users/login?redirect=%2Fsecrets',
+            $service->getUnauthenticatedRedirectUrl($request)
+        );
+
+        $service->setConfig('unauthenticatedRedirect', '/users/login?foo=bar');
+        $this->assertSame(
+            '/users/login?foo=bar&redirect=%2Fsecrets',
+            $service->getUnauthenticatedRedirectUrl($request)
+        );
+
+        $service->setConfig('unauthenticatedRedirect', '/users/login?foo=bar#fragment');
+        $this->assertSame(
+            '/users/login?foo=bar&redirect=%2Fsecrets#fragment',
+            $service->getUnauthenticatedRedirectUrl($request)
+        );
+    }
+
+    public function testGetUnauthenticatedRedirectUrlWithBasePath()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+        );
+        $uri = $request->getUri();
+        $uri->base = '/base';
+        $request = $request->withUri($uri);
+
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
+        $this->assertSame(
+            '/users/login?redirect=%2Fbase%2Fsecrets',
+            $service->getUnauthenticatedRedirectUrl($request)
+        );
+    }
 }

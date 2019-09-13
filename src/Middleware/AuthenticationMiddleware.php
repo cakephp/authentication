@@ -35,18 +35,18 @@ class AuthenticationMiddleware
     /**
      * Configuration options
      *
-     * - `identityAttribute` - The request attribute to store the identity in.
      * - `name` the application hook method to call. Will be prefixed with `authentication`
+     *
+     * The following keys are deprecated and should instead be set on the AuthenticationService
+     *
+     * - `identityAttribute` - The request attribute to store the identity in.
      * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
      *    AuthenticationComponent::allowUnauthenticated()
      * - `queryParam` - Set to true to have unauthenticated redirects contain a `redirect` query string
      *   parameter with the previously blocked URL.
      */
     protected $_defaultConfig = [
-        'identityAttribute' => 'identity',
         'name' => null,
-        'unauthenticatedRedirect' => null,
-        'queryParam' => null,
     ];
 
     /**
@@ -111,7 +111,7 @@ class AuthenticationMiddleware
         }
 
         $request = $result['request'];
-        $request = $request->withAttribute($this->getConfig('identityAttribute'), $service->getIdentity());
+        $request = $request->withAttribute($service->getIdentityAttribute(), $service->getIdentity());
         $request = $request->withAttribute('authentication', $service);
         $request = $request->withAttribute('authenticationResult', $result['result']);
 
@@ -120,51 +120,14 @@ class AuthenticationMiddleware
         try {
             return $next($request, $response);
         } catch (UnauthenticatedException $e) {
-            $target = $this->getConfig('unauthenticatedRedirect');
-            if ($target) {
-                $url = $this->getRedirectUrl($target, $request);
-
+            $url = $service->getUnauthenticatedRedirectUrl($request);
+            if ($url) {
                 return $response
                     ->withStatus(302)
                     ->withHeader('Location', $url);
             }
             throw $e;
         }
-    }
-
-    /**
-     * Returns redirect URL.
-     *
-     * @param string $target Redirect target.
-     * @param \Psr\Http\Message\ServerRequestInterface $request Request instance.
-     * @return string
-     */
-    protected function getRedirectUrl($target, ServerRequestInterface $request)
-    {
-        $param = $this->getConfig('queryParam');
-        if ($param === null) {
-            return $target;
-        }
-
-        $uri = $request->getUri();
-        if (property_exists($uri, 'base')) {
-            $uri = $uri->withPath($uri->base . $uri->getPath());
-        }
-        $redirect = $uri->getPath();
-        if ($uri->getQuery()) {
-            $redirect .= '?' . $uri->getQuery();
-        }
-        $query = urlencode($param) . '=' . urlencode($redirect);
-
-        $url = parse_url($target);
-        if (isset($url['query']) && strlen($url['query'])) {
-            $url['query'] .= '&' . $query;
-        } else {
-            $url['query'] = $query;
-        }
-        $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
-
-        return $url['path'] . '?' . $url['query'] . $fragment;
     }
 
     /**
@@ -188,6 +151,24 @@ class AuthenticationMiddleware
             $message = sprintf('Service provided by a subject must be an instance of `%s`, `%s` given.', AuthenticationServiceInterface::class, $type);
 
             throw new RuntimeException($message);
+        }
+        $forwardKeys = ['identityAttribute', 'unauthenticatedRedirect', 'queryParam'];
+        foreach ($forwardKeys as $key) {
+            $value = $this->getConfig($key);
+            if ($value) {
+                deprecationWarning(
+                    "The `{$key}` configuration key on AuthenticationMiddleware is deprecated. " .
+                    "Instead set the `{$key}` on your AuthenticationService instance."
+                );
+                if (method_exists($subject, 'setConfig')) {
+                    $subject->setConfig($key, $value);
+                } else {
+                    throw new RuntimeException(
+                        'Could not forward configuration to authentication service as ' .
+                        'it does not implement `getConfig()`'
+                    );
+                }
+            }
         }
 
         return $subject;
