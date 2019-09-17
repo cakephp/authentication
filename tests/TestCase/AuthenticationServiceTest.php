@@ -78,11 +78,6 @@ class AuthenticationServiceTest extends TestCase
 
         $result = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $result);
-
-        $this->assertEquals(
-            'mariano',
-            $request->getAttribute('session')->read('Auth.username')
-        );
     }
 
     /**

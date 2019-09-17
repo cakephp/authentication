@@ -119,7 +119,19 @@ class AuthenticationMiddleware
         $response = $result['response'];
 
         try {
-            return $next($request, $response);
+            $response = $next($request, $response);
+
+            $authenticator = $service->getAuthenticationProvider();
+            if ($authenticator !== null && !($authenticator instanceof StatelessInterface)) {
+                $requestResponse = $service->persistIdentity(
+                    $request,
+                    $response,
+                    $result['result']->getData()
+                );
+                $response = $requestResponse['response'];
+            }
+
+            return $response;
         } catch (UnauthenticatedException $e) {
             $url = $service->getUnauthenticatedRedirectUrl($request);
             if ($url) {
