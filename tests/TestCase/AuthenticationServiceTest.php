@@ -12,7 +12,7 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase;
+namespace Authentication\Test\TestCase\Authenticator;
 
 use ArrayObject;
 use Authentication\AuthenticationService;
@@ -65,8 +65,8 @@ class AuthenticationServiceTest extends TestCase
                 'Authentication.Password'
             ],
             'authenticators' => [
-                'Authentication.Form',
                 'Authentication.Session',
+                'Authentication.Form'
             ]
         ]);
 

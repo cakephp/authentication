@@ -54,7 +54,7 @@ class SessionAuthenticatorTest extends TestCase
         }
         $this->sessionMock = $this->getMockBuilder($class)
             ->disableOriginalConstructor()
-            ->setMethods(['read', 'write', 'delete', 'renew', 'check'])
+            ->setMethods(['read', 'write', 'delete', 'renew'])
             ->getMock();
     }
 
@@ -160,24 +160,11 @@ class SessionAuthenticatorTest extends TestCase
         $data = new ArrayObject(['username' => 'florian']);
         $this->sessionMock
             ->expects($this->at(0))
-            ->method('check')
-            ->with('Auth')
-            ->will($this->returnValue(false));
-
-        $this->sessionMock
-            ->expects($this->once())
             ->method('renew');
 
-        $this->sessionMock
-            ->expects($this->once())
+        $this->sessionMock->expects($this->at(1))
             ->method('write')
             ->with('Auth', $data);
-
-        $this->sessionMock
-            ->expects($this->at(3))
-            ->method('check')
-            ->with('Auth')
-            ->will($this->returnValue(true));
 
         $result = $authenticator->persistIdentity($request, $response, $data);
         $this->assertInternalType('array', $result);
@@ -185,9 +172,6 @@ class SessionAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
-
-        // Persist again to make sure identity isn't replaced if it exists.
-        $authenticator->persistIdentity($request, $response, new ArrayObject(['username' => 'jane']));
     }
 
     /**
