@@ -14,6 +14,7 @@
  */
 namespace Authentication\Middleware;
 
+use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\UnauthenticatedException;
@@ -160,7 +161,7 @@ class AuthenticationMiddleware
                     "The `{$key}` configuration key on AuthenticationMiddleware is deprecated. " .
                     "Instead set the `{$key}` on your AuthenticationService instance."
                 );
-                if (method_exists($subject, 'setConfig')) {
+                if ($subject instanceof AuthenticationService) {
                     $subject->setConfig($key, $value);
                 } else {
                     throw new RuntimeException(
