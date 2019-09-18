@@ -646,7 +646,7 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService();
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/secrets'],
+            ['REQUEST_URI' => '/secrets']
         );
         $service->setConfig('unauthenticatedRedirect', '/users/login');
         $this->assertSame('/users/login', $service->getUnauthenticatedRedirectUrl($request));
