@@ -31,7 +31,6 @@ Example of configuring the authentication middleware using ``authentication`` ap
     use Authentication\AuthenticationServiceProviderInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
-    use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
@@ -40,10 +39,9 @@ Example of configuring the authentication middleware using ``authentication`` ap
          * Returns a service provider instance.
          *
          * @param \Psr\Http\Message\ServerRequestInterface $request Request
-         * @param \Psr\Http\Message\ResponseInterface $response Response
          * @return \Authentication\AuthenticationServiceInterface
          */
-        public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response): AuthenticationServiceInterface
+        public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
         {
             $service = new AuthenticationService();
 
