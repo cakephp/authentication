@@ -66,7 +66,6 @@ class AuthenticationServiceTest extends TestCase
             ],
             'authenticators' => [
                 'Authentication.Form',
-                'Authentication.Session',
             ]
         ]);
 
@@ -78,6 +77,11 @@ class AuthenticationServiceTest extends TestCase
 
         $result = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $result);
+
+        $this->assertNull(
+            $request->getAttribute('session')->read('Auth'),
+            'Session is populated after authenticate by middleware'
+        );
     }
 
     /**
