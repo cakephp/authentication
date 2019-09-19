@@ -673,7 +673,7 @@ class AuthenticationServiceTest extends TestCase
     public function testGetUnauthenticatedRedirectUrlWithBasePath()
     {
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/secrets'],
+            ['REQUEST_URI' => '/secrets']
         );
         $uri = $request->getUri();
         $uri->base = '/base';
