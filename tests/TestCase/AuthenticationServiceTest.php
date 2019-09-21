@@ -65,8 +65,8 @@ class AuthenticationServiceTest extends TestCase
                 'Authentication.Password'
             ],
             'authenticators' => [
-                'Authentication.Form',
                 'Authentication.Session',
+                'Authentication.Form'
             ]
         ]);
 
