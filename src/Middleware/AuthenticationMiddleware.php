@@ -17,6 +17,7 @@ namespace Authentication\Middleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Authenticator\UnauthorizedException;
 use Cake\Core\InstanceConfigTrait;
