@@ -177,12 +177,6 @@ class AuthenticationService implements AuthenticationServiceInterface
         foreach ($this->authenticators() as $authenticator) {
             $result = $authenticator->authenticate($request, $response);
             if ($result->isValid()) {
-                if (!($authenticator instanceof StatelessInterface)) {
-                    $requestResponse = $this->persistIdentity($request, $response, $result->getData());
-                    $request = $requestResponse['request'];
-                    $response = $requestResponse['response'];
-                }
-
                 $this->_successfulAuthenticator = $authenticator;
                 $this->_result = $result;
 

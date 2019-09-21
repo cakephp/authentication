@@ -66,20 +66,19 @@ class AuthenticationMiddlewareTest extends TestCase
         );
         $response = new Response();
         $next = function ($request, $response) {
-            return $request;
+            /* @var $service AuthenticationService */
+            $service = $request->getAttribute('authentication');
+            $this->assertInstanceOf(AuthenticationService::class, $service);
+
+            $this->assertTrue($service->identifiers()->has('Password'));
+            $this->assertTrue($service->authenticators()->has('Form'));
+            $this->assertEquals('identity', $service->getConfig("identityAttribute"));
+
+            return $response;
         };
 
         $middleware = new AuthenticationMiddleware($this->application);
-
-        $request = $middleware($request, $response, $next);
-
-        /* @var $service AuthenticationService */
-        $service = $request->getAttribute('authentication');
-        $this->assertInstanceOf(AuthenticationService::class, $service);
-
-        $this->assertTrue($service->identifiers()->has('Password'));
-        $this->assertTrue($service->authenticators()->has('Form'));
-        $this->assertEquals('identity', $service->getConfig("identityAttribute"));
+        $middleware($request, $response, $next);
     }
 
     public function testProviderAuthentication()
@@ -91,7 +90,16 @@ class AuthenticationMiddlewareTest extends TestCase
         );
         $response = new Response();
         $next = function ($request, $response) {
-            return $request;
+            /* @var $service AuthenticationService */
+            $service = $request->getAttribute('authentication');
+            $this->assertInstanceOf(AuthenticationService::class, $service);
+            $this->assertSame($this->service, $service);
+
+            $this->assertTrue($service->identifiers()->has('Password'));
+            $this->assertTrue($service->authenticators()->has('Form'));
+            $this->assertSame('identity', $service->getConfig("identityAttribute"));
+
+            return $response;
         };
 
         $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
@@ -100,16 +108,7 @@ class AuthenticationMiddlewareTest extends TestCase
             ->willReturn($this->service);
 
         $middleware = new AuthenticationMiddleware($provider);
-        $request = $middleware($request, $response, $next);
-
-        /* @var $service AuthenticationService */
-        $service = $request->getAttribute('authentication');
-        $this->assertInstanceOf(AuthenticationService::class, $service);
-        $this->assertSame($this->service, $service);
-
-        $this->assertTrue($service->identifiers()->has('Password'));
-        $this->assertTrue($service->authenticators()->has('Form'));
-        $this->assertSame('identity', $service->getConfig("identityAttribute"));
+        $middleware($request, $response, $next);
     }
 
     public function testProviderInvalidService()
@@ -120,10 +119,6 @@ class AuthenticationMiddlewareTest extends TestCase
             ['username' => 'mariano', 'password' => 'password']
         );
         $response = new Response();
-        $next = function ($request, $response) {
-            return $request;
-        };
-
         $app = $this->createMock(BaseApplication::class);
         $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
         $provider
@@ -133,6 +128,9 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Service provided by a subject must be an instance of `Authentication\AuthenticationServiceInterface`, `Mock_BaseApplication_');
 
+        $next = function ($request, $response) {
+            return $response;
+        };
         $middleware = new AuthenticationMiddleware($provider);
         $middleware($request, $response, $next);
     }
@@ -207,17 +205,18 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = new Response();
 
         $next = function ($request, $response) {
-            return $request;
+            $identity = $request->getAttribute('identity');
+            $service = $request->getAttribute('authentication');
+
+            $this->assertInstanceOf(IdentityInterface::class, $identity);
+            $this->assertInstanceOf(AuthenticationService::class, $service);
+            $this->assertTrue($service->getResult()->isValid());
+
+            return $response;
         };
 
         $middleware = new AuthenticationMiddleware($this->service);
-        $request = $middleware($request, $response, $next);
-        $identity = $request->getAttribute('identity');
-        $service = $request->getAttribute('authentication');
-
-        $this->assertInstanceOf(IdentityInterface::class, $identity);
-        $this->assertInstanceOf(AuthenticationService::class, $service);
-        $this->assertTrue($service->getResult()->isValid());
+        $middleware($request, $response, $next);
     }
 
     /**
@@ -233,24 +232,23 @@ class AuthenticationMiddlewareTest extends TestCase
             ['username' => 'mariano', 'password' => 'password']
         );
         $response = new Response();
-        $next = function ($request, $response) {
-            return $request;
-        };
 
-        // Using the middleware option requires this test to use deprecated()
-        $middleware = new AuthenticationMiddleware($this->application, [
-            'identityAttribute' => 'customIdentity'
-        ]);
-        $this->deprecated(function () use ($middleware, $request, $response, $next) {
-            $request = $middleware($request, $response, $next);
-
+        $next = function ($req, $resp) {
             /* @var $service AuthenticationService */
-            $service = $request->getAttribute('authentication');
+            $service = $req->getAttribute('authentication');
             $this->assertInstanceOf(AuthenticationService::class, $service);
-
             $this->assertEquals('customIdentity', $service->getConfig("identityAttribute"));
             $this->assertTrue($service->identifiers()->has('Password'));
             $this->assertTrue($service->authenticators()->has('Form'));
+
+            return $resp;
+        };
+        $this->deprecated(function () use ($request, $response, $next) {
+            // Using the middleware option requires this test to use deprecated()
+            $middleware = new AuthenticationMiddleware($this->application, [
+                'identityAttribute' => 'customIdentity'
+            ]);
+            $middleware($request, $response, $next);
         });
     }
 
@@ -272,16 +270,16 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->service);
 
         $next = function ($request, $response) {
-            return $request;
+            $identity = $request->getAttribute('customIdentity');
+            $service = $request->getAttribute('authentication');
+
+            $this->assertInstanceOf(IdentityInterface::class, $identity);
+            $this->assertInstanceOf(AuthenticationService::class, $service);
+            $this->assertTrue($service->getResult()->isValid());
+
+            return $response;
         };
-
-        $request = $middleware($request, $response, $next);
-        $identity = $request->getAttribute('customIdentity');
-        $service = $request->getAttribute('authentication');
-
-        $this->assertInstanceOf(IdentityInterface::class, $identity);
-        $this->assertInstanceOf(AuthenticationService::class, $service);
-        $this->assertTrue($service->getResult()->isValid());
+        $middleware($request, $response, $next);
     }
 
     /**
@@ -301,16 +299,56 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->application);
 
         $next = function ($request, $response) {
-            return $request;
+            $identity = $request->getAttribute('identity');
+            $service = $request->getAttribute('authentication');
+
+            $this->assertInstanceOf(IdentityInterface::class, $identity);
+            $this->assertInstanceOf(AuthenticationService::class, $service);
+            $this->assertTrue($service->getResult()->isValid());
+
+            return $response;
         };
+        $middleware($request, $response, $next);
+    }
 
-        $request = $middleware($request, $response, $next);
-        $identity = $request->getAttribute('identity');
-        $service = $request->getAttribute('authentication');
+    /**
+     * test success persist to session
+     *
+     * @return void
+     */
+    public function testSuccessfulAuthenticationPersistIdentity()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $response = new Response();
 
-        $this->assertInstanceOf(IdentityInterface::class, $identity);
-        $this->assertInstanceOf(AuthenticationService::class, $service);
-        $this->assertTrue($service->getResult()->isValid());
+        $this->service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+                'Authentication.Session',
+            ]
+        ]);
+        $middleware = new AuthenticationMiddleware($this->service);
+
+        $next = function ($request, $response) {
+            $service = $request->getAttribute('authentication');
+            $this->assertInstanceOf(AuthenticationService::class, $service);
+
+            $this->assertTrue($service->getResult()->isValid());
+            $this->assertNull($request->getAttribute('session')->read('Auth'));
+
+            return $response;
+        };
+        $middleware($request, $response, $next);
+
+        // After the middleware is done session should be populated
+        $this->assertSame('mariano', $request->getAttribute('session')->read('Auth.username'));
     }
 
     /**
@@ -710,23 +748,21 @@ class AuthenticationMiddlewareTest extends TestCase
             ['REQUEST_URI' => '/'],
             ['token' => $token]
         );
-
         $response = new Response();
 
-        $middleware = new AuthenticationMiddleware($this->service);
+        $next = function ($request, $response) use ($data) {
+            $identity = $request->getAttribute('identity');
+            $service = $request->getAttribute('authentication');
 
-        $next = function ($request, $response) {
-            return $request;
+            $this->assertInstanceOf(IdentityInterface::class, $identity);
+            $this->assertInstanceOf(AuthenticationService::class, $service);
+            $this->assertTrue($service->getResult()->isValid());
+            $this->assertEquals($data, $identity->getOriginalData()->getArrayCopy());
+
+            return $response;
         };
-
-        $request = $middleware($request, $response, $next);
-        $identity = $request->getAttribute('identity');
-        $service = $request->getAttribute('authentication');
-
-        $this->assertInstanceOf(IdentityInterface::class, $identity);
-        $this->assertInstanceOf(AuthenticationService::class, $service);
-        $this->assertTrue($service->getResult()->isValid());
-        $this->assertEquals($data, $identity->getOriginalData()->getArrayCopy());
+        $middleware = new AuthenticationMiddleware($this->service);
+        $middleware($request, $response, $next);
     }
 
     /**
