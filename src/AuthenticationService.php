@@ -344,7 +344,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * If the `queryParam` option is set a query parameter
      * will be appended with the denied URL path.
      *
-     * @param Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @return string|null
      */
     public function getUnauthenticatedRedirectUrl(ServerRequestInterface $request)

@@ -80,7 +80,7 @@ interface AuthenticationServiceInterface extends PersistenceInterface
     /**
      * Return the URL to redirect unauthenticated users to.
      *
-     * @param Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @return string|null
      */
     public function getUnauthenticatedRedirectUrl(ServerRequestInterface $request);
