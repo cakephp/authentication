@@ -220,6 +220,43 @@ class AuthenticationMiddlewareTest extends TestCase
     }
 
     /**
+     * Test that session authenticator and a clearIdentity (logout) don't
+     * result in the user still being logged in.
+     *
+     * @return void
+     */
+    public function testAuthenticationAndClearIdentityInteraction()
+    {
+        $request = ServerRequestFactory::fromGlobals([
+            'REQUEST_URI' => '/testpath',
+        ]);
+        // Setup the request with a session so we can test it being cleared
+        $request->getSession()->write('Auth', ['username' => 'mariano']);
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+            ],
+        ]);
+        $next = function ($request) {
+            $this->assertNotEmpty($request->getAttribute('identity'), 'Should have an identity present.');
+            $this->assertNotEmpty($request->getSession()->read('Auth'), 'Should have session data.');
+            $response = new Response();
+            $result = $request->getAttribute('authentication')->clearIdentity($request, $response);
+
+            return $result['response'];
+        };
+
+        $middleware = new AuthenticationMiddleware($service);
+        $response = new Response();
+        $response = $middleware($request, $response, $next);
+        $this->assertNull($service->getAuthenticationProvider(), 'no authenticator anymore.');
+        $this->assertNull($request->getSession()->read('Auth'), 'no more session data.');
+    }
+
+    /**
      * test middleware call with custom identity attribute
      *
      * @return void
