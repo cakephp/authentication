@@ -687,4 +687,47 @@ class AuthenticationServiceTest extends TestCase
             $service->getUnauthenticatedRedirectUrl($request)
         );
     }
+
+    public function testGetLoginRedirect()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '']
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => 'http://evil.ca/evil/path']
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => 'ok.com/path']
+        );
+        $this->assertSame(
+            '/ok.com/path',
+            $service->getLoginRedirect($request)
+        );
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/path/with?query=string']
+        );
+        $this->assertSame(
+            '/path/with?query=string',
+            $service->getLoginRedirect($request)
+        );
+    }
 }

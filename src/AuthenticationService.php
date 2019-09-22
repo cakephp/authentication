@@ -372,4 +372,37 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         return $url['path'] . '?' . $url['query'] . $fragment;
     }
+
+    /**
+     * Return the URL that an authenticated user came from or null.
+     *
+     * This reads from the URL parameter defined in the `queryParam` option.
+     * Will return null if this parameter doesn't exist or is invalid.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return string|null
+     */
+    public function getLoginRedirect(ServerRequestInterface $request)
+    {
+        if (!$request->getQuery('redirect')) {
+            return null;
+        }
+
+        $parsed = parse_url($request->getQuery('redirect'));
+        if ($parsed === false) {
+            return null;
+        }
+        if (!empty($parsed['host']) || !empty($parsed['scheme'])) {
+            return null;
+        }
+        $parsed += ['path' => '/', 'query' => ''];
+        if ($parsed['path'][0] !== '/') {
+            $parsed['path'] = "/{$parsed['path']}";
+        }
+        if ($parsed['query']) {
+            $parsed['query'] = "?{$parsed['query']}";
+        }
+
+        return $parsed['path'] . $parsed['query'];
+    }
 }

@@ -258,6 +258,26 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * test getLoginRedirect
+     *
+     * @eturn void
+     */
+    public function testGetLoginRedirect()
+    {
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service)
+            ->withQueryParams(['redirect' => 'ok/path?value=key']);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $result = $component->getLoginRedirect();
+        $this->assertSame('/ok/path?value=key', $result);
+    }
+
+    /**
      * testAfterIdentifyEvent
      *
      * @return void
