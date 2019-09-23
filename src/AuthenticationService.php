@@ -384,11 +384,16 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function getLoginRedirect(ServerRequestInterface $request)
     {
-        if (!$request->getQuery('redirect')) {
+        $redirectParam = $this->getConfig('queryParam');
+        $params = $request->getQueryParams();
+        if (empty($redirectParam) ||
+            !isset($params[$redirectParam]) ||
+            strlen($params[$redirectParam]) === 0
+        ) {
             return null;
         }
 
-        $parsed = parse_url($request->getQuery('redirect'));
+        $parsed = parse_url($params[$redirectParam]);
         if ($parsed === false) {
             return null;
         }
@@ -396,7 +401,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             return null;
         }
         $parsed += ['path' => '/', 'query' => ''];
-        if ($parsed['path'][0] !== '/') {
+        if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
             $parsed['path'] = "/{$parsed['path']}";
         }
         if ($parsed['query']) {
