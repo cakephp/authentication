@@ -696,7 +696,7 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/secrets'],
+            ['REQUEST_URI' => '/secrets']
         );
         $this->assertNull($service->getLoginRedirect($request));
 
