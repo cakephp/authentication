@@ -72,6 +72,9 @@ class AuthenticationMiddlewareTest extends TestCase
         /** @var AuthenticationService $service */
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
+
+        $this->assertTrue($service->identifiers()->has('Password'));
+        $this->assertTrue($service->authenticators()->has('Form'));
     }
 
     public function testProviderAuthentication()
