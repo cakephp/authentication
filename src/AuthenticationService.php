@@ -85,6 +85,11 @@ class AuthenticationService implements AuthenticationServiceInterface
      *      ]
      *   ]);
      *   ```
+     * - `identityAttribute` - The request attribute to store the identity in.
+     * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
+     *    AuthenticationComponent::allowUnauthenticated()
+     * - `queryParam` - Set to a string to have unauthenticated redirects contain a `redirect` query string
+     *   parameter with the previously blocked URL.
      *
      * @var array
      */
@@ -93,6 +98,8 @@ class AuthenticationService implements AuthenticationServiceInterface
         'identifiers' => [],
         'identityClass' => Identity::class,
         'identityAttribute' => 'identity',
+        'queryParam' => null,
+        'unauthorizedRedirect' => null,
     ];
 
     /**
@@ -283,6 +290,16 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
+     * Return the name of the identity attribute.
+     *
+     * @return string
+     */
+    public function getIdentityAttribute()
+    {
+        return $this->getConfig('identityAttribute');
+    }
+
+    /**
      * Builds the identity object
      *
      * @param \ArrayAccess|array $identityData Identity data
@@ -307,5 +324,87 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return $identity;
+    }
+
+    /**
+     * Return the URL to redirect unauthenticated users to.
+     *
+     * If the `unauthenticaedRedirect` option is not set,
+     * this method will return null.
+     *
+     * If the `queryParam` option is set a query parameter
+     * will be appended with the denied URL path.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return string|null
+     */
+    public function getUnauthenticatedRedirectUrl(ServerRequestInterface $request)
+    {
+        $param = $this->getConfig('queryParam');
+        $target = $this->getConfig('unauthenticatedRedirect');
+        if ($target === null) {
+            return null;
+        }
+        if ($param === null) {
+            return $target;
+        }
+
+        $uri = $request->getUri();
+        if (property_exists($uri, 'base')) {
+            $uri = $uri->withPath($uri->base . $uri->getPath());
+        }
+        $redirect = $uri->getPath();
+        if ($uri->getQuery()) {
+            $redirect .= '?' . $uri->getQuery();
+        }
+        $query = urlencode($param) . '=' . urlencode($redirect);
+
+        $url = parse_url($target);
+        if (isset($url['query']) && strlen($url['query'])) {
+            $url['query'] .= '&' . $query;
+        } else {
+            $url['query'] = $query;
+        }
+        $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
+
+        return $url['path'] . '?' . $url['query'] . $fragment;
+    }
+
+    /**
+     * Return the URL that an authenticated user came from or null.
+     *
+     * This reads from the URL parameter defined in the `queryParam` option.
+     * Will return null if this parameter doesn't exist or is invalid.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return string|null
+     */
+    public function getLoginRedirect(ServerRequestInterface $request)
+    {
+        $redirectParam = $this->getConfig('queryParam');
+        $params = $request->getQueryParams();
+        if (empty($redirectParam) ||
+            !isset($params[$redirectParam]) ||
+            strlen($params[$redirectParam]) === 0
+        ) {
+            return null;
+        }
+
+        $parsed = parse_url($params[$redirectParam]);
+        if ($parsed === false) {
+            return null;
+        }
+        if (!empty($parsed['host']) || !empty($parsed['scheme'])) {
+            return null;
+        }
+        $parsed += ['path' => '/', 'query' => ''];
+        if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
+            $parsed['path'] = "/{$parsed['path']}";
+        }
+        if ($parsed['query']) {
+            $parsed['query'] = "?{$parsed['query']}";
+        }
+
+        return $parsed['path'] . $parsed['query'];
     }
 }

@@ -281,4 +281,21 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         return Router::normalize($logoutRedirect);
     }
+
+    /**
+     * Get the URL visited before an unauthenticated redirect.
+     *
+     * Reads from the current request's query string if available.
+     *
+     * Leverages the `unauthenticatedRedirect` and `queryParam` options in
+     * the AuthenticationService.
+     *
+     * @return string|null
+     */
+    public function getLoginRedirect()
+    {
+        $controller = $this->getController();
+
+        return $this->getAuthenticationService()->getLoginRedirect($controller->getRequest());
+    }
 }
