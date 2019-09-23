@@ -294,7 +294,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return string
      */
-    public function getIdentityAttribute()
+    public function getIdentityAttribute(): string
     {
         return $this->getConfig('identityAttribute');
     }
@@ -338,7 +338,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @return string|null
      */
-    public function getUnauthenticatedRedirectUrl(ServerRequestInterface $request)
+    public function getUnauthenticatedRedirectUrl(ServerRequestInterface $request): ?string
     {
         $param = $this->getConfig('queryParam');
         $target = $this->getConfig('unauthenticatedRedirect');
@@ -379,7 +379,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @return string|null
      */
-    public function getLoginRedirect(ServerRequestInterface $request)
+    public function getLoginRedirect(ServerRequestInterface $request): ?string
     {
         $redirectParam = $this->getConfig('queryParam');
         $params = $request->getQueryParams();

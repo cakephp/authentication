@@ -292,7 +292,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return string|null
      */
-    public function getLoginRedirect()
+    public function getLoginRedirect(): ?string
     {
         $controller = $this->getController();
 
