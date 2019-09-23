@@ -12,7 +12,7 @@
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Identifier;
+namespace Authentication\Test\TestCase\Controller\Component;
 
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
@@ -255,6 +255,27 @@ class AuthenticationComponentTest extends TestCase
         $this->assertNull($controller->request->getAttribute('identity'));
         $this->assertInstanceOf(Event::class, $result);
         $this->assertEquals('Authentication.logout', $result->getName());
+    }
+
+    /**
+     * test getLoginRedirect
+     *
+     * @eturn void
+     */
+    public function testGetLoginRedirect()
+    {
+        $this->service->setConfig('queryParam', 'redirect');
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service)
+            ->withQueryParams(['redirect' => 'ok/path?value=key']);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $result = $component->getLoginRedirect();
+        $this->assertSame('/ok/path?value=key', $result);
     }
 
     /**

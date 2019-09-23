@@ -84,4 +84,12 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * @return string|null
      */
     public function getUnauthenticatedRedirectUrl(ServerRequestInterface $request);
+
+    /**
+     * Return the URL that an authenticated user came from or null.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return string|null
+     */
+    public function getLoginRedirect(ServerRequestInterface $request);
 }
