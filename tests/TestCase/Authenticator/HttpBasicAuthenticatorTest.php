@@ -17,6 +17,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -85,6 +86,8 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertFalse($result->isValid());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 
     /**
@@ -228,5 +231,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $this->assertArraySubset($expected, $result->getData()->toArray());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 }
