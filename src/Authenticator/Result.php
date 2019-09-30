@@ -64,6 +64,8 @@ class Result implements ResultInterface
      * @param null|array|\ArrayAccess $data The identity data
      * @param string $status Status constant equivalent.
      * @param array $messages Messages.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier The matching identifier.
+     * @param \Authentication\Authenticator\AuthenticatorInterface|null $authenticator The matching authenticator.
      * @throws \InvalidArgumentException When invalid identity data is passed.
      */
     public function __construct($data, $status, array $messages = [], IdentifierInterface $identifier = null, AuthenticatorInterface $authenticator = null)
@@ -132,7 +134,7 @@ class Result implements ResultInterface
 
     /**
      * return null or the identifier who match the correct identity
-     * @return null|Authentication\Identifier\IdentifierInterface
+     * @return \Authentication\Identifier\IdentifierInterface|null
      */
     public function getIdentifier()
     {
@@ -141,7 +143,7 @@ class Result implements ResultInterface
 
     /**
      * set the identifier who match the correct identity or null
-     * @param null|Authentication\Identifier\IdentifierInterface $identifier The matching identifier
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier The matching identifier
      * @return void
      */
     public function setIdentifier(IdentifierInterface $identifier = null)
@@ -151,7 +153,7 @@ class Result implements ResultInterface
 
     /**
      * return null or the authenticator who match the correct identity
-     * @return null|Authentication\Authenticator\AuthenticatorInterface
+     * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticator()
     {
@@ -160,7 +162,7 @@ class Result implements ResultInterface
 
     /**
      * set the authenticator who match the correct identity or null
-     * @param null|Authentication\Authenticator\AuthenticatorInterface $authenticator The matching authenticator
+     * @param \Authentication\Authenticator\AuthenticatorInterface|null $authenticator The matching authenticator
      * @return void
      */
     public function setAuthenticator(AuthenticatorInterface $authenticator = null)

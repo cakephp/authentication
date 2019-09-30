@@ -75,26 +75,26 @@ interface ResultInterface
 
     /**
      * return null or the identifier who match the correct identity
-     * @return null|Authentication\Identifier\IdentifierInterface
+     * @return \Authentication\Identifier\IdentifierInterface|null
      */
     public function getIdentifier();
 
     /**
      * set the identifier who match the correct identity or null
-     * @param null|Authentication\Identifier\IdentifierInterface $identifier The matching identifier
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier The matching identifier
      * @return void
      */
     public function setIdentifier(IdentifierInterface $identifier = null);
 
     /**
      * return null or the authenticator who match the correct identity
-     * @return null|Authentication\Authenticator\AuthenticatorInterface
+     * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticator();
 
     /**
      * set the authenticator who match the correct identity or null
-     * @param null|Authentication\Authenticator\AuthenticatorInterface $authenticator The matching authenticator
+     * @param \Authentication\Authenticator\AuthenticatorInterface|null $authenticator The matching authenticator
      * @return void
      */
     public function setAuthenticator(AuthenticatorInterface $authenticator = null);
