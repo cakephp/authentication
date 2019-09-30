@@ -91,7 +91,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     {
         $digest = $this->_getDigest($request);
         if ($digest === null) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
+            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [], null, $this);
         }
 
         $user = $this->_identifier->identify([
@@ -99,11 +99,11 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         ]);
 
         if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, [], $this->_identifier->getSuccessfulIdentifier(), $this);
         }
 
         if (!$this->validNonce($digest['nonce'])) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
+            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [], $this->_identifier->getSuccessfulIdentifier(), $this);
         }
 
         $field = $this->_config['fields'][IdentifierInterface::CREDENTIAL_PASSWORD];
@@ -116,10 +116,10 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
         if (hash_equals($hash, $digest['response'])) {
-            return new Result($user, Result::SUCCESS);
+            return new Result($user, Result::SUCCESS, [], $this->_identifier->getSuccessfulIdentifier(), $this);
         }
 
-        return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
+        return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [], $this->_identifier->getSuccessfulIdentifier(), $this);
     }
 
     /**

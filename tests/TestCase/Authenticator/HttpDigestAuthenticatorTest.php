@@ -20,6 +20,7 @@ use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -105,6 +106,8 @@ class HttpDigestAuthenticatorTest extends TestCase
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 
     /**
@@ -135,6 +138,8 @@ DIGEST;
 
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertFalse($result->isValid(), 'Should fail');
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 
     /**
@@ -173,6 +178,8 @@ DIGEST;
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
         $this->assertArraySubset($expected, $result->getData()->toArray());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 
     /**
@@ -204,6 +211,8 @@ DIGEST;
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 
     /**
@@ -235,6 +244,8 @@ DIGEST;
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 
     /**
@@ -262,6 +273,8 @@ DIGEST;
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($this->auth, $result->getAuthenticator());
     }
 
     /**
