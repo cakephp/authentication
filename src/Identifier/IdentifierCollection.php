@@ -119,7 +119,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
 
     /**
      * set the identifier who found the identity
-     * @param IdentifierInterface|null $identifier successful identifier or null to unset
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier successful identifier or null to unset
      * @return void
      */
     public function setSuccessfulIdentifier(IdentifierInterface $identifier = null)
@@ -129,7 +129,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
 
     /**
      * get the successful identifier
-     * @return null|Authentication\Identifier\IdentifierInterface
+     * @return \Authentication\Identifier\IdentifierInterface|null
      */
     public function getSuccessfulIdentifier()
     {
