@@ -14,6 +14,8 @@
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\IdentifierInterface;
+
 interface ResultInterface
 {
     /**
@@ -79,9 +81,10 @@ interface ResultInterface
 
     /**
      * set the identifier who match the correct identity or null
+     * @param null|Authentication\Identifier\IdentifierInterface $identifier The matching identifier
      * @return void
      */
-    public function setIdentifier();
+    public function setIdentifier(IdentifierInterface $identifier = null);
 
     /**
      * return null or the authenticator who match the correct identity
@@ -91,7 +94,8 @@ interface ResultInterface
 
     /**
      * set the authenticator who match the correct identity or null
+     * @param null|Authentication\Authenticator\AuthenticatorInterface $authenticator The matching authenticator
      * @return void
      */
-    public function setAuthenticator();
+    public function setAuthenticator(AuthenticatorInterface $authenticator = null);
 }
