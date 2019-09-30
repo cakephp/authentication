@@ -25,7 +25,6 @@ use stdClass;
 
 class ResultTest extends TestCase
 {
-
     /**
      * testConstructorEmptyData
      *
@@ -48,6 +47,25 @@ class ResultTest extends TestCase
     public function testConstructorInvalidData()
     {
         new Result(new stdClass, Result::FAILURE_CREDENTIALS_INVALID);
+    }
+
+    /**
+     * testConstructorIdentifierAndAuthenticator
+     *
+     * @return void
+     */
+    public function testConstructorIdentifierAndAuthenticator()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+        $authenticator = new FormAuthenticator($identifiers);
+        $identifier = new PasswordIdentifier;
+
+        $result = new Result(['user' => 'florian'], Result::SUCCESS, [], $identifier, $authenticator);
+
+        $this->assertSame($identifier, $result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**

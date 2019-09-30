@@ -66,7 +66,7 @@ class Result implements ResultInterface
      * @param array $messages Messages.
      * @throws \InvalidArgumentException When invalid identity data is passed.
      */
-    public function __construct($data, $status, array $messages = [])
+    public function __construct($data, $status, array $messages = [], IdentifierInterface $identifier = null, AuthenticatorInterface $authenticator = null)
     {
         if ($status === self::SUCCESS && empty($data)) {
             throw new InvalidArgumentException('Identity data can not be empty with status success.');
@@ -83,6 +83,9 @@ class Result implements ResultInterface
         $this->_status = $status;
         $this->_data = $data;
         $this->_errors = $messages;
+
+        $this->_identifier = $identifier;
+        $this->_authenticator = $authenticator;
     }
 
     /**
