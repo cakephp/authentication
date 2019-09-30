@@ -34,7 +34,6 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      */
     protected $_successfulIdentifier = null;
 
-
     /**
      * Identifies an user or service by the passed credentials
      *
