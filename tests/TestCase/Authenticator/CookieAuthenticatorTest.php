@@ -17,6 +17,7 @@ use ArrayObject;
 use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\Http\Cookie\Cookie;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -73,6 +74,8 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -101,6 +104,8 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -157,6 +162,8 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -180,6 +187,8 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -208,6 +217,8 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**

@@ -88,7 +88,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         if (!isset($cookies[$cookieName])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Login credentials not found'
-            ]);
+            ], null, $this);
         }
 
         if (is_array($cookies[$cookieName])) {
@@ -100,7 +100,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         if ($token === null || count($token) !== 2) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
                 'Cookie token is invalid.'
-            ]);
+            ], null, $this);
         }
 
         list($username, $tokenHash) = $token;
@@ -108,16 +108,34 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $identity = $this->_identifier->identify(compact('username'));
 
         if (empty($identity)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return new Result(
+                null,
+                Result::FAILURE_IDENTITY_NOT_FOUND,
+                $this->_identifier->getErrors(),
+                $this->_identifier->getSuccessfulIdentifier(),
+                $this
+            );
         }
 
         if (!$this->_checkToken($identity, $tokenHash)) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
-                'Cookie token does not match'
-            ]);
+            return new Result(
+                null,
+                Result::FAILURE_CREDENTIALS_INVALID,
+                [
+                    'Cookie token does not match'
+                ],
+                $this->_identifier->getSuccessfulIdentifier(),
+                $this
+            );
         }
 
-        return new Result($identity, Result::SUCCESS);
+        return new Result(
+            $identity,
+            Result::SUCCESS,
+            [],
+            $this->_identifier->getSuccessfulIdentifier(),
+            $this
+        );
     }
 
     /**
