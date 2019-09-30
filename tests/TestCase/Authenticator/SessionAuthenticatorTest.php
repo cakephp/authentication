@@ -18,6 +18,7 @@ use ArrayObject;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -83,6 +84,8 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
 
         $this->sessionMock->expects($this->at(0))
             ->method('read')
@@ -96,6 +99,8 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -125,6 +130,8 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
 
         $this->sessionMock->expects($this->at(0))
             ->method('read')
@@ -143,6 +150,8 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**

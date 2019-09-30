@@ -56,7 +56,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         $user = $session->read($sessionKey);
 
         if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, [], null, $this);
         }
 
         if ($this->getConfig('identify') === true) {
@@ -67,7 +67,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             $user = $this->_identifier->identify($credentials);
 
             if (empty($user)) {
-                return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
+                return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [], $this->_identifier->getSuccessfulIdentifier(), $this);
             }
         }
 
@@ -75,7 +75,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             $user = new ArrayObject($user);
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($user, Result::SUCCESS, [], $this->_identifier->getSuccessfulIdentifier(), $this);
     }
 
     /**
