@@ -30,7 +30,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
 
     /**
      * SuccessfulIdentifier
-     * @var null|Authentication\Identifier\IdentifierInterface
+     * @var \Authentication\Identifier\IdentifierInterface|null
      */
     protected $_successfulIdentifier = null;
 

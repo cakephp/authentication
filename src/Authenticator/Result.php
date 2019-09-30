@@ -48,13 +48,13 @@ class Result implements ResultInterface
 
     /**
      * successful identifier or null
-     * @var null|Authentication\Identifier\IdentifierInterface
+     * @var \Authentication\Identifier\IdentifierInterface|null
      */
     protected $_identifier = null;
 
     /**
      * successful authenticator or null
-     * @var null|Authentication\Authenticator\AuthenticatorInterface
+     * @var \Authentication\Authenticator\AuthenticatorInterface|null
      */
     protected $_authenticator = null;
 
