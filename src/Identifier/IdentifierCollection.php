@@ -29,7 +29,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     protected $_errors = [];
 
     /**
-     * SuccessfulIdentifier
+     * The successful matching identifier.
      * @var \Authentication\Identifier\IdentifierInterface|null
      */
     protected $_successfulIdentifier = null;
@@ -118,8 +118,8 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     }
 
     /**
-     * set the identifier who found the identity
-     * @param \Authentication\Identifier\IdentifierInterface|null $identifier successful identifier or null to unset
+     * Set the identifier who found the identity.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Successful identifier or null to unset.
      * @return void
      */
     public function setSuccessfulIdentifier(IdentifierInterface $identifier = null)
@@ -128,7 +128,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     }
 
     /**
-     * get the successful identifier
+     * Get the successful identifier.
      * @return \Authentication\Identifier\IdentifierInterface|null
      */
     public function getSuccessfulIdentifier()

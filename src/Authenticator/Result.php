@@ -47,19 +47,19 @@ class Result implements ResultInterface
     protected $_errors = [];
 
     /**
-     * successful identifier or null
+     * Successful identifier or null.
      * @var \Authentication\Identifier\IdentifierInterface|null
      */
     protected $_identifier = null;
 
     /**
-     * successful authenticator or null
+     * Successful authenticator or null.
      * @var \Authentication\Authenticator\AuthenticatorInterface|null
      */
     protected $_authenticator = null;
 
     /**
-     * Sets the result status, identity, and failure messages
+     * Sets the result status, identity, failure messages, successful identifier and authenticator.
      *
      * @param null|array|\ArrayAccess $data The identity data
      * @param string $status Status constant equivalent.
@@ -85,7 +85,6 @@ class Result implements ResultInterface
         $this->_status = $status;
         $this->_data = $data;
         $this->_errors = $messages;
-
         $this->_identifier = $identifier;
         $this->_authenticator = $authenticator;
     }
@@ -133,7 +132,7 @@ class Result implements ResultInterface
     }
 
     /**
-     * return null or the identifier who match the correct identity
+     * Return null or the identifier who match the correct identity.
      * @return \Authentication\Identifier\IdentifierInterface|null
      */
     public function getIdentifier()
@@ -142,8 +141,8 @@ class Result implements ResultInterface
     }
 
     /**
-     * set the identifier who match the correct identity or null
-     * @param \Authentication\Identifier\IdentifierInterface|null $identifier The matching identifier
+     * Set the identifier who match the correct identity or null.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier The matching identifier.
      * @return void
      */
     public function setIdentifier(IdentifierInterface $identifier = null)
@@ -152,7 +151,7 @@ class Result implements ResultInterface
     }
 
     /**
-     * return null or the authenticator who match the correct identity
+     * Return null or the authenticator who match the correct identity.
      * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticator()
@@ -161,8 +160,8 @@ class Result implements ResultInterface
     }
 
     /**
-     * set the authenticator who match the correct identity or null
-     * @param \Authentication\Authenticator\AuthenticatorInterface|null $authenticator The matching authenticator
+     * Set the authenticator who match the correct identity or null.
+     * @param \Authentication\Authenticator\AuthenticatorInterface|null $authenticator The matching authenticator.
      * @return void
      */
     public function setAuthenticator(AuthenticatorInterface $authenticator = null)

@@ -74,27 +74,27 @@ interface ResultInterface
     public function getErrors();
 
     /**
-     * return null or the identifier who match the correct identity
+     * Return null or the identifier who match the correct identity.
      * @return \Authentication\Identifier\IdentifierInterface|null
      */
     public function getIdentifier();
 
     /**
-     * set the identifier who match the correct identity or null
-     * @param \Authentication\Identifier\IdentifierInterface|null $identifier The matching identifier
+     * Set the identifier who match the correct identity or null.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier The matching identifier.
      * @return void
      */
     public function setIdentifier(IdentifierInterface $identifier = null);
 
     /**
-     * return null or the authenticator who match the correct identity
+     * Return null or the authenticator who match the correct identity.
      * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticator();
 
     /**
-     * set the authenticator who match the correct identity or null
-     * @param \Authentication\Authenticator\AuthenticatorInterface|null $authenticator The matching authenticator
+     * Set the authenticator who match the correct identity or null.
+     * @param \Authentication\Authenticator\AuthenticatorInterface|null $authenticator The matching authenticator.
      * @return void
      */
     public function setAuthenticator(AuthenticatorInterface $authenticator = null);
