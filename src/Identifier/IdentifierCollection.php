@@ -29,6 +29,13 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     protected $_errors = [];
 
     /**
+     * SuccessfulIdentifier
+     * @var null|Authentication\Identifier\IdentifierInterface
+     */
+    protected $_successfulIdentifier = null;
+
+
+    /**
      * Identifies an user or service by the passed credentials
      *
      * @param array $credentials Authentication credentials
@@ -40,10 +47,14 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
         foreach ($this->_loaded as $name => $identifier) {
             $result = $identifier->identify($credentials);
             if ($result) {
+                $this->setSuccessfulIdentifier($identifier);
+
                 return $result;
             }
             $this->_errors[$name] = $identifier->getErrors();
         }
+
+        $this->setSuccessfulIdentifier(null);
 
         return null;
     }
@@ -105,5 +116,24 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     {
         $message = sprintf('Identifier class `%s` was not found.', $class);
         throw new RuntimeException($message);
+    }
+
+    /**
+     * set the identifier who found the identity
+     * @param IdentifierInterface|null $identifier successful identifier or null to unset
+     * @return void
+     */
+    public function setSuccessfulIdentifier(IdentifierInterface $identifier = null)
+    {
+        $this->_successfulIdentifier = $identifier;
+    }
+
+    /**
+     * get the successful identifier
+     * @return null|Authentication\Identifier\IdentifierInterface
+     */
+    public function getSuccessfulIdentifier()
+    {
+        return $this->_successfulIdentifier;
     }
 }

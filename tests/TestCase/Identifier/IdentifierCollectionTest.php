@@ -16,6 +16,7 @@ namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use TestApp\Authentication\Identifier\InvalidIdentifier;
 
@@ -121,5 +122,24 @@ class IdentifierCollectionTest extends TestCase
         ]);
 
         $this->assertInstanceOf('\ArrayAccess', $result);
+        $this->assertInstanceOf(PasswordIdentifier::class, $collection->getSuccessfulIdentifier());
+    }
+
+    /**
+     * testIdentify
+     *
+     * @return void
+     */
+    public function testSuccessfulIdentifier()
+    {
+        $collection = new IdentifierCollection();
+        $this->assertNull($collection->getSuccessfulIdentifier());
+
+        $identifier = new PasswordIdentifier;
+        $collection->setSuccessfulIdentifier($identifier);
+        $this->assertInstanceOf(PasswordIdentifier::class, $collection->getSuccessfulIdentifier());
+
+        $collection->setSuccessfulIdentifier(null);
+        $this->assertNull($collection->getSuccessfulIdentifier());
     }
 }
