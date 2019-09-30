@@ -17,6 +17,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -58,6 +59,8 @@ class FormAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+        $this->assertSame($form, $result->getAuthenticator());
     }
 
     /**
@@ -85,6 +88,8 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($form, $result->getAuthenticator());
     }
 
     /**
@@ -112,6 +117,8 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($form, $result->getAuthenticator());
     }
 
     /**
@@ -141,6 +148,8 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_OTHER, $result->getStatus());
         $this->assertEquals([0 => 'Login URL `http://localhost/users/does-not-match` did not match `/users/login`.'], $result->getErrors());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($form, $result->getAuthenticator());
     }
 
     /**
