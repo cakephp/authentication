@@ -19,6 +19,7 @@ use ArrayObject;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -91,6 +92,8 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -113,6 +116,8 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -184,6 +189,8 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
         $this->assertNull($result->getData());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     /**
@@ -217,6 +224,8 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertNUll($result->getData());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
     }
 
     public function testInvalidToken()
@@ -233,6 +242,8 @@ class JwtAuthenticatorTest extends TestCase
         $result = $authenticator->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertNull($result->getIdentifier());
+        $this->assertSame($authenticator, $result->getAuthenticator());
         $this->assertNUll($result->getData());
         $errors = $result->getErrors();
         $this->assertArrayHasKey('message', $errors);

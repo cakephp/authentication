@@ -80,25 +80,27 @@ class JwtAuthenticator extends TokenAuthenticator
                 [
                     'message' => $e->getMessage(),
                     'exception' => $e
-                ]
+                ],
+                null,
+                $this
             );
         }
 
         if (!($result instanceof stdClass)) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
+            return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [], null, $this);
         }
 
         $result = json_decode(json_encode($result), true);
 
         $key = IdentifierInterface::CREDENTIAL_JWT_SUBJECT;
         if (empty($result[$key])) {
-            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
+            return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [], null, $this);
         }
 
         if ($this->getConfig('returnPayload')) {
             $user = new ArrayObject($result);
 
-            return new Result($user, Result::SUCCESS);
+            return new Result($user, Result::SUCCESS, [], $this->_identifier->getSuccessfulIdentifier(), $this);
         }
 
         $user = $this->_identifier->identify([
@@ -106,10 +108,16 @@ class JwtAuthenticator extends TokenAuthenticator
         ]);
 
         if (empty($user)) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return new Result(
+                null,
+                Result::FAILURE_IDENTITY_NOT_FOUND,
+                $this->_identifier->getErrors(),
+                $this->_identifier->getSuccessfulIdentifier(),
+                $this
+            );
         }
 
-        return new Result($user, Result::SUCCESS);
+        return new Result($user, Result::SUCCESS, [], $this->_identifier->getSuccessfulIdentifier(), $this);
     }
 
     /**
