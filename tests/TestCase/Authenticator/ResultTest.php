@@ -14,7 +14,9 @@
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
@@ -128,7 +130,7 @@ class ResultTest extends TestCase
     }
 
     /**
-     * testGetErrors
+     * testSetIdentifier
      *
      * @return void
      */
@@ -141,5 +143,27 @@ class ResultTest extends TestCase
 
         $result->setIdentifier(null);
         $this->assertNull($result->getIdentifier());
+    }
+
+    /**
+     * testSetAuthenticator
+     *
+     * @return void
+     */
+    public function testSetAuthenticator()
+    {
+        $identifiers = new IdentifierCollection([
+           'Authentication.Password'
+        ]);
+
+        $result = new Result(['user' => 'florian'], Result::SUCCESS);
+
+        $authenticator = new FormAuthenticator($identifiers);
+
+        $result->setAuthenticator($authenticator);
+        $this->assertInstanceOf(FormAuthenticator::class, $result->getAuthenticator());
+
+        $result->setAuthenticator(null);
+        $this->assertNull($result->getAuthenticator());
     }
 }

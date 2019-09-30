@@ -53,6 +53,12 @@ class Result implements ResultInterface
     protected $_identifier = null;
 
     /**
+     * successful authenticator or null
+     * @var null|Authentication\Authenticator\AuthenticatorInterface
+     */
+    protected $_authenticator = null;
+
+    /**
      * Sets the result status, identity, and failure messages
      *
      * @param null|array|\ArrayAccess $data The identity data
@@ -137,5 +143,23 @@ class Result implements ResultInterface
     public function setIdentifier(IdentifierInterface $identifier = null)
     {
         $this->_identifier = $identifier;
+    }
+
+    /**
+     * return null or the authenticator who match the correct identity
+     * @return null|Authentication\Authenticator\AuthenticatorInterface
+     */
+    public function getAuthenticator()
+    {
+        return $this->_authenticator;
+    }
+
+    /**
+     * set the authenticator who match the correct identity or null
+     * @return void
+     */
+    public function setAuthenticator(AuthenticatorInterface $authenticator = null)
+    {
+        $this->_authenticator = $authenticator;
     }
 }

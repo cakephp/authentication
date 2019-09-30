@@ -82,4 +82,16 @@ interface ResultInterface
      * @return void
      */
     public function setIdentifier();
+
+    /**
+     * return null or the authenticator who match the correct identity
+     * @return null|Authentication\Authenticator\AuthenticatorInterface
+     */
+    public function getAuthenticator();
+
+    /**
+     * set the authenticator who match the correct identity or null
+     * @return void
+     */
+    public function setAuthenticator();
 }
