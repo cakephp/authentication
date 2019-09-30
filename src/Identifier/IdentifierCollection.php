@@ -122,11 +122,11 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     }
 
     /**
-     * Gets the successful identifier instance if one was successful after calling identify
+     * Gets the successful identifier instance if one was successful after calling identify.
      *
      * @return \Authentication\Identifier\IdentifierInterface|null
      */
-    public function getIdentifierProvider()
+    public function getIdentificationProvider()
     {
         return $this->_successfulIdentifier;
     }
