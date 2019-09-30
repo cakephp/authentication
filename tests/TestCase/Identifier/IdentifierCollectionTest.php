@@ -126,7 +126,7 @@ class IdentifierCollectionTest extends TestCase
     }
 
     /**
-     * testIdentify
+     * testSuccessfulIdentifier
      *
      * @return void
      */

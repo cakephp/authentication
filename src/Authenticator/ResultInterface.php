@@ -70,4 +70,16 @@ interface ResultInterface
      * @return array
      */
     public function getErrors();
+
+    /**
+     * return null or the identifier who match the correct identity
+     * @return null|Authentication\Identifier\IdentifierInterface
+     */
+    public function getIdentifier();
+
+    /**
+     * set the identifier who match the correct identity or null
+     * @return void
+     */
+    public function setIdentifier();
 }

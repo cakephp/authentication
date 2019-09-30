@@ -15,6 +15,7 @@
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\Result;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
@@ -124,5 +125,21 @@ class ResultTest extends TestCase
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::FAILURE_OTHER, $messages);
         $this->assertEquals($messages, $result->getErrors());
+    }
+
+    /**
+     * testGetErrors
+     *
+     * @return void
+     */
+    public function testSetIdentifier()
+    {
+        $result = new Result(['user' => 'florian'], Result::SUCCESS);
+        $identifier = new PasswordIdentifier;
+        $result->setIdentifier($identifier);
+        $this->assertInstanceOf(PasswordIdentifier::class, $result->getIdentifier());
+
+        $result->setIdentifier(null);
+        $this->assertNull($result->getIdentifier());
     }
 }

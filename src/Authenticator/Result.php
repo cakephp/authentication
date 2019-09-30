@@ -15,6 +15,7 @@
 namespace Authentication\Authenticator;
 
 use ArrayAccess;
+use Authentication\Identifier\IdentifierInterface;
 use InvalidArgumentException;
 
 /**
@@ -44,6 +45,12 @@ class Result implements ResultInterface
      * @var array
      */
     protected $_errors = [];
+
+    /**
+     * successful identifier or null
+     * @var null|Authentication\Identifier\IdentifierInterface
+     */
+    protected $_identifier = null;
 
     /**
      * Sets the result status, identity, and failure messages
@@ -112,5 +119,23 @@ class Result implements ResultInterface
     public function getErrors()
     {
         return $this->_errors;
+    }
+
+    /**
+     * return null or the identifier who match the correct identity
+     * @return null|Authentication\Identifier\IdentifierInterface
+     */
+    public function getIdentifier()
+    {
+        return $this->_identifier;
+    }
+
+    /**
+     * set the identifier who match the correct identity or null
+     * @return void
+     */
+    public function setIdentifier(IdentifierInterface $identifier = null)
+    {
+        $this->_identifier = $identifier;
     }
 }
