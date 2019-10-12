@@ -56,8 +56,114 @@ implement the ``IdentifierInterface``.
 Migrating your authentication setup
 ===================================
 
-Adding the authentication middleware
-------------------------------------
+The first step to migrating your application is to load the authentication
+plugin in your application's bootstrap method::
+
+    public function bootstrap()
+    {
+        parent::bootstrap();
+        $this->addPlugin('Authentication');
+    }
+
+Then update your application to implement the authentication provider interface.
+This lets the AuthenticationMiddleware know how to get the authentication
+service from your application::
+
+    // in src/Application.php
+
+    // Add the following use statements.
+    use Authentication\AuthenticationService;
+    use Authentication\AuthenticationServiceProviderInterface;
+    use Authentication\Middleware\AuthenticationMiddleware;
+    use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\ServerRequestInterface;
+
+    // Add the authentication interface.
+    class Application extends BaseApplication implements AuthenticationServiceProviderInterface
+    {
+        /**
+         * Returns a service provider instance.
+         *
+         * @param \Psr\Http\Message\ServerRequestInterface $request Request
+         * @param \Psr\Http\Message\ResponseInterface $response Response
+         * @return \Authentication\AuthenticationServiceInterface
+         */
+        public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
+        {
+            $service = new AuthenticationService();
+            // Configure the service. (see below for more details)
+            return $service;
+        }
+    }
+
+Next add the ``AuthenticationMiddleware`` to your application::
+
+    // in src/Application.php
+    public function middleware($middlewareQueue)
+    {
+        // Various other middlewares for error handling, routing etc. added here.
+
+        // Add the middleware to the middleware queue
+        $middlewareQueue->add(new AuthenticationMiddleware($this));
+
+        return $middlewareQueue;
+    }
+
+Migrate AuthComponent settings
+------------------------------
+
+The configuration array from ``AuthComponent`` needs to be split into
+identifiers and authenticators when configuring the service. So when you
+had your ``AuthComponent`` configured this way::
+
+   $this->loadComponent('Auth', [
+       'authentication' => [
+           'Form' => [
+               'fields' => [
+                   'username' => 'email',
+                   'password' => 'password',
+               ]
+           ]
+       ]
+   ]);
+
+You’ll now have to configure it this way::
+
+   // Instantiate the service
+   $service = new AuthenticationService();
+
+   // Load identifiers
+   $service->loadIdentifier('Authentication.Password', [
+       'fields' => [
+           'username' => 'email',
+           'password' => 'password',
+       ]
+   ]);
+
+   // Load the authenticators
+   $service->loadAuthenticator('Authentication.Session');
+   $service->loadAuthenticator('Authentication.Form');
+
+If you have customized the ``userModel`` you can use the following
+configuration::
+
+   // Instantiate the service
+   $service = new AuthenticationService();
+
+   // Load identifiers
+   $service->loadIdentifier('Authentication.Password', [
+       'resolver' => [
+           'className' => 'Authentication.Orm',
+           'userModel' => 'Employees',
+       ],
+       'fields' => [
+           'username' => 'email',
+           'password' => 'password',
+       ]
+   ]);
+
+While there is a bit more code than before, you have more flexibility in
+how your authentication is handled.
 
 Login action
 ------------
@@ -116,63 +222,6 @@ use ``setIdentity()``::
    // Persist the user into configured authenticators.
    $this->Authentication->setIdentity($user);
 
-Migrate AuthComponent settings
-------------------------------
-
-The huge config array from the AuthComponent needs to be split into
-identifiers and authenticators when configuring the service. So when you
-had your AuthComponent configured this way
-
-.. code:: php
-
-   $this->loadComponent('Auth', [
-       'authentication' => [
-           'Form' => [
-               'fields' => [
-                   'username' => 'email',
-                   'password' => 'password',
-               ]
-           ]
-       ]
-   ]);
-
-You’ll now have to configure it this way::
-
-   // Instantiate the service
-   $service = new AuthenticationService();
-
-   // Load identifiers
-   $service->loadIdentifier('Authentication.Password', [
-       'fields' => [
-           'username' => 'email',
-           'password' => 'password',
-       ]
-   ]);
-
-   // Load the authenticators
-   $service->loadAuthenticator('Authentication.Session');
-   $service->loadAuthenticator('Authentication.Form');
-
-If you have customized the ``userModel`` you can use the following
-configuration::
-
-   // Instantiate the service
-   $service = new AuthenticationService();
-
-   // Load identifiers
-   $service->loadIdentifier('Authentication.Password', [
-       'resolver' => [
-           'className' => 'Authentication.Orm',
-           'userModel' => 'Employees',
-       ],
-       'fields' => [
-           'username' => 'email',
-           'password' => 'password',
-       ]
-   ]);
-
-While there is a bit more code than before, you have more flexibility in
-how your authentication is handled.
 
 Migrating allow/deny logic
 --------------------------
@@ -194,32 +243,23 @@ By default ``AuthComponent`` redirects users back to the login page when
 authentication is required. In contrast, the ``AuthenticationComponent``
 in this plugin will raise an exception in this scenario. You can convert
 this exception into a redirect using the ``unauthenticatedRedirect``
-when configuring the AuthenticationMiddleware.
-
+when configuring the ``AuthenticationService``.
 
 You can also pass the current request target URI as a query parameter
 using the ``queryParam`` option::
 
-   // in src/Application.php
-   use Authentication\Middleware\AuthenticationMiddleware;
+   // In the getAuthenticationService() method of your Application class
 
-   public function middleware($middlewareQueue)
-   {
-       // Various other middlewares for error handling, routing etc. added here.
+   $service = new AuthenticationService();
 
-       // Add the authentication middleware
-       $authentication = new AuthenticationMiddleware($this, [
-           'unauthenticatedRedirect' => '/users/login',
-           'queryParam' => 'redirect',
-       ]);
+   // Configure unauthenticated redirect 
+   $service->setConfig([
+       'unauthenticatedRedirect' => '/users/login',
+       'queryParam' => 'redirect',
+   ]);
 
-       // Add authentication
-       $middlewareQueue->add($authentication);
-
-       return $middlewareQueue;
-   }
-
-Then in your controller's login method you can use the redirect query parameter::
+Then in your controller's login method you can use ``getLoginRedirect()`` to get
+the redirect target safely from the query string parameter::
 
     public function login()
     {
@@ -235,11 +275,6 @@ Then in your controller's login method you can use the redirect query parameter:
             return $this->redirect($target);
         }
     }
-    
-.. deprecated:: 4.0.0
-    The `unauthenticatedRedirect` and `queryParam` configuration key on AuthenticationMiddleware is deprecated. 
-    Instead set the  `unauthenticatedRedirect` and `queryParam` on your AuthenticationService instance.
-
 
 Migrating Hashing Upgrade Logic
 ===============================
