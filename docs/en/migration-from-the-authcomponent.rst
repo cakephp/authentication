@@ -196,6 +196,7 @@ in this plugin will raise an exception in this scenario. You can convert
 this exception into a redirect using the ``unauthenticatedRedirect``
 when configuring the AuthenticationMiddleware.
 
+
 You can also pass the current request target URI as a query parameter
 using the ``queryParam`` option::
 
@@ -234,6 +235,11 @@ Then in your controller's login method you can use the redirect query parameter:
             return $this->redirect($target);
         }
     }
+    
+.. deprecated:: 4.0.0
+    The `unauthenticatedRedirect` and `queryParam` configuration key on AuthenticationMiddleware is deprecated. 
+    Instead set the  `unauthenticatedRedirect` and `queryParam` on your AuthenticationService instance.
+
 
 Migrating Hashing Upgrade Logic
 ===============================
