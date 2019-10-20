@@ -68,21 +68,21 @@ identity based on your authenticators. Usually after logging in,
 upon a successful login, change your login action to check the new
 identity results::
 
-   public function login()
-   {
-       $result = $this->Authentication->getResult();
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
 
-       // regardless of POST or GET, redirect if user is logged in
-       if ($result->isValid()) {
-           $redirect = $this->request->getQuery('redirect', ['controller' => 'Pages', 'action' => 'display', 'home']);
-           return $this->redirect($redirect);
-       }
+        // regardless of POST or GET, redirect if user is logged in
+        if ($result->isValid()) {
+            $target = $this->Authentication->getLoginRedirect();
+            return $this->redirect($target);
+        }
 
-       // display error if user submitted and authentication failed
-       if ($this->request->is(['post']) && !$result->isValid()) {
-           $this->Flash->error('Invalid username or password');
-       }
-   }
+        // display error if user submitted and authentication failed
+        if ($this->request->is(['post']) && !$result->isValid()) {
+            $this->Flash->error('Invalid username or password');
+        }
+    }
 
 Checking identities
 -------------------
