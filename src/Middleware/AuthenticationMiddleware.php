@@ -37,8 +37,6 @@ class AuthenticationMiddleware
     /**
      * Configuration options
      *
-     * - `name` the application hook method to call. Will be prefixed with `authentication`
-     *
      * The following keys are deprecated and should instead be set on the AuthenticationService
      *
      * - `identityAttribute` - The request attribute to store the identity in.
@@ -47,9 +45,7 @@ class AuthenticationMiddleware
      * - `queryParam` - Set to true to have unauthenticated redirects contain a `redirect` query string
      *   parameter with the previously blocked URL.
      */
-    protected $_defaultConfig = [
-        'name' => null,
-    ];
+    protected $_defaultConfig = [];
 
     /**
      * Authentication service or application instance.
@@ -62,14 +58,11 @@ class AuthenticationMiddleware
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface $subject Authentication service or application instance.
-     * @param array|string $config Array of configuration settings or string with authentication service provider name.
+     * @param array $config Array of configuration settings.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
     public function __construct($subject, $config = null)
     {
-        if (is_string($config)) {
-            $config = ['name' => $config];
-        }
         $this->setConfig($config);
 
         if (!($subject instanceof AuthenticationServiceInterface) && !($subject instanceof AuthenticationServiceProviderInterface)) {
