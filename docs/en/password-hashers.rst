@@ -30,4 +30,4 @@ Fallback
 
 The fallback password hasher allows you to configure multiple hashers
 and will check them sequentially. This allows users to login with an old
-hash type until their password is reset and upgraded to a new hash.  
+hash type until their password is reset and upgraded to a new hash.
