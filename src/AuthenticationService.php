@@ -329,7 +329,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Return the URL to redirect unauthenticated users to.
      *
-     * If the `unauthenticaedRedirect` option is not set,
+     * If the `unauthenticatedRedirect` option is not set,
      * this method will return null.
      *
      * If the `queryParam` option is set a query parameter
