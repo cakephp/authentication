@@ -137,7 +137,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $request = $this->getController()->request;
         $action = $request->getParam('action');
-        if (in_array($action, $this->unauthenticatedActions)) {
+        if (in_array($action, $this->unauthenticatedActions, true)) {
             return;
         }
 
