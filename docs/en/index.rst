@@ -37,7 +37,6 @@ Example of configuring the authentication middleware using ``authentication`` ap
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
     {
-
         /**
          * Returns a service provider instance.
          *
@@ -67,6 +66,12 @@ Example of configuring the authentication middleware using ``authentication`` ap
             return $service;
         }
 
+        /**
+         * Setup the middleware queue your application will use.
+         *
+         * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue.
+         * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
+         */
         public function middleware($middlewareQueue)
         {
             // Various other middlewares for error handling, routing etc. added here.
