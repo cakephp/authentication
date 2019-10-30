@@ -217,7 +217,7 @@ class AuthenticationMiddlewareTest extends TestCase
             ['username' => 'mariano', 'password' => 'password']
         );
         $handler = new TestRequestHandler(function ($req) {
-            /* @var $service AuthenticationService */
+            /** @var \Authentication\AuthenticationService $service */
             $service = $req->getAttribute('authentication');
             $this->assertInstanceOf(AuthenticationService::class, $service);
             $this->assertEquals('customIdentity', $service->getConfig("identityAttribute"));

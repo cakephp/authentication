@@ -71,9 +71,10 @@ class AuthenticationMiddleware implements MiddlewareInterface
     {
         $this->setConfig($config);
 
-        if (!($subject instanceof AuthenticationServiceInterface) &&
+        if (
+            !($subject instanceof AuthenticationServiceInterface) &&
             !($subject instanceof AuthenticationServiceProviderInterface)
-            ) {
+        ) {
             $expected = implode('` or `', [
                 AuthenticationServiceInterface::class,
                 AuthenticationServiceProviderInterface::class,
