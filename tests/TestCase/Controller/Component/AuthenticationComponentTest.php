@@ -422,4 +422,30 @@ class AuthenticationComponentTest extends TestCase
         $controller->startupProcess();
         $this->assertTrue(true, 'No exception should be raised as require identity is off.');
     }
+
+    /**
+     * Test that the identity check can be run from callback for Controller.initialize
+     *
+     * @return void
+     */
+    public function testIdentityCheckInBeforeFilter()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $request = $this->request
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionCode(401);
+
+        $component->setConfig('identityCheckEvent', 'Controller.initialize');
+        $component->allowUnauthenticated(['index', 'add']);
+        $component->beforeFilter();
+    }
 }
