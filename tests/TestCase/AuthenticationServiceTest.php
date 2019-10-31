@@ -38,16 +38,6 @@ use TestApp\Authentication\Authenticator\InvalidAuthenticator;
 class AuthenticationServiceTest extends TestCase
 {
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'core.AuthUsers',
-        'core.Users',
-    ];
-
-    /**
      * testAuthenticate
      *
      * @return void
