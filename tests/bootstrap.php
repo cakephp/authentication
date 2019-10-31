@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -12,8 +13,6 @@ declare(strict_types=1);
  * @link          http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
-// @codingStandardsIgnoreFile
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
@@ -42,15 +41,15 @@ define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
-define('CONFIG', ROOT . DS . 'config'. DS);
+define('CONFIG', ROOT . DS . 'config' . DS);
 
 Configure::write('debug', true);
 Configure::write('App', [
     'namespace' => 'TestApp',
     'paths' => [
         'plugins' => [ROOT . 'Plugin' . DS],
-        'templates' => [ROOT . 'templates' . DS]
-    ]
+        'templates' => [ROOT . 'templates' . DS],
+    ],
 ]);
 
 if (!getenv('db_dsn')) {
@@ -59,7 +58,6 @@ if (!getenv('db_dsn')) {
 ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Router::reload();
 Security::setSalt('YJfIxfs2guVoUubWDYhG93b0qyJfIxfs2guwvniR2G0FgaC9mi');
-
 
 Plugin::getCollection()->add(new \Authentication\Plugin());
 
