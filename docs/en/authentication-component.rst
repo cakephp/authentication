@@ -89,3 +89,18 @@ The debug will show you an array like this::
     objects. Since both are immutable you'll get new objects back. Depending on your
     context you're working in you'll have to use these instances from now on if you
     want to continue to work with the modified response and request objects.
+
+Configure Automatic Identity Checks
+-----------------------------------
+
+By default ``AuthenticationComponent`` will automatically enforce an identity to
+be present during the ``Controller.initialize`` event. You can have this check
+applied during the ``Controller.startup`` event instead::
+
+    // In your controller's initialize() method.
+    $this->loadComponent('Authentication.Authentication', [
+        'identityCheckEvent' => 'Controller.startup',
+    ]);
+
+You can also disable identity checks entirely with the ``requireIdentity``
+option.
