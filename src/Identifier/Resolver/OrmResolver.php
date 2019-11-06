@@ -36,6 +36,7 @@ class OrmResolver implements ResolverInterface
     protected $_defaultConfig = [
         'userModel' => 'Users',
         'finder' => 'all',
+        'contain' => []
     ];
 
     /**
@@ -74,6 +75,6 @@ class OrmResolver implements ResolverInterface
             $where[$field] = $value;
         }
 
-        return $query->where([$type => $where])->first();
+        return $query->where([$type => $where])->contain((array)$this->_config['contain'])->first();
     }
 }

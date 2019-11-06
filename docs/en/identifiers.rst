@@ -169,6 +169,7 @@ Configuration options:
 -  **userModel**: The user model identities are located in. Default is
    ``Users``.
 -  **finder**: The finder to use with the model. Default is ``all``.
+-  **contain**: array of contained associations. Default is ``[]``.
 
 In order to use ORM resolver you must require ``cakephp/orm`` in your
 ``composer.json`` file.
