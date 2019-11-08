@@ -36,7 +36,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
     ];
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function check(ServerRequestInterface $request, $urls, array $options = [])
     {

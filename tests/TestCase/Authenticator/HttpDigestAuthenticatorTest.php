@@ -470,10 +470,10 @@ DIGEST;
     /**
      * Create a digest header string from an array of data.
      *
-     * @param array $data the data to convert into a header.
+     * @param string[] $data the data to convert into a header.
      * @return string
      */
-    protected function digestHeader($data)
+    protected function digestHeader(array $data)
     {
         $data += [
             'username' => 'mariano',
@@ -500,7 +500,7 @@ DIGEST;
      *
      * @param string|null $secret The secret to use
      * @param int $expires Number of seconds the nonce is valid for
-     * @param int $time The current time.
+     * @param int|null $time The current time.
      * @return string
      */
     protected function generateNonce($secret = null, $expires = 300, $time = null)

@@ -66,7 +66,7 @@ class Identity implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getIdentifier()
     {
