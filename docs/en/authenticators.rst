@@ -42,8 +42,10 @@ Configuration options:
    ``DefaultUrlChecker``.
 -  **useRegex**: Whether or not to use regular expressions for URL
    matching. Default is ``false``.
--  **checkFullUrl**: Whether or not to check full URL. Useful when a
-   login form is on a different subdomain. Default is ``false``.
+-  **checkFullUrl**: Whether or not to check full URL including the query
+  string. Useful when a login form is on a different subdomain. Default is
+  ``false``. This option does not work well when preserving unauthenticated
+  redirects in the query string.
 
 .. warning::
     If you use the array syntax for the URL, the URL will be
