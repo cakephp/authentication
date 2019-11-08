@@ -123,7 +123,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Access the authenticator collection
      *
-     * @return \Authentication\Authenticator\AuthenticatorCollection
+     * @return \Authentication\Authenticator\AuthenticatorCollection|\Authentication\Authenticator\AuthenticatorInterface[]
      */
     public function authenticators()
     {
