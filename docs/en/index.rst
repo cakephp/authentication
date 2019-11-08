@@ -75,10 +75,12 @@ Example of configuring the authentication middleware using ``authentication`` ap
         {
             // Various other middlewares for error handling, routing etc. added here.
 
-            // Add the authentication middleware
+            // Create an authentication middleware object
             $authentication = new AuthenticationMiddleware($this);
 
-            // Add the middleware to the middleware queue
+            // Add the middleware to the middleware queue.
+            // Authentication should be added *after* RoutingMiddleware.
+            // So that subdirectory information and routes are loaded.
             $middlewareQueue->add($authentication);
 
             return $middlewareQueue;
