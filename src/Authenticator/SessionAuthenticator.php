@@ -52,6 +52,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $sessionKey = $this->getConfig('sessionKey');
+        /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         $user = $session->read($sessionKey);
 
