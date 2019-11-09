@@ -125,7 +125,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * Gets the digest headers from the request/environment.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array|null Array of digest information.
+     * @return string[]|null Array of digest information.
      */
     protected function _getDigest(ServerRequestInterface $request): ?array
     {
@@ -148,7 +148,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * Parse the digest authentication headers and split them up.
      *
      * @param string $digest The raw digest authentication headers.
-     * @return array|null An array of digest authentication headers
+     * @return string[]|null An array of digest authentication headers
      */
     public function parseAuthData(string $digest): ?array
     {
@@ -174,7 +174,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     /**
      * Generate the response hash for a given digest array.
      *
-     * @param array $digest Digest information containing data from HttpDigestAuthenticate::parseAuthData().
+     * @param string[] $digest Digest information containing data from HttpDigestAuthenticate::parseAuthData().
      * @param string $password The digest hash password generated with HttpDigestAuthenticate::password()
      * @param string $method Request method
      * @return string Response hash

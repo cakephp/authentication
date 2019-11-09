@@ -39,7 +39,7 @@ class CookieAuthenticatorTest extends TestCase
     ];
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function setUp(): void
     {

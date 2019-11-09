@@ -54,7 +54,7 @@ class JwtAuthenticatorTest extends TestCase
     public $identifiers;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function setUp(): void
     {

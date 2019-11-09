@@ -129,7 +129,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Access the authenticator collection
      *
-     * @return \Authentication\Authenticator\AuthenticatorCollection
+     * @return \Authentication\Authenticator\AuthenticatorCollection|\Authentication\Authenticator\AuthenticatorInterface[]
      */
     public function authenticators(): AuthenticatorCollection
     {
@@ -251,13 +251,23 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * Gets the successful authenticator instance if one was successful after calling authenticate
+     * Gets the successful authenticator instance if one was successful after calling authenticate.
      *
      * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
     public function getAuthenticationProvider(): ?AuthenticatorInterface
     {
         return $this->_successfulAuthenticator;
+    }
+
+    /**
+     * Convenient method to gets the successful identifier instance.
+     *
+     * @return \Authentication\Identifier\IdentifierInterface|null
+     */
+    public function getIdentificationProvider()
+    {
+        return $this->identifiers()->getIdentificationProvider();
     }
 
     /**
