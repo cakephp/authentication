@@ -212,11 +212,11 @@ From the included authenticators only the FormAuthenticator will cause
 the event to be fired. After that the session authenticator will provide
 the identity.
 
-Url Checkers
+URL Checkers
 ============
 
 Some authenticators like ``Form`` or ``Cookie`` should be executed only
-on certain pages like ``/login`` page. This can be achieved using Url
+on certain pages like ``/login`` page. This can be achieved using URL
 Checkers.
 
 By default a ``DefaultUrlChecker`` is used, which uses string URLs for
@@ -229,7 +229,7 @@ Configuration options:
 -  **checkFullUrl**: Whether or not to check full URL. Useful when a
    login form is on a different subdomain. Default is ``false``.
 
-A custom url checker can be implemented for example if a support for
+A custom URL checker can be implemented for example if a support for
 framework specific URLs is needed. In this case the
 ``Authentication\UrlChecker\UrlCheckerInterface`` should
 be implemented.

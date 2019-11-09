@@ -75,13 +75,12 @@ in either case.
 Alternatively, instead of the component you can also use the request instance to log out::
 
     $return = $request->getAttribute('authentication')->clearIdentity($request, $response);
-    debug($return);
 
-The debug will show you an array like this::
+The result returned will contain an array like this::
 
     [
         'response' => object(Cake\Http\Response) { ... },
-        'request' => object(Cake\Http\ServerRequest) { ... }
+        'request' => object(Cake\Http\ServerRequest) { ... },
     ]
 
 .. note::
