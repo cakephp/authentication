@@ -206,11 +206,11 @@ accessible on the ``authentication`` attribute::
 
    $result = $request->getAttribute('authentication')->getResult();
    // Boolean if the result is valid
-   debug($result->isValid());
+   $isValid = $result->isValid();
    // A status code
-   debug($result->getStatus());
+   $statusCode = $result->getStatus();
    // An array of error messages or data if the identifier provided any
-   debug($result->getErrors());
+   $errors = $result->getErrors();
 
 Any place you were calling ``AuthComponent::setUser()``, you should now
 use ``setIdentity()``::
@@ -251,7 +251,7 @@ using the ``queryParam`` option::
 
    $service = new AuthenticationService();
 
-   // Configure unauthenticated redirect 
+   // Configure unauthenticated redirect
    $service->setConfig([
        'unauthenticatedRedirect' => '/users/login',
        'queryParam' => 'redirect',
