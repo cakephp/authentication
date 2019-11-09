@@ -123,7 +123,7 @@ class IdentifierCollectionTest extends TestCase
 
         $result = $collection->identify([
             'username' => 'mariano',
-            'password' => 'invalid password'
+            'password' => 'invalid password',
         ]);
         $this->assertNull($collection->getIdentificationProvider());
     }
