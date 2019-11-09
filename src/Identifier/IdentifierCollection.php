@@ -36,7 +36,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      *
      * @var \Authentication\Identifier\IdentifierInterface|null
      */
-    protected $_successfulIdentifier = null;
+    protected $_successfulIdentifier;
 
     /**
      * Identifies an user or service by the passed credentials
