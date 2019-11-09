@@ -150,7 +150,7 @@ class AuthenticationMiddleware
         $subject = $this->subject;
 
         if ($subject instanceof AuthenticationServiceProviderInterface) {
-            $subject = $this->subject->getAuthenticationService($request, $response);
+            $subject = $subject->getAuthenticationService($request, $response);
         }
 
         if (!$subject instanceof AuthenticationServiceInterface) {
