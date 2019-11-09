@@ -52,6 +52,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
     {
         $sessionKey = $this->getConfig('sessionKey');
+        /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         $user = $session->read($sessionKey);
 
@@ -84,6 +85,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
     {
         $sessionKey = $this->getConfig('sessionKey');
+        /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         if (!$session->check($sessionKey)) {
             $session->renew();
@@ -102,6 +104,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
     {
         $sessionKey = $this->getConfig('sessionKey');
+        /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         $session->delete($sessionKey);
         $session->renew();

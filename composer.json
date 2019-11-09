@@ -11,7 +11,7 @@
     "homepage": "https://cakephp.org",
     "require": {
         "cakephp/core": "^3.7",
-        "psr/http-message": "~1.0",
+        "psr/http-message": "^1.0",
         "zendframework/zend-diactoros": "^1.4.0"
     },
     "require-dev": {
@@ -22,7 +22,7 @@
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
-        "cakephp/cakephp": "Install version >=3.5.0 to use \"CookieAuthenticator\".",
+        "cakephp/cakephp": "Install full core to use \"CookieAuthenticator\".",
         "firebase/php-jwt": "If you want to use the JWT adapter add this dependency",
         "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP adapter for \"LdapIdentifier\".",
         "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
@@ -36,9 +36,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "AuthTest\\": "tests/test_app/Plugin/AuthTest/src/",
             "Authentication\\Test\\": "tests/",
-            "Authentication\\Test\\App\\": "tests/test_app/App/",
             "Cake\\Test\\": "vendor/cakephp/cakephp/tests/",
             "TestApp\\": "tests/test_app/TestApp/",
             "TestPlugin\\": "tests/test_app/Plugin/TestPlugin/src/"
