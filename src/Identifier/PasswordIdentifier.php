@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier;
 
-use ArrayAccess;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
