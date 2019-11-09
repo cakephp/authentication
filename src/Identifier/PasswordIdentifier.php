@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
@@ -116,7 +117,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string|null $password The password.
      * @return bool
      */
-    protected function _checkPassword($identity, $password): bool
+    protected function _checkPassword($identity, ?string $password): bool
     {
         $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
 
@@ -128,7 +129,7 @@ class PasswordIdentifier extends AbstractIdentifier
 
         $hasher = $this->getPasswordHasher();
         $hashedPassword = $identity[$passwordField];
-        if (!$hasher->check($password, $hashedPassword)) {
+        if (!$hasher->check((string)$password, $hashedPassword)) {
             return false;
         }
 
