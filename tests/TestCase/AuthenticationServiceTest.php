@@ -18,10 +18,10 @@ namespace Authentication\Test\TestCase;
 
 use ArrayObject;
 use Authentication\AuthenticationService;
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;

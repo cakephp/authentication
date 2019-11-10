@@ -17,10 +17,10 @@ declare(strict_types=1);
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
-use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;

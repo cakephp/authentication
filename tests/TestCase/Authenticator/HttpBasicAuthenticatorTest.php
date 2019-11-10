@@ -16,8 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
-use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Authenticator\AuthenticationRequiredException;
+use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
