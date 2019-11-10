@@ -74,11 +74,11 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
      * @return void
-     * @throws \Authentication\Authenticator\UnauthorizedException
+     * @throws \Authentication\Authenticator\AuthenticationRequiredException
      */
     public function unauthorizedChallenge(ServerRequestInterface $request): void
     {
-        throw new UnauthorizedException($this->loginHeaders($request), '');
+        throw new AuthenticationRequiredException($this->loginHeaders($request), '');
     }
 
     /**
