@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.6.4@3e98c800ec72e06eed7546956823ff395fc30c75">
+  <file src="src/AuthenticationService.php">
+    <NoInterfaceProperties occurrences="1">
+      <code>$uri-&gt;base</code>
+    </NoInterfaceProperties>
+    <PossiblyNullArgument occurrences="1">
+      <code>$identity</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="src/Authenticator/AuthenticatorCollection.php">
+    <MoreSpecificImplementedParamType occurrences="1">
+      <code>$className</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="src/Authenticator/SessionAuthenticator.php">
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$user</code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="src/Identifier/IdentifierCollection.php">
+    <MoreSpecificImplementedParamType occurrences="1">
+      <code>$className</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="src/Identifier/Ldap/ExtensionAdapter.php">
+    <PossiblyNullArgument occurrences="1">
+      <code>$this-&gt;_connection</code>
+    </PossiblyNullArgument>
+    <UndefinedConstant occurrences="1">
+      <code>LDAP_OPT_DIAGNOSTIC_MESSAGE</code>
+    </UndefinedConstant>
+  </file>
+  <file src="src/Identifier/PasswordIdentifier.php">
+    <RedundantCondition occurrences="1">
+      <code>is_array($data)</code>
+    </RedundantCondition>
+  </file>
+  <file src="src/Identity.php">
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>mixed</code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="src/Middleware/AuthenticationMiddleware.php">
+    <PossiblyNullArgument occurrences="2">
+      <code>$config</code>
+      <code>$result-&gt;getData()</code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="src/PasswordHasher/DefaultPasswordHasher.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>string</code>
+    </InvalidNullableReturnType>
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$password</code>
+      <code>$password</code>
+    </MoreSpecificImplementedParamType>
+    <NullableReturnStatement occurrences="1"/>
+  </file>
+  <file src="src/PasswordHasher/FallbackPasswordHasher.php">
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$password</code>
+      <code>$password</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="src/PasswordHasher/LegacyPasswordHasher.php">
+    <MoreSpecificImplementedParamType occurrences="2">
+      <code>$password</code>
+      <code>$password</code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="src/UrlChecker/DefaultUrlChecker.php">
+    <NoInterfaceProperties occurrences="1">
+      <code>$uri-&gt;base</code>
+    </NoInterfaceProperties>
+  </file>
+</files>

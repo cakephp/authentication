@@ -105,7 +105,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $body = new Stream('php://memory', 'rw');
             $body->write($e->getBody());
             $response = new Response();
-            $response = $response->withStatus($e->getCode())
+            $response = $response->withStatus((int)$e->getCode())
                 ->withBody($body);
             foreach ($e->getHeaders() as $header => $value) {
                 $response = $response->withHeader($header, $value);
@@ -149,7 +149,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $subject = $this->subject;
 
         if ($subject instanceof AuthenticationServiceProviderInterface) {
-            $subject = $this->subject->getAuthenticationService($request);
+            $subject = $subject->getAuthenticationService($request);
         }
 
         if (!$subject instanceof AuthenticationServiceInterface) {

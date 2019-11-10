@@ -268,6 +268,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $controller = $this->getController();
 
+        /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
         $result = $this->getAuthenticationService()->persistIdentity(
             $controller->getRequest(),
             $controller->getResponse(),
@@ -290,6 +291,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function logout(): ?string
     {
         $controller = $this->getController();
+        /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
         $result = $this->getAuthenticationService()->clearIdentity(
             $controller->getRequest(),
             $controller->getResponse()

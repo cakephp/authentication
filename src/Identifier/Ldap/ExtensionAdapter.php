@@ -101,10 +101,8 @@ class ExtensionAdapter implements AdapterInterface
         $this->_connection = $resource;
         $this->_unsetErrorHandler();
 
-        if (is_array($options)) {
-            foreach ($options as $option => $value) {
-                $this->setOption($option, $value);
-            }
+        foreach ($options as $option => $value) {
+            $this->setOption($option, $value);
         }
     }
 

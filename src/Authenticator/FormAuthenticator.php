@@ -55,6 +55,7 @@ class FormAuthenticator extends AbstractAuthenticator
     protected function _getData(ServerRequestInterface $request): ?array
     {
         $fields = $this->_config['fields'];
+        /** @var array $body */
         $body = $request->getParsedBody();
 
         $data = [];

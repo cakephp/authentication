@@ -129,7 +129,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Access the authenticator collection
      *
-     * @return \Authentication\Authenticator\AuthenticatorCollection|\Authentication\Authenticator\AuthenticatorInterface[]
+     * @return \Authentication\Authenticator\AuthenticatorCollection
      */
     public function authenticators(): AuthenticatorCollection
     {
@@ -173,13 +173,8 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function authenticate(ServerRequestInterface $request): ResultInterface
     {
-        if ($this->authenticators()->isEmpty()) {
-            throw new RuntimeException(
-                'No authenticators loaded. You need to load at least one authenticator.'
-            );
-        }
-
         $result = null;
+        /** @var \Authentication\Authenticator\AuthenticatorInterface $authenticator */
         foreach ($this->authenticators() as $authenticator) {
             $result = $authenticator->authenticate($request);
             if ($result->isValid()) {
@@ -193,6 +188,12 @@ class AuthenticationService implements AuthenticationServiceInterface
             }
         }
 
+        if ($result === null) {
+            throw new RuntimeException(
+                'No authenticators loaded. You need to load at least one authenticator.'
+            );
+        }
+
         $this->_successfulAuthenticator = null;
 
         return $this->_result = $result;
@@ -204,6 +205,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return array Return an array containing the request and response objects.
+     * @psalm-return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
@@ -229,6 +231,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @param \ArrayAccess|array $identity Identity data.
      * @return array
+     * @psalm-return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {

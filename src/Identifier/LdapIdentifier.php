@@ -72,7 +72,7 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @var \Authentication\Identifier\Ldap\AdapterInterface
      */
-    protected $_ldap = null;
+    protected $_ldap;
 
     /**
      * @inheritdoc
@@ -120,6 +120,12 @@ class LdapIdentifier extends AbstractIdentifier
 
         if (is_string($ldap)) {
             $class = App::className($ldap, 'Identifier/Ldap');
+            if (!$class) {
+                throw new RuntimeException(sprintf(
+                    'Could not find LDAP identfier named `%s`',
+                    $ldap
+                ));
+            }
             $ldap = new $class();
         }
 

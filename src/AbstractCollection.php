@@ -16,12 +16,10 @@ declare(strict_types=1);
  */
 namespace Authentication;
 
-use ArrayIterator;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\ObjectRegistry;
-use IteratorAggregate;
 
-abstract class AbstractCollection extends ObjectRegistry implements IteratorAggregate
+abstract class AbstractCollection extends ObjectRegistry
 {
     use InstanceConfigTrait;
 
@@ -58,15 +56,5 @@ abstract class AbstractCollection extends ObjectRegistry implements IteratorAggr
     public function isEmpty(): bool
     {
         return empty($this->_loaded);
-    }
-
-    /**
-     * Returns iterator.
-     *
-     * @return \ArrayIterator
-     */
-    public function getIterator(): ArrayIterator
-    {
-        return new ArrayIterator($this->_loaded);
     }
 }
