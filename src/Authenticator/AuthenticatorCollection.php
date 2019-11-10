@@ -74,6 +74,7 @@ class AuthenticatorCollection extends AbstractCollection
      *
      * @param string $class Class name to be resolved.
      * @return string|null
+     * @psalm-return class-string|null
      */
     protected function _resolveClassName($class): ?string
     {
