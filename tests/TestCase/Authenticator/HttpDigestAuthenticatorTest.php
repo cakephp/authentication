@@ -20,7 +20,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
-use Authentication\Authenticator\UnauthorizedException;
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -283,7 +283,7 @@ DIGEST;
         try {
             $this->auth->unauthorizedChallenge($request);
             $this->fail('Should challenge');
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $this->assertEquals(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
             $this->assertRegexp(
@@ -326,7 +326,7 @@ DIGEST;
         try {
             $this->auth->unauthorizedChallenge($request);
             $this->fail('Should throw an exception');
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $this->assertSame(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
             $this->assertRegexp(
@@ -359,7 +359,7 @@ DIGEST;
 
         try {
             $this->auth->unauthorizedChallenge($request);
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
         }
         $this->assertNotEmpty($e);
 

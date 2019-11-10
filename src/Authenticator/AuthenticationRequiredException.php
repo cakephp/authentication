@@ -19,12 +19,12 @@ namespace Authentication\Authenticator;
 use RuntimeException;
 
 /**
- * An exception that holds onto the headers/body for an unauthorized response.
+ * An exception for stateless authenticators when credentials are wrong/missing.
  *
  * Unlike `UnauthenticatedException` this class can carry authentication challenge headers.
  * and is used by stateless authenticators.
  */
-class UnauthorizedException extends RuntimeException
+class AuthenticationRequiredException extends RuntimeException
 {
     /**
      * @var array

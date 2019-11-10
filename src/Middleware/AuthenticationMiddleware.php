@@ -21,7 +21,7 @@ use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
-use Authentication\Authenticator\UnauthorizedException;
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -101,7 +101,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
         try {
             $result = $service->authenticate($request);
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $body = new Stream('php://memory', 'rw');
             $body->write($e->getBody());
             $response = new Response();

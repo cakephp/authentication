@@ -17,7 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\HttpBasicAuthenticator;
-use Authentication\Authenticator\UnauthorizedException;
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
@@ -202,7 +202,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         try {
             $this->auth->unauthorizedChallenge($request);
             $this->fail('Should challenge');
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $expected = ['WWW-Authenticate' => 'Basic realm="localhost"'];
             $this->assertEquals($expected, $e->getHeaders());
             $this->assertEquals(401, $e->getCode());

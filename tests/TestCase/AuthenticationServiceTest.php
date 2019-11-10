@@ -21,7 +21,7 @@ use Authentication\AuthenticationService;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Authenticator\UnauthorizedException;
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;
@@ -97,7 +97,7 @@ class AuthenticationServiceTest extends TestCase
         try {
             $service->authenticate($request);
             $this->fail('Challenge exception should have been raised');
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $expected = [
                 'WWW-Authenticate' => 'Basic realm="example.com"',
             ];
