@@ -18,13 +18,13 @@ Configuration options:
 
 -  **sessionKey**: The session key for the user data, default is
    ``Auth``
--  **identify**: Set this key with a value of bool ``true`` to enable
-   checking the session credentials against the identifiers. When
-   ``true``, the configured `Identifiers <./Identifers.md>`__ are used
-   to identify the user using data stored in the session. Default value
-   is ``false``.
+-  **identify**: Set this key with a value of bool ``true`` to enable checking
+  the session credentials against the identifiers. When ``true``, the configured
+  `Identifiers <./Identifers.md>`__ are used to identify the user using data
+  stored in the session on each request. Default value is ``false``.
 -  **fields**: Allows you to map the ``username`` field to the unique
-   identifier in your user storage. Defaults to ``username``.
+   identifier in your user storage. Defaults to ``username``. This option is
+   used when the ``identify`` option is set to true.
 
 Form
 ====
@@ -236,6 +236,27 @@ be implemented.
 
 For more details about URL Checkers :doc:`see this documentation
 page </url-checkers>`.
+
+Getting the Successful Authenticator or Identifier
+==================================================
+
+After a user has been authenticated you may want to inspect or interact with the
+Authenticator that successfully authenticated the user::
+
+    // In a controller action
+    $service = $this->request->getAttribute('authentication');
+
+    // Will be null on authentication failure, or an authenticator.
+    $authenticator = $service->getAuthenticationProvider();
+
+You can also get the identifier that identified the user as well::
+
+    // In a controller action
+    $service = $this->request->getAttribute('authentication');
+
+    // Will be null on authentication failure, or an identifier.
+    $identifier = $service->getIdentificationProvider();
+
 
 Using Stateless Authenticators with stateful Authenticators
 ===========================================================
