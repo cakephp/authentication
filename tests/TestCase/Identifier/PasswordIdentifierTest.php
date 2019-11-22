@@ -37,7 +37,7 @@ class PasswordIdentifierTest extends TestCase
 
         $user = new ArrayObject([
             'username' => 'mariano',
-            'password' => 'h45hedpa55w0rd'
+            'password' => 'h45hedpa55w0rd',
         ]);
 
         $resolver->expects($this->once())
@@ -55,7 +55,7 @@ class PasswordIdentifierTest extends TestCase
 
         $result = $identifier->identify([
             'username' => 'mariano',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertInstanceOf('\ArrayAccess', $result);
@@ -74,7 +74,7 @@ class PasswordIdentifierTest extends TestCase
 
         $user = new ArrayObject([
             'username' => 'mariano',
-            'password' => 'h45hedpa55w0rd'
+            'password' => 'h45hedpa55w0rd',
         ]);
 
         $resolver->method('find')
@@ -93,7 +93,7 @@ class PasswordIdentifierTest extends TestCase
 
         $result = $identifier->identify([
             'username' => 'mariano',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertInstanceOf('\ArrayAccess', $result);
@@ -125,7 +125,7 @@ class PasswordIdentifierTest extends TestCase
 
         $result = $identifier->identify([
             'username' => 'does-not',
-            'password' => 'exist'
+            'password' => 'exist',
         ]);
 
         $this->assertNull($result);
@@ -143,7 +143,7 @@ class PasswordIdentifierTest extends TestCase
 
         $user = new ArrayObject([
             'username' => 'mariano',
-            'password' => 'h45hedpa55w0rd'
+            'password' => 'h45hedpa55w0rd',
         ]);
 
         $resolver->expects($this->once())
@@ -161,7 +161,7 @@ class PasswordIdentifierTest extends TestCase
 
         $result = $identifier->identify([
             'username' => 'mariano',
-            'password' => 'wrongpassword'
+            'password' => 'wrongpassword',
         ]);
 
         $this->assertNull($result);
@@ -179,7 +179,7 @@ class PasswordIdentifierTest extends TestCase
 
         $user = new ArrayObject([
             'username' => 'mariano',
-            'password' => 'h45hedpa55w0rd'
+            'password' => 'h45hedpa55w0rd',
         ]);
 
         $resolver->expects($this->once())
@@ -197,7 +197,7 @@ class PasswordIdentifierTest extends TestCase
 
         $result = $identifier->identify([
             'username' => 'mariano',
-            'password' => ''
+            'password' => '',
         ]);
 
         $this->assertNull($result);
@@ -215,7 +215,7 @@ class PasswordIdentifierTest extends TestCase
 
         $user = new ArrayObject([
             'username' => 'mariano',
-            'password' => 'h45hedpa55w0rd'
+            'password' => 'h45hedpa55w0rd',
         ]);
 
         $resolver->expects($this->once())
@@ -230,7 +230,7 @@ class PasswordIdentifierTest extends TestCase
         $identifier->setResolver($resolver)->setPasswordHasher($hasher);
 
         $result = $identifier->identify([
-            'username' => 'mariano'
+            'username' => 'mariano',
         ]);
 
         $this->assertInstanceOf('\ArrayAccess', $result);
@@ -273,14 +273,14 @@ class PasswordIdentifierTest extends TestCase
         $user = new ArrayObject([
             'username' => 'mariano',
             'email' => 'mariano@example.com',
-            'password' => 'h45hedpa55w0rd'
+            'password' => 'h45hedpa55w0rd',
         ]);
 
         $resolver->expects($this->once())
             ->method('find')
             ->with([
                 'username' => 'mariano@example.com',
-                'email' => 'mariano@example.com'
+                'email' => 'mariano@example.com',
             ], 'OR')
             ->willReturn($user);
 
@@ -294,13 +294,13 @@ class PasswordIdentifierTest extends TestCase
             ->with('h45hedpa55w0rd');
 
         $identifier = new PasswordIdentifier([
-            'fields' => ['username' => ['email', 'username']]
+            'fields' => ['username' => ['email', 'username']],
         ]);
         $identifier->setResolver($resolver)->setPasswordHasher($hasher);
 
         $result = $identifier->identify([
             'username' => 'mariano@example.com',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertInstanceOf('\ArrayAccess', $result);
@@ -327,7 +327,7 @@ class PasswordIdentifierTest extends TestCase
     public function testCustomPasswordHasher()
     {
         $identifier = new PasswordIdentifier([
-            'passwordHasher' => 'Authentication.Legacy'
+            'passwordHasher' => 'Authentication.Legacy',
         ]);
         $hasher = $identifier->getPasswordHasher();
         $this->assertInstanceOf(LegacyPasswordHasher::class, $hasher);

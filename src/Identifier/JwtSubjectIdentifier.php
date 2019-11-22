@@ -31,6 +31,6 @@ class JwtSubjectIdentifier extends TokenIdentifier
     protected $_defaultConfig = [
         'tokenField' => 'id',
         'dataField' => self::CREDENTIAL_JWT_SUBJECT,
-        'resolver' => 'Authentication.Orm'
+        'resolver' => 'Authentication.Orm',
     ];
 }

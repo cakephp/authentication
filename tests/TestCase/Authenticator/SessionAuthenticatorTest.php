@@ -34,7 +34,7 @@ class SessionAuthenticatorTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -45,7 +45,7 @@ class SessionAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $class = 'Cake\Http\Session';
@@ -73,7 +73,7 @@ class SessionAuthenticatorTest extends TestCase
             ->with('Auth')
             ->will($this->returnValue([
                 'username' => 'mariano',
-                'password' => 'password'
+                'password' => 'password',
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
@@ -113,13 +113,13 @@ class SessionAuthenticatorTest extends TestCase
             ->with('Auth')
             ->will($this->returnValue([
                 'username' => 'mariano',
-                'password' => 'h45h'
+                'password' => 'h45h',
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers, [
-            'identify' => true
+            'identify' => true,
         ]);
         $result = $authenticator->authenticate($request, $response);
 
@@ -131,13 +131,13 @@ class SessionAuthenticatorTest extends TestCase
             ->with('Auth')
             ->will($this->returnValue([
                 'username' => 'does-not',
-                'password' => 'exist'
+                'password' => 'exist',
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers, [
-            'identify' => true
+            'identify' => true,
         ]);
         $result = $authenticator->authenticate($request, $response);
 

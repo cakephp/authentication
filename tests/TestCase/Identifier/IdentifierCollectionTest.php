@@ -26,7 +26,7 @@ class IdentifierCollectionTest extends TestCase
     public function testConstruct()
     {
         $collection = new IdentifierCollection([
-            'Authentication.Password'
+            'Authentication.Password',
         ]);
         $result = $collection->get('Password');
         $this->assertInstanceOf('\Authentication\Identifier\PasswordIdentifier', $result);
@@ -113,12 +113,12 @@ class IdentifierCollectionTest extends TestCase
     public function testIdentify()
     {
         $collection = new IdentifierCollection([
-            'Authentication.Password'
+            'Authentication.Password',
         ]);
 
         $result = $collection->identify([
             'username' => 'mariano',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertInstanceOf('\ArrayAccess', $result);
@@ -126,7 +126,7 @@ class IdentifierCollectionTest extends TestCase
 
         $result = $collection->identify([
             'username' => 'mariano',
-            'password' => 'invalid password'
+            'password' => 'invalid password',
         ]);
         $this->assertNull($collection->getIdentificationProvider());
     }

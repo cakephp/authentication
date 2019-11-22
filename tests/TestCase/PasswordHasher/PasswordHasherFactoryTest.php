@@ -34,7 +34,7 @@ class PasswordHasherFactoryTest extends TestCase
 
         $hasher = PasswordHasherFactory::build([
             'className' => 'Authentication.Default',
-            'hashOptions' => ['foo' => 'bar']
+            'hashOptions' => ['foo' => 'bar'],
         ]);
         $this->assertInstanceof('Authentication\PasswordHasher\DefaultPasswordHasher', $hasher);
         $this->assertEquals(['foo' => 'bar'], $hasher->getConfig('hashOptions'));

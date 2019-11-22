@@ -73,7 +73,7 @@ trait ResolverAwareTrait
     {
         if (is_string($config)) {
             $config = [
-                'className' => $config
+                'className' => $config,
             ];
         }
 

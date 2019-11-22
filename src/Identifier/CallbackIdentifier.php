@@ -29,7 +29,7 @@ class CallbackIdentifier extends AbstractIdentifier
      * @var array
      */
     protected $_defaultConfig = [
-        'callback' => null
+        'callback' => null,
     ];
 
     /**

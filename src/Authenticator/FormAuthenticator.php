@@ -41,8 +41,8 @@ class FormAuthenticator extends AbstractAuthenticator
         'urlChecker' => 'Authentication.Default',
         'fields' => [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
-        ]
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        ],
     ];
 
     /**
@@ -86,7 +86,7 @@ class FormAuthenticator extends AbstractAuthenticator
                 'Login URL `%s` did not match `%s`.',
                 (string)$request->getUri(),
                 implode('` or `', (array)$this->getConfig('loginUrl'))
-            )
+            ),
         ];
 
         return new Result(null, Result::FAILURE_OTHER, $errors);
@@ -110,7 +110,7 @@ class FormAuthenticator extends AbstractAuthenticator
         $data = $this->_getData($request);
         if ($data === null) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
-                'Login credentials not found'
+                'Login credentials not found',
             ]);
         }
 

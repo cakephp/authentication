@@ -33,18 +33,18 @@ class TokenIdentifierTest extends TestCase
 
         $identifier = new TokenIdentifier([
             'dataField' => 'user',
-            'tokenField' => 'username'
+            'tokenField' => 'username',
         ]);
         $identifier->setResolver($resolver);
 
         $user = new ArrayObject([
-            'username' => 'larry'
+            'username' => 'larry',
         ]);
 
         $resolver->expects($this->once())
             ->method('find')
             ->with([
-                'username' => 'larry'
+                'username' => 'larry',
             ])
             ->willReturn($user);
 
