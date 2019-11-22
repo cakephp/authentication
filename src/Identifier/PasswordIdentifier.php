@@ -38,7 +38,6 @@ use Authentication\PasswordHasher\PasswordHasherTrait;
  */
 class PasswordIdentifier extends AbstractIdentifier
 {
-
     use PasswordHasherTrait {
         getPasswordHasher as protected _getPasswordHasher;
     }

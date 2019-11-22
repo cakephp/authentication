@@ -21,7 +21,6 @@ use Authentication\Identifier\Resolver\ResolverAwareTrait;
  */
 class TokenIdentifier extends AbstractIdentifier
 {
-
     use ResolverAwareTrait;
 
     /**

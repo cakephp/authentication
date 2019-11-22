@@ -87,7 +87,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $authentication = $this->getAuthenticationService();
         $provider = $authentication->getAuthenticationProvider();
 
-        if ($provider === null ||
+        if (
+            $provider === null ||
             $provider instanceof PersistenceInterface ||
             $provider instanceof StatelessInterface
         ) {

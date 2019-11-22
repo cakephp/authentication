@@ -19,7 +19,6 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 
 class OrmResolver implements ResolverInterface
 {
-
     use InstanceConfigTrait;
     use LocatorAwareTrait;
 

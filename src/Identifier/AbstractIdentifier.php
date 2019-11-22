@@ -18,7 +18,6 @@ use Cake\Core\InstanceConfigTrait;
 
 abstract class AbstractIdentifier implements IdentifierInterface
 {
-
     use InstanceConfigTrait;
 
     /**

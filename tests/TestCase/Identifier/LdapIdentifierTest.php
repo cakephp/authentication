@@ -121,7 +121,7 @@ class LdapIdentifierTest extends TestCase
      */
     public function testWrongLdapObject()
     {
-        $notLdap = new stdClass;
+        $notLdap = new stdClass();
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
