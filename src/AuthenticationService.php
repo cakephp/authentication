@@ -397,8 +397,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $redirectParam = $this->getConfig('queryParam');
         $params = $request->getQueryParams();
-        if (
-            empty($redirectParam) ||
+        if (empty($redirectParam) ||
             !isset($params[$redirectParam]) ||
             strlen($params[$redirectParam]) === 0
         ) {
