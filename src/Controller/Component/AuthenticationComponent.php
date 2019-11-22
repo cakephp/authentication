@@ -235,7 +235,12 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
-     * Set identity data to all authenticators that are loaded and support persistence.
+     * Replace the current identity
+     *
+     * Clear and replace identity data in all authenticators
+     * that are loaded and support persistence. The identity
+     * is cleared and then set to ensure that privilege escalation
+     * and de-escalation include side effects like session rotation.
      *
      * @param \ArrayAccess $identity Identity data to persist.
      * @return $this
@@ -243,10 +248,15 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function setIdentity(ArrayAccess $identity)
     {
         $controller = $this->getController();
+        $service = $this->getAuthenticationService();
 
-        $result = $this->getAuthenticationService()->persistIdentity(
+        $result = $service->clearIdentity(
             $controller->request,
-            $controller->response,
+            $controller->response
+        );
+        $result = $service->persistIdentity(
+            $result['request'],
+            $result['response'],
             $identity
         );
 
