@@ -247,7 +247,7 @@ when configuring the ``AuthenticationService``.
 You can also pass the current request target URI as a query parameter
 using the ``queryParam`` option::
 
-   // In the getAuthenticationService() method of your Application class
+   // In the getAuthenticationService() method of your src/Application.php
 
    $service = new AuthenticationService();
 
