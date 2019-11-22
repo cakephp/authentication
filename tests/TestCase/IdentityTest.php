@@ -122,7 +122,7 @@ class IdentityTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.');
-        new Identity(new \stdClass);
+        new Identity(new \stdClass());
     }
 
     /**

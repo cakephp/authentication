@@ -30,7 +30,6 @@ use RuntimeException;
  */
 class CookieAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {
-
     use PasswordHasherTrait;
     use UrlCheckerTrait;
 

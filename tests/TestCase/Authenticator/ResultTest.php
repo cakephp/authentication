@@ -44,7 +44,7 @@ class ResultTest extends TestCase
      */
     public function testConstructorInvalidData()
     {
-        new Result(new stdClass, Result::FAILURE_CREDENTIALS_INVALID);
+        new Result(new stdClass(), Result::FAILURE_CREDENTIALS_INVALID);
     }
 
     /**

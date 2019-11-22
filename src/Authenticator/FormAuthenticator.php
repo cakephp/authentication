@@ -26,7 +26,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FormAuthenticator extends AbstractAuthenticator
 {
-
     use UrlCheckerTrait;
 
     /**
