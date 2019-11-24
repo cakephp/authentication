@@ -56,7 +56,8 @@
         "issues": "https://github.com/cakephp/authentication/issues",
         "forum": "https://stackoverflow.com/tags/cakephp",
         "irc": "irc://irc.freenode.org/cakephp",
-        "source": "https://github.com/cakephp/authentication"
+        "source": "https://github.com/cakephp/authentication",
+        "docs": "https://book.cakephp.org/authentication/2/en/"
     },
     "scripts": {
         "check": [
