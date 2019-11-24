@@ -70,7 +70,6 @@ Example of configuring the authentication middleware using ``authentication`` ap
          * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue.
          * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
          */
-        public function middleware($middlewareQueue)
         public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
         {
             // Various other middlewares for error handling, routing etc. added here.
