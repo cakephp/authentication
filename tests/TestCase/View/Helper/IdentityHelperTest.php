@@ -56,8 +56,8 @@ class IdentityHelperTest extends TestCase
             'id' => 1,
             'username' => 'cakephp',
             'profile' => [
-                'first_name' => 'cake'
-            ]
+                'first_name' => 'cake',
+            ],
         ]);
         $request = (new ServerRequest())->withAttribute('identity', $identity);
         $view = new View($request);

@@ -31,7 +31,7 @@ class TokenAuthenticatorTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -43,8 +43,8 @@ class TokenAuthenticatorTest extends TestCase
 
         $this->identifiers = new IdentifierCollection([
            'Authentication.Token' => [
-               'tokenField' => 'username'
-           ]
+               'tokenField' => 'username',
+           ],
         ]);
 
         $this->request = ServerRequestFactory::fromGlobals(
@@ -65,7 +65,7 @@ class TokenAuthenticatorTest extends TestCase
     {
         // Test without token
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
-            'queryParam' => 'token'
+            'queryParam' => 'token',
         ]);
         $result = $tokenAuth->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
@@ -74,7 +74,7 @@ class TokenAuthenticatorTest extends TestCase
         // Test header token
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'mariano');
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
-            'header' => 'Token'
+            'header' => 'Token',
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
         $this->assertInstanceOf(Result::class, $result);
@@ -91,7 +91,7 @@ class TokenAuthenticatorTest extends TestCase
         // Test with query param token
         $requestWithParams = $this->request->withQueryParams(['token' => 'mariano']);
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
-            'queryParam' => 'token'
+            'queryParam' => 'token',
         ]);
         $result = $tokenAuth->authenticate($requestWithParams, $this->response);
         $this->assertInstanceOf(Result::class, $result);
@@ -100,7 +100,7 @@ class TokenAuthenticatorTest extends TestCase
         // Test with valid query param but invalid token
         $requestWithParams = $this->request->withQueryParams(['token' => 'does-not-exist']);
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
-            'queryParam' => 'token'
+            'queryParam' => 'token',
         ]);
         $result = $tokenAuth->authenticate($requestWithParams, $this->response);
         $this->assertInstanceOf(Result::class, $result);
@@ -118,7 +118,7 @@ class TokenAuthenticatorTest extends TestCase
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'identity mariano');
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'header' => 'Token',
-            'tokenPrefix' => 'identity'
+            'tokenPrefix' => 'identity',
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
         $this->assertInstanceOf(Result::class, $result);
@@ -128,7 +128,7 @@ class TokenAuthenticatorTest extends TestCase
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'bearer mariano');
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'header' => 'Token',
-            'tokenPrefix' => 'identity'
+            'tokenPrefix' => 'identity',
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
         $this->assertInstanceOf(Result::class, $result);

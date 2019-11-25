@@ -79,7 +79,7 @@ class JwtAuthenticator extends TokenAuthenticator
                 Result::FAILURE_CREDENTIALS_INVALID,
                 [
                     'message' => $e->getMessage(),
-                    'exception' => $e
+                    'exception' => $e,
                 ]
             );
         }
@@ -102,7 +102,7 @@ class JwtAuthenticator extends TokenAuthenticator
         }
 
         $user = $this->_identifier->identify([
-            $key => $result[$key]
+            $key => $result[$key],
         ]);
 
         if (empty($user)) {

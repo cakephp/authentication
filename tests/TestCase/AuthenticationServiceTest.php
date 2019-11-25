@@ -43,7 +43,7 @@ class AuthenticationServiceTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -62,11 +62,11 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
                 'Authentication.Form',
-            ]
+            ],
         ]);
 
         $result = $service->authenticate($request, $response);
@@ -98,17 +98,17 @@ class AuthenticationServiceTest extends TestCase
             'SERVER_NAME' => 'example.com',
             'REQUEST_URI' => '/testpath',
             'PHP_AUTH_USER' => 'mariano',
-            'PHP_AUTH_PW' => 'WRONG'
+            'PHP_AUTH_PW' => 'WRONG',
         ]);
         $response = new Response();
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.HttpBasic'
-            ]
+                'Authentication.HttpBasic',
+            ],
         ]);
 
         try {
@@ -116,7 +116,7 @@ class AuthenticationServiceTest extends TestCase
             $this->fail('Challenge exception should have been raised');
         } catch (UnauthorizedException $e) {
             $expected = [
-                'WWW-Authenticate' => 'Basic realm="example.com"'
+                'WWW-Authenticate' => 'Basic realm="example.com"',
             ];
             $this->assertEquals($expected, $e->getHeaders());
         }
@@ -178,11 +178,11 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.Form'
-            ]
+                'Authentication.Form',
+            ],
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -208,12 +208,12 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.Form'
+                'Authentication.Form',
             ],
-            'identityAttribute' => 'customIdentity'
+            'identityAttribute' => 'customIdentity',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -239,12 +239,12 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.Form'
+                'Authentication.Form',
             ],
-            'identityAttribute' => 'customIdentity'
+            'identityAttribute' => 'customIdentity',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -275,12 +275,12 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
                 'Authentication.Session',
-                'Authentication.Form'
-            ]
+                'Authentication.Form',
+            ],
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -319,13 +319,13 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
                 'Authentication.Session',
-                'Authentication.Form'
+                'Authentication.Form',
             ],
-            'identityAttribute' => 'customIdentity'
+            'identityAttribute' => 'customIdentity',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -366,13 +366,13 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
                 'Authentication.Session',
-                'Authentication.Form'
+                'Authentication.Form',
             ],
-            'identityAttribute' => 'customIdentity'
+            'identityAttribute' => 'customIdentity',
         ]);
 
         $request = ServerRequestFactory::fromGlobals(
@@ -435,7 +435,7 @@ class AuthenticationServiceTest extends TestCase
         $request = new ServerRequest();
         $response = new Response();
         $data = [
-            'username' => 'robert'
+            'username' => 'robert',
         ];
 
         $service = new AuthenticationService();
@@ -460,12 +460,12 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
                 'Authentication.Session',
-                'Authentication.Form'
-            ]
+                'Authentication.Form',
+            ],
         ]);
 
         $result = $service->getResult();
@@ -494,8 +494,8 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
-            ]
+                'Authentication.Password',
+            ],
         ]);
 
         $service->authenticate($request, $response);
@@ -510,8 +510,8 @@ class AuthenticationServiceTest extends TestCase
     {
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
-            ]
+                'Authentication.Password',
+            ],
         ]);
 
         $this->assertInstanceOf(Identity::class, $service->buildIdentity(new ArrayObject([])));
@@ -529,8 +529,8 @@ class AuthenticationServiceTest extends TestCase
         $service = new AuthenticationService([
             'identityClass' => \stdClass::class,
             'identifiers' => [
-                'Authentication.Password'
-            ]
+                'Authentication.Password',
+            ],
         ]);
 
         $service->buildIdentity(new ArrayObject([]));
@@ -552,18 +552,18 @@ class AuthenticationServiceTest extends TestCase
 
         $callable = function () {
             return new Identity(new ArrayObject([
-                'id' => 'by-callable'
+                'id' => 'by-callable',
             ]));
         };
 
         $service = new AuthenticationService([
             'identityClass' => $callable,
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.Form'
-            ]
+                'Authentication.Form',
+            ],
         ]);
 
         // Authenticate an identity
@@ -588,11 +588,11 @@ class AuthenticationServiceTest extends TestCase
 
         $service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.Form'
-            ]
+                'Authentication.Form',
+            ],
         ]);
 
         // No identity present before login

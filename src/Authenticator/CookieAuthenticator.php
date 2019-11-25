@@ -42,7 +42,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         'rememberMeField' => 'remember_me',
         'fields' => [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ],
         'cookie' => [
             'name' => 'CookieAuth',
@@ -50,9 +50,9 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             'path' => '/',
             'domain' => '',
             'secure' => false,
-            'httpOnly' => false
+            'httpOnly' => false,
         ],
-        'passwordHasher' => 'Authentication.Default'
+        'passwordHasher' => 'Authentication.Default',
     ];
 
     /**
@@ -86,7 +86,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $cookieName = $this->getConfig('cookie.name');
         if (!isset($cookies[$cookieName])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
-                'Login credentials not found'
+                'Login credentials not found',
             ]);
         }
 
@@ -98,7 +98,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         if ($token === null || count($token) !== 2) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
-                'Cookie token is invalid.'
+                'Cookie token is invalid.',
             ]);
         }
 
@@ -112,7 +112,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         if (!$this->_checkToken($identity, $tokenHash)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
-                'Cookie token does not match'
+                'Cookie token does not match',
             ]);
         }
 
@@ -130,7 +130,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         if (!$this->_checkUrl($request) || !is_array($bodyData) || empty($bodyData[$field])) {
             return [
                 'request' => $request,
-                'response' => $response
+                'response' => $response,
             ];
         }
 
@@ -139,7 +139,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         return [
             'request' => $request,
-            'response' => $response->withAddedHeader('Set-Cookie', $cookie->toHeaderValue())
+            'response' => $response->withAddedHeader('Set-Cookie', $cookie->toHeaderValue()),
         ];
     }
 
@@ -200,7 +200,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         return [
             'request' => $request,
-            'response' => $response->withAddedHeader('Set-Cookie', $cookie->toHeaderValue())
+            'response' => $response->withAddedHeader('Set-Cookie', $cookie->toHeaderValue()),
         ];
     }
 

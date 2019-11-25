@@ -48,7 +48,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     protected $_defaultConfig = [
         'logoutRedirect' => false,
         'requireIdentity' => true,
-        'identityAttribute' => 'identity'
+        'identityAttribute' => 'identity',
     ];
 
     /**
@@ -98,7 +98,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $this->dispatchEvent('Authentication.afterIdentify', [
             'provider' => $provider,
             'identity' => $this->getIdentity(),
-            'service' => $authentication
+            'service' => $authentication,
         ], $this->getController());
     }
 

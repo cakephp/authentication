@@ -50,7 +50,7 @@ trait UrlCheckerTrait
         $options = $this->getConfig('urlChecker');
         if (!is_array($options)) {
             $options = [
-                'className' => $options
+                'className' => $options,
             ];
         }
         if (!isset($options['className'])) {

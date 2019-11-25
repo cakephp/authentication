@@ -58,10 +58,10 @@ class PasswordIdentifier extends AbstractIdentifier
     protected $_defaultConfig = [
         'fields' => [
             self::CREDENTIAL_USERNAME => 'username',
-            self::CREDENTIAL_PASSWORD => 'password'
+            self::CREDENTIAL_PASSWORD => 'password',
         ],
         'resolver' => 'Authentication.Orm',
-        'passwordHasher' => null
+        'passwordHasher' => null,
     ];
 
     /**
@@ -119,7 +119,7 @@ class PasswordIdentifier extends AbstractIdentifier
 
         if ($identity === null) {
             $identity = [
-                $passwordField => ''
+                $passwordField => '',
             ];
         }
 

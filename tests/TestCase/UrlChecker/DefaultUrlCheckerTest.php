@@ -57,7 +57,7 @@ class DefaultUrlCheckerTest extends TestCase
 
         $result = $checker->check($request, [
             '/users/login',
-            '/admin/login'
+            '/admin/login',
         ]);
         $this->assertTrue($result);
     }
@@ -76,7 +76,7 @@ class DefaultUrlCheckerTest extends TestCase
 
         $result = $checker->check($request, [
             '/users/login',
-            '/admin/login'
+            '/admin/login',
         ]);
         $this->assertTrue($result);
     }
@@ -94,7 +94,7 @@ class DefaultUrlCheckerTest extends TestCase
         );
 
         $result = $checker->check($request, '%^/[a-z]{2}/users/login/?$%', [
-            'useRegex' => true
+            'useRegex' => true,
         ]);
         $this->assertTrue($result);
     }
@@ -112,7 +112,7 @@ class DefaultUrlCheckerTest extends TestCase
         );
 
         $result = $checker->check($request, 'http://localhost/users/login', [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
     }
@@ -133,7 +133,7 @@ class DefaultUrlCheckerTest extends TestCase
         $request = $request->withUri($uri);
 
         $result = $checker->check($request, 'http://localhost/base/users/login', [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
     }

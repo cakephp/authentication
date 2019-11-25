@@ -119,7 +119,7 @@ class ResultTest extends TestCase
     {
         $messages = [
             'Out of coffee!',
-            'Out of beer!'
+            'Out of beer!',
         ];
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::FAILURE_OTHER, $messages);

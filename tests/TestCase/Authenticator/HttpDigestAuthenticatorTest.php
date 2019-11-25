@@ -40,7 +40,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -53,7 +53,7 @@ class HttpDigestAuthenticatorTest extends TestCase
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $this->auth = new HttpDigestAuthenticator($this->identifiers, [
@@ -168,7 +168,7 @@ DIGEST;
             'id' => 1,
             'username' => 'mariano',
             'created' => new Time('2007-03-17 01:16:23'),
-            'updated' => new Time('2007-03-17 01:18:31')
+            'updated' => new Time('2007-03-17 01:18:31'),
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
@@ -246,7 +246,7 @@ DIGEST;
     {
         $request = ServerRequestFactory::fromGlobals([
             'REQUEST_URI' => '/posts/index',
-            'REQUEST_METHOD' => 'GET'
+            'REQUEST_METHOD' => 'GET',
         ]);
 
         $data = [
@@ -314,7 +314,7 @@ DIGEST;
             [
                 'REQUEST_URI' => '/posts/index',
                 'REQUEST_METHOD' => 'GET',
-                'PHP_AUTH_DIGEST' => $digest
+                'PHP_AUTH_DIGEST' => $digest,
             ]
         );
 
@@ -340,7 +340,7 @@ DIGEST;
     {
         $request = ServerRequestFactory::fromGlobals([
             'REQUEST_URI' => '/posts/index',
-            'REQUEST_METHOD' => 'GET'
+            'REQUEST_METHOD' => 'GET',
         ]);
         $data = [
             'uri' => '/dir/index.html',
@@ -389,7 +389,7 @@ DIGEST;
             'nc' => '00000001',
             'cnonce' => '0a4f113b',
             'response' => '6629fae49393a05397450978507c4ef1',
-            'opaque' => '5ccc069c403ebaf9f0171e9517f40e41'
+            'opaque' => '5ccc069c403ebaf9f0171e9517f40e41',
         ];
         $result = $this->auth->parseAuthData($digest);
         $this->assertSame($expected, $result);
@@ -449,7 +449,7 @@ DIGEST;
             'nc' => '00000001',
             'cnonce' => '0a4f113b',
             'response' => '6629fae49393a05397450978507c4ef1',
-            'opaque' => '5ccc069c403ebaf9f0171e9517f40e41'
+            'opaque' => '5ccc069c403ebaf9f0171e9517f40e41',
         ];
         $result = $this->auth->parseAuthData($digest);
         $this->assertSame($expected, $result);
@@ -478,7 +478,7 @@ DIGEST;
         $data += [
             'username' => 'mariano',
             'realm' => 'localhost',
-            'opaque' => '123abc'
+            'opaque' => '123abc',
         ];
         $digest = <<<DIGEST
 Digest username="{$data['username']}",

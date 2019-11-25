@@ -46,19 +46,19 @@ class AuthenticationComponentTest extends TestCase
 
         $this->identityData = new Entity([
             'username' => 'florian',
-            'profession' => 'developer'
+            'profession' => 'developer',
         ]);
 
         $this->identity = new Identity($this->identityData);
 
         $this->service = new AuthenticationService([
             'identifiers' => [
-                'Authentication.Password'
+                'Authentication.Password',
             ],
             'authenticators' => [
                 'Authentication.Session',
-                'Authentication.Form'
-            ]
+                'Authentication.Form',
+            ],
         ]);
 
         $this->request = ServerRequestFactory::fromGlobals(
@@ -150,7 +150,7 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($this->request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry, [
-            'identityAttribute' => 'customIdentity'
+            'identityAttribute' => 'customIdentity',
         ]);
 
         $result = $component->getIdentity();
@@ -448,7 +448,7 @@ class AuthenticationComponentTest extends TestCase
 
         $controller = new Controller($request, $this->response);
         $controller->loadComponent('Authentication.Authentication', [
-            'requireIdentity' => false
+            'requireIdentity' => false,
         ]);
 
         // Mismatched actions would normally cause an error.

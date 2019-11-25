@@ -46,7 +46,7 @@ class ResolverAwareTraitTest extends TestCase
         $object->expects($this->once())
             ->method('getConfig')
             ->willReturn([
-                'className' => 'Test'
+                'className' => 'Test',
             ]);
 
         $resolver = $object->getResolver();

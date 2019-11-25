@@ -183,7 +183,7 @@ class AuthenticationService implements AuthenticationServiceInterface
                 return [
                     'result' => $result,
                     'request' => $request,
-                    'response' => $response
+                    'response' => $response,
                 ];
             }
 
@@ -198,7 +198,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         return [
             'result' => $result,
             'request' => $request,
-            'response' => $response
+            'response' => $response,
         ];
     }
 
@@ -222,7 +222,7 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
-            'response' => $response
+            'response' => $response,
         ];
     }
 
@@ -250,7 +250,7 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         return [
             'request' => $request->withAttribute($this->getConfig('identityAttribute'), $identity),
-            'response' => $response
+            'response' => $response,
         ];
     }
 

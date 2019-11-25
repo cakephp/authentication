@@ -32,7 +32,7 @@ class IdentityTest extends TestCase
     {
         $data = [
             'id' => 1,
-            'username' => 'florian'
+            'username' => 'florian',
         ];
 
         $identity = new Identity($data);
@@ -53,14 +53,14 @@ class IdentityTest extends TestCase
         $data = [
             'id' => 1,
             'first_name' => 'florian',
-            'mail' => 'info@cakephp.org'
+            'mail' => 'info@cakephp.org',
         ];
 
         $identity = new Identity($data, [
             'fieldMap' => [
                 'username' => 'first_name',
-                'email' => 'mail'
-            ]
+                'email' => 'mail',
+            ],
         ]);
 
         $this->assertTrue(isset($identity['username']), 'Renamed field responds to isset');
