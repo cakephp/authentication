@@ -173,7 +173,9 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $identity = $request->getAttribute($this->getConfig('identityAttribute'));
         if (!$identity) {
-            throw new UnauthenticatedException('No identity found. You can skip this check by configuring  `requireIdentity` to be `false`.');
+            throw new UnauthenticatedException(
+                'No identity found. You can skip this check by configuring  `requireIdentity` to be `false`.'
+            );
         }
     }
 
@@ -259,7 +261,12 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
-     * Set identity data to all authenticators that are loaded and support persistence.
+     * Replace the current identity
+     *
+     * Clear and replace identity data in all authenticators
+     * that are loaded and support persistence. The identity
+     * is cleared and then set to ensure that privilege escalation
+     * and de-escalation include side effects like session rotation.
      *
      * @param \ArrayAccess $identity Identity data to persist.
      * @return $this
@@ -267,6 +274,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function setIdentity(ArrayAccess $identity)
     {
         $controller = $this->getController();
+        $service = $this->getAuthenticationService();
 
         /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
         $result = $this->getAuthenticationService()->persistIdentity(

@@ -160,7 +160,7 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
-     * testGetIdentity
+     * testSetIdentity
      *
      * @eturn void
      */
@@ -175,6 +175,41 @@ class AuthenticationComponentTest extends TestCase
         $component->setIdentity($this->identityData);
         $result = $component->getIdentity();
         $this->assertSame($this->identityData, $result->getOriginalData());
+    }
+
+    /**
+     * Ensure setIdentity() clears identity and persists identity data.
+     *
+     * @eturn void
+     */
+    public function testSetIdentityOverwrite()
+    {
+        $request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->setIdentity($this->identityData);
+        $result = $component->getIdentity();
+        $this->assertSame($this->identityData, $result->getOriginalData());
+        $this->assertSame(
+            $this->identityData->username,
+            $request->getSession()->read('Auth.username'),
+            'Session should be updated.'
+        );
+
+        // Replace the identity
+        $newIdentity = new Entity(['username' => 'jessie']);
+        $component->setIdentity($newIdentity);
+
+        $result = $component->getIdentity();
+        $this->assertSame($newIdentity, $result->getOriginalData());
+        $this->assertSame(
+            $newIdentity->username,
+            $request->getSession()->read('Auth.username'),
+            'Session should be updated.'
+        );
     }
 
     /**
