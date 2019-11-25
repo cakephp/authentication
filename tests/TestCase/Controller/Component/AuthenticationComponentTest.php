@@ -39,6 +39,31 @@ use TestApp\Authentication\InvalidAuthenticationService;
 class AuthenticationComponentTest extends TestCase
 {
     /**
+     * @var array|\ArrayAccess
+     */
+    protected $identityData;
+
+    /**
+     * @var \Authentication\Identity
+     */
+    protected $identity;
+
+    /**
+     * @var \Cake\Http\ServerRequest
+     */
+    protected $request;
+
+    /**
+     * @var \Cake\Http\Response
+     */
+    protected $response;
+
+    /**
+     * @var \Authentication\AuthenticationService
+     */
+    protected $service;
+
+    /**
      * {@inheritDoc}
      */
     public function setUp(): void
