@@ -99,7 +99,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         'identityClass' => Identity::class,
         'identityAttribute' => 'identity',
         'queryParam' => null,
-        'unauthorizedRedirect' => null,
+        'unauthenticatedRedirect' => null,
     ];
 
     /**
