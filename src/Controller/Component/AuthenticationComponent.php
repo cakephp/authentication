@@ -276,8 +276,10 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $controller = $this->getController();
         $service = $this->getAuthenticationService();
 
+        $service->clearIdentity($controller->getRequest(), $controller->getResponse());
+
         /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
-        $result = $this->getAuthenticationService()->persistIdentity(
+        $result = $service->persistIdentity(
             $controller->getRequest(),
             $controller->getResponse(),
             $identity

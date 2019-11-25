@@ -466,10 +466,6 @@ class AuthenticationComponentTest extends TestCase
     public function testIdentityCheckInBeforeFilter()
     {
         $request = $this->request
-            ->withParam('action', 'view')
-            ->withAttribute('authentication', $this->service);
-
-        $request = $this->request
             ->withAttribute('authentication', $this->service);
 
         $controller = new Controller($request, $this->response);
