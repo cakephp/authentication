@@ -49,7 +49,6 @@ class AuthenticationServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $service = new AuthenticationService([
             'identifiers' => [

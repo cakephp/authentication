@@ -44,6 +44,7 @@ class ResultTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `stdClass` given.');
+
         new Result(new stdClass(), Result::FAILURE_CREDENTIALS_INVALID);
     }
 
