@@ -82,8 +82,9 @@ class FormAuthenticator extends AbstractAuthenticator
     protected function _buildLoginUrlErrorResult($request)
     {
         $uri = $request->getUri();
-        if (property_exists($uri, 'base')) {
-            $uri = $uri->withPath($uri->base . $uri->getPath());
+        $base = $request->getAttribute('base');
+        if ($base !== null) {
+            $uri = $uri->withPath((string)$base . $uri->getPath());
         }
 
         $errors = [

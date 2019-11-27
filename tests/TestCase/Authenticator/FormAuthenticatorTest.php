@@ -194,6 +194,7 @@ class FormAuthenticatorTest extends TestCase
         $uri = $request->getUri();
         $uri->base = '/base';
         $request = $request->withUri($uri);
+        $request = $request->withAttribute('base', $uri->base);
         $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
@@ -287,6 +288,7 @@ class FormAuthenticatorTest extends TestCase
         $uri = $request->getUri();
         $uri->base = '/base';
         $request = $request->withUri($uri);
+        $request = $request->withAttribute('base', $uri->base);
         $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
