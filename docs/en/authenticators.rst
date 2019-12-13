@@ -19,9 +19,9 @@ Configuration options:
 -  **sessionKey**: The session key for the user data, default is
    ``Auth``
 -  **identify**: Set this key with a value of bool ``true`` to enable checking
-  the session credentials against the identifiers. When ``true``, the configured
-  `Identifiers <./Identifers.md>`__ are used to identify the user using data
-  stored in the session on each request. Default value is ``false``.
+   the session credentials against the identifiers. When ``true``, the configured
+   `Identifiers <./Identifers.md>`__ are used to identify the user using data
+   stored in the session on each request. Default value is ``false``.
 -  **fields**: Allows you to map the ``username`` field to the unique
    identifier in your user storage. Defaults to ``username``. This option is
    used when the ``identify`` option is set to true.
@@ -43,9 +43,9 @@ Configuration options:
 -  **useRegex**: Whether or not to use regular expressions for URL
    matching. Default is ``false``.
 -  **checkFullUrl**: Whether or not to check full URL including the query
-  string. Useful when a login form is on a different subdomain. Default is
-  ``false``. This option does not work well when preserving unauthenticated
-  redirects in the query string.
+   string. Useful when a login form is on a different subdomain. Default is
+   ``false``. This option does not work well when preserving unauthenticated
+   redirects in the query string.
 
 .. warning::
     If you use the array syntax for the URL, the URL will be
