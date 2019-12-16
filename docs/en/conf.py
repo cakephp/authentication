@@ -23,7 +23,8 @@ project = 'CakePHP Authentication'
 
 # Other versions that display in the version picker menu.
 version_list = [
-    {'name': '1.1', 'number': '/authentication/1.1', 'title': '1.1.x', 'current': True},
+    {'name': '1.x', 'number': '/authentication/1.1', 'title': '1.x'},
+    {'name': '2.x', 'number': '/authentication/2', 'title': '2.x', 'current': True},
 ]
 
 # Languages available.
@@ -31,7 +32,7 @@ languages = ['en']
 
 # The GitHub branch name for this version of the docs
 # for edit links to point at.
-branch = 'master'
+branch = '1.x'
 
 # Current version being built
 version = '1.1'
