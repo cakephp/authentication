@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -20,7 +22,6 @@ use RuntimeException;
 
 trait ResolverAwareTrait
 {
-
     /**
      * Resolver instance.
      *
@@ -34,7 +35,7 @@ trait ResolverAwareTrait
      * @return \Authentication\Identifier\Resolver\ResolverInterface
      * @throws \RuntimeException When resolver has not been set.
      */
-    public function getResolver()
+    public function getResolver(): ResolverInterface
     {
         if ($this->resolver === null) {
             $config = $this->getConfig('resolver');
@@ -69,21 +70,20 @@ trait ResolverAwareTrait
      * @throws \InvalidArgumentException When className option is missing or class name does not exist.
      * @throws \RuntimeException When resolver does not implement ResolverInterface.
      */
-    protected function buildResolver($config)
+    protected function buildResolver($config): ResolverInterface
     {
         if (is_string($config)) {
             $config = [
                 'className' => $config,
             ];
         }
-
         if (!isset($config['className'])) {
             $message = 'Option `className` is not present.';
             throw new InvalidArgumentException($message);
         }
 
         $class = App::className($config['className'], 'Identifier/Resolver', 'Resolver');
-        if ($class === false) {
+        if ($class === null) {
             $message = sprintf('Resolver class `%s` does not exist.', $config['className']);
             throw new InvalidArgumentException($message);
         }

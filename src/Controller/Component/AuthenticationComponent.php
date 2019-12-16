@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,8 +19,10 @@ namespace Authentication\Controller\Component;
 use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\PersistenceInterface;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
+use Authentication\IdentityInterface;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
@@ -49,6 +53,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         'logoutRedirect' => false,
         'requireIdentity' => true,
         'identityAttribute' => 'identity',
+        'identityCheckEvent' => 'Controller.startup',
     ];
 
     /**
@@ -71,7 +76,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @param array $config The config data.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $controller = $this->getController();
         $this->setEventManager($controller->getEventManager());
@@ -82,24 +87,40 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return void
      */
-    public function beforeFilter()
+    public function beforeFilter(): void
     {
         $authentication = $this->getAuthenticationService();
         $provider = $authentication->getAuthenticationProvider();
 
         if (
-            $provider === null ||
-            $provider instanceof PersistenceInterface ||
-            $provider instanceof StatelessInterface
+            $provider !== null &&
+            !$provider instanceof PersistenceInterface &&
+            !$provider instanceof StatelessInterface
         ) {
-            return;
+            $this->dispatchEvent('Authentication.afterIdentify', [
+                'provider' => $provider,
+                'identity' => $this->getIdentity(),
+                'service' => $authentication,
+            ], $this->getController());
         }
 
-        $this->dispatchEvent('Authentication.afterIdentify', [
-            'provider' => $provider,
-            'identity' => $this->getIdentity(),
-            'service' => $authentication,
-        ], $this->getController());
+        if ($this->getConfig('identityCheckEvent') === 'Controller.initialize') {
+            $this->doIdentityCheck();
+        }
+    }
+
+    /**
+     * Start up event handler
+     *
+     * @return void
+     * @throws \Exception when request is missing or has an invalid AuthenticationService
+     * @throws \Authentication\Authenticator\UnauthenticatedException when requireIdentity is true and request is missing an identity
+     */
+    public function startup(): void
+    {
+        if ($this->getConfig('identityCheckEvent') === 'Controller.startup') {
+            $this->doIdentityCheck();
+        }
     }
 
     /**
@@ -108,14 +129,14 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @return \Authentication\AuthenticationServiceInterface
      * @throws \Exception
      */
-    public function getAuthenticationService()
+    public function getAuthenticationService(): AuthenticationServiceInterface
     {
         if ($this->_authentication !== null) {
             return $this->_authentication;
         }
 
         $controller = $this->getController();
-        $service = $controller->request->getAttribute('authentication');
+        $service = $controller->getRequest()->getAttribute('authentication');
         if ($service === null) {
             throw new Exception('The request object does not contain the required `authentication` attribute');
         }
@@ -130,13 +151,15 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
-     * Start up event handler
+     * Check if the identity presence is required.
+     *
+     * Also checks if the current action is accessible without authentication.
      *
      * @return void
-     * @throws Exception when request is missing or has an invalid AuthenticationService
-     * @throws UnauthenticatedException when requireIdentity is true and request is missing an identity
+     * @throws \Exception when request is missing or has an invalid AuthenticationService
+     * @throws \Authentication\Authenticator\UnauthenticatedException when requireIdentity is true and request is missing an identity
      */
-    public function startup()
+    protected function doIdentityCheck(): void
     {
         if (!$this->getConfig('requireIdentity')) {
             return;
@@ -189,7 +212,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return string[]
      */
-    public function getUnauthenticatedActions()
+    public function getUnauthenticatedActions(): array
     {
         return $this->unauthenticatedActions;
     }
@@ -199,7 +222,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
-    public function getResult()
+    public function getResult(): ?ResultInterface
     {
         return $this->getAuthenticationService()->getResult();
     }
@@ -209,10 +232,10 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return \Authentication\IdentityInterface|null
      */
-    public function getIdentity()
+    public function getIdentity(): ?IdentityInterface
     {
         $controller = $this->getController();
-        $identity = $controller->request->getAttribute($this->getConfig('identityAttribute'));
+        $identity = $controller->getRequest()->getAttribute($this->getConfig('identityAttribute'));
 
         return $identity;
     }
@@ -224,7 +247,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @return mixed
      * @throws \RuntimeException If the identity has not been found.
      */
-    public function getIdentityData($path)
+    public function getIdentityData(string $path)
     {
         $identity = $this->getIdentity();
 
@@ -251,18 +274,15 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $controller = $this->getController();
         $service = $this->getAuthenticationService();
 
-        $result = $service->clearIdentity(
-            $controller->request,
-            $controller->response
-        );
-        $result = $service->persistIdentity(
-            $result['request'],
-            $result['response'],
+        /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
+        $result = $this->getAuthenticationService()->persistIdentity(
+            $controller->getRequest(),
+            $controller->getResponse(),
             $identity
         );
 
         $controller->setRequest($result['request']);
-        $controller->response = $result['response'];
+        $controller->setResponse($result['response']);
 
         return $this;
     }
@@ -274,16 +294,17 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return string|null Returns null or `logoutRedirect`.
      */
-    public function logout()
+    public function logout(): ?string
     {
         $controller = $this->getController();
+        /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
         $result = $this->getAuthenticationService()->clearIdentity(
-            $controller->request,
-            $controller->response
+            $controller->getRequest(),
+            $controller->getResponse()
         );
 
-        $controller->request = $result['request'];
-        $controller->response = $result['response'];
+        $controller->setRequest($result['request']);
+        $controller->setResponse($result['response']);
 
         $this->dispatchEvent('Authentication.logout', [], $controller);
 
@@ -305,10 +326,23 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @return string|null
      */
-    public function getLoginRedirect()
+    public function getLoginRedirect(): ?string
     {
         $controller = $this->getController();
 
-        return $this->getAuthenticationService()->getLoginRedirect($controller->request);
+        return $this->getAuthenticationService()->getLoginRedirect($controller->getRequest());
+    }
+
+    /**
+     * Get the Controller callbacks this Component is interested in.
+     *
+     * @return array
+     */
+    public function implementedEvents(): array
+    {
+        return [
+            'Controller.initialize' => 'beforeFilter',
+            'Controller.startup' => 'startup',
+        ];
     }
 }

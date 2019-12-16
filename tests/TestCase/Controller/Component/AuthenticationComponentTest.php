@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,10 +9,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Controller\Component;
 
@@ -37,34 +39,9 @@ use TestApp\Authentication\InvalidAuthenticationService;
 class AuthenticationComponentTest extends TestCase
 {
     /**
-     * @var array|\ArrayAccess
-     */
-    protected $identityData;
-
-    /**
-     * @var \Authentication\Identity
-     */
-    protected $identity;
-
-    /**
-     * @var \Cake\Http\ServerRequest
-     */
-    protected $request;
-
-    /**
-     * @var \Cake\Http\Response
-     */
-    protected $response;
-
-    /**
-     * @var \Authentication\AuthenticationService
-     */
-    protected $service;
-
-    /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -113,12 +90,12 @@ class AuthenticationComponentTest extends TestCase
     /**
      * testGetAuthenticationServiceMissingServiceAttribute
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage The request object does not contain the required `authentication` attribute
      * @return void
      */
     public function testGetAuthenticationServiceMissingServiceAttribute()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('The request object does not contain the required `authentication` attribute');
         $controller = new Controller($this->request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
@@ -128,12 +105,12 @@ class AuthenticationComponentTest extends TestCase
     /**
      * testGetAuthenticationServiceInvalidServiceObject
      *
-     * @expectedException \Exception
-     * @expectedExceptionMessage Authentication service does not implement Authentication\AuthenticationServiceInterface
      * @return void
      */
     public function testGetAuthenticationServiceInvalidServiceObject()
     {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Authentication service does not implement Authentication\AuthenticationServiceInterface');
         $request = $this->request->withAttribute('authentication', new InvalidAuthenticationService());
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
@@ -258,11 +235,11 @@ class AuthenticationComponentTest extends TestCase
      * testGetMissingIdentityData
      *
      * @eturn void
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage The identity has not been found.
      */
     public function testGetMissingIdentityData()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('The identity has not been found.');
         $request = $this->request->withAttribute('authentication', $this->service);
 
         $controller = new Controller($request, $this->response);
@@ -309,9 +286,9 @@ class AuthenticationComponentTest extends TestCase
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
-        $this->assertEquals('florian', $controller->request->getAttribute('identity')->username);
+        $this->assertEquals('florian', $controller->getRequest()->getAttribute('identity')->username);
         $component->logout();
-        $this->assertNull($controller->request->getAttribute('identity'));
+        $this->assertNull($controller->getRequest()->getAttribute('identity'));
         $this->assertInstanceOf(Event::class, $result);
         $this->assertEquals('Authentication.logout', $result->getName());
     }
@@ -479,5 +456,31 @@ class AuthenticationComponentTest extends TestCase
         $controller->Authentication->allowUnauthenticated(['index', 'add']);
         $controller->startupProcess();
         $this->assertTrue(true, 'No exception should be raised as require identity is off.');
+    }
+
+    /**
+     * Test that the identity check can be run from callback for Controller.initialize
+     *
+     * @return void
+     */
+    public function testIdentityCheckInBeforeFilter()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $request = $this->request
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionCode(401);
+
+        $component->setConfig('identityCheckEvent', 'Controller.initialize');
+        $component->allowUnauthenticated(['index', 'add']);
+        $component->beforeFilter();
     }
 }

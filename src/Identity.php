@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -57,7 +59,10 @@ class Identity implements IdentityInterface
     {
         if (!is_array($data) && !($data instanceof ArrayAccess)) {
             $type = is_object($data) ? get_class($data) : gettype($data);
-            $message = sprintf('Identity data must be an `array` or implement `ArrayAccess` interface, `%s` given.', $type);
+            $message = sprintf(
+                'Identity data must be an `array` or implement `ArrayAccess` interface, `%s` given.',
+                $type
+            );
             throw new InvalidArgumentException($message);
         }
 
@@ -79,7 +84,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function __get($field)
+    public function __get(string $field)
     {
         return $this->get($field);
     }
@@ -90,7 +95,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function __isset($field)
+    public function __isset(string $field)
     {
         return $this->get($field) !== null;
     }
@@ -122,7 +127,7 @@ class Identity implements IdentityInterface
      * @param mixed $offset Offset
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->get($offset) !== null;
     }
@@ -161,13 +166,13 @@ class Identity implements IdentityInterface
      * @throws \BadMethodCallException
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function getOriginalData()
     {
@@ -179,7 +184,7 @@ class Identity implements IdentityInterface
      *
      * @return array
      */
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return [
             'config' => $this->_config,

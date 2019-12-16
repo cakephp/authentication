@@ -59,10 +59,11 @@ Migrating your authentication setup
 The first step to migrating your application is to load the authentication
 plugin in your application's bootstrap method::
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         parent::bootstrap();
         $this->addPlugin('Authentication');
+    }
 
 Then update your application to implement the authentication provider interface.
 This lets the AuthenticationMiddleware know how to get the authentication

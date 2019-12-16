@@ -10,15 +10,18 @@
     "type": "cakephp-plugin",
     "homepage": "https://cakephp.org",
     "require": {
-        "cakephp/core": "^3.7",
+        "cakephp/core": "4.x-dev as 4.0.0",
+        "psr/http-client": "^1.0",
         "psr/http-message": "^1.0",
-        "zendframework/zend-diactoros": "^1.4.0"
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "zendframework/zend-diactoros": "^2.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "^3.7",
-        "cakephp/cakephp-codesniffer": "^3.0",
-        "phpunit/phpunit": "^5.7.14|^6.0",
-        "firebase/php-jwt": "~5.0"
+        "cakephp/cakephp": "4.x-dev as 4.0.0",
+        "cakephp/cakephp-codesniffer": "dev-next",
+        "phpunit/phpunit": "^8.0",
+        "firebase/php-jwt": "^5.0"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
@@ -28,7 +31,8 @@
         "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
     },
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Authentication\\": "src/"
@@ -52,7 +56,8 @@
         "issues": "https://github.com/cakephp/authentication/issues",
         "forum": "https://stackoverflow.com/tags/cakephp",
         "irc": "irc://irc.freenode.org/cakephp",
-        "source": "https://github.com/cakephp/authentication"
+        "source": "https://github.com/cakephp/authentication",
+        "docs": "https://book.cakephp.org/authentication/2/en/"
     },
     "scripts": {
         "check": [
@@ -60,10 +65,18 @@
             "@test"
         ],
         "cs-check": "phpcs --colors -p src/ tests/",
-        "cs-fix": "phpcbf --colors -p src/ tests/",
-        "phpstan": "phpstan analyse src/",
-        "phpstan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan-shim:^0.11 && mv composer.backup composer.json",
+        "cs-fix": "phpcbf --colors src/ tests/",
+        "phpstan": "phpstan.phar analyse src/",
+        "psalm": "psalm.phar --show-info=false",
+        "stan": [
+            "@phpstan",
+            "@psalm"
+        ],
+        "stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan-shim:^0.11 psalm/phar:^3.5 && mv composer.backup composer.json",
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-clover=clover.xml"
+    },
+    "config": {
+        "sort-packages": true
     }
 }

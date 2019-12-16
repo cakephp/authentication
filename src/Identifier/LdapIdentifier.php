@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,6 +16,7 @@
  */
 namespace Authentication\Identifier;
 
+use ArrayAccess;
 use ArrayObject;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
@@ -43,7 +46,6 @@ use RuntimeException;
  */
 class LdapIdentifier extends AbstractIdentifier
 {
-
     /**
      * Default configuration
      *
@@ -70,10 +72,10 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @var \Authentication\Identifier\Ldap\AdapterInterface
      */
-    protected $_ldap = null;
+    protected $_ldap;
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function __construct(array $config = [])
     {
@@ -90,7 +92,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    protected function _checkLdapConfig()
+    protected function _checkLdapConfig(): void
     {
         if (!isset($this->_config['bindDN'])) {
             throw new RuntimeException('Config `bindDN` is not set.');
@@ -112,12 +114,18 @@ class LdapIdentifier extends AbstractIdentifier
      * @throws \RuntimeException
      * @return void
      */
-    protected function _buildLdapObject()
+    protected function _buildLdapObject(): void
     {
         $ldap = $this->_config['ldap'];
 
         if (is_string($ldap)) {
             $class = App::className($ldap, 'Identifier/Ldap');
+            if (!$class) {
+                throw new RuntimeException(sprintf(
+                    'Could not find LDAP identfier named `%s`',
+                    $ldap
+                ));
+            }
             $ldap = new $class();
         }
 
@@ -130,7 +138,7 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function identify(array $data)
     {
@@ -138,7 +146,10 @@ class LdapIdentifier extends AbstractIdentifier
         $fields = $this->getConfig('fields');
 
         if (isset($data[$fields[self::CREDENTIAL_USERNAME]]) && isset($data[$fields[self::CREDENTIAL_PASSWORD]])) {
-            return $this->_bindUser($data[$fields[self::CREDENTIAL_USERNAME]], $data[$fields[self::CREDENTIAL_PASSWORD]]);
+            return $this->_bindUser(
+                $data[$fields[self::CREDENTIAL_USERNAME]],
+                $data[$fields[self::CREDENTIAL_PASSWORD]]
+            );
         }
 
         return null;
@@ -149,7 +160,7 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @return \Authentication\Identifier\Ldap\AdapterInterface
      */
-    public function getAdapter()
+    public function getAdapter(): AdapterInterface
     {
         return $this->_ldap;
     }
@@ -159,14 +170,14 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @return void
      */
-    protected function _connectLdap()
+    protected function _connectLdap(): void
     {
         $config = $this->getConfig();
 
         $this->_ldap->connect(
             $config['host'],
             $config['port'],
-            $this->getConfig('options')
+            (array)$this->getConfig('options')
         );
     }
 
@@ -177,7 +188,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @param string $password The password
      * @return \ArrayAccess|null
      */
-    protected function _bindUser($username, $password)
+    protected function _bindUser(string $username, string $password): ?ArrayAccess
     {
         $config = $this->getConfig();
         try {
@@ -203,7 +214,7 @@ class LdapIdentifier extends AbstractIdentifier
      * @param string $message Exception message
      * @return void
      */
-    protected function _handleLdapError($message)
+    protected function _handleLdapError(string $message): void
     {
         $extendedError = $this->_ldap->getDiagnosticMessage();
         if (!is_null($extendedError)) {

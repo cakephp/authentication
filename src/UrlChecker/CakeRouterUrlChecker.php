@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -37,7 +39,7 @@ class CakeRouterUrlChecker extends DefaultUrlChecker
     /**
      * {@inheritDoc}
      */
-    public function check(ServerRequestInterface $request, $loginUrls, array $options = [])
+    public function check(ServerRequestInterface $request, $loginUrls, array $options = []): bool
     {
         $options = $this->_mergeDefaultOptions($options);
         $url = $this->_getUrlFromRequest($request->getUri(), $options['checkFullUrl']);

@@ -3,10 +3,9 @@ FROM markstory/cakephp-docs-builder as builder
 
 COPY docs /data/docs
 
-# Build docs with sphinx
+# Build the docs with sphinx
 RUN cd /data/docs-builder && \
   make website SOURCE=/data/docs DEST=/data/website
-
 
 # Build a small nginx container with just the static site in it.
 FROM nginx:1.15-alpine

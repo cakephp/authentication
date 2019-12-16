@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,7 +16,6 @@
  */
 namespace Authentication\Identifier\Ldap;
 
-use Authentication\Identifier\Ldap\AdapterInterface;
 use ErrorException;
 use RuntimeException;
 
@@ -28,7 +29,6 @@ use RuntimeException;
  */
 class ExtensionAdapter implements AdapterInterface
 {
-
     /**
      * LDAP Object
      *
@@ -59,7 +59,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param string $password Bind password
      * @return bool
      */
-    public function bind($bind, $password)
+    public function bind(string $bind, string $password): bool
     {
         $this->_setErrorHandler();
         $result = ldap_bind($this->getConnection(), $bind, $password);
@@ -91,7 +91,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param array $options Additonal LDAP options
      * @return void
      */
-    public function connect($host, $port, $options)
+    public function connect(string $host, int $port, array $options): void
     {
         $this->_setErrorHandler();
         $resource = ldap_connect($host, $port);
@@ -101,10 +101,8 @@ class ExtensionAdapter implements AdapterInterface
         $this->_connection = $resource;
         $this->_unsetErrorHandler();
 
-        if (is_array($options)) {
-            foreach ($options as $option => $value) {
-                $this->setOption($option, $value);
-            }
+        foreach ($options as $option => $value) {
+            $this->setOption($option, $value);
         }
     }
 
@@ -115,7 +113,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param mixed $value The new value for the specified option
      * @return void
      */
-    public function setOption($option, $value)
+    public function setOption(int $option, $value): void
     {
         $this->_setErrorHandler();
         ldap_set_option($this->getConnection(), $option, $value);
@@ -128,7 +126,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param int $option Option to get
      * @return mixed This will be set to the option value.
      */
-    public function getOption($option)
+    public function getOption(int $option)
     {
         $this->_setErrorHandler();
         ldap_get_option($this->getConnection(), $option, $returnValue);
@@ -142,7 +140,7 @@ class ExtensionAdapter implements AdapterInterface
      *
      * @return string|null
      */
-    public function getDiagnosticMessage()
+    public function getDiagnosticMessage(): ?string
     {
         return $this->getOption(LDAP_OPT_DIAGNOSTIC_MESSAGE);
     }
@@ -152,7 +150,7 @@ class ExtensionAdapter implements AdapterInterface
      *
      * @return void
      */
-    public function unbind()
+    public function unbind(): void
     {
         $this->_setErrorHandler();
         ldap_unbind($this->_connection);
@@ -167,11 +165,11 @@ class ExtensionAdapter implements AdapterInterface
      * @return void
      * @throws \ErrorException
      */
-    protected function _setErrorHandler()
+    protected function _setErrorHandler(): void
     {
         set_error_handler(
             function ($errorNumber, $errorText) {
-                 throw new ErrorException($errorText);
+                throw new ErrorException($errorText);
             },
             E_ALL
         );
@@ -182,7 +180,7 @@ class ExtensionAdapter implements AdapterInterface
      *
      * @return void
      */
-    protected function _unsetErrorHandler()
+    protected function _unsetErrorHandler(): void
     {
         restore_error_handler();
     }

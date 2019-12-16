@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * HttpDigestAuthenticatorTest file
  *
@@ -9,18 +11,17 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link http://cakephp.org CakePHP(tm) Project
+ * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Authentication\Test\TestCase\Authentication;
+namespace Authentication\Test\TestCase\Authenticator;
 
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
-use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
-use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
@@ -32,7 +33,6 @@ use Cake\TestSuite\TestCase;
  */
 class HttpDigestAuthenticatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -48,7 +48,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -172,7 +172,12 @@ DIGEST;
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
-        $this->assertArraySubset($expected, $result->getData()->toArray());
+
+        $value = $result->getData()->toArray();
+        foreach ($expected as $key => $val) {
+            $this->assertArrayHasKey($key, $value);
+            $this->assertEquals($value[$key], $val);
+        }
     }
 
     /**
@@ -278,7 +283,7 @@ DIGEST;
         try {
             $this->auth->unauthorizedChallenge($request);
             $this->fail('Should challenge');
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $this->assertEquals(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
             $this->assertRegexp(
@@ -321,7 +326,7 @@ DIGEST;
         try {
             $this->auth->unauthorizedChallenge($request);
             $this->fail('Should throw an exception');
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $this->assertSame(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
             $this->assertRegexp(
@@ -354,12 +359,12 @@ DIGEST;
 
         try {
             $this->auth->unauthorizedChallenge($request);
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
         }
         $this->assertNotEmpty($e);
 
         $header = $e->getHeaders()['WWW-Authenticate'];
-        $this->assertContains('stale=true', $header);
+        $this->assertStringContainsString('stale=true', $header);
     }
 
     /**

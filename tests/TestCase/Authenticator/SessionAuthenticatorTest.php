@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,10 +9,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
@@ -26,7 +28,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class SessionAuthenticatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -40,7 +41,7 @@ class SessionAuthenticatorTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -158,11 +159,12 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
 
         $data = new ArrayObject(['username' => 'florian']);
+
         $this->sessionMock
             ->expects($this->at(0))
             ->method('check')
             ->with('Auth')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $this->sessionMock
             ->expects($this->once())
@@ -177,10 +179,10 @@ class SessionAuthenticatorTest extends TestCase
             ->expects($this->at(3))
             ->method('check')
             ->with('Auth')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $result = $authenticator->persistIdentity($request, $response, $data);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
@@ -212,7 +214,7 @@ class SessionAuthenticatorTest extends TestCase
             ->method('renew');
 
         $result = $authenticator->clearIdentity($request, $response);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);

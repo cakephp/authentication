@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,15 +9,15 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
+use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\HttpBasicAuthenticator;
-use Authentication\Authenticator\UnauthorizedException;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
@@ -25,7 +27,6 @@ use Cake\ORM\TableRegistry;
 
 class HttpBasicAuthenticatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -39,7 +40,7 @@ class HttpBasicAuthenticatorTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -176,7 +177,12 @@ class HttpBasicAuthenticatorTest extends TestCase
         ];
         $result = $this->auth->authenticate($request, $this->response);
         $this->assertTrue($result->isValid());
-        $this->assertArraySubset($expected, $result->getData()->toArray());
+
+        $value = $result->getData()->toArray();
+        foreach ($expected as $key => $val) {
+            $this->assertArrayHasKey($key, $value);
+            $this->assertEquals($value[$key], $val);
+        }
     }
 
     /**
@@ -196,7 +202,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         try {
             $this->auth->unauthorizedChallenge($request);
             $this->fail('Should challenge');
-        } catch (UnauthorizedException $e) {
+        } catch (AuthenticationRequiredException $e) {
             $expected = ['WWW-Authenticate' => 'Basic realm="localhost"'];
             $this->assertEquals($expected, $e->getHeaders());
             $this->assertEquals(401, $e->getCode());
@@ -227,6 +233,11 @@ class HttpBasicAuthenticatorTest extends TestCase
         ];
 
         $this->assertTrue($result->isValid());
-        $this->assertArraySubset($expected, $result->getData()->toArray());
+
+        $value = $result->getData()->toArray();
+        foreach ($expected as $key => $val) {
+            $this->assertArrayHasKey($key, $value);
+            $this->assertEquals($value[$key], $val);
+        }
     }
 }

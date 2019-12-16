@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,8 +16,6 @@
  */
 namespace Authentication\UrlChecker;
 
-use Authentication\UrlChecker\DefaultUrlChecker;
-use Authentication\UrlChecker\UrlCheckerInterface;
 use Cake\Core\App;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -31,7 +31,7 @@ trait UrlCheckerTrait
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return bool
      */
-    protected function _checkUrl(ServerRequestInterface $request)
+    protected function _checkUrl(ServerRequestInterface $request): bool
     {
         return $this->_getUrlChecker()->check(
             $request,
@@ -45,7 +45,7 @@ trait UrlCheckerTrait
      *
      * @return \Authentication\UrlChecker\UrlCheckerInterface
      */
-    protected function _getUrlChecker()
+    protected function _getUrlChecker(): UrlCheckerInterface
     {
         $options = $this->getConfig('urlChecker');
         if (!is_array($options)) {
@@ -58,7 +58,7 @@ trait UrlCheckerTrait
         }
 
         $className = App::className($options['className'], 'UrlChecker', 'UrlChecker');
-        if ($className === false) {
+        if ($className === null) {
             throw new RuntimeException(sprintf('URL checker class `%s` was not found.', $options['className']));
         }
 

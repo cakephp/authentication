@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -33,7 +35,7 @@ class CallbackIdentifier extends AbstractIdentifier
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function __construct(array $config)
     {
@@ -48,7 +50,7 @@ class CallbackIdentifier extends AbstractIdentifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    protected function checkCallable()
+    protected function checkCallable(): void
     {
         $callback = $this->getConfig('callback');
 
@@ -61,7 +63,7 @@ class CallbackIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritdoc
      */
     public function identify(array $data)
     {

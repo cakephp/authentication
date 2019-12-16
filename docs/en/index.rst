@@ -6,19 +6,17 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication
+    php composer.phar require cakephp/authentication:^2.0
 
 Load the plugin by adding the following statement in your project's ``src/Application.php``::
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         parent::bootstrap();
+
         $this->addPlugin('Authentication');
     }
 
-Prior to 3.6.0::
-
-    Plugin::load('Authentication');
 
 Getting Started
 ===============
@@ -30,9 +28,10 @@ middleware if you are not familiar with it.
 Example of configuring the authentication middleware using ``authentication`` application hook::
 
     use Authentication\AuthenticationService;
+    use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
-    use Psr\Http\Message\ResponseInterface;
+    use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
@@ -41,10 +40,9 @@ Example of configuring the authentication middleware using ``authentication`` ap
          * Returns a service provider instance.
          *
          * @param \Psr\Http\Message\ServerRequestInterface $request Request
-         * @param \Psr\Http\Message\ResponseInterface $response Response
          * @return \Authentication\AuthenticationServiceInterface
          */
-        public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
+        public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
         {
             $service = new AuthenticationService();
 
@@ -72,7 +70,7 @@ Example of configuring the authentication middleware using ``authentication`` ap
          * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue.
          * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
          */
-        public function middleware($middlewareQueue)
+        public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
         {
             // Various other middlewares for error handling, routing etc. added here.
 
