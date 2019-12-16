@@ -23,7 +23,7 @@ project = 'CakePHP Authentication'
 
 # Other versions that display in the version picker menu.
 version_list = [
-    {'name': '1.1', 'number': '/authentication/1.1', 'title': '1.1.x'},
+    {'name': '1.x', 'number': '/authentication/1.1', 'title': '1.x'},
     {'name': '2.x', 'number': '/authentication/2.x', 'title': '2.x', 'current': True},
 ]
 
@@ -32,7 +32,7 @@ languages = ['en']
 
 # The GitHub branch name for this version of the docs
 # for edit links to point at.
-branch = '2.x'
+branch = 'master'
 
 # Current version being built
 version = '2.x'
@@ -45,7 +45,5 @@ show_root_link = True
 repository = 'cakephp/authentication'
 
 source_path = 'docs/'
-
-is_prerelease = True
 
 hide_page_contents = ('search', '404', 'contents')
