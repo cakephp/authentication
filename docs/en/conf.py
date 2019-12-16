@@ -10,7 +10,7 @@ from cakephpsphinx.config.all import *
 #
 
 # The full version, including alpha/beta/rc tags.
-release = '1.1'
+release = '1.x'
 
 # The search index version.
 search_version = 'authentication-11'
@@ -23,7 +23,7 @@ project = 'CakePHP Authentication'
 
 # Other versions that display in the version picker menu.
 version_list = [
-    {'name': '1.x', 'number': '/authentication/1.1', 'title': '1.x', 'current': True},
+    {'name': '1.x', 'number': '/authentication/1', 'title': '1.x', 'current': True},
     {'name': '2.x', 'number': '/authentication/2', 'title': '2.x'},
 ]
 
@@ -35,7 +35,7 @@ languages = ['en']
 branch = '1.x'
 
 # Current version being built
-version = '1.1'
+version = '1.x'
 
 # Language in use for this directory.
 language = 'en'
