@@ -176,6 +176,39 @@ class FormAuthenticatorTest extends TestCase
     }
 
     /**
+     * testLoginUrlMismatchWithBase
+     *
+     * @return void
+     */
+    public function testLoginUrlMismatchWithBase()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password',
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $uri = $request->getUri();
+        $uri->base = '/base';
+        $request = $request->withUri($uri);
+        $request = $request->withAttribute('base', $uri->base);
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/users/login',
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_OTHER, $result->getStatus());
+        $this->assertEquals([0 => 'Login URL `http://localhost/base/users/login` did not match `/users/login`.'], $result->getErrors());
+    }
+
+    /**
      * testSingleLoginUrlSuccess
      *
      * @return void
@@ -227,6 +260,39 @@ class FormAuthenticatorTest extends TestCase
                 '/en/users/login',
                 '/de/users/login',
             ],
+        ]);
+
+        $result = $form->authenticate($request, $response);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertEquals([], $result->getErrors());
+    }
+
+    /**
+     * testLoginUrlSuccessWithBase
+     *
+     * @return void
+     */
+    public function testLoginUrlSuccessWithBase()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password',
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $uri = $request->getUri();
+        $uri->base = '/base';
+        $request = $request->withUri($uri);
+        $request = $request->withAttribute('base', $uri->base);
+        $response = new Response();
+
+        $form = new FormAuthenticator($identifiers, [
+            'loginUrl' => '/base/users/login',
         ]);
 
         $result = $form->authenticate($request, $response);
