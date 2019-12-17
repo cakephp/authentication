@@ -27,7 +27,8 @@ Add the authentication to the middleware. See the CakePHP `documentation
 <http://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
 middleware if you are not familiar with it.
 
-Example of configuring the authentication middleware using ``authentication`` application hook::
+Example of configuring the authentication middleware using the ``getAuthenticationService``
+hook within ``Application``::
 
     use Authentication\AuthenticationService;
     use Authentication\AuthenticationServiceProviderInterface;
