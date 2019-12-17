@@ -39,6 +39,31 @@ use TestApp\Authentication\InvalidAuthenticationService;
 class AuthenticationComponentTest extends TestCase
 {
     /**
+     * @var array|\ArrayAccess
+     */
+    protected $identityData;
+
+    /**
+     * @var \Authentication\Identity
+     */
+    protected $identity;
+
+    /**
+     * @var \Cake\Http\ServerRequest
+     */
+    protected $request;
+
+    /**
+     * @var \Cake\Http\Response
+     */
+    protected $response;
+
+    /**
+     * @var \Authentication\AuthenticationService
+     */
+    protected $service;
+
+    /**
      * {@inheritDoc}
      */
     public function setUp(): void
@@ -465,10 +490,6 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testIdentityCheckInBeforeFilter()
     {
-        $request = $this->request
-            ->withParam('action', 'view')
-            ->withAttribute('authentication', $this->service);
-
         $request = $this->request
             ->withAttribute('authentication', $this->service);
 

@@ -122,9 +122,10 @@ class LdapIdentifierTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Option `ldap` must implement `Authentication\Identifier\Ldap\AdapterInterface`.');
+
         $notLdap = new stdClass();
 
-        $identifier = new LdapIdentifier([
+        new LdapIdentifier([
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
@@ -142,7 +143,8 @@ class LdapIdentifierTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Config `bindDN` is not set.');
-        $identifier = new LdapIdentifier([
+
+        new LdapIdentifier([
             'host' => 'ldap.example.com',
         ]);
     }
@@ -156,7 +158,8 @@ class LdapIdentifierTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('The `bindDN` config is not a callable. Got `string` instead.');
-        $identifier = new LdapIdentifier([
+
+        new LdapIdentifier([
             'host' => 'ldap.example.com',
             'bindDN' => 'Foo',
         ]);
@@ -171,7 +174,8 @@ class LdapIdentifierTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Config `host` is not set.');
-        $identifier = new LdapIdentifier([
+
+        new LdapIdentifier([
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
@@ -203,6 +207,7 @@ class LdapIdentifierTest extends TestCase
             'username' => 'john',
             'password' => 'doe',
         ]);
+        $this->assertNull($result);
 
         $this->assertSame($identifier->getErrors(), [
             'This is another error.',

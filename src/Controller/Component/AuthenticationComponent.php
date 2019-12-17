@@ -173,7 +173,9 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $identity = $request->getAttribute($this->getConfig('identityAttribute'));
         if (!$identity) {
-            throw new UnauthenticatedException('No identity found. You can skip this check by configuring  `requireIdentity` to be `false`.');
+            throw new UnauthenticatedException(
+                'No identity found. You can skip this check by configuring  `requireIdentity` to be `false`.'
+            );
         }
     }
 
@@ -274,8 +276,10 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $controller = $this->getController();
         $service = $this->getAuthenticationService();
 
+        $service->clearIdentity($controller->getRequest(), $controller->getResponse());
+
         /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
-        $result = $this->getAuthenticationService()->persistIdentity(
+        $result = $service->persistIdentity(
             $controller->getRequest(),
             $controller->getResponse(),
             $identity
