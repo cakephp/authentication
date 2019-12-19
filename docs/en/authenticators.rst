@@ -79,6 +79,12 @@ An example of getting a token from a header, or query string would be::
 The above would read the ``token`` GET parameter or the ``Authorization`` header
 as long as the token was preceded by ``Token`` and a space.
 
+The token will always be passed to the configured identifier as follows::
+
+    [
+        'token' => '{token-value}',
+    ]
+
 JWT
 ===
 
