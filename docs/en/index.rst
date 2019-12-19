@@ -51,15 +51,15 @@ Example of configuring the authentication middleware using ``authentication`` ap
                 'password' => 'password'
             ];
 
-            // Load identifiers
-            $service->loadIdentifier('Authentication.Password', compact('fields'));
-
             // Load the authenticators, you want session first
             $service->loadAuthenticator('Authentication.Session');
             $service->loadAuthenticator('Authentication.Form', [
                 'fields' => $fields,
                 'loginUrl' => '/users/login'
             ]);
+
+            // Load identifiers
+            $service->loadIdentifier('Authentication.Password', compact('fields'));
 
             return $service;
         }
