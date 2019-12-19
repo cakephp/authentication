@@ -71,8 +71,8 @@ Configuration options:
 An example of getting a token from a header, or query string would be::
 
     $service->loadAuthenticator('Authentication.Token', [
-        'header' => 'Authorization',
         'queryParam' => 'token',
+        'header' => 'Authorization',
         'tokenPrefix' => 'Token'
     ]);
 
