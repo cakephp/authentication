@@ -54,7 +54,7 @@ Configuration options:
     consider this to be case sensitive!
 
 Token
------
+=====
 
 The token authenticator can authenticate a request based on a token that
 comes along with the request in the headers or in the request
