@@ -45,6 +45,10 @@ Example of configuring the authentication middleware using ``authentication`` ap
         public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
         {
             $service = new AuthenticationService();
+            $service->setConfig([
+                'unauthenticatedRedirect' => '/users/login',
+                'queryParam' => 'redirect',
+            ]);
 
             $fields = [
                 'username' => 'email',
@@ -128,7 +132,18 @@ like::
         }
     }
 
-Then add a simple logout action::
+Make sure that you whitelist the ``login`` action in your controller's
+``beforeFilter()`` callback as mentioned in the previous section, so that
+unauthenticated users are able to access it::
+
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $this->Authentication->allowUnauthenticated(['login']);
+    }
+
+and then add a simple logout action::
 
     public function logout()
     {
