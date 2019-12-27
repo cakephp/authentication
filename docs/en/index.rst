@@ -45,6 +45,10 @@ Example of configuring the authentication middleware using ``authentication`` ap
         public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
         {
             $service = new AuthenticationService();
+            $service->setConfig([
+                'unauthenticatedRedirect' => '/users/login',
+                'queryParam' => 'redirect',
+            ]);
 
             $fields = [
                 'username' => 'email',
