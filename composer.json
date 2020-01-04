@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "cakephp/cakephp": "^4.0",
-        "cakephp/cakephp-codesniffer": "dev-next",
+        "cakephp/cakephp-codesniffer": "^4.0",
         "phpunit/phpunit": "^8.0",
         "firebase/php-jwt": "^5.0"
     },
@@ -31,8 +31,6 @@
         "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
     },
     "license": "MIT",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Authentication\\": "src/"
@@ -72,7 +70,7 @@
             "@phpstan",
             "@psalm"
         ],
-        "stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan-shim:^0.11 psalm/phar:^3.5 && mv composer.backup composer.json",
+        "stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan:^0.12 psalm/phar:^3.7 && mv composer.backup composer.json",
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-clover=clover.xml"
     },

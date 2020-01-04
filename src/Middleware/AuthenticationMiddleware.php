@@ -50,6 +50,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
      *    AuthenticationComponent::allowUnauthenticated()
      * - `queryParam` - Set to true to have unauthenticated redirects contain a `redirect` query string
      *   parameter with the previously blocked URL.
+     *
+     * @var array
      */
     protected $_defaultConfig = [];
 
