@@ -41,5 +41,5 @@ class Plugin extends BasePlugin
      *
      * @var bool
      */
-    protected $consoleEnabled = false;    
+    protected $consoleEnabled = false;
 }
