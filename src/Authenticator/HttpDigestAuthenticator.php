@@ -230,7 +230,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
                 $v = $v ? 'true' : 'false';
                 $opts[] = sprintf('%s=%s', $k, $v);
             } else {
-                $opts[] = sprintf('%s="%s"', $k, $v);
+                $opts[] = sprintf('%s="%s"', $k, (string)$v);
             }
         }
 

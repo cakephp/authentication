@@ -37,8 +37,3 @@ parameters:
             message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
             count: 2
             path: src/Middleware/AuthenticationMiddleware.php
-
-        -
-            message: "#^Method Authentication\\\\UrlChecker\\\\DefaultUrlChecker\\:\\:check\\(\\) has parameter \\$urls with no typehint specified\\.$#"
-            count: 1
-            path: src/UrlChecker/DefaultUrlChecker.php
