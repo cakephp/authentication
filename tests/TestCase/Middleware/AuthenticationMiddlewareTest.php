@@ -691,7 +691,8 @@ class AuthenticationMiddlewareTest extends TestCase
     }
 
     /**
-     * test unauthenticated errors being converted into redirects when configured, with a different URL base
+     * test unauthenticated errors being converted into redirects
+     * as Controller::redirect() will apply the base URL.
      *
      * @return void
      */
@@ -719,7 +720,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $middleware($request, $response, $next);
 
         $this->assertSame(302, $response->getStatusCode());
-        $this->assertSame('/users/login?redirect=%2Fbase%2Ftestpath', $response->getHeaderLine('Location'));
+        $this->assertSame('/users/login?redirect=%2Ftestpath', $response->getHeaderLine('Location'));
         $this->assertSame('', $response->getBody() . '');
     }
 

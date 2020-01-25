@@ -364,9 +364,6 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         $uri = $request->getUri();
-        if (property_exists($uri, 'base')) {
-            $uri = $uri->withPath($uri->base . $uri->getPath());
-        }
         $redirect = $uri->getPath();
         if ($uri->getQuery()) {
             $redirect .= '?' . $uri->getQuery();
