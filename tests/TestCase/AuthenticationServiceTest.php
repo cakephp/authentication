@@ -661,7 +661,7 @@ class AuthenticationServiceTest extends TestCase
             'queryParam' => 'redirect',
         ]);
         $this->assertSame(
-            '/users/login?redirect=%2Fbase%2Fsecrets',
+            '/users/login?redirect=%2Fsecrets',
             $service->getUnauthenticatedRedirectUrl($request)
         );
     }
