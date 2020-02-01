@@ -291,3 +291,41 @@ configure these authenticators as the *last* authenticators::
     $service->loadAuthenticator('Authentication.Session');
     $service->loadAuthenticator('Authentication.Form');
     $service->loadAuthenticator('Authentication.HttpBasic');
+
+Handling Unauthenticated Errors
+===============================
+
+The ``AuthenticationComponent`` will raise an exception when users are not
+authenticated. You can convert this exception into a redirect using the
+``unauthenticatedRedirect`` when configuring the ``AuthenticationService``.
+
+You can also pass the current request target URI as a query parameter
+using the ``queryParam`` option::
+
+   // In the getAuthenticationService() method of your src/Application.php
+
+   $service = new AuthenticationService();
+
+   // Configure unauthenticated redirect
+   $service->setConfig([
+       'unauthenticatedRedirect' => '/users/login',
+       'queryParam' => 'redirect',
+   ]);
+
+Then in your controller's login method you can use ``getLoginRedirect()`` to get
+the redirect target safely from the query string parameter::
+
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
+
+        // Regardless of POST or GET, redirect if user is logged in
+        if ($result->isValid()) {
+            // Use the redirect parameter if present.
+            $target = $this->Authentication->getLoginRedirect();
+            if (!$target) {
+                $target = ['controller' => 'Pages', 'action' => 'display', 'home'];
+            }
+            return $this->redirect($target);
+        }
+    }

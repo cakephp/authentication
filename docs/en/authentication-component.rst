@@ -16,10 +16,11 @@ disable this check for specific actions using ``allowUnauthenticated()``::
     // In your controller's beforeFilter method.
     $this->Authentication->allowUnauthenticated(['view']);
 
-Accessing the user / identity data
-----------------------------------
+Accessing the logged in user
+----------------------------
 
-You can get the authenticated identity data using the authentication component::
+You can get the authenticated user identity data using the authentication
+component::
 
     $user = $this->Authentication->getIdentity();
 
@@ -30,8 +31,8 @@ You can also get the identity directly from the request instance::
 Checking the login status
 -------------------------
 
-You can check if the authentication process was successful by accessing the result
-object::
+You can check if the authentication process was successful by accessing the
+result object::
 
     // Using Authentication component
     $result = $this->Authentication->getResult();
@@ -61,8 +62,8 @@ made. For example LDAP or OAuth would put errors specific to their
 implementation in here for easier logging and debugging the cause. But most of
 the included authenticators don't put anything in here.
 
-Clearing the identity / logging the user out
---------------------------------------------
+Logging out the identity
+------------------------
 
 To log an identity out just do::
 
@@ -72,7 +73,7 @@ If you have set the ``logoutRedirect`` config, ``Authentication::logout()`` will
 return that value else will return ``false``. It won't perform any actual redirection
 in either case.
 
-Alternatively, instead of the component you can also use the request instance to log out::
+Alternatively, instead of the component you can also use the service to log out::
 
     $return = $request->getAttribute('authentication')->clearIdentity($request, $response);
 
