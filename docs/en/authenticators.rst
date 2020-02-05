@@ -264,15 +264,13 @@ You can also get the identifier that identified the user as well::
     $identifier = $service->getIdentificationProvider();
 
 
-Using Stateless Authenticators with stateful Authenticators
+Using Stateless Authenticators with Stateful Authenticators
 ===========================================================
 
-When using ``HttpBasic`` or ``HttpDigest`` with other authenticators, you should
-remember that these authenticators will halt the request when authentication
-credentials are missing or invalid. This is necessary as these authenticators
-must send specific challenge headers in the response. If you want to combine
-``HttpBasic`` or ``HttpDigest`` with other authenticators, you may want to
-configure these authenticators as the *last* authenticators::
+When using ``Token`` or ``HttpBasic``, ``HttpDigest`` with other authenticators,
+you should remember that these authenticators will halt the request when
+authentication credentials are missing or invalid. This is necessary as these
+authenticators must send specific challenge headers in the response::
 
     use Authentication\AuthenticationService;
 
@@ -286,14 +284,19 @@ configure these authenticators as the *last* authenticators::
             'password' => 'password'
         ]
     ]);
+    $service->loadIdentifier('Authentication.Token');
 
     // Load the authenticators leaving Basic as the last one.
     $service->loadAuthenticator('Authentication.Session');
     $service->loadAuthenticator('Authentication.Form');
-    $service->loadAuthenticator('Authentication.HttpBasic');
+    $service->loadAuthenticator('Authentication.Token');
+
+If you want to combine ``HttpBasic`` or ``HttpDigest`` with other
+authenticators, be aware that these authenticators will abort the request and
+force a browser dialog.
 
 Handling Unauthenticated Errors
-===============================
+================================
 
 The ``AuthenticationComponent`` will raise an exception when users are not
 authenticated. You can convert this exception into a redirect using the
