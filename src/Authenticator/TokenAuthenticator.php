@@ -88,21 +88,22 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     }
 
     /**
-     * Gets the token from the request headers
+     * Gets the token from the request query
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @param string $queryParam Request query parameter name
      * @return string|null
      */
-    protected function getTokenFromQuery(ServerRequestInterface $request, string $queryParam): ?string
+    protected function getTokenFromQuery(ServerRequestInterface $request, ?string $queryParam): ?string
     {
-        $queryParams = $request->getQueryParams();
-
-        if (empty($queryParams[$queryParam])) {
-            return null;
+        if (!empty($queryParam)) {
+            $queryParams = $request->getQueryParams();
+            if (!empty($queryParams[$queryParam])) {
+                return $queryParams[$queryParam];
+            }
         }
 
-        return $queryParams[$queryParam];
+        return null;
     }
 
     /**
