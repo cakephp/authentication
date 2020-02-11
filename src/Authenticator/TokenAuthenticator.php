@@ -96,14 +96,13 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      */
     protected function getTokenFromQuery(ServerRequestInterface $request, ?string $queryParam): ?string
     {
-        if (!empty($queryParam)) {
-            $queryParams = $request->getQueryParams();
-            if (!empty($queryParams[$queryParam])) {
-                return $queryParams[$queryParam];
-            }
+        if (empty($queryParam)) {
+            return null;
         }
 
-        return null;
+        $queryParams = $request->getQueryParams();
+
+        return $queryParams[$queryParam] ?? null;
     }
 
     /**
