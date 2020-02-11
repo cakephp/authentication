@@ -135,4 +135,50 @@ class TokenAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
     }
+
+    /**
+     * testWithoutQueryParamConfig
+     *
+     * @return void
+     */
+    public function testWithoutQueryParamConfig()
+    {
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+            'header' => 'Token',
+        ]);
+
+        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+    }
+
+    /**
+     * testWithoutHeaderConfig
+     *
+     * @return void
+     */
+    public function testWithoutHeaderConfig()
+    {
+        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+            'queryParam' => 'token',
+        ]);
+
+        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+    }
+
+    /**
+     * testWithoutAnyConfig
+     *
+     * @return void
+     */
+    public function testWithoutAnyConfig()
+    {
+        $tokenAuth = new TokenAuthenticator($this->identifiers);
+
+        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+    }
 }
