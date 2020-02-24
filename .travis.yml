@@ -2,8 +2,7 @@ language: php
 
 php:
   - 7.2
-  - 7.3
-  - '7.4snapshot'
+  - 7.4
 
 services:
   - mysql
@@ -20,9 +19,11 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.2
+    - php: 7.3
+      env: COVERAGE=1 DEFAULT=0
+    - php: 7.3
       env: PHPCS=1 DEFAULT=0
-    - php: 7.2
+    - php: 7.3
       env: STATIC_ANALYSIS=1 DEFAULT=0
     - php: 7.2
       env: PREFER_LOWEST=1
@@ -40,10 +41,10 @@ before_script:
   - if [[ $STATIC_ANALYSIS == 1 ]]; then composer stan-setup; fi
 
 script:
-  - if [[ $DEFAULT == 1 && $TRAVIS_PHP_VERSION == 7.3 ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=clover.xml; fi
-  - if [[ $DEFAULT == 1 && $TRAVIS_PHP_VERSION != 7.3 ]]; then vendor/bin/phpunit; fi
+  - if [[ $COVERAGE == 1 ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=clover.xml; fi
+  - if [[ $COVERAGE != 1 ]]; then vendor/bin/phpunit; fi
 
-  - if [[ $PHPCS == 1 ]]; then vendor/bin/phpcs -n -p src/ tests/; fi
+  - if [[ $PHPCS == 1 ]]; then composer cs-check; fi
   - if [[ $STATIC_ANALYSIS == 1 ]]; then composer stan; fi
 
 after_success:
