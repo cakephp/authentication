@@ -48,6 +48,10 @@ hook within ``Application``::
         public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
         {
             $service = new AuthenticationService();
+            $service->setConfig([
+                'unauthenticatedRedirect' => '/users/login',
+                'queryParam' => 'redirect',
+            ]);
 
             $fields = [
                 'username' => 'email',
