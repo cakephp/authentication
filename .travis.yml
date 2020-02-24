@@ -32,8 +32,8 @@ before_install:
   - echo 'extension = ldap.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
-  - if [[ $PREFER_LOWEST != '1' ]]; then composer install --prefer-dist --no-interaction; fi
-  - if [[ $PREFER_LOWEST == '1' ]]; then composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
+  - if [[ $PREFER_LOWEST != 1 ]]; then composer install --prefer-dist --no-interaction; fi
+  - if [[ $PREFER_LOWEST == 1 ]]; then composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
 
 before_script:
   - if [[ $DB == 'mysql' ]]; then mysql -e 'CREATE DATABASE cakephp_test;'; fi
@@ -48,7 +48,7 @@ script:
   - if [[ $STATIC_ANALYSIS == 1 ]]; then composer stan; fi
 
 after_success:
-  - if [[ $DEFAULT == 1 && $TRAVIS_PHP_VERSION == 7.3 ]]; then bash <(curl -s https://codecov.io/bash); fi
+  - if [[ $COVERAGE == 1 ]]; then bash <(curl -s https://codecov.io/bash); fi
 
 notifications:
   email: false
