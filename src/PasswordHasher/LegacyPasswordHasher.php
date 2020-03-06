@@ -36,7 +36,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      */
     protected $_defaultConfig = [
         'hashType' => null,
-        'salt' => null
+        'salt' => null,
     ];
 
     /**
