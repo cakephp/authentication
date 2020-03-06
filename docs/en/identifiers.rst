@@ -21,8 +21,7 @@ using the Password Identifier looks like::
                'Authentication.Default',
                [
                    'className' => 'Authentication.Legacy',
-                   'hashType' => 'md5',
-                   'salt' => false
+                   'hashType' => 'md5'
                ],
            ]
        ]

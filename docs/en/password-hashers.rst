@@ -18,9 +18,6 @@ The config options for this adapter are:
    ``PASSWORD_DEFAULT``
 -  **hashOptions**: Associative array of options. Check the PHP manual
    for supported options for each hash type. Defaults to empty array.
--  **salt**: Boolean flag for salting the password in a hashes, and checks. Useful
-    for legacy databases where passwords were stored with no salt, or environments which have
-    multiple apps saving passwords.
 
 Legacy
 ======
@@ -52,7 +49,8 @@ fallback hasher as follows::
                'Authentication.Default',
                [
                    'className' => 'Authentication.Legacy',
-                   'hashType' => 'md5'
+                   'hashType' => 'md5',
+                   'salt' => false // turn off default usage of salt
                ],
            ]
        ]
