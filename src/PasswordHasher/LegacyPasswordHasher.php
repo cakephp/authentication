@@ -36,7 +36,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      */
     protected $_defaultConfig = [
         'hashType' => null,
-        'salt' => null,
+        'salt' => true,
     ];
 
     /**
@@ -61,7 +61,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      */
     public function hash($password): string
     {
-        return Security::hash($password, $this->_config['hashType'], ($this->_config['salt'] ?? true));
+        return Security::hash($password, $this->_config['hashType'], $this->_config['salt']);
     }
 
     /**
