@@ -65,5 +65,17 @@ class LegacyPasswordHasherTest extends TestCase
 
         $hasher->setConfig('hashType', 'sha1');
         $this->assertFalse($hasher->check('foo', $password));
+
+        // salt check
+        $hasher->setConfig('hashType', 'sha256');
+        $saltedPassword = $hasher->hash('saltcheck');
+        $this->assertTrue($hasher->check('saltcheck', $saltedPassword));
+        $hasher->setConfig('salt', false);
+        $this->assertFalse($hasher->check('saltcheck', $saltedPassword));
+
+        $unsaltedPassword = $hasher->hash('saltcheck');
+        $this->assertTrue($hasher->check('saltcheck', $unsaltedPassword));
+        $hasher->setConfig('salt', true);
+        $this->assertFalse($hasher->check('saltcheck', $unsaltedPassword));
     }
 }
