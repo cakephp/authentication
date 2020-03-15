@@ -88,7 +88,7 @@ service from your application::
          * @param \Psr\Http\Message\ResponseInterface $response Response
          * @return \Authentication\AuthenticationServiceInterface
          */
-        public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
+        public function getAuthenticationService(ServerRequestInterface $request) : AuthenticationServiceInterface
         {
             $service = new AuthenticationService();
             // Configure the service. (see below for more details)
