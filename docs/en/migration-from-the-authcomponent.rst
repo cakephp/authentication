@@ -73,6 +73,7 @@ service from your application::
 
     // Add the following use statements.
     use Authentication\AuthenticationService;
+    use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Psr\Http\Message\ResponseInterface;
