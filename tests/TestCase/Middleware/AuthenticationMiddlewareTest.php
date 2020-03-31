@@ -769,4 +769,39 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertSame('redirect', $service->getConfig('queryParam'));
         $this->assertSame('/login', $service->getConfig('unauthenticatedRedirect'));
     }
+
+    /**
+     * Test Serializable Request Instance
+     *
+     * @return void
+     */
+    public function testSerializableRequestInstance()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password' => [
+                    'resolver' => [
+                        'className' => 'Authentication.Orm',
+                        'userModel' => 'AuthUsers',
+                        'finder' => 'auth',
+                    ],
+                ],
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+            ],
+        ]);
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $handler = new TestRequestHandler();
+
+        $middleware = new AuthenticationMiddleware($service);
+        $middleware->process($request, $handler);
+
+        // serialize(): included PDO's instance throws Exception
+        $this->assertNotEmpty(serialize($handler->request));
+    }
 }
