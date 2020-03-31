@@ -17,12 +17,11 @@ declare(strict_types=1);
 namespace Authentication\Identifier\Resolver;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\TableRegistry;
 
 class OrmResolver implements ResolverInterface
 {
     use InstanceConfigTrait;
-    use LocatorAwareTrait;
 
     /**
      * Default configuration.
@@ -54,7 +53,7 @@ class OrmResolver implements ResolverInterface
      */
     public function find(array $conditions, $type = self::TYPE_AND)
     {
-        $table = $this->getTableLocator()->get($this->_config['userModel']);
+        $table = TableRegistry::getTableLocator()->get($this->_config['userModel']);
 
         $query = $table->query();
         $finders = (array)$this->_config['finder'];
