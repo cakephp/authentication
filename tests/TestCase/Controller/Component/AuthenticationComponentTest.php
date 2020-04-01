@@ -64,7 +64,7 @@ class AuthenticationComponentTest extends TestCase
     protected $service;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {

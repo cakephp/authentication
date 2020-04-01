@@ -50,7 +50,7 @@ class OrmResolver implements ResolverInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function find(array $conditions, $type = self::TYPE_AND)
     {

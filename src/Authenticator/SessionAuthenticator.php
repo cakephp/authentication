@@ -80,7 +80,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {
@@ -100,7 +100,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {

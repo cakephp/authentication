@@ -27,7 +27,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class TokenAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'header' => null,

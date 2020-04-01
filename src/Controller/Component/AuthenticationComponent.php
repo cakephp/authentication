@@ -33,7 +33,6 @@ use RuntimeException;
 
 /**
  * Controller Component for interacting with Authentication.
- *
  */
 class AuthenticationComponent extends Component implements EventDispatcherInterface
 {

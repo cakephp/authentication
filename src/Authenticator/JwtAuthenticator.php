@@ -28,7 +28,7 @@ use stdClass;
 class JwtAuthenticator extends TokenAuthenticator
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'header' => 'Authorization',
@@ -47,7 +47,7 @@ class JwtAuthenticator extends TokenAuthenticator
     protected $payload;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function __construct(IdentifierInterface $identifier, array $config = [])
     {

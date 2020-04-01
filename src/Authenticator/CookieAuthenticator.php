@@ -37,7 +37,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     use UrlCheckerTrait;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected $_defaultConfig = [
         'loginUrl' => null,
@@ -59,7 +59,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function __construct(IdentifierCollection $identifiers, array $config = [])
     {
@@ -81,7 +81,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function authenticate(ServerRequestInterface $request): ResultInterface
     {
@@ -123,7 +123,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {
@@ -195,7 +195,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {

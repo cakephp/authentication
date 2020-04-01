@@ -41,7 +41,7 @@ class AuthenticationMiddlewareTest extends TestCase
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setUp(): void
     {

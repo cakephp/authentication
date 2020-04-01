@@ -38,7 +38,7 @@ class HttpBasicAuthenticatorTest extends TestCase
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setUp(): void
     {

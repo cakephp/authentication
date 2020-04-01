@@ -39,7 +39,7 @@ class SessionAuthenticatorTest extends TestCase
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setUp(): void
     {

@@ -32,7 +32,7 @@ class AuthenticationTestCase extends TestCase
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setUp(): void
     {

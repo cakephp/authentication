@@ -71,7 +71,7 @@ class Identity implements IdentityInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getIdentifier()
     {
@@ -172,7 +172,7 @@ class Identity implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getOriginalData()
     {

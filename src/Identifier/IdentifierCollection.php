@@ -111,7 +111,6 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     }
 
     /**
-     *
      * @param string $class Missing class.
      * @param string $plugin Class plugin.
      * @return void

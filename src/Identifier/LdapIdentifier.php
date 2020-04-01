@@ -75,7 +75,7 @@ class LdapIdentifier extends AbstractIdentifier
     protected $_ldap;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function __construct(array $config = [])
     {
@@ -138,7 +138,7 @@ class LdapIdentifier extends AbstractIdentifier
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function identify(array $data)
     {

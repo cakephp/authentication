@@ -169,6 +169,9 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * {@inheritDoc}
      *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @return \Authentication\Authenticator\ResultInterface The result object. If none of the adapters was a success
+     *  the last failed result is returned.
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
     public function authenticate(ServerRequestInterface $request): ResultInterface

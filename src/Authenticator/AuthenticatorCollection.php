@@ -84,7 +84,6 @@ class AuthenticatorCollection extends AbstractCollection
     }
 
     /**
-     *
      * @param string $class Missing class.
      * @param string $plugin Class plugin.
      * @return void

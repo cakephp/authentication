@@ -27,7 +27,7 @@ use Cake\Routing\Router;
 class CakeRouterUrlCheckerTest extends TestCase
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function setUp(): void
     {
