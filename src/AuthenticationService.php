@@ -379,6 +379,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             $url['query'] = $query;
         }
         $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
+        $url['path'] = $url['path'] ?? '/';
 
         return $url['path'] . '?' . $url['query'] . $fragment;
     }
