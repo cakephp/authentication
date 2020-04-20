@@ -372,6 +372,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
         $query = urlencode($param) . '=' . urlencode($redirect);
 
+        /** @var array $url */
         $url = parse_url($target);
         if (isset($url['query']) && strlen($url['query'])) {
             $url['query'] .= '&' . $query;
@@ -413,9 +414,11 @@ class AuthenticationService implements AuthenticationServiceInterface
             return null;
         }
         $parsed += ['path' => '/', 'query' => ''];
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
             $parsed['path'] = "/{$parsed['path']}";
         }
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if ($parsed['query']) {
             $parsed['query'] = "?{$parsed['query']}";
         }
