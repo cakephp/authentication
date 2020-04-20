@@ -31,6 +31,7 @@ Example of configuring the authentication middleware using ``authentication`` ap
     use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
+    use Cake\Routing\Router;
     use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
 
@@ -46,7 +47,10 @@ Example of configuring the authentication middleware using ``authentication`` ap
         {
             $service = new AuthenticationService();
             $service->setConfig([
-                'unauthenticatedRedirect' => '/users/login',
+                'unauthenticatedRedirect' => Router::url([
+											'controller' => 'Users',
+											'action' => 'login'
+											]),
                 'queryParam' => 'redirect',
             ]);
 
@@ -59,7 +63,10 @@ Example of configuring the authentication middleware using ``authentication`` ap
             $service->loadAuthenticator('Authentication.Session');
             $service->loadAuthenticator('Authentication.Form', [
                 'fields' => $fields,
-                'loginUrl' => '/users/login'
+                'loginUrl' => Router::url([
+                                    'controller' => 'Users',
+                                    'action' => 'login'
+                                    ])
             ]);
 
             // Load identifiers
