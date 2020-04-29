@@ -19,7 +19,7 @@ Differences
 -  The user data is no longer available through the old AuthComponent but is
    accessible via a request attribute and encapsulated in an identity
    object: ``$request->getAttribute('authentication')->getIdentity();``.
-   Addiotnally, you can leverage the ``AuthenticationComponent`` ``getIdentity`` or ``getIdentityData`` methods.
+   Addiotnally, you can leverage the ``AuthenticationComponent`` ``getIdentity()`` or ``getIdentityData()`` methods.
 -  The logic of the authentication process has been split into
    authenticators and identifiers. An authenticator will extract the
    credentials from the request, while identifiers verify the
