@@ -73,6 +73,7 @@ class CallbackIdentifier extends AbstractIdentifier
         $result = $callback($data);
         if ($result instanceof Result) {
             $this->_errors = $result->getErrors();
+
             return $result->getData();
         }
         if ($result === null || $result instanceof ArrayAccess) {
