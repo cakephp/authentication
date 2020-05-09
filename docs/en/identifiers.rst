@@ -104,6 +104,41 @@ Configuration options:
    required to pass a valid callback to this option to use the
    authenticator.
 
+Callback identifiers can either return ``null|ArrayAccess`` for simple results,
+or an ``Authentication\Authenticator\Result`` if you want to forward error
+messages::
+
+    // A simple callback identifier
+    $authenticationService->loadIdentifier('Authentication.Identifier', [
+        'callback' => function($data) {
+            // do identifier logic
+
+            // Return an array of the identified user or null for failure.
+            if ($result) {
+                return $result;
+            }
+
+            return null;
+        }
+    ]);
+
+    // Using a result object to return error messages.
+    $authenticationService->loadIdentifier('Authentication.Identifier', [
+        'callback' => function($data) {
+            // do identifier logic
+
+            if ($result) {
+                return new Result($result, Result::SUCCESS);
+            }
+
+            return new Result(
+                null,
+                Result::FAILURE_OTHER,
+                ['message' => 'Removed user.']
+            );
+        }
+    ]);
+
 
 Identity resolvers
 ==================
