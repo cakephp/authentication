@@ -37,7 +37,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'algorithms' => ['HS256'],
         'returnPayload' => true,
         'secretKey' => null,
-        'dataField' => IdentifierInterface::CREDENTIAL_JWT_SUBJECT
+        'dataField' => IdentifierInterface::CREDENTIAL_JWT_SUBJECT,
     ];
 
     /**
