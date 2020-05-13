@@ -41,13 +41,13 @@ class TokenIdentifier extends AbstractIdentifier
      */
     public function identify(array $data)
     {
-        $dataField = $this->getConfig('tokenField');
-        if (!isset($data[$dataField])) {
+        $tokenField = $this->getConfig('tokenField');
+        if (!isset($data[$tokenField])) {
             return null;
         }
 
         $conditions = [
-            $this->getConfig('dataField') => $data[$dataField],
+            $this->getConfig('dataField') => $data[$tokenField],
         ];
 
         return $this->getResolver()->find($conditions);
