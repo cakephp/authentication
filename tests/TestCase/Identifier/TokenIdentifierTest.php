@@ -33,8 +33,8 @@ class TokenIdentifierTest extends TestCase
         $resolver = $this->createMock(ResolverInterface::class);
 
         $identifier = new TokenIdentifier([
-            'dataField' => 'user',
-            'tokenField' => 'username',
+            'dataField' => 'username',
+            'tokenField' => 'token',
         ]);
         $identifier->setResolver($resolver);
 
@@ -49,7 +49,7 @@ class TokenIdentifierTest extends TestCase
             ])
             ->willReturn($user);
 
-        $result = $identifier->identify(['user' => 'larry']);
+        $result = $identifier->identify(['token' => 'larry']);
         $this->assertSame($user, $result);
     }
 

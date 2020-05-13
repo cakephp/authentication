@@ -44,7 +44,8 @@ class TokenAuthenticatorTest extends TestCase
 
         $this->identifiers = new IdentifierCollection([
            'Authentication.Token' => [
-               'tokenField' => 'username',
+               'tokenField' => 'token',
+               'dataField' => 'username',
            ],
         ]);
 
