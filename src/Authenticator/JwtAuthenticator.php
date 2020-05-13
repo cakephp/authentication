@@ -89,7 +89,7 @@ class JwtAuthenticator extends TokenAuthenticator
 
         $result = json_decode(json_encode($result), true);
 
-        $key = $this->getConfig('tokenField', IdentifierInterface::CREDENTIAL_JWT_SUBJECT);
+        $key = $this->getConfig('dataField', IdentifierInterface::CREDENTIAL_JWT_SUBJECT);
         if (empty($result[$key])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
