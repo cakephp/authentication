@@ -106,14 +106,60 @@ example.
    secret key if you’re not in the context of a CakePHP application that
    provides it through ``Security::salt()``.
 
-If you want to identify the user based on the ``sub`` (subject) of the
-token you can use the JwtSubject identifier::
+By default the `JwtAuthenticator` uses `HS256` symmetric key algorithm and uses
+the value of `Cake\Utility\Security::salt()` as encryption key.
+For enhanced security one can instead use the `RS256` asymmetric key algorithm.
+You can generate the required keys for that as follows::
 
-   $service = new AuthenticationService();
-   $service->loadIdentifier('Authentication.JwtSubject');
-   $service->loadAuthenticator('Authentication.Jwt', [
-       'returnPayload' => false
-   ]);
+    # generate private key
+    openssl genrsa -out config/jwt.key 1024
+    # generate public key
+    openssl rsa -in config/jwt.key -outform PEM -pubout -out config/jwt.pem
+
+The ``jwt.key`` file is the private key and should be kept safe.
+The ``jwt.pem`` file is the public key. This file should be used when you need to verify tokens
+from external applications, eg: mobile apps.
+
+The following example allows you to identify the user based on the ``sub`` (subject) of the
+token by using ``JwtSubject`` identifier, and configures the ``Authenticator`` to use public key
+for token verification::
+
+Add the following to your ``Application`` class::
+
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+        // ...
+        $service->loadIdentifier('Authentication.JwtSubject');
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
+            'algorithms' => ['RS256'],
+            'returnPayload' => false
+        ]);
+    }
+
+In your ``UsersController``::
+
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $privateKey = file_get_contents(CONFIG . '/jwt.key');
+            $user = $result->getData();
+            $payload = [
+                'iss' => 'myapp',
+                'sub' => $user->id,
+                'exp' => time() + 60,
+            ];
+            $json = [
+                'token' => JWT::encode($payload, $privateKey, 'RS256'),
+            ];
+        } else {
+            $this->response = $this->response->withStatus(401);
+        }
+        $this->set(compact('json'));
+        $this->viewBuilder()->setOption('serialize', 'json');
+    }
 
 HttpBasic
 =========
