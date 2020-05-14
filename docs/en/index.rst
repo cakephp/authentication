@@ -170,6 +170,51 @@ setter method::
         }
     }
 
+JWT Token Generation
+====================
+
+To use JWT authentication, we need to generate keys::
+
+    # generate private key
+    openssl genrsa -out config/jwt.key 1024
+    # generate public key
+    openssl rsa -in config/jwt.key -outform PEM -pubout -out config/jwt.pem
+
+To generate a JWT in a ``UsersController``::
+
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $privateKey = file_get_contents(CONFIG . '/jwt.key');
+            $user = $result->getData();
+            $payload = [
+                'iss' => 'myapp',
+                'sub' => $user->id,
+                'exp' => time() + 60,
+            ];
+            $json = [
+                'token' => JWT::encode($payload, $privateKey, 'RS256'),
+            ];
+        } else {
+            $this->response = $this->response->withStatus(401);
+        }
+        $this->set(compact('json'));
+        $this->viewBuilder()->setOption('serialize', 'json');
+    }
+    
+Note that this requires setting up your `Applicaion` class as follows::
+
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+        // ...
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
+            'algorithms' => ['RS256'],
+            'returnPayload' => false,
+        ]);
+    }
 
 Further Reading
 ===============
