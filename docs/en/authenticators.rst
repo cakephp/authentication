@@ -162,6 +162,40 @@ In your ``UsersController``::
         $this->viewBuilder()->setOption('serialize', 'json');
     }
 
+Beside from sharing the public key file to external application, you can distribute it via a JWKS endpoint by
+configuring your app as follows::
+
+    // config/routes.php
+    $builder->setExtensions('json');
+    $builder->connect('/.well-known/:controller/*', [
+        'action' => 'index',
+    ], [
+        'controller' => '(jwks)',
+    ]); // connect /.well-known/jwks.json to JwksController
+    
+    // controller/JwksController.php
+    public function index()
+    {
+        $pubKey = file_get_contents(CONFIG . './jwt.pem');
+        $res = openssl_pkey_get_public($pubKey);
+        $detail = openssl_pkey_get_details($res);
+        $key = [
+            'kty' => 'RSA',
+            'alg' => 'RS256',
+            'use' => 'sig',
+            'e' => JWT::urlsafeB64Encode($detail['rsa']['e']),
+            'n' => JWT::urlsafeB64Encode($detail['rsa']['n']),
+        ];
+        $keys['keys'][] = $key;
+
+        $this->viewBuilder()->setClassName('Json');
+        $this->set(compact('keys'));
+        $this->viewBuilder()->setOption('serialize', 'keys');
+    }
+    
+Refer to https://tools.ietf.org/html/rfc7517 or https://auth0.com/docs/tokens/concepts/jwks for
+more information about JWKS.
+
 HttpBasic
 =========
 
