@@ -106,14 +106,95 @@ example.
    secret key if you’re not in the context of a CakePHP application that
    provides it through ``Security::salt()``.
 
-If you want to identify the user based on the ``sub`` (subject) of the
-token you can use the JwtSubject identifier::
+By default the ``JwtAuthenticator`` uses ``HS256`` symmetric key algorithm and uses
+the value of ``Cake\Utility\Security::salt()`` as encryption key.
+For enhanced security one can instead use the ``RS256`` asymmetric key algorithm.
+You can generate the required keys for that as follows::
 
-   $service = new AuthenticationService();
-   $service->loadIdentifier('Authentication.JwtSubject');
-   $service->loadAuthenticator('Authentication.Jwt', [
-       'returnPayload' => false
-   ]);
+    # generate private key
+    openssl genrsa -out config/jwt.key 1024
+    # generate public key
+    openssl rsa -in config/jwt.key -outform PEM -pubout -out config/jwt.pem
+
+The ``jwt.key`` file is the private key and should be kept safe.
+The ``jwt.pem`` file is the public key. This file should be used when you need to verify tokens
+created by external applications, eg: mobile apps.
+
+The following example allows you to identify the user based on the ``sub`` (subject) of the
+token by using ``JwtSubject`` identifier, and configures the ``Authenticator`` to use public key
+for token verification::
+
+Add the following to your ``Application`` class::
+
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+        // ...
+        $service->loadIdentifier('Authentication.JwtSubject');
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
+            'algorithms' => ['RS256'],
+            'returnPayload' => false
+        ]);
+    }
+
+In your ``UsersController``::
+
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $privateKey = file_get_contents(CONFIG . '/jwt.key');
+            $user = $result->getData();
+            $payload = [
+                'iss' => 'myapp',
+                'sub' => $user->id,
+                'exp' => time() + 60,
+            ];
+            $json = [
+                'token' => JWT::encode($payload, $privateKey, 'RS256'),
+            ];
+        } else {
+            $this->response = $this->response->withStatus(401);
+            $json = [];
+        }
+        $this->set(compact('json'));
+        $this->viewBuilder()->setOption('serialize', 'json');
+    }
+
+Beside from sharing the public key file to external application, you can distribute it via a JWKS endpoint by
+configuring your app as follows::
+
+    // config/routes.php
+    $builder->setExtensions('json');
+    $builder->connect('/.well-known/:controller/*', [
+        'action' => 'index',
+    ], [
+        'controller' => '(jwks)',
+    ]); // connect /.well-known/jwks.json to JwksController
+    
+    // controller/JwksController.php
+    public function index()
+    {
+        $pubKey = file_get_contents(CONFIG . './jwt.pem');
+        $res = openssl_pkey_get_public($pubKey);
+        $detail = openssl_pkey_get_details($res);
+        $key = [
+            'kty' => 'RSA',
+            'alg' => 'RS256',
+            'use' => 'sig',
+            'e' => JWT::urlsafeB64Encode($detail['rsa']['e']),
+            'n' => JWT::urlsafeB64Encode($detail['rsa']['n']),
+        ];
+        $keys['keys'][] = $key;
+
+        $this->viewBuilder()->setClassName('Json');
+        $this->set(compact('keys'));
+        $this->viewBuilder()->setOption('serialize', 'keys');
+    }
+    
+Refer to https://tools.ietf.org/html/rfc7517 or https://auth0.com/docs/tokens/concepts/jwks for
+more information about JWKS.
 
 HttpBasic
 =========
