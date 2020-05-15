@@ -61,7 +61,7 @@ class JwtAuthenticatorTest extends TestCase
         parent::setUp();
 
         $data = [
-            'sub' => 3,
+            'subjectId' => 3,
             'id' => 3,
             'username' => 'larry',
             'firstname' => 'larry',
@@ -86,6 +86,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -108,6 +109,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -132,10 +134,10 @@ class JwtAuthenticatorTest extends TestCase
         $this->identifiers->expects($this->once())
             ->method('identify')
             ->with([
-                'sub' => 3,
+                'subjectId' => 3,
             ])
             ->willReturn(new ArrayObject([
-                'sub' => 3,
+                'subjectId' => 3,
                 'id' => 3,
                 'username' => 'larry',
                 'firstname' => 'larry',
@@ -144,6 +146,7 @@ class JwtAuthenticatorTest extends TestCase
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
             'returnPayload' => false,
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -263,7 +266,7 @@ class JwtAuthenticatorTest extends TestCase
         $authenticator->authenticate($this->request, $this->response);
 
         $expected = [
-            'sub' => 3,
+            'subjectId' => 3,
             'id' => 3,
             'username' => 'larry',
             'firstname' => 'larry',
