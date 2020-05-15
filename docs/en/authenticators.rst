@@ -106,9 +106,9 @@ example.
    secret key if you’re not in the context of a CakePHP application that
    provides it through ``Security::salt()``.
 
-By default the `JwtAuthenticator` uses `HS256` symmetric key algorithm and uses
-the value of `Cake\Utility\Security::salt()` as encryption key.
-For enhanced security one can instead use the `RS256` asymmetric key algorithm.
+By default the ``JwtAuthenticator`` uses ``HS256`` symmetric key algorithm and uses
+the value of ``Cake\Utility\Security::salt()`` as encryption key.
+For enhanced security one can instead use the ``RS256`` asymmetric key algorithm.
 You can generate the required keys for that as follows::
 
     # generate private key
@@ -118,7 +118,7 @@ You can generate the required keys for that as follows::
 
 The ``jwt.key`` file is the private key and should be kept safe.
 The ``jwt.pem`` file is the public key. This file should be used when you need to verify tokens
-from external applications, eg: mobile apps.
+created by external applications, eg: mobile apps.
 
 The following example allows you to identify the user based on the ``sub`` (subject) of the
 token by using ``JwtSubject`` identifier, and configures the ``Authenticator`` to use public key
@@ -156,6 +156,7 @@ In your ``UsersController``::
             ];
         } else {
             $this->response = $this->response->withStatus(401);
+            $json = [];
         }
         $this->set(compact('json'));
         $this->viewBuilder()->setOption('serialize', 'json');
