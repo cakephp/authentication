@@ -109,7 +109,7 @@ or an ``Authentication\Authenticator\Result`` if you want to forward error
 messages::
 
     // A simple callback identifier
-    $authenticationService->loadIdentifier('Authentication.Identifier', [
+    $authenticationService->loadIdentifier('Authentication.Callback', [
         'callback' => function($data) {
             // do identifier logic
 
@@ -123,7 +123,7 @@ messages::
     ]);
 
     // Using a result object to return error messages.
-    $authenticationService->loadIdentifier('Authentication.Identifier', [
+    $authenticationService->loadIdentifier('Authentication.Callback', [
         'callback' => function($data) {
             // do identifier logic
 
