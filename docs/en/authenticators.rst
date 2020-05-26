@@ -370,7 +370,7 @@ authenticators must send specific challenge headers in the response::
     // Load the authenticators leaving Basic as the last one.
     $service->loadAuthenticator('Authentication.Session');
     $service->loadAuthenticator('Authentication.Form');
-    $service->loadAuthenticator('Authentication.Token');
+    $service->loadAuthenticator('Authentication.HttpBasic');
 
 If you want to combine ``HttpBasic`` or ``HttpDigest`` with other
 authenticators, be aware that these authenticators will abort the request and
