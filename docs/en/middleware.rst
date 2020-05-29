@@ -38,9 +38,8 @@ inspecting the request object you can configure authentication appropriately::
     {
         $path = $request->getPath();
 
+        $service = new AuthenticationService();
         if (strpos($path, '/api') === 0) {
-            $service = new AuthenticationService();
-
             // Accept API tokens only
             $service->loadAuthenticator('Authentication.Token');
             $service->loadIdentifier('Authentication.Token');
