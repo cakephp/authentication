@@ -21,11 +21,11 @@ Load the plugin by adding the following statement in your project's ``src/Applic
 Getting Started
 ===============
 
-Add the authentication to the middleware. See the CakePHP `documentation
-<http://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
-middleware if you are not familiar with it.
-
-Example of configuring the authentication middleware using ``authentication`` application hook::
+The authentication plugin integrates with your application as a middleware
+`middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
+be used as a component to make unauthenticated access simpler. First, lets
+apply the middleware. In **src/Application.php**, add the following to the class
+imports::
 
     use Authentication\AuthenticationService;
     use Authentication\AuthenticationServiceInterface;
@@ -34,61 +34,64 @@ Example of configuring the authentication middleware using ``authentication`` ap
     use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
 
+Next, add the ``AuthenticationProviderInterface`` to the implemented interfaces
+on your application::
+
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
+
+
+Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
+
+    $middleware->add(new AuthenticationMiddleware($this));
+    
+.. note::
+    Make sure you add ``AuthenticationMIddleware`` before ``AuthorizationMiddleware`` if you have both.
+
+``AuthenticationMiddleware`` will call a hook method on your application when
+it starts handling the request. This hook method allows your application to
+define the ``AuthenticationService`` it wants to use. Add the following method your
+**src/Application.php**::
+
+    /**
+     * Returns a service provider instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authentication\AuthenticationServiceInterface
+     */
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
-        /**
-         * Returns a service provider instance.
-         *
-         * @param \Psr\Http\Message\ServerRequestInterface $request Request
-         * @return \Authentication\AuthenticationServiceInterface
-         */
-        public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
-        {
-            $service = new AuthenticationService();
-            $service->setConfig([
-                'unauthenticatedRedirect' => '/users/login',
-                'queryParam' => 'redirect',
-            ]);
+        $service = new AuthenticationService();
 
-            $fields = [
-                'username' => 'email',
-                'password' => 'password'
-            ];
+        // Define where users should be redirected to when they are not authenticated
+        $service->setConfig([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
 
-            // Load the authenticators, you want session first
-            $service->loadAuthenticator('Authentication.Session');
-            $service->loadAuthenticator('Authentication.Form', [
-                'fields' => $fields,
-                'loginUrl' => '/users/login'
-            ]);
+        $fields = [
+            'username' => 'email',
+            'password' => 'password'
+        ];
+        // Load the authenticators. Session should be first.
+        $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => $fields,
+            'loginUrl' => '/users/login'
+        ]);
 
-            // Load identifiers
-            $service->loadIdentifier('Authentication.Password', compact('fields'));
+        // Load identifiers
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
 
-            return $service;
-        }
-
-        /**
-         * Setup the middleware queue your application will use.
-         *
-         * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue.
-         * @return \Cake\Http\MiddlewareQueue The updated middleware queue.
-         */
-        public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
-        {
-            // Various other middlewares for error handling, routing etc. added here.
-
-            // Create an authentication middleware object
-            $authentication = new AuthenticationMiddleware($this);
-
-            // Add the middleware to the middleware queue.
-            // Authentication should be added *after* RoutingMiddleware.
-            // So that subdirectory information and routes are loaded.
-            $middlewareQueue->add($authentication);
-
-            return $middlewareQueue;
-        }
+        return $service;
     }
+
+First, we configure what to do with users when they are not authenticated.
+Next, we attache the ``Session`` and ``Form`` :doc:`/authenticators` which define the
+mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
+users based on data in the session while ``Form`` enables us
+to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
+</identifiers>` to convert the credentials users will give us into an
+:doc:`identity </identity-object>` which represents our logged in user.
 
 If one of the configured authenticators was able to validate the credentials,
 the middleware will add the authentication service to the request object as an
@@ -116,7 +119,7 @@ Building a Login Action
 =======================
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. A simplistic login action in a ``UsersController`` would look
+users to login. A basic login action in your ``UsersController`` would look
 like::
 
     public function login()
@@ -132,7 +135,7 @@ like::
         }
     }
 
-Make sure that you whitelist the ``login`` action in your controller's
+Make sure that you allow access to the ``login`` action in your controller's
 ``beforeFilter()`` callback as mentioned in the previous section, so that
 unauthenticated users are able to access it::
 
@@ -143,7 +146,7 @@ unauthenticated users are able to access it::
         $this->Authentication->allowUnauthenticated(['login']);
     }
 
-and then add a simple logout action::
+Then add a simple logout action::
 
     public function logout()
     {
