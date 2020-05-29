@@ -22,9 +22,9 @@ Getting Started
 ===============
 
 The authentication plugin integrates with your application as a middleware
-`middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_, and
-optionally as a component to make allowing unauthenticated access simpler. First, lets
-apply the middleware. In **src/Application.php** add the following to the class
+`middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
+be used as a component to make unauthenticated access simpler. First, lets
+apply the middleware. In **src/Application.php**, add the following to the class
 imports::
 
     use Authentication\AuthenticationService;
@@ -40,12 +40,14 @@ on your application::
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 
 
-Then add the following to your ``middleware()`` method::
+Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
 
-    // Add authentication (before authorization if you are using it as well)
     $middleware->add(new AuthenticationMiddleware($this));
+    
+.. note::
+    Make sure you add ``AuthenticationMIddleware`` before ``AuthorizationMiddleware`` if you have both.
 
-The ``AuthenticationMiddleware`` will call a hook method on your application when
+``AuthenticationMiddleware`` will call a hook method on your application when
 it starts handling the request. This hook method allows your application to
 define the ``AuthenticationService`` it wants to use. Add the following method your
 **src/Application.php**::
@@ -60,8 +62,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
     {
         $service = new AuthenticationService();
 
-        // Define where users should be redirected to when they are not
-        // authenticated
+        // Define where users should be redirected to when they are not authenticated
         $service->setConfig([
             'unauthenticatedRedirect' => '/users/login',
             'queryParam' => 'redirect',
@@ -84,12 +85,11 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
         return $service;
     }
 
-The above configures how to redirect users when they are not authenticated, then
-we attach the session and form :doc:`/authenticators` which define the
-mechanisms that our application will use to authenticate users. We include
-``Session`` and ``Form``. The ``Session`` authenticator enables us to identify
-users based on data in the session, while the ``Form`` authenticator enables us
-to handle a login form at the ``loginUrl``. Then we attach an :doc:`identifier
+First, we configure what to do with users when they are not authenticated.
+Next, we attache the ``Session`` and ``Form`` :doc:`/authenticators` which define the
+mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
+users based on data in the session while ``Form`` enables us
+to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
 </identifiers>` to convert the credentials users will give us into an
 :doc:`identity </identity-object>` which represents our logged in user.
 

@@ -1,7 +1,7 @@
 Middleware
 ##########
 
-Then ``AuthenticationMiddleware`` forms the heart of the authentication plugin.
+``AuthenticationMiddleware`` forms the heart of the authentication plugin.
 It intercepts each request to your application and attempts to authenticate
 a user with one of the authenticators. Each authenticator is tried in order
 until a user is authenticated or no user could be found. The ``authentication``,
