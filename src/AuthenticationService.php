@@ -74,22 +74,23 @@ class AuthenticationService implements AuthenticationServiceInterface
      *   user data.
      * - `identityClass` - The class name of identity or a callable identity builder.
      * - `identityAttribute` - The request attribute used to store the identity. Default to `identity`.
-     *
-     *   ```
-     *   $service = new AuthenticationService([
-     *      'authenticators' => [
-     *          'Authentication.Form
-     *      ],
-     *      'identifiers' => [
-     *          'Authentication.Password'
-     *      ]
-     *   ]);
-     *   ```
-     * - `identityAttribute` - The request attribute to store the identity in.
      * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
      *    AuthenticationComponent::allowUnauthenticated()
      * - `queryParam` - Set to a string to have unauthenticated redirects contain a `redirect` query string
      *   parameter with the previously blocked URL.
+     *
+     * ### Example:
+     *
+     * ```
+     * $service = new AuthenticationService([
+     *    'authenticators' => [
+     *        'Authentication.Form
+     *    ],
+     *    'identifiers' => [
+     *        'Authentication.Password'
+     *    ]
+     * ]);
+     * ```
      *
      * @var array
      */

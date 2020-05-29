@@ -10,6 +10,7 @@ Contents
     /identifiers
     /password-hashers
     /identity-object
+    /middleware
     /authentication-component
     /migration-from-the-authcomponent
     /testing
