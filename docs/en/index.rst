@@ -64,9 +64,11 @@ Example of configuring the authentication middleware using ``authentication`` ap
             $service->loadAuthenticator('Authentication.Form', [
                 'fields' => $fields,
                 'loginUrl' => Router::url([
-                                    'controller' => 'Users',
-                                    'action' => 'login'
-                                    ])
+                    'prefix' => false,
+                    'plugin' => null,
+                    'controller' => 'Users',
+                    'action' => 'login',
+                ])
             ]);
 
             // Load identifiers
