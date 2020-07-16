@@ -20,10 +20,10 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Authenticator\UnauthorizedException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
+use Laminas\Diactoros\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
-use Laminas\Diactoros\Stream;
 
 /**
  * Authentication Middleware
