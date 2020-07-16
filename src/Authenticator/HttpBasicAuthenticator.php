@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -14,7 +16,6 @@
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -24,16 +25,14 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
-
     /**
      * Authenticate a user using HTTP auth. Will use the configured User model and attempt a
      * login using HTTP auth.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
-     * @param \Psr\Http\Message\ResponseInterface $response The response to add headers to.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         $user = $this->getUser($request);
 
@@ -75,11 +74,11 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request A request object.
      * @return void
-     * @throws \Authentication\Authenticator\UnauthorizedException
+     * @throws \Authentication\Authenticator\AuthenticationRequiredException
      */
-    public function unauthorizedChallenge(ServerRequestInterface $request)
+    public function unauthorizedChallenge(ServerRequestInterface $request): void
     {
-        throw new UnauthorizedException($this->loginHeaders($request), '');
+        throw new AuthenticationRequiredException($this->loginHeaders($request), '');
     }
 
     /**
@@ -88,7 +87,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
      * @return array Headers for logging in.
      */
-    protected function loginHeaders(ServerRequestInterface $request)
+    protected function loginHeaders(ServerRequestInterface $request): array
     {
         $server = $request->getServerParams();
         $realm = $this->getConfig('realm') ?: $server['SERVER_NAME'];

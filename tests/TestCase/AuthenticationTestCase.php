@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,10 +9,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase;
 
@@ -19,21 +21,20 @@ use Cake\TestSuite\TestCase;
 
 class AuthenticationTestCase extends TestCase
 {
-
     /**
      * Fixtures
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->_setupUsersAndPasswords();
@@ -53,7 +54,7 @@ class AuthenticationTestCase extends TestCase
         $Users->updateAll(['password' => $password], []);
 
         $AuthUsers = TableRegistry::get('AuthUsers', [
-            'className' => 'TestApp\Model\Table\AuthUsersTable'
+            'className' => 'TestApp\Model\Table\AuthUsersTable',
         ]);
         $AuthUsers->updateAll(['password' => $password], []);
     }

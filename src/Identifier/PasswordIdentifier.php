@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,6 +19,7 @@ namespace Authentication\Identifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
+use Authentication\PasswordHasher\PasswordHasherInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 
 /**
@@ -38,7 +41,6 @@ use Authentication\PasswordHasher\PasswordHasherTrait;
  */
 class PasswordIdentifier extends AbstractIdentifier
 {
-
     use PasswordHasherTrait {
         getPasswordHasher as protected _getPasswordHasher;
     }
@@ -59,10 +61,10 @@ class PasswordIdentifier extends AbstractIdentifier
     protected $_defaultConfig = [
         'fields' => [
             self::CREDENTIAL_USERNAME => 'username',
-            self::CREDENTIAL_PASSWORD => 'password'
+            self::CREDENTIAL_PASSWORD => 'password',
         ],
         'resolver' => 'Authentication.Orm',
-        'passwordHasher' => null
+        'passwordHasher' => null,
     ];
 
     /**
@@ -70,7 +72,7 @@ class PasswordIdentifier extends AbstractIdentifier
      *
      * @return \Authentication\PasswordHasher\PasswordHasherInterface Password hasher instance.
      */
-    public function getPasswordHasher()
+    public function getPasswordHasher(): PasswordHasherInterface
     {
         if ($this->_passwordHasher === null) {
             $passwordHasher = $this->getConfig('passwordHasher');
@@ -86,7 +88,7 @@ class PasswordIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function identify(array $data)
     {
@@ -114,19 +116,19 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string|null $password The password.
      * @return bool
      */
-    protected function _checkPassword($identity, $password)
+    protected function _checkPassword($identity, ?string $password): bool
     {
         $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
 
         if ($identity === null) {
             $identity = [
-                $passwordField => ''
+                $passwordField => '',
             ];
         }
 
         $hasher = $this->getPasswordHasher();
         $hashedPassword = $identity[$passwordField];
-        if (!$hasher->check($password, $hashedPassword)) {
+        if (!$hasher->check((string)$password, $hashedPassword)) {
             return false;
         }
 
@@ -141,7 +143,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string $identifier The username/identifier.
      * @return \ArrayAccess|array|null
      */
-    protected function _findIdentity($identifier)
+    protected function _findIdentity(string $identifier)
     {
         $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
         $conditions = [];

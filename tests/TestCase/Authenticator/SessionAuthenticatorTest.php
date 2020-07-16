@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,10 +9,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
@@ -26,7 +28,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class SessionAuthenticatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -34,18 +35,18 @@ class SessionAuthenticatorTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->identifiers = new IdentifierCollection([
-           'Authentication.Password'
+           'Authentication.Password',
         ]);
 
         $class = 'Cake\Http\Session';
@@ -54,7 +55,7 @@ class SessionAuthenticatorTest extends TestCase
         }
         $this->sessionMock = $this->getMockBuilder($class)
             ->disableOriginalConstructor()
-            ->setMethods(['read', 'write', 'delete'])
+            ->setMethods(['read', 'write', 'delete', 'renew', 'check'])
             ->getMock();
     }
 
@@ -73,7 +74,7 @@ class SessionAuthenticatorTest extends TestCase
             ->with('Auth')
             ->will($this->returnValue([
                 'username' => 'mariano',
-                'password' => 'password'
+                'password' => 'password',
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
@@ -113,13 +114,13 @@ class SessionAuthenticatorTest extends TestCase
             ->with('Auth')
             ->will($this->returnValue([
                 'username' => 'mariano',
-                'password' => 'h45h'
+                'password' => 'h45h',
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers, [
-            'identify' => true
+            'identify' => true,
         ]);
         $result = $authenticator->authenticate($request, $response);
 
@@ -131,13 +132,13 @@ class SessionAuthenticatorTest extends TestCase
             ->with('Auth')
             ->will($this->returnValue([
                 'username' => 'does-not',
-                'password' => 'exist'
+                'password' => 'exist',
             ]));
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers, [
-            'identify' => true
+            'identify' => true,
         ]);
         $result = $authenticator->authenticate($request, $response);
 
@@ -158,16 +159,37 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers);
 
         $data = new ArrayObject(['username' => 'florian']);
-        $this->sessionMock->expects($this->at(0))
+
+        $this->sessionMock
+            ->expects($this->at(0))
+            ->method('check')
+            ->with('Auth')
+            ->willReturn(false);
+
+        $this->sessionMock
+            ->expects($this->once())
+            ->method('renew');
+
+        $this->sessionMock
+            ->expects($this->once())
             ->method('write')
             ->with('Auth', $data);
 
+        $this->sessionMock
+            ->expects($this->at(3))
+            ->method('check')
+            ->with('Auth')
+            ->willReturn(true);
+
         $result = $authenticator->persistIdentity($request, $response, $data);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        // Persist again to make sure identity isn't replaced if it exists.
+        $authenticator->persistIdentity($request, $response, new ArrayObject(['username' => 'jane']));
     }
 
     /**
@@ -187,8 +209,12 @@ class SessionAuthenticatorTest extends TestCase
             ->method('delete')
             ->with('Auth');
 
+        $this->sessionMock
+            ->expects($this->at(1))
+            ->method('renew');
+
         $result = $authenticator->clearIdentity($request, $response);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);

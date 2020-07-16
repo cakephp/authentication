@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -19,7 +21,6 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 
 class OrmResolver implements ResolverInterface
 {
-
     use InstanceConfigTrait;
     use LocatorAwareTrait;
 
@@ -49,7 +50,7 @@ class OrmResolver implements ResolverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function find(array $conditions, $type = self::TYPE_AND)
     {

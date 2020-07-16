@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,10 +9,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
@@ -27,7 +29,6 @@ use Firebase\JWT\JWT;
 
 class JwtAuthenticatorTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -35,7 +36,7 @@ class JwtAuthenticatorTest extends TestCase
      */
     public $fixtures = [
         'core.AuthUsers',
-        'core.Users'
+        'core.Users',
     ];
 
     /**
@@ -53,17 +54,17 @@ class JwtAuthenticatorTest extends TestCase
     public $identifiers;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $data = [
-            'sub' => 3,
+            'subjectId' => 3,
             'id' => 3,
             'username' => 'larry',
-            'firstname' => 'larry'
+            'firstname' => 'larry',
         ];
 
         $this->token = JWT::encode($data, 'secretKey');
@@ -84,7 +85,8 @@ class JwtAuthenticatorTest extends TestCase
         $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
-            'secretKey' => 'secretKey'
+            'secretKey' => 'secretKey',
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -106,7 +108,8 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
-            'secretKey' => 'secretKey'
+            'secretKey' => 'secretKey',
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -131,18 +134,19 @@ class JwtAuthenticatorTest extends TestCase
         $this->identifiers->expects($this->once())
             ->method('identify')
             ->with([
-                'sub' => 3
+                'subjectId' => 3,
             ])
             ->willReturn(new ArrayObject([
-                'sub' => 3,
+                'subjectId' => 3,
                 'id' => 3,
                 'username' => 'larry',
-                'firstname' => 'larry'
+                'firstname' => 'larry',
             ]));
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
-            'returnPayload' => false
+            'returnPayload' => false,
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -169,16 +173,16 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
             ->setConstructorArgs([
-                $this->identifiers
+                $this->identifiers,
             ])
             ->setMethods([
-                'getPayLoad'
+                'getPayLoad',
             ])
             ->getMock();
 
         $authenticator->expects($this->at(0))
             ->method('getPayLoad')
-            ->will($this->returnValue('no an object'));
+            ->willThrowException(new Exception());
 
         $result = $authenticator->authenticate($request, $response);
         $this->assertInstanceOf(Result::class, $result);
@@ -202,10 +206,10 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
             ->setConstructorArgs([
-                $this->identifiers
+                $this->identifiers,
             ])
             ->setMethods([
-                'getPayLoad'
+                'getPayLoad',
             ])
             ->getMock();
 
@@ -227,7 +231,7 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
-            'secretKey' => 'secretKey'
+            'secretKey' => 'secretKey',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
@@ -253,7 +257,7 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
-            'secretKey' => 'secretKey'
+            'secretKey' => 'secretKey',
         ]);
 
         $result = $authenticator->getPayload();
@@ -262,10 +266,10 @@ class JwtAuthenticatorTest extends TestCase
         $authenticator->authenticate($this->request, $this->response);
 
         $expected = [
-            'sub' => 3,
+            'subjectId' => 3,
             'id' => 3,
             'username' => 'larry',
-            'firstname' => 'larry'
+            'firstname' => 'larry',
         ];
 
         $result = $authenticator->getPayload();

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -18,15 +20,24 @@ use Authentication\AbstractCollection;
 use Cake\Core\App;
 use RuntimeException;
 
+/**
+ * @method \Authentication\Identifier\IdentifierInterface|null get(string $name)
+ */
 class IdentifierCollection extends AbstractCollection implements IdentifierInterface
 {
-
     /**
      * Errors
      *
      * @var array
      */
     protected $_errors = [];
+
+    /**
+     * Identifier that successfully Identified the identity.
+     *
+     * @var \Authentication\Identifier\IdentifierInterface|null
+     */
+    protected $_successfulIdentifier;
 
     /**
      * Identifies an user or service by the passed credentials
@@ -40,10 +51,14 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
         foreach ($this->_loaded as $name => $identifier) {
             $result = $identifier->identify($credentials);
             if ($result) {
+                $this->_successfulIdentifier = $identifier;
+
                 return $result;
             }
             $this->_errors[$name] = $identifier->getErrors();
         }
+
+        $this->_successfulIdentifier = null;
 
         return null;
     }
@@ -57,7 +72,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
      */
-    protected function _create($className, $alias, $config)
+    protected function _create($className, string $alias, array $config): IdentifierInterface
     {
         $identifier = new $className($config);
         if (!($identifier instanceof IdentifierInterface)) {
@@ -76,7 +91,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      *
      * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->_errors;
     }
@@ -86,8 +101,9 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      *
      * @param string $class Class name to be resolved.
      * @return string|null
+     * @psalm-return class-string|null
      */
-    protected function _resolveClassName($class)
+    protected function _resolveClassName($class): ?string
     {
         $className = App::className($class, 'Identifier', 'Identifier');
 
@@ -95,15 +111,24 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     }
 
     /**
-     *
      * @param string $class Missing class.
      * @param string $plugin Class plugin.
      * @return void
      * @throws \RuntimeException
      */
-    protected function _throwMissingClassError($class, $plugin)
+    protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
         $message = sprintf('Identifier class `%s` was not found.', $class);
         throw new RuntimeException($message);
+    }
+
+    /**
+     * Gets the successful identifier instance if one was successful after calling identify.
+     *
+     * @return \Authentication\Identifier\IdentifierInterface|null
+     */
+    public function getIdentificationProvider()
+    {
+        return $this->_successfulIdentifier;
     }
 }

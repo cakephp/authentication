@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -32,13 +34,13 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     protected $_defaultOptions = [
         'useRegex' => false,
-        'checkFullUrl' => false
+        'checkFullUrl' => false,
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function check(ServerRequestInterface $request, $urls, array $options = [])
+    public function check(ServerRequestInterface $request, $urls, array $options = []): bool
     {
         $options = $this->_mergeDefaultOptions($options);
 
@@ -71,7 +73,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
      * @param array $options Options to merge in
      * @return array
      */
-    protected function _mergeDefaultOptions(array $options)
+    protected function _mergeDefaultOptions(array $options): array
     {
         return $options += $this->_defaultOptions;
     }
@@ -100,7 +102,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
      * @param bool $getFullUrl Get the full URL or just the path
      * @return string
      */
-    protected function _getUrlFromRequest(UriInterface $uri, $getFullUrl = false)
+    protected function _getUrlFromRequest(UriInterface $uri, bool $getFullUrl = false): string
     {
         if (property_exists($uri, 'base')) {
             $uri = $uri->withPath($uri->base . $uri->getPath());

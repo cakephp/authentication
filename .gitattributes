@@ -14,4 +14,4 @@ appveyor.yml export-ignore
 CONTRIBUTING.md export-ignore
 phpunit.xml.dist export-ignore
 phpcs.xml.dist export-ignore
-tests export-ignore
+tests/test_app/ export-ignore

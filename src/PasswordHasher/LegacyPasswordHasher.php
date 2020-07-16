@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -25,18 +27,20 @@ use RuntimeException;
  */
 class LegacyPasswordHasher extends AbstractPasswordHasher
 {
-
     /**
      * Default config for this object.
+     * - `hashType` String identifier of the hash type to use on the password. (e.g 'sha256' or 'md5')
+     * - `salt` Boolean flag for salting the password in a hash, or check.
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'hashType' => null
+        'hashType' => null,
+        'salt' => true,
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(array $config = [])
     {
@@ -46,7 +50,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
         }
         if (!class_exists(Security::class)) {
             throw new RuntimeException('You must install the cakephp/utility dependency to use this password hasher');
-        };
+        }
     }
 
     /**
@@ -55,9 +59,9 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      * @param string $password Plain text password to hash.
      * @return string Password hash
      */
-    public function hash($password)
+    public function hash($password): string
     {
-        return Security::hash($password, $this->_config['hashType'], true);
+        return Security::hash($password, $this->_config['hashType'], $this->_config['salt']);
     }
 
     /**
@@ -67,7 +71,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check($password, $hashedPassword)
+    public function check($password, string $hashedPassword): bool
     {
         return $hashedPassword === $this->hash($password);
     }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,13 +18,13 @@ namespace Authentication\Identifier;
 
 interface IdentifierInterface
 {
-    const CREDENTIAL_USERNAME = 'username';
+    public const CREDENTIAL_USERNAME = 'username';
 
-    const CREDENTIAL_PASSWORD = 'password';
+    public const CREDENTIAL_PASSWORD = 'password';
 
-    const CREDENTIAL_TOKEN = 'token';
+    public const CREDENTIAL_TOKEN = 'token';
 
-    const CREDENTIAL_JWT_SUBJECT = 'sub';
+    public const CREDENTIAL_JWT_SUBJECT = 'sub';
 
     /**
      * Identifies an user or service by the passed credentials
@@ -37,5 +39,5 @@ interface IdentifierInterface
      *
      * @return array
      */
-    public function getErrors();
+    public function getErrors(): array;
 }

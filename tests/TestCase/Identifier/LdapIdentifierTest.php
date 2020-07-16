@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,24 +9,23 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Identifier;
 
 use ArrayAccess;
-use Authentication\Identifier\LdapIdentifier;
 use Authentication\Identifier\Ldap\AdapterInterface;
 use Authentication\Identifier\Ldap\ExtensionAdapter;
+use Authentication\Identifier\LdapIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use ErrorException;
 use stdClass;
 
 class LdapIdentifierTest extends TestCase
 {
-
     /**
      * testIdentify
      *
@@ -37,7 +38,7 @@ class LdapIdentifierTest extends TestCase
             return 'cn=' . $username . ',dc=example,dc=com';
         };
         $options = [
-            'foo' => 3
+            'foo' => 3,
         ];
 
         $ldap = $this->createMock(AdapterInterface::class);
@@ -53,12 +54,12 @@ class LdapIdentifierTest extends TestCase
             'host' => $host,
             'bindDN' => $bind,
             'ldap' => $ldap,
-            'options' => $options
+            'options' => $options,
         ]);
 
         $result = $identifier->identify([
             'username' => 'john',
-            'password' => 'doe'
+            'password' => 'doe',
         ]);
 
         $this->assertInstanceOf(ArrayAccess::class, $result);
@@ -80,12 +81,12 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldap' => $ldap
+            'ldap' => $ldap,
         ]);
 
         $result = $identifier->identify([
             'username' => 'john',
-            'password' => 'doe'
+            'password' => 'doe',
         ]);
         $this->assertNull($result);
 
@@ -106,7 +107,7 @@ class LdapIdentifierTest extends TestCase
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
-            }
+            },
         ]);
 
         $this->assertInstanceOf(ExtensionAdapter::class, $identifier->getAdapter());
@@ -116,19 +117,20 @@ class LdapIdentifierTest extends TestCase
      * testWrongLdapObject
      *
      * @return void
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Option `ldap` must implement `Authentication\Identifier\Ldap\AdapterInterface`.
      */
     public function testWrongLdapObject()
     {
-        $notLdap = new stdClass;
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Option `ldap` must implement `Authentication\Identifier\Ldap\AdapterInterface`.');
 
-        $identifier = new LdapIdentifier([
+        $notLdap = new stdClass();
+
+        new LdapIdentifier([
             'host' => 'ldap.example.com',
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldap' => $notLdap
+            'ldap' => $notLdap,
         ]);
     }
 
@@ -136,13 +138,14 @@ class LdapIdentifierTest extends TestCase
      * testMissingBindDN
      *
      * @return void
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Config `bindDN` is not set.
      */
     public function testMissingBindDN()
     {
-        $identifier = new LdapIdentifier([
-            'host' => 'ldap.example.com'
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Config `bindDN` is not set.');
+
+        new LdapIdentifier([
+            'host' => 'ldap.example.com',
         ]);
     }
 
@@ -150,14 +153,15 @@ class LdapIdentifierTest extends TestCase
      * testUncallableDN
      *
      * @return void
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The `bindDN` config is not a callable. Got `string` instead.
      */
     public function testUncallableDN()
     {
-        $identifier = new LdapIdentifier([
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The `bindDN` config is not a callable. Got `string` instead.');
+
+        new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => 'Foo'
+            'bindDN' => 'Foo',
         ]);
     }
 
@@ -165,15 +169,16 @@ class LdapIdentifierTest extends TestCase
      * testMissingHost
      *
      * @return void
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Config `host` is not set.
      */
     public function testMissingHost()
     {
-        $identifier = new LdapIdentifier([
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Config `host` is not set.');
+
+        new LdapIdentifier([
             'bindDN' => function () {
                 return 'dc=example,dc=com';
-            }
+            },
         ]);
     }
 
@@ -195,17 +200,18 @@ class LdapIdentifierTest extends TestCase
             'bindDN' => function () {
                 return 'dc=example,dc=com';
             },
-            'ldap' => $ldap
+            'ldap' => $ldap,
         ]);
 
         $result = $identifier->identify([
             'username' => 'john',
-            'password' => 'doe'
+            'password' => 'doe',
         ]);
+        $this->assertNull($result);
 
         $this->assertSame($identifier->getErrors(), [
             'This is another error.',
-            'This is an error.'
+            'This is an error.',
         ]);
     }
 }

@@ -6,217 +6,186 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication
+    php composer.phar require cakephp/authentication:^2.0
 
 Load the plugin by adding the following statement in your project's ``src/Application.php``::
 
-    public function bootstrap()
+    public function bootstrap(): void
     {
         parent::bootstrap();
+
         $this->addPlugin('Authentication');
     }
 
-Prior to 3.6.0::
 
-    Plugin::load('Authentication');
+Getting Started
+===============
 
-Configuration
-=============
-
-Add the authentication to the middleware. See the CakePHP `documentation
-<http://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
-middleware if you don't know what it is or how to work with it.
-
-Example of configuring the authentication middleware using ``authentication`` application hook::
+The authentication plugin integrates with your application as a middleware
+`middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
+be used as a component to make unauthenticated access simpler. First, lets
+apply the middleware. In **src/Application.php**, add the following to the class
+imports::
 
     use Authentication\AuthenticationService;
+    use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
-    use Psr\Http\Message\ResponseInterface;
+    use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
 
+Next, add the ``AuthenticationProviderInterface`` to the implemented interfaces
+on your application::
+
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
+
+
+Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
+
+    $middleware->add(new AuthenticationMiddleware($this));
+    
+.. note::
+    Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both.
+
+``AuthenticationMiddleware`` will call a hook method on your application when
+it starts handling the request. This hook method allows your application to
+define the ``AuthenticationService`` it wants to use. Add the following method your
+**src/Application.php**::
+
+    /**
+     * Returns a service provider instance.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request
+     * @return \Authentication\AuthenticationServiceInterface
+     */
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
+        $service = new AuthenticationService();
 
-        /**
-         * Returns a service provider instance.
-         *
-         * @param \Psr\Http\Message\ServerRequestInterface $request Request
-         * @param \Psr\Http\Message\ResponseInterface $response Response
-         * @return \Authentication\AuthenticationServiceInterface
-         */
-        public function getAuthenticationService(ServerRequestInterface $request, ResponseInterface $response)
-        {
-            $service = new AuthenticationService();
+        // Define where users should be redirected to when they are not authenticated
+        $service->setConfig([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+        ]);
 
-            $fields = [
-                'username' => 'email',
-                'password' => 'password'
-            ];
+        $fields = [
+            'username' => 'email',
+            'password' => 'password'
+        ];
+        // Load the authenticators. Session should be first.
+        $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Form', [
+            'fields' => $fields,
+            'loginUrl' => '/users/login'
+        ]);
 
-            // Load identifiers
-            $service->loadIdentifier('Authentication.Password', compact('fields'));
+        // Load identifiers
+        $service->loadIdentifier('Authentication.Password', compact('fields'));
 
-            // Load the authenticators, you want session first
-            $service->loadAuthenticator('Authentication.Session');
-            $service->loadAuthenticator('Authentication.Form', [
-                'fields' => $fields,
-                'loginUrl' => '/users/login'
-            ]);
-
-            return $service;
-        }
-
-        public function middleware($middlewareQueue)
-        {
-            // Various other middlewares for error handling, routing etc. added here.
-
-            // Add the authentication middleware
-            $authentication = new AuthenticationMiddleware($this);
-
-            // Add the middleware to the middleware queue
-            $middlewareQueue->add($authentication);
-
-            return $middlewareQueue;
-        }
+        return $service;
     }
+
+First, we configure what to do with users when they are not authenticated.
+Next, we attache the ``Session`` and ``Form`` :doc:`/authenticators` which define the
+mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
+users based on data in the session while ``Form`` enables us
+to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
+</identifiers>` to convert the credentials users will give us into an
+:doc:`identity </identity-object>` which represents our logged in user.
 
 If one of the configured authenticators was able to validate the credentials,
 the middleware will add the authentication service to the request object as an
-attribute. If you're not yet familiar with request attributes `check the PSR7
-documentation <http://www.php-fig.org/psr/psr-7/>`_.
+`attribute <http://www.php-fig.org/psr/psr-7/>`_.
 
-Using Stateless Authenticators with other Authenticators
-========================================================
+Next, in your ``AppController`` load the :doc:`/authentication-component`::
 
-When using ``HttpBasic`` or ``HttpDigest`` with other authenticators, you should
-remember that these authenticators will halt the request when authentication
-credentials are missing or invalid. This is necessary as these authenticators
-must send specific challenge headers in the response. If you want to combine
-``HttpBasic`` or ``HttpDigest`` with other authenticators, you may want to
-configure these authenticators as the *last* authenticators::
+    // in src/Controller/AppController.php
+    public function initialize()
+    {
+        parent::initialize();
 
-    use Authentication\AuthenticationService;
-
-    // Instantiate the service
-    $service = new AuthenticationService();
-
-    // Load identifiers
-    $service->loadIdentifier('Authentication.Password', [
-        'fields' => [
-            'username' => 'email',
-            'password' => 'password'
-        ]
-    ]);
-
-    // Load the authenticators leaving Basic as the last one.
-    $service->loadAuthenticator('Authentication.Session');
-    $service->loadAuthenticator('Authentication.Form');
-    $service->loadAuthenticator('Authentication.HttpBasic');
-
-Authentication Component
-========================
-
-You can use the ``AuthenticationComponent`` to access the result of
-authentication, get user identity and logout user. Load the component in your
-``AppController::initialize()`` like any other component::
-
-    $this->loadComponent('Authentication.Authentication', [
-        'logoutRedirect' => '/users/login'  // Default is false
-    ]);
-
-Once loaded, the ``AuthenticationComponent`` will require that all actions have an
-authenticated user present, but perform no other access control checks. You can
-disable this check for specific actions using ``allowUnauthenticated()``::
-
-    // In your controller's beforeFilter method.
-    $this->Authentication->allowUnauthenticated(['view']);
-
-Accessing the user / identity data
-----------------------------------
-
-You can get the authenticated identity data using the authentication component::
-
-    $user = $this->Authentication->getIdentity();
-
-You can also get the identity directly from the request instance::
-
-    $user = $request->getAttribute('identity');
-
-Checking the login status
--------------------------
-
-You can check if the authentication process was successful by accessing the result
-object::
-
-    // Using Authentication component
-    $result = $this->Authentication->getResult();
-
-    // Using request object
-    $result = $request->getAttribute('authentication')->getResult();
-
-    if ($result->isValid()) {
-        $user = $request->getAttribute('identity');
-    } else {
-        $this->log($result->getStatus());
-        $this->log($result->getErrors());
+        $this->loadComponent('Authentication.Authentication');
     }
 
-The result sets objects status returned from ``getStatus()`` will match one of
-these these constants in the Result object:
+By default the component will require an authenticated user for **all** actions.
+You can disable this behavior in specific controllers using
+``allowUnauthenticated()``::
 
-* ``ResultInterface::SUCCESS``, when successful.
-* ``ResultInterface::FAILURE_IDENTITY_NOT_FOUND``, when identity could not be found.
-* ``ResultInterface::FAILURE_CREDENTIALS_INVALID``, when credentials are invalid.
-* ``ResultInterface::FAILURE_CREDENTIALS_MISSING``, when credentials are missing in the request.
-* ``ResultInterface::FAILURE_OTHER``, on any other kind of failure.
+    // in a controller beforeFilter or initialize
+    // Make view and index not require a logged in user.
+    $this->Authentication->allowUnauthenticated(['view', 'index']);
 
-The error array returned by ``getErrors()`` contains **additional** information
-coming from the specific system against which the authentication attempt was
-made. For example LDAP or OAuth would put errors specific to their
-implementation in here for easier logging and debugging the cause. But most of
-the included authenticators don't put anything in here.
+Building a Login Action
+=======================
 
-Clearing the identity / logging the user out
---------------------------------------------
+Once you have the middleware applied to your application you'll need a way for
+users to login. A basic login action in your ``UsersController`` would look
+like::
 
-To log an identity out just do::
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
+        // If the user is logged in send them away.
+        if ($result->isValid()) {
+            $target = $this->Authentication->getLoginRedirect() ?? '/home';
+            return $this->redirect($target);
+        }
+        if ($this->request->is('post') && !$result->isValid()) {
+            $this->Flash->error('Invalid username or password');
+        }
+    }
 
-    $this->Authentication->logout();
+Make sure that you allow access to the ``login`` action in your controller's
+``beforeFilter()`` callback as mentioned in the previous section, so that
+unauthenticated users are able to access it::
 
-If you have set the ``logoutRedirect`` config, ``Authentication::logout()`` will
-return that value else will return ``false``. It won't perform any actual redirection
-in either case.
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
 
-Alternatively, instead of the component you can also use the request instance to log out::
+        $this->Authentication->allowUnauthenticated(['login']);
+    }
 
-    $return = $request->getAttribute('authentication')->clearIdentity($request, $response);
-    debug($return);
+Then add a simple logout action::
 
-The debug will show you an array like this::
+    public function logout()
+    {
+        $this->Authentication->logout();
+        return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+    }
 
-    [
-        'response' => object(Cake\Http\Response) { ... },
-        'request' => object(Cake\Http\ServerRequest) { ... }
-    ]
+In order to login your users will need to have hashed passwords. You can
+automatically hash passwords when users update their password using an entity
+setter method::
 
-.. note::
-    This will return an array containing the request and response
-    objects. Since both are immutable you'll get new objects back. Depending on your
-    context you're working in you'll have to use these instances from now on if you
-    want to continue to work with the modified response and request objects.
+    // in src/Model/Entity/User.php
+    use Authentication\PasswordHasher\DefaultPasswordHasher;
+
+    class User extends Entity
+    {
+        // ... other methods
+
+        // Automatically hash passwords when they are changed.
+        protected function _setPassword(string $password)
+        {
+            $hasher = new DefaultPasswordHasher();
+            return $hasher->hash($password);
+        }
+    }
+
 
 Further Reading
 ===============
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
-    /migration-from-the-authcomponent
-    /identity-object
+    /authenticators
     /identifiers
     /password-hashers
-    /authenticators
+    /identity-object
+    /authentication-component
+    /migration-from-the-authcomponent
     /url-checkers
     /testing
     /view-helper

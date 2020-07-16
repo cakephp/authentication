@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,7 +18,6 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractAuthenticator implements AuthenticatorInterface
@@ -32,8 +33,8 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     protected $_defaultConfig = [
         'fields' => [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
-        ]
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        ],
     ];
 
     /**
@@ -60,7 +61,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      *
      * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function getIdentifier()
+    public function getIdentifier(): IdentifierInterface
     {
         return $this->_identifier;
     }
@@ -82,8 +83,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      * Authenticate a user based on the request information.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request to get authentication information from.
-     * @param \Psr\Http\Message\ResponseInterface $response A response object that can have headers added.
      * @return \Authentication\Authenticator\ResultInterface Returns a result object.
      */
-    abstract public function authenticate(ServerRequestInterface $request, ResponseInterface $response);
+    abstract public function authenticate(ServerRequestInterface $request): ResultInterface;
 }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,18 +9,16 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Identifier\Resolver;
 
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
-use RuntimeException;
 use TestApp\Identifier\Resolver\TestResolver;
 
 class ResolverAwareTraitTest extends TestCase
@@ -46,19 +46,17 @@ class ResolverAwareTraitTest extends TestCase
         $object->expects($this->once())
             ->method('getConfig')
             ->willReturn([
-                'className' => 'Test'
+                'className' => 'Test',
             ]);
 
         $resolver = $object->getResolver();
         $this->assertInstanceOf(TestResolver::class, $resolver);
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Resolver must implement `Authentication\Identifier\Resolver\ResolverInterface`.
-     */
     public function testBuildResolverInvalid()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Resolver must implement `Authentication\Identifier\Resolver\ResolverInterface`.');
         $object = $this->getMockBuilder(ResolverAwareTrait::class)
             ->setMethods(['getConfig'])
             ->getMockForTrait();
@@ -70,12 +68,10 @@ class ResolverAwareTraitTest extends TestCase
         $object->getResolver();
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Resolver class `Missing` does not exist.
-     */
     public function testBuildResolverMissing()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Resolver class `Missing` does not exist.');
         $object = $this->getMockBuilder(ResolverAwareTrait::class)
             ->setMethods(['getConfig'])
             ->getMockForTrait();
@@ -87,12 +83,10 @@ class ResolverAwareTraitTest extends TestCase
         $object->getResolver();
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Option `className` is not present.
-     */
     public function testBuildResolverMissingClassNameOption()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Option `className` is not present.');
         $object = $this->getMockBuilder(ResolverAwareTrait::class)
             ->setMethods(['getConfig'])
             ->getMockForTrait();
@@ -104,12 +98,10 @@ class ResolverAwareTraitTest extends TestCase
         $object->getResolver();
     }
 
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Resolver has not been set.
-     */
     public function testGetResolverNotSet()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Resolver has not been set.');
         $object = $this->getMockBuilder(ResolverAwareTrait::class)
             ->setMethods(['getConfig'])
             ->getMockForTrait();

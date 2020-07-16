@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -13,7 +15,6 @@
  */
 namespace Authentication\PasswordHasher;
 
-use Authentication\PasswordHasher\PasswordHasherInterface;
 use Cake\Core\App;
 use RuntimeException;
 
@@ -31,7 +32,7 @@ class PasswordHasherFactory
      * @throws \RuntimeException If password hasher class not found or it does
      *   not implement \Authentication\PasswordHasher\PasswordHasherInterface
      */
-    public static function build($passwordHasher)
+    public static function build($passwordHasher): PasswordHasherInterface
     {
         $config = [];
         if (is_string($passwordHasher)) {
@@ -43,7 +44,7 @@ class PasswordHasherFactory
         }
 
         $className = App::className($class, 'PasswordHasher', 'PasswordHasher');
-        if ($className === false) {
+        if ($className === null) {
             throw new RuntimeException(sprintf('Password hasher class `%s` was not found.', $class));
         }
 
