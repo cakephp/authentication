@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,10 +9,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\UrlChecker;
 
@@ -24,11 +26,10 @@ use Cake\Routing\Router;
  */
 class CakeRouterUrlCheckerTest extends TestCase
 {
-
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -64,7 +65,7 @@ class CakeRouterUrlCheckerTest extends TestCase
         );
         $result = $checker->check($request, [
             'controller' => 'Users',
-            'action' => 'login'
+            'action' => 'login',
         ]);
         $this->assertFalse($result);
     }
@@ -78,7 +79,7 @@ class CakeRouterUrlCheckerTest extends TestCase
     {
         $url = [
             'controller' => 'users',
-            'action' => 'login'
+            'action' => 'login',
         ];
 
         $checker = new CakeRouterUrlChecker();
@@ -86,7 +87,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/login']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
 
@@ -95,7 +96,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/invalid']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertFalse($result);
 
@@ -104,7 +105,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/login']
         );
         $result = $checker->check($request, ['_name' => 'secureLogin'], [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertFalse($result);
 
@@ -116,7 +117,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ]
         );
         $result = $checker->check($request, ['_name' => 'secureLogin'], [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
     }
@@ -124,12 +125,12 @@ class CakeRouterUrlCheckerTest extends TestCase
     /**
      * testEmptyUrl
      *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The $loginUrls parameter is empty or not of type array.
      * @return void
      */
     public function testEmptyUrl()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The $loginUrls parameter is empty or not of type array.');
         $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login']
@@ -141,12 +142,12 @@ class CakeRouterUrlCheckerTest extends TestCase
     /**
      * testEmptyUrl
      *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The $loginUrls parameter is empty or not of type array.
      * @return void
      */
     public function testStringUrl()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('The $loginUrls parameter is empty or not of type array.');
         $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login']
@@ -172,11 +173,10 @@ class CakeRouterUrlCheckerTest extends TestCase
 
     /**
      * testInvalidNamedRoute
-     *
-     * @expectedException \Cake\Routing\Exception\MissingRouteException
      */
     public function testInvalidNamedRoute()
     {
+        $this->expectException('Cake\Routing\Exception\MissingRouteException');
         $checker = new CakeRouterUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/login']
@@ -194,12 +194,12 @@ class CakeRouterUrlCheckerTest extends TestCase
         $url = [
             [
                 'controller' => 'users',
-                'action' => 'login'
+                'action' => 'login',
             ],
             [
                 'controller' => 'admins',
-                'action' => 'login'
-            ]
+                'action' => 'login',
+            ],
         ];
 
         $checker = new CakeRouterUrlChecker();
@@ -207,7 +207,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/login']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
 
@@ -215,7 +215,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/admins/login']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertTrue($result);
 
@@ -223,7 +223,7 @@ class CakeRouterUrlCheckerTest extends TestCase
             ['REQUEST_URI' => '/users/invalid']
         );
         $result = $checker->check($request, $url, [
-            'checkFullUrl' => true
+            'checkFullUrl' => true,
         ]);
         $this->assertFalse($result);
     }

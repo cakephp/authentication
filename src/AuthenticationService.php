@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,9 +17,12 @@
 namespace Authentication;
 
 use Authentication\Authenticator\AuthenticatorCollection;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\PersistenceInterface;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -68,17 +73,24 @@ class AuthenticationService implements AuthenticationServiceInterface
      *   and then passed to the authenticators that will pass the credentials to them and get the
      *   user data.
      * - `identityClass` - The class name of identity or a callable identity builder.
+     * - `identityAttribute` - The request attribute used to store the identity. Default to `identity`.
+     * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
+     *    AuthenticationComponent::allowUnauthenticated()
+     * - `queryParam` - Set to a string to have unauthenticated redirects contain a `redirect` query string
+     *   parameter with the previously blocked URL.
      *
-     *   ```
-     *   $service = new AuthenticationService([
-     *      'authenticators' => [
-     *          'Authentication.Form
-     *      ],
-     *      'identifiers' => [
-     *          'Authentication.Password'
-     *      ]
-     *   ]);
-     *   ```
+     * ### Example:
+     *
+     * ```
+     * $service = new AuthenticationService([
+     *    'authenticators' => [
+     *        'Authentication.Form
+     *    ],
+     *    'identifiers' => [
+     *        'Authentication.Password'
+     *    ]
+     * ]);
+     * ```
      *
      * @var array
      */
@@ -87,6 +99,8 @@ class AuthenticationService implements AuthenticationServiceInterface
         'identifiers' => [],
         'identityClass' => Identity::class,
         'identityAttribute' => 'identity',
+        'queryParam' => null,
+        'unauthenticatedRedirect' => null,
     ];
 
     /**
@@ -104,9 +118,9 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return \Authentication\Identifier\IdentifierCollection
      */
-    public function identifiers()
+    public function identifiers(): IdentifierCollection
     {
-        if (!$this->_identifiers) {
+        if ($this->_identifiers === null) {
             $this->_identifiers = new IdentifierCollection($this->getConfig('identifiers'));
         }
 
@@ -118,9 +132,9 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return \Authentication\Authenticator\AuthenticatorCollection
      */
-    public function authenticators()
+    public function authenticators(): AuthenticatorCollection
     {
-        if (!$this->_authenticators) {
+        if ($this->_authenticators === null) {
             $identifiers = $this->identifiers();
             $authenticators = $this->getConfig('authenticators');
             $this->_authenticators = new AuthenticatorCollection($identifiers, $authenticators);
@@ -136,7 +150,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param array $config Authenticator configuration.
      * @return \Authentication\Authenticator\AuthenticatorInterface
      */
-    public function loadAuthenticator($name, array $config = [])
+    public function loadAuthenticator(string $name, array $config = []): AuthenticatorInterface
     {
         return $this->authenticators()->load($name, $config);
     }
@@ -148,7 +162,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param array $config Identifier configuration.
      * @return \Authentication\Identifier\IdentifierInterface Identifier instance
      */
-    public function loadIdentifier($name, array $config = [])
+    public function loadIdentifier(string $name, array $config = []): IdentifierInterface
     {
         return $this->identifiers()->load($name, $config);
     }
@@ -156,34 +170,21 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * {@inheritDoc}
      *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @return \Authentication\Authenticator\ResultInterface The result object. If none of the adapters was a success
+     *  the last failed result is returned.
      * @throws \RuntimeException Throws a runtime exception when no authenticators are loaded.
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request): ResultInterface
     {
-        if ($this->authenticators()->isEmpty()) {
-            throw new RuntimeException(
-                'No authenticators loaded. You need to load at least one authenticator.'
-            );
-        }
-
         $result = null;
+        /** @var \Authentication\Authenticator\AuthenticatorInterface $authenticator */
         foreach ($this->authenticators() as $authenticator) {
-            $result = $authenticator->authenticate($request, $response);
+            $result = $authenticator->authenticate($request);
             if ($result->isValid()) {
-                if (!($authenticator instanceof StatelessInterface)) {
-                    $requestResponse = $this->persistIdentity($request, $response, $result->getData());
-                    $request = $requestResponse['request'];
-                    $response = $requestResponse['response'];
-                }
-
                 $this->_successfulAuthenticator = $authenticator;
-                $this->_result = $result;
 
-                return [
-                    'result' => $result,
-                    'request' => $request,
-                    'response' => $response
-                ];
+                return $this->_result = $result;
             }
 
             if ($authenticator instanceof StatelessInterface) {
@@ -191,14 +192,15 @@ class AuthenticationService implements AuthenticationServiceInterface
             }
         }
 
-        $this->_successfulAuthenticator = null;
-        $this->_result = $result;
+        if ($result === null) {
+            throw new RuntimeException(
+                'No authenticators loaded. You need to load at least one authenticator.'
+            );
+        }
 
-        return [
-            'result' => $result,
-            'request' => $request,
-            'response' => $response
-        ];
+        $this->_successfulAuthenticator = null;
+
+        return $this->_result = $result;
     }
 
     /**
@@ -207,8 +209,9 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return array Return an array containing the request and response objects.
+     * @psalm-return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
-    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response)
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
@@ -217,10 +220,11 @@ class AuthenticationService implements AuthenticationServiceInterface
                 $response = $result['response'];
             }
         }
+        $this->_successfulAuthenticator = null;
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
-            'response' => $response
+            'response' => $response,
         ];
     }
 
@@ -231,8 +235,9 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @param \ArrayAccess|array $identity Identity data.
      * @return array
+     * @psalm-return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity)
+    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
@@ -248,18 +253,28 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         return [
             'request' => $request->withAttribute($this->getConfig('identityAttribute'), $identity),
-            'response' => $response
+            'response' => $response,
         ];
     }
 
     /**
-     * Gets the successful authenticator instance if one was successful after calling authenticate
+     * Gets the successful authenticator instance if one was successful after calling authenticate.
      *
      * @return \Authentication\Authenticator\AuthenticatorInterface|null
      */
-    public function getAuthenticationProvider()
+    public function getAuthenticationProvider(): ?AuthenticatorInterface
     {
         return $this->_successfulAuthenticator;
+    }
+
+    /**
+     * Convenient method to gets the successful identifier instance.
+     *
+     * @return \Authentication\Identifier\IdentifierInterface|null
+     */
+    public function getIdentificationProvider()
+    {
+        return $this->identifiers()->getIdentificationProvider();
     }
 
     /**
@@ -267,7 +282,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return \Authentication\Authenticator\ResultInterface|null Authentication result interface
      */
-    public function getResult()
+    public function getResult(): ?ResultInterface
     {
         return $this->_result;
     }
@@ -277,7 +292,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @return null|\Authentication\IdentityInterface
      */
-    public function getIdentity()
+    public function getIdentity(): ?IdentityInterface
     {
         if ($this->_result === null || !$this->_result->isValid()) {
             return null;
@@ -292,12 +307,22 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
+     * Return the name of the identity attribute.
+     *
+     * @return string
+     */
+    public function getIdentityAttribute(): string
+    {
+        return $this->getConfig('identityAttribute');
+    }
+
+    /**
      * Builds the identity object
      *
      * @param \ArrayAccess|array $identityData Identity data
      * @return \Authentication\IdentityInterface
      */
-    public function buildIdentity($identityData)
+    public function buildIdentity($identityData): IdentityInterface
     {
         $class = $this->getConfig('identityClass');
 
@@ -316,5 +341,89 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return $identity;
+    }
+
+    /**
+     * Return the URL to redirect unauthenticated users to.
+     *
+     * If the `unauthenticatedRedirect` option is not set,
+     * this method will return null.
+     *
+     * If the `queryParam` option is set a query parameter
+     * will be appended with the denied URL path.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return string|null
+     */
+    public function getUnauthenticatedRedirectUrl(ServerRequestInterface $request): ?string
+    {
+        $param = $this->getConfig('queryParam');
+        $target = $this->getConfig('unauthenticatedRedirect');
+        if ($target === null) {
+            return null;
+        }
+        if ($param === null) {
+            return $target;
+        }
+
+        $uri = $request->getUri();
+        $redirect = $uri->getPath();
+        if ($uri->getQuery()) {
+            $redirect .= '?' . $uri->getQuery();
+        }
+        $query = urlencode($param) . '=' . urlencode($redirect);
+
+        /** @var array $url */
+        $url = parse_url($target);
+        if (isset($url['query']) && strlen($url['query'])) {
+            $url['query'] .= '&' . $query;
+        } else {
+            $url['query'] = $query;
+        }
+        $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
+        $url['path'] = $url['path'] ?? '/';
+
+        return $url['path'] . '?' . $url['query'] . $fragment;
+    }
+
+    /**
+     * Return the URL that an authenticated user came from or null.
+     *
+     * This reads from the URL parameter defined in the `queryParam` option.
+     * Will return null if this parameter doesn't exist or is invalid.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return string|null
+     */
+    public function getLoginRedirect(ServerRequestInterface $request): ?string
+    {
+        $redirectParam = $this->getConfig('queryParam');
+        $params = $request->getQueryParams();
+        if (
+            empty($redirectParam) ||
+            !isset($params[$redirectParam]) ||
+            strlen($params[$redirectParam]) === 0
+        ) {
+            return null;
+        }
+
+        $parsed = parse_url($params[$redirectParam]);
+        if ($parsed === false) {
+            return null;
+        }
+        if (!empty($parsed['host']) || !empty($parsed['scheme'])) {
+            return null;
+        }
+        $parsed += ['path' => '/', 'query' => ''];
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
+        if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
+            $parsed['path'] = "/{$parsed['path']}";
+        }
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
+        if ($parsed['query']) {
+            $parsed['query'] = "?{$parsed['query']}";
+        }
+
+        return $parsed['path'] . $parsed['query'];
     }
 }

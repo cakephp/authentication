@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,8 +18,28 @@ namespace Authentication;
 use Cake\Core\BasePlugin;
 
 /**
- * Plugin class for CakePHP 3.6.0 plugin collection.
+ * Plugin class for CakePHP.
  */
 class Plugin extends BasePlugin
 {
+    /**
+     * Do bootstrapping or not
+     *
+     * @var bool
+     */
+    protected $bootstrapEnabled = false;
+
+    /**
+     * Load routes or not
+     *
+     * @var bool
+     */
+    protected $routesEnabled = false;
+
+    /**
+     * Console middleware
+     *
+     * @var bool
+     */
+    protected $consoleEnabled = false;
 }

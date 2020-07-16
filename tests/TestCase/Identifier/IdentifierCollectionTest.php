@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,25 +9,25 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Identifier;
 
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use TestApp\Authentication\Identifier\InvalidIdentifier;
 
 class IdentifierCollectionTest extends TestCase
 {
-
     public function testConstruct()
     {
         $collection = new IdentifierCollection([
-            'Authentication.Password'
+            'Authentication.Password',
         ]);
         $result = $collection->get('Password');
         $this->assertInstanceOf('\Authentication\Identifier\PasswordIdentifier', $result);
@@ -56,22 +58,18 @@ class IdentifierCollectionTest extends TestCase
         $this->assertSame($identifier, $collection->get('Password'));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Identifier class `Does-not-exist` was not found.
-     */
     public function testLoadException()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Identifier class `Does-not-exist` was not found.');
         $collection = new IdentifierCollection();
         $collection->load('Does-not-exist');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Identifier class `TestApp\Authentication\Identifier\InvalidIdentifier`
-     */
     public function testLoadExceptionInterfaceNotImplemented()
     {
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Identifier class `TestApp\Authentication\Identifier\InvalidIdentifier`');
         $collection = new IdentifierCollection();
         $collection->load(InvalidIdentifier::class);
     }
@@ -112,14 +110,21 @@ class IdentifierCollectionTest extends TestCase
     public function testIdentify()
     {
         $collection = new IdentifierCollection([
-            'Authentication.Password'
+            'Authentication.Password',
         ]);
 
         $result = $collection->identify([
             'username' => 'mariano',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertInstanceOf('\ArrayAccess', $result);
+        $this->assertInstanceOf(PasswordIdentifier::class, $collection->getIdentificationProvider());
+
+        $result = $collection->identify([
+            'username' => 'mariano',
+            'password' => 'invalid password',
+        ]);
+        $this->assertNull($collection->getIdentificationProvider());
     }
 }

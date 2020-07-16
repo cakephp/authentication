@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,9 +18,8 @@ namespace Authentication\Identifier\Resolver;
 
 interface ResolverInterface
 {
-
-    const TYPE_OR = 'OR';
-    const TYPE_AND = 'AND';
+    public const TYPE_OR = 'OR';
+    public const TYPE_AND = 'AND';
 
     /**
      * Returns identity with given conditions.
@@ -27,5 +28,5 @@ interface ResolverInterface
      * @param string $type Condition type. Can be `AND` or `OR`.
      * @return \ArrayAccess|array|null
      */
-    public function find(array $conditions, $type = self::TYPE_AND);
+    public function find(array $conditions, string $type = self::TYPE_AND);
 }

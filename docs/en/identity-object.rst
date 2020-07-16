@@ -1,12 +1,11 @@
-The Identity Object
-###################
+Identity Objects
+################
 
-The identity object is returned by the service and made available in the
-request. The object provides a method ``getIdentifier()`` that can be
-called to get the id of the current log in identity.
+Identity objects are returned by the authentication service and made available
+in the request. Identities provides a method ``getIdentifier()`` that can be
+called to get the primary id value of the current log in identity.
 
 The reason this object exists is to provide an interface that makes it
-easy to get access to the identity’s id across various
 implementations/sources::
 
    // Service
@@ -54,8 +53,10 @@ common names::
 Creating your own Identity Object
 ---------------------------------
 
-If you want to create your own identity object, your object must
-implement the ``IdentityInterface``.
+By default the Authentication plugin will wrap your returned user data in an
+``IdentityDecorator`` that proxies methods and property access.  If you want to
+create your own identity object, your object must implement the
+``IdentityInterface``.
 
 Implementing the IdentityInterface on your User class
 -----------------------------------------------------
@@ -70,7 +71,6 @@ plugin you can implement the ``Authentication\IdentityInterface``::
 
    class User extends Entity implements IdentityInterface
    {
-
        /**
         * Authentication\IdentityInterface method
         */

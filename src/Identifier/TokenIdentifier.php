@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -21,7 +23,6 @@ use Authentication\Identifier\Resolver\ResolverAwareTrait;
  */
 class TokenIdentifier extends AbstractIdentifier
 {
-
     use ResolverAwareTrait;
 
     /**
@@ -32,11 +33,11 @@ class TokenIdentifier extends AbstractIdentifier
     protected $_defaultConfig = [
         'tokenField' => 'token',
         'dataField' => self::CREDENTIAL_TOKEN,
-        'resolver' => 'Authentication.Orm'
+        'resolver' => 'Authentication.Orm',
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function identify(array $data)
     {
@@ -46,7 +47,7 @@ class TokenIdentifier extends AbstractIdentifier
         }
 
         $conditions = [
-            $this->getConfig('tokenField') => $data[$dataField]
+            $this->getConfig('tokenField') => $data[$dataField],
         ];
 
         return $this->getResolver()->find($conditions);

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,12 +16,10 @@
  */
 namespace Authentication;
 
-use ArrayIterator;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\ObjectRegistry;
-use IteratorAggregate;
 
-abstract class AbstractCollection extends ObjectRegistry implements IteratorAggregate
+abstract class AbstractCollection extends ObjectRegistry
 {
     use InstanceConfigTrait;
 
@@ -53,18 +53,8 @@ abstract class AbstractCollection extends ObjectRegistry implements IteratorAggr
      *
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->_loaded);
-    }
-
-    /**
-     * Returns iterator.
-     *
-     * @return \ArrayIterator
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->_loaded);
     }
 }

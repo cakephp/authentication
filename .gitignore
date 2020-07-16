@@ -5,6 +5,7 @@
 /phpcs.xml
 /tmp
 /vendor
+.phpunit.result.cache
 
 # OS generated files #
 ######################

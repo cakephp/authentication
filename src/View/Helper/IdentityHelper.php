@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -40,7 +42,7 @@ class IdentityHelper extends Helper
      * @param array $config The configuration settings provided to this helper.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         $this->_identity = $this->getView()->getRequest()->getAttribute('identity');
 
@@ -49,7 +51,9 @@ class IdentityHelper extends Helper
         }
 
         if (!$this->_identity instanceof IdentityInterface) {
-            throw new RuntimeException(sprintf('Identity found in request does not implement %s', IdentityInterface::class));
+            throw new RuntimeException(
+                sprintf('Identity found in request does not implement %s', IdentityInterface::class)
+            );
         }
     }
 
@@ -72,7 +76,7 @@ class IdentityHelper extends Helper
      *
      * @return bool
      */
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return $this->_identity !== null;
     }
@@ -93,9 +97,9 @@ class IdentityHelper extends Helper
      * @param string $field Name of the field in the identity data to check against, id by default
      * @return bool
      */
-    public function is($id, $field = 'id')
+    public function is($id, $field = 'id'): bool
     {
-        return ($id === $this->get($field));
+        return $id === $this->get($field);
     }
 
     /**
@@ -104,7 +108,7 @@ class IdentityHelper extends Helper
      * @param string|null $key Key of something you want to get from the identity data
      * @return mixed
      */
-    public function get($key = null)
+    public function get(?string $key = null)
     {
         if (empty($this->_identity)) {
             return null;

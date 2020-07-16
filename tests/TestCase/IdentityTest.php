@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,17 +9,16 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase;
 
 use ArrayObject;
 use Authentication\Identity;
 use BadMethodCallException;
-use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
 
@@ -32,7 +33,7 @@ class IdentityTest extends TestCase
     {
         $data = [
             'id' => 1,
-            'username' => 'florian'
+            'username' => 'florian',
         ];
 
         $identity = new Identity($data);
@@ -53,14 +54,14 @@ class IdentityTest extends TestCase
         $data = [
             'id' => 1,
             'first_name' => 'florian',
-            'mail' => 'info@cakephp.org'
+            'mail' => 'info@cakephp.org',
         ];
 
         $identity = new Identity($data, [
             'fieldMap' => [
                 'username' => 'first_name',
-                'email' => 'mail'
-            ]
+                'email' => 'mail',
+            ],
         ]);
 
         $this->assertTrue(isset($identity['username']), 'Renamed field responds to isset');
@@ -122,7 +123,7 @@ class IdentityTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.');
-        new Identity(new \stdClass);
+        new Identity(new \stdClass());
     }
 
     /**

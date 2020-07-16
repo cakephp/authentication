@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -12,12 +14,11 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-// @codingStandardsIgnoreFile
-
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\Routing\Router;
+use Cake\Utility\Security;
 
 $findRoot = function ($root) {
     do {
@@ -39,15 +40,15 @@ require_once 'vendor/autoload.php';
 define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
-define('CONFIG', ROOT . DS . 'config'. DS);
+define('CONFIG', ROOT . DS . 'config' . DS);
 
 Configure::write('debug', true);
 Configure::write('App', [
     'namespace' => 'TestApp',
     'paths' => [
         'plugins' => [ROOT . 'Plugin' . DS],
-        'templates' => [ROOT . 'App' . DS . 'Template' . DS]
-    ]
+        'templates' => [ROOT . 'templates' . DS],
+    ],
 ]);
 
 if (!getenv('db_dsn')) {
@@ -55,6 +56,7 @@ if (!getenv('db_dsn')) {
 }
 ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Router::reload();
+Security::setSalt('YJfIxfs2guVoUubWDYhG93b0qyJfIxfs2guwvniR2G0FgaC9mi');
 
 Plugin::getCollection()->add(new \Authentication\Plugin());
 

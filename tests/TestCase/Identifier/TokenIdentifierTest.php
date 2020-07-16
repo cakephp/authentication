@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,10 +9,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Identifier;
 
@@ -21,7 +23,6 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
 class TokenIdentifierTest extends TestCase
 {
-
     /**
      * testIdentify
      *
@@ -33,18 +34,18 @@ class TokenIdentifierTest extends TestCase
 
         $identifier = new TokenIdentifier([
             'dataField' => 'user',
-            'tokenField' => 'username'
+            'tokenField' => 'username',
         ]);
         $identifier->setResolver($resolver);
 
         $user = new ArrayObject([
-            'username' => 'larry'
+            'username' => 'larry',
         ]);
 
         $resolver->expects($this->once())
             ->method('find')
             ->with([
-                'username' => 'larry'
+                'username' => 'larry',
             ])
             ->willReturn($user);
 

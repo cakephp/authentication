@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,6 +17,7 @@
 namespace Authentication\Authenticator;
 
 use RuntimeException;
+use Throwable;
 
 /**
  * An exception that signals that authentication was required but missing.
@@ -30,9 +33,9 @@ class UnauthenticatedException extends RuntimeException
      *
      * @param string $message The exception message
      * @param int $code The exception code that will be used as a HTTP status code
-     * @param \Exception|null $previous The previous exception or null
+     * @param \Throwable|null $previous The previous exception or null
      */
-    public function __construct($message = '', $code = 401, $previous = null)
+    public function __construct(string $message = '', int $code = 401, ?Throwable $previous = null)
     {
         if (!$message) {
             $message = 'Authentication is required to continue';

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,27 +9,20 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Identifier;
 
 use ArrayAccess;
+use Authentication\Authenticator\Result;
 use Authentication\Identifier\CallbackIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\ORM\Entity;
 use stdClass;
-
-class MyCallback
-{
-
-    public static function callme($data)
-    {
-        return new Entity();
-    }
-}
+use TestApp\Callback\MyCallback;
 
 class CallbackIdentifierTest extends TestCase
 {
@@ -47,7 +42,7 @@ class CallbackIdentifierTest extends TestCase
         };
 
         $identifier = new CallbackIdentifier([
-            'callback' => $callback
+            'callback' => $callback,
         ]);
 
         $result = $identifier->identify([]);
@@ -70,14 +65,14 @@ class CallbackIdentifierTest extends TestCase
         $identifier = new CallbackIdentifier([
             'callback' => function () {
                 return new Entity();
-            }
+            },
         ]);
         $result = $identifier->identify([]);
 
         $this->assertInstanceOf(ArrayAccess::class, $result);
 
         $identifier = new CallbackIdentifier([
-            'callback' => [MyCallback::class, 'callme']
+            'callback' => [MyCallback::class, 'callme'],
         ]);
         $result = $identifier->identify([]);
 
@@ -86,40 +81,64 @@ class CallbackIdentifierTest extends TestCase
 
     /**
      * testInvalidCallbackType
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function testInvalidCallbackTypeString()
     {
+        $this->expectException('InvalidArgumentException');
         new CallbackIdentifier([
-            'callback' => 'no'
+            'callback' => 'no',
         ]);
     }
 
     /**
      * testInvalidCallbackTypeObject
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function testInvalidCallbackTypeObject()
     {
+        $this->expectException('InvalidArgumentException');
         new CallbackIdentifier([
-            'callback' => new stdClass()
+            'callback' => new stdClass(),
         ]);
     }
 
     /**
      * testInvalidCallbackTypeObject
-     *
-     * @expectedException \RuntimeException
      */
     public function testInvalidReturnValue()
     {
+        $this->expectException('RuntimeException');
         $identifier = new CallbackIdentifier([
             'callback' => function ($data) {
                 return 'no';
-            }
+            },
         ]);
         $identifier->identify([]);
+    }
+
+    /**
+     * testResultReturn
+     *
+     * @return void
+     */
+    public function testResultReturn()
+    {
+        $identifier = new CallbackIdentifier([
+            'callback' => function ($data) {
+                if (isset($data['username']) && $data['username'] === 'florian') {
+                    return new Result(new Entity($data), Result::SUCCESS);
+                }
+
+                return new Result(null, Result::FAILURE_OTHER, ['message' => 'Access denied by 3rd party API']);
+            },
+        ]);
+        $result = $identifier->identify(['username' => 'florian']);
+
+        $this->assertInstanceOf(Entity::class, $result);
+        $this->assertEquals('florian', $result->username);
+
+        $result = $identifier->identify(['username' => 'larry']);
+
+        $this->assertNull($result);
+        $this->assertEquals(['message' => 'Access denied by 3rd party API'], $identifier->getErrors());
     }
 }

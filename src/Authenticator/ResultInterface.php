@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -19,41 +21,41 @@ interface ResultInterface
     /**
      * Failure due to invalid credentials being supplied.
      */
-    const FAILURE_CREDENTIALS_INVALID = 'FAILURE_CREDENTIALS_INVALID';
+    public const FAILURE_CREDENTIALS_INVALID = 'FAILURE_CREDENTIALS_INVALID';
 
     /**
      * The authentication credentials were not found in the request.
      */
-    const FAILURE_CREDENTIALS_MISSING = 'FAILURE_CREDENTIALS_MISSING';
+    public const FAILURE_CREDENTIALS_MISSING = 'FAILURE_CREDENTIALS_MISSING';
 
     /**
      * Failure due to identity not being found.
      */
-    const FAILURE_IDENTITY_NOT_FOUND = 'FAILURE_IDENTITY_NOT_FOUND';
+    public const FAILURE_IDENTITY_NOT_FOUND = 'FAILURE_IDENTITY_NOT_FOUND';
 
     /**
      * General failure due to any other circumstances.
      */
-    const FAILURE_OTHER = 'FAILURE_OTHER';
+    public const FAILURE_OTHER = 'FAILURE_OTHER';
 
     /**
      * Authentication success.
      */
-    const SUCCESS = 'SUCCESS';
+    public const SUCCESS = 'SUCCESS';
 
     /**
      * Returns whether the result represents a successful authentication attempt.
      *
      * @return bool
      */
-    public function isValid();
+    public function isValid(): bool;
 
     /**
      * Get the result status for this authentication attempt.
      *
      * @return string
      */
-    public function getStatus();
+    public function getStatus(): string;
 
     /**
      * Returns the identity data used in the authentication attempt.
@@ -69,5 +71,5 @@ interface ResultInterface
      *
      * @return array
      */
-    public function getErrors();
+    public function getErrors(): array;
 }

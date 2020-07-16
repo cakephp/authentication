@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -20,7 +22,6 @@ use Cake\Core\InstanceConfigTrait;
  */
 abstract class AbstractPasswordHasher implements PasswordHasherInterface
 {
-
     use InstanceConfigTrait;
 
     /**
@@ -52,7 +53,7 @@ abstract class AbstractPasswordHasher implements PasswordHasherInterface
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash($password)
+    public function needsRehash(string $password): bool
     {
         return password_needs_rehash($password, PASSWORD_DEFAULT);
     }

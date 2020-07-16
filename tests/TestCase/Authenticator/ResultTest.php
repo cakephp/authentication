@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -7,31 +9,29 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\Result;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
 use stdClass;
 
 class ResultTest extends TestCase
 {
-
     /**
      * testConstructorEmptyData
      *
      * @return void
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Identity data can not be empty with status success.
      */
     public function testConstructorEmptyData()
     {
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Identity data can not be empty with status success.');
         new Result(null, Result::SUCCESS);
     }
 
@@ -39,12 +39,13 @@ class ResultTest extends TestCase
      * testConstructorInvalidData
      *
      * @return void
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `stdClass` given.
      */
     public function testConstructorInvalidData()
     {
-        new Result(new stdClass, Result::FAILURE_CREDENTIALS_INVALID);
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `stdClass` given.');
+
+        new Result(new stdClass(), Result::FAILURE_CREDENTIALS_INVALID);
     }
 
     /**
@@ -119,7 +120,7 @@ class ResultTest extends TestCase
     {
         $messages = [
             'Out of coffee!',
-            'Out of beer!'
+            'Out of beer!',
         ];
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::FAILURE_OTHER, $messages);

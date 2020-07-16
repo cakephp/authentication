@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,6 +17,7 @@
 namespace Authentication\Identifier;
 
 use ArrayAccess;
+use Authentication\Authenticator\Result;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -29,11 +32,11 @@ class CallbackIdentifier extends AbstractIdentifier
      * @var array
      */
     protected $_defaultConfig = [
-        'callback' => null
+        'callback' => null,
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function __construct(array $config)
     {
@@ -48,7 +51,7 @@ class CallbackIdentifier extends AbstractIdentifier
      * @throws \InvalidArgumentException
      * @return void
      */
-    protected function checkCallable()
+    protected function checkCallable(): void
     {
         $callback = $this->getConfig('callback');
 
@@ -61,13 +64,18 @@ class CallbackIdentifier extends AbstractIdentifier
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function identify(array $data)
     {
         $callback = $this->getConfig('callback');
 
         $result = $callback($data);
+        if ($result instanceof Result) {
+            $this->_errors = $result->getErrors();
+
+            return $result->getData();
+        }
         if ($result === null || $result instanceof ArrayAccess) {
             return $result;
         }
