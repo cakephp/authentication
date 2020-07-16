@@ -120,7 +120,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => ["mariano", "$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"],
+                'CookieAuth' => ['mariano', '$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'],
             ]
         );
         $response = new Response();

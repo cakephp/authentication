@@ -98,7 +98,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $service = $handler->request->getAttribute('authentication');
         $this->assertInstanceOf(AuthenticationService::class, $service);
         $this->assertSame($this->service, $service);
-        $this->assertSame('identity', $service->getConfig("identityAttribute"));
+        $this->assertSame('identity', $service->getConfig('identityAttribute'));
 
         $this->assertTrue($service->identifiers()->has('Password'));
         $this->assertTrue($service->authenticators()->has('Form'));
@@ -220,7 +220,7 @@ class AuthenticationMiddlewareTest extends TestCase
             /** @var \Authentication\AuthenticationService $service */
             $service = $req->getAttribute('authentication');
             $this->assertInstanceOf(AuthenticationService::class, $service);
-            $this->assertEquals('customIdentity', $service->getConfig("identityAttribute"));
+            $this->assertEquals('customIdentity', $service->getConfig('identityAttribute'));
             $this->assertTrue($service->identifiers()->has('Password'));
             $this->assertTrue($service->authenticators()->has('Form'));
 
