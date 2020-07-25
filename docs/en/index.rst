@@ -69,8 +69,8 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
         ]);
 
         $fields = [
-            'username' => 'email',
-            'password' => 'password'
+            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
         ];
         // Load the authenticators. Session should be first.
         $service->loadAuthenticator('Authentication.Session');
