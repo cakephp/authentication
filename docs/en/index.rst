@@ -30,6 +30,7 @@ imports::
     use Authentication\AuthenticationService;
     use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
+    use Authentication\Identifier\IdentifierInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
