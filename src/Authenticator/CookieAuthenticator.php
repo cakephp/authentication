@@ -54,7 +54,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             'domain' => '',
             'secure' => false,
             'httponly' => false,
-            'samesite' => null,
+            'samesite' => null
         ],
         'passwordHasher' => 'Authentication.Default',
     ];
@@ -226,7 +226,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             $data['domain'],
             $data['secure'],
             $data['httponly'],
-            $data['samesite'],
+            $data['samesite']
         );
 
         return $cookie;
