@@ -230,7 +230,10 @@ class CookieAuthenticatorTest extends TestCase
         ]);
         $response = new Response();
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        Cookie::setDefaults(['samesite' => 'None']);
+        $authenticator = new CookieAuthenticator($identifiers, [
+            'cookie' => ['expires' => '2030-01-01 00:00:00'],
+        ]);
 
         $identity = new ArrayObject([
             'username' => 'mariano',
@@ -247,6 +250,16 @@ class CookieAuthenticatorTest extends TestCase
             'CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24',
             $result['response']->getHeaderLine('Set-Cookie')
         );
+        $this->assertStringContainsString(
+            'expires=Tue, 01-Jan-2030 00:00:00 GMT;',
+            $result['response']->getHeaderLine('Set-Cookie')
+        );
+        $this->assertStringContainsString(
+            'samesite=None',
+            $result['response']->getHeaderLine('Set-Cookie')
+        );
+
+        Cookie::setDefaults(['samesite' => null]);
 
         // Testing that the field is not present
         $request = $request->withParsedBody([]);

@@ -172,7 +172,7 @@ configuring your app as follows::
     ], [
         'controller' => '(jwks)',
     ]); // connect /.well-known/jwks.json to JwksController
-    
+
     // controller/JwksController.php
     public function index()
     {
@@ -192,7 +192,7 @@ configuring your app as follows::
         $this->set(compact('keys'));
         $this->viewBuilder()->setOption('serialize', 'keys');
     }
-    
+
 Refer to https://tools.ietf.org/html/rfc7517 or https://auth0.com/docs/tokens/concepts/jwks for
 more information about JWKS.
 
@@ -236,13 +236,17 @@ Configuration options:
 -  **rememberMeField**: Default is ``remember_me``
 -  **cookie**: Array of cookie options:
 
-   -  **name**: Cookie name, default is ``CookieAuth``
-   -  **expire**: Expiration, default is ``null``
-   -  **path**: Path, default is ``/``
-   -  **domain**: Domain, default is an empty string \`\`
-   -  **secure**: Bool, default is ``false``
-   -  **httpOnly**: Bool, default is ``false``
-   -  **value**: Value, default is an empty string \`\`
+   -  **name**: Cookie name, defaults is ``CookieAuth``
+   -  **expires**: Expiration
+   -  **path**: Path
+   -  **domain**: Domain
+   -  **secure**: Bool
+   -  **httponly**: Bool
+   -  **samesite**: String/null
+
+   The defaults for the various options besides ``cookie.name`` will be those
+   set for the ``Cake\Http\Cookie\Cookie`` class. See [Cookie::setDefaults()](https://api.cakephp.org/4.0/class-Cake.Http.Cookie.Cookie.html#setDefaults)
+   for the default values.
 
 -  **fields**: Array that maps ``username`` and ``password`` to the
    specified identity fields.
