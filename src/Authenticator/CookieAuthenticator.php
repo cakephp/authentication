@@ -212,7 +212,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     {
         $data = $this->getConfig('cookie');
         $name = $data['name'];
-        unset($data['name']);        
+        unset($data['name']);
 
         $cookie = Cookie::create(
             $name,
