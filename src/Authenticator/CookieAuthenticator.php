@@ -48,7 +48,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ],
         'cookie' => [
-            'name' => 'CookieAuth',            
+            'name' => 'CookieAuth',
         ],
         'passwordHasher' => 'Authentication.Default',
     ];
