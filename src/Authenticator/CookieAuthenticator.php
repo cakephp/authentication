@@ -48,13 +48,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
         ],
         'cookie' => [
-            'name' => 'CookieAuth',
-            'expire' => null,
-            'path' => '/',
-            'domain' => '',
-            'secure' => false,
-            'httponly' => false,
-            'samesite' => null,
+            'name' => 'CookieAuth',            
         ],
         'passwordHasher' => 'Authentication.Default',
     ];
@@ -217,16 +211,14 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     protected function _createCookie($value): CookieInterface
     {
         $data = $this->getConfig('cookie');
+        $name = $data['name'];
+        unset($data['name']);
+        $options = $data;
 
-        $cookie = new Cookie(
-            $data['name'],
+        $cookie = Cookie::create(
+            $name,
             $value,
-            $data['expire'],
-            $data['path'],
-            $data['domain'],
-            $data['secure'],
-            $data['httponly'],
-            $data['samesite']
+            $options
         );
 
         return $cookie;
