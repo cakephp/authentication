@@ -245,7 +245,7 @@ Configuration options:
    -  **samesite**: String/null
 
    The defaults for the various options besides ``cookie.name`` will be those
-   set for the ``Cake\Http\Cookie\Cookie`` class. See [Cookie::setDefaults()](https://api.cakephp.org/4.0/class-Cake.Http.Cookie.Cookie.html#setDefaults)
+   set for the ``Cake\Http\Cookie\Cookie`` class. See `Cookie::setDefaults() <https://api.cakephp.org/4.0/class-Cake.Http.Cookie.Cookie.html#setDefaults>`_
    for the default values.
 
 -  **fields**: Array that maps ``username`` and ``password`` to the
