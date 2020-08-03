@@ -14,6 +14,7 @@ declare(strict_types=1);
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierCollection;
@@ -85,12 +86,14 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         $httpOnly = $this->getConfig('cookie.httpOnly');
         if ($httpOnly) {
-            deprecationWarning('Using `httpOnly` as configuration key for CookieAuthenticator is deprecated. Use `httponly` instead.');
+            deprecationWarning('Using `httpOnly` as configuration key for CookieAuthenticator is deprecated. '
+                . 'Use `httponly` instead.');
         }
 
         $expire = $this->getConfig('cookie.expire');
         if ($expire) {
-            deprecationWarning('Using `expire` as configuration key for CookieAuthenticator is deprecated. Use `expires` instead.');
+            deprecationWarning('Using `expire` as configuration key for CookieAuthenticator is deprecated. '
+                . 'Use `expires` instead.');
         }
 
         if (!isset($cookies[$cookieName])) {
