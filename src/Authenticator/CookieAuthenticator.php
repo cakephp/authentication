@@ -82,6 +82,17 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     {
         $cookies = $request->getCookieParams();
         $cookieName = $this->getConfig('cookie.name');
+
+        $httpOnly = $this->getConfig('cookie.httpOnly');
+        if ($httpOnly) {
+            deprecationWarning('Using `httpOnly` as configuration key for CookieAuthenticator is deprecated. Use `httponly` instead.');
+        }
+
+        $expire = $this->getConfig('cookie.expire');
+        if ($expire) {
+            deprecationWarning('Using `expire` as configuration key for CookieAuthenticator is deprecated. Use `expires` instead.');
+        }
+
         if (!isset($cookies[$cookieName])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Login credentials not found',
@@ -213,6 +224,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $data = $this->getConfig('cookie');
         $name = $data['name'];
         unset($data['name']);
+
+        if (array_key_exists('httpOnly', $data)) {
+            $data['httponly'] = $data['httpOnly'];
+            unset($data['httpOnly']);
+        }
+        if (array_key_exists('expire', $data)) {
+            $data['expires'] = $data['expire'];
+            unset($data['expire']);
+        }
 
         $cookie = Cookie::create(
             $name,
