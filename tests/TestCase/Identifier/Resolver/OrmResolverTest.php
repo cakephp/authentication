@@ -31,7 +31,7 @@ class OrmResolverTest extends AuthenticationTestCase
         ]);
 
         $this->assertInstanceOf(EntityInterface::class, $user);
-        $this->assertEquals('mariano', $user['username']);
+        $this->assertSame('mariano', $user['username']);
     }
 
     public function testFindConfig()
@@ -60,7 +60,7 @@ class OrmResolverTest extends AuthenticationTestCase
             'username' => 'mariano',
         ]);
 
-        $this->assertEquals(1, $user['id']);
+        $this->assertSame(1, $user['id']);
     }
 
     public function testFindOr()
@@ -72,7 +72,7 @@ class OrmResolverTest extends AuthenticationTestCase
             'username' => 'luigiano',
         ], 'OR');
 
-        $this->assertEquals(1, $user['id']);
+        $this->assertSame(1, $user['id']);
     }
 
     public function testFindMissing()
@@ -98,6 +98,6 @@ class OrmResolverTest extends AuthenticationTestCase
             ],
         ]);
 
-        $this->assertEquals(1, $user['id']);
+        $this->assertSame(1, $user['id']);
     }
 }

@@ -134,7 +134,7 @@ class CallbackIdentifierTest extends TestCase
         $result = $identifier->identify(['username' => 'florian']);
 
         $this->assertInstanceOf(Entity::class, $result);
-        $this->assertEquals('florian', $result->username);
+        $this->assertSame('florian', $result->username);
 
         $result = $identifier->identify(['username' => 'larry']);
 

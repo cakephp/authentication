@@ -39,9 +39,9 @@ class IdentityTest extends TestCase
         $identity = new Identity($data);
 
         $result = $identity->getIdentifier();
-        $this->assertEquals(1, $result);
+        $this->assertSame(1, $result);
 
-        $this->assertEquals('florian', $identity->username);
+        $this->assertSame('florian', $identity->username);
     }
 
     /**
@@ -116,7 +116,7 @@ class IdentityTest extends TestCase
     {
         $data = ['username' => 'robert'];
         $identity = new Identity($data);
-        $this->assertEquals($data['username'], $identity['username']);
+        $this->assertSame($data['username'], $identity['username']);
     }
 
     public function testBuildInvalidArgument()
