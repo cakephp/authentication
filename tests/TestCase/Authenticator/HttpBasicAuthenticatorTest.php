@@ -67,7 +67,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals('AuthUser', $object->getConfig('userModel'));
+        $this->assertSame('AuthUser', $object->getConfig('userModel'));
         $this->assertEquals(['username' => 'user', 'password' => 'password'], $object->getConfig('fields'));
     }
 
@@ -205,7 +205,7 @@ class HttpBasicAuthenticatorTest extends TestCase
         } catch (AuthenticationRequiredException $e) {
             $expected = ['WWW-Authenticate' => 'Basic realm="localhost"'];
             $this->assertEquals($expected, $e->getHeaders());
-            $this->assertEquals(401, $e->getCode());
+            $this->assertSame(401, $e->getCode());
         }
     }
 

@@ -70,7 +70,7 @@ class TokenAuthenticatorTest extends TestCase
         ]);
         $result = $tokenAuth->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+        $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
 
         // Test header token
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'mariano');
@@ -79,7 +79,7 @@ class TokenAuthenticatorTest extends TestCase
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
     }
 
     /**
@@ -96,7 +96,7 @@ class TokenAuthenticatorTest extends TestCase
         ]);
         $result = $tokenAuth->authenticate($requestWithParams, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
 
         // Test with valid query param but invalid token
         $requestWithParams = $this->request->withQueryParams(['token' => 'does-not-exist']);
@@ -105,7 +105,7 @@ class TokenAuthenticatorTest extends TestCase
         ]);
         $result = $tokenAuth->authenticate($requestWithParams, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
+        $this->assertSame(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
     }
 
     /**
@@ -123,7 +123,7 @@ class TokenAuthenticatorTest extends TestCase
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
 
         //invalid prefix
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'bearer mariano');
@@ -133,7 +133,7 @@ class TokenAuthenticatorTest extends TestCase
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
+        $this->assertSame(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
     }
 
     /**
@@ -149,7 +149,7 @@ class TokenAuthenticatorTest extends TestCase
 
         $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+        $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
 
     /**
@@ -165,7 +165,7 @@ class TokenAuthenticatorTest extends TestCase
 
         $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+        $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
 
     /**
@@ -179,6 +179,6 @@ class TokenAuthenticatorTest extends TestCase
 
         $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+        $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
 }
