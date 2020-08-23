@@ -10,7 +10,7 @@
   </file>
   <file src="src/Authenticator/AuthenticatorCollection.php">
     <MoreSpecificImplementedParamType occurrences="1">
-      <code>$className</code>
+      <code>$class</code>
     </MoreSpecificImplementedParamType>
   </file>
   <file src="src/Authenticator/SessionAuthenticator.php">
@@ -20,7 +20,7 @@
   </file>
   <file src="src/Identifier/IdentifierCollection.php">
     <MoreSpecificImplementedParamType occurrences="1">
-      <code>$className</code>
+      <code>$class</code>
     </MoreSpecificImplementedParamType>
   </file>
   <file src="src/Identifier/Ldap/ExtensionAdapter.php">
@@ -73,5 +73,8 @@
     <NoInterfaceProperties occurrences="1">
       <code>$uri-&gt;base</code>
     </NoInterfaceProperties>
+    <MoreSpecificImplementedParamType occurrences="1">
+      <code>$loginUrls</code>
+    </MoreSpecificImplementedParamType>
   </file>
 </files>
