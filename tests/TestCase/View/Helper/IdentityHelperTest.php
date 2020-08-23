@@ -65,12 +65,12 @@ class IdentityHelperTest extends TestCase
         $view = new View($request);
 
         $helper = new IdentityHelper($view);
-        $this->assertEquals(1, $helper->get('id'));
-        $this->assertEquals('cake', $helper->get('profile.first_name'));
+        $this->assertSame(1, $helper->get('id'));
+        $this->assertSame('cake', $helper->get('profile.first_name'));
         $this->assertEquals($identity->getOriginalData(), $helper->get());
 
         $this->assertTrue($helper->isLoggedIn());
-        $this->assertEquals(1, $helper->getId());
+        $this->assertSame(1, $helper->getId());
 
         $this->assertTrue($helper->is(1));
         $this->assertFalse($helper->is(2));

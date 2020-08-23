@@ -84,9 +84,9 @@ class HttpDigestAuthenticatorTest extends TestCase
             'secret' => 'foo.bar',
         ]);
 
-        $this->assertEquals('AuthUser', $object->getConfig('userModel'));
+        $this->assertSame('AuthUser', $object->getConfig('userModel'));
         $this->assertEquals(['username' => 'user', 'password' => 'pass'], $object->getConfig('fields'));
-        $this->assertEquals(123456, $object->getConfig('nonce'));
+        $this->assertSame(123456, $object->getConfig('nonce'));
         $this->assertEquals(env('SERVER_NAME'), $object->getConfig('realm'));
         $this->assertInstanceOf(StatelessInterface::class, $object, 'Should be a stateless authenticator');
     }
@@ -284,7 +284,7 @@ DIGEST;
             $this->auth->unauthorizedChallenge($request);
             $this->fail('Should challenge');
         } catch (AuthenticationRequiredException $e) {
-            $this->assertEquals(401, $e->getCode());
+            $this->assertSame(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
             $this->assertRegexp(
                 '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
@@ -469,7 +469,7 @@ DIGEST;
     {
         $result = HttpDigestAuthenticator::password('mark', 'password', 'localhost');
         $expected = md5('mark:localhost:password');
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
     /**

@@ -160,7 +160,7 @@ class AuthenticationComponentTest extends TestCase
 
         $result = $component->getIdentity();
         $this->assertInstanceOf(IdentityInterface::class, $result);
-        $this->assertEquals('florian', $result->username);
+        $this->assertSame('florian', $result->username);
     }
 
     /**
@@ -181,7 +181,7 @@ class AuthenticationComponentTest extends TestCase
 
         $result = $component->getIdentity();
         $this->assertInstanceOf(IdentityInterface::class, $result);
-        $this->assertEquals('florian', $result->username);
+        $this->assertSame('florian', $result->username);
     }
 
     /**
@@ -253,7 +253,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $result = $component->getIdentityData('profession');
-        $this->assertEquals('developer', $result);
+        $this->assertSame('developer', $result);
     }
 
     /**
@@ -311,11 +311,11 @@ class AuthenticationComponentTest extends TestCase
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
-        $this->assertEquals('florian', $controller->getRequest()->getAttribute('identity')->username);
+        $this->assertSame('florian', $controller->getRequest()->getAttribute('identity')->username);
         $component->logout();
         $this->assertNull($controller->getRequest()->getAttribute('identity'));
         $this->assertInstanceOf(Event::class, $result);
-        $this->assertEquals('Authentication.logout', $result->getName());
+        $this->assertSame('Authentication.logout', $result->getName());
     }
 
     /**
@@ -365,7 +365,7 @@ class AuthenticationComponentTest extends TestCase
         $controller->startupProcess();
 
         $this->assertInstanceOf(Event::class, $result);
-        $this->assertEquals('Authentication.afterIdentify', $result->getName());
+        $this->assertSame('Authentication.afterIdentify', $result->getName());
         $this->assertNotEmpty($result->getData());
         $this->assertInstanceOf(AuthenticatorInterface::class, $result->getData('provider'));
         $this->assertInstanceOf(IdentityInterface::class, $result->getData('identity'));

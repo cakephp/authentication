@@ -280,7 +280,7 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
-        $this->assertEquals(
+        $this->assertSame(
             'florian',
             $result['request']->getAttribute('session')->read('Auth.username')
         );
@@ -326,7 +326,7 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
-        $this->assertEquals(
+        $this->assertSame(
             'florian',
             $result['request']->getAttribute('session')->read('Auth.username')
         );
@@ -374,7 +374,7 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
-        $this->assertEquals(
+        $this->assertSame(
             'florian',
             $result['request']->getAttribute('session')->read('Auth.username')
         );
@@ -546,7 +546,7 @@ class AuthenticationServiceTest extends TestCase
         // Authenticate an identity
         $service->authenticate($request);
         $this->assertInstanceOf(Identity::class, $service->getIdentity());
-        $this->assertEquals('by-callable', $service->getIdentity()->getIdentifier());
+        $this->assertSame('by-callable', $service->getIdentity()->getIdentifier());
     }
 
     /**
