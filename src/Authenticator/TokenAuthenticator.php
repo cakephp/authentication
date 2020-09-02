@@ -108,7 +108,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     /**
      * Authenticates the identity by token contained in a request.
      * Token could be passed as query using `config.queryParam` or as header param using `config.header`. Token
-     * prefix will be stripped if `config.tokenPrefix`is set. Will return false if no token is provided or if the
+     * prefix will be stripped if `config.tokenPrefix` is set. Will return false if no token is provided or if the
      * scope conditions have not been met.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
