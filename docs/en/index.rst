@@ -119,9 +119,17 @@ Building a Login Action
 =======================
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. A basic login action in your ``UsersController`` would look
+users to login. First generate a Users model and controller with bake:
+
+.. code-block:: shell
+
+    bin/cake bake model Users
+    bin/cake bake controller Users
+
+Then, we'll add a basic login action to your ``UsersController``. It should look
 like::
 
+    // in src/Controller/UsersController.php
     public function login()
     {
         $result = $this->Authentication->getResult();
@@ -139,6 +147,7 @@ Make sure that you allow access to the ``login`` action in your controller's
 ``beforeFilter()`` callback as mentioned in the previous section, so that
 unauthenticated users are able to access it::
 
+    // in src/Controller/UsersController.php
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -146,13 +155,33 @@ unauthenticated users are able to access it::
         $this->Authentication->allowUnauthenticated(['login']);
     }
 
+Next we'll add a view template for our login form::
+
+    // in templates/Users/login.php
+    <div class="users form content">
+        <?= $this->Form->create() ?>
+        <fieldset>
+            <legend><?= __('Please enter your email and password') ?></legend>
+            <?= $this->Form->control('email') ?>
+            <?= $this->Form->control('password') ?>
+        </fieldset>
+        <?= $this->Form->button(__('Login')); ?>
+        <?= $this->Form->end() ?>
+    </div>
+
 Then add a simple logout action::
 
+    // in src/Controller/UsersController.php
     public function logout()
     {
         $this->Authentication->logout();
         return $this->redirect(['controller' => 'Users', 'action' => 'login']);
     }
+
+We don't need a template for our logout action as we redirect at the end of it.
+
+Adding Password Hashing
+=======================
 
 In order to login your users will need to have hashed passwords. You can
 automatically hash passwords when users update their password using an entity
@@ -172,6 +201,10 @@ setter method::
             return $hasher->hash($password);
         }
     }
+
+You should now be able to go to ``/users/add`` and register a new user. Once
+registered you can go to ``/users/login`` and login with your newly created
+user.
 
 
 Further Reading
