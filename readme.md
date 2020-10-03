@@ -23,7 +23,7 @@ You can install this plugin into your CakePHP application using
 [composer](https://getcomposer.org):
 
 ```
-php composer.phar require cakephp/authentication
+php composer.phar require "cakephp/authentication:^1.0"
 ```
 
 Load the plugin by adding the following statement in your project's
