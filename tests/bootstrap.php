@@ -18,6 +18,7 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\Routing\Router;
+use Cake\Utility\Security;
 
 $findRoot = function ($root) {
     do {
@@ -42,6 +43,7 @@ define('TMP', sys_get_temp_dir() . DS);
 define('CONFIG', ROOT . DS . 'config'. DS);
 
 Configure::write('debug', true);
+Security::setSalt('some-random-value');
 Configure::write('App', [
     'namespace' => 'TestApp',
     'paths' => [
