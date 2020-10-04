@@ -2,7 +2,7 @@ Quick Start
 ###########
 
 CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをインストールします。
-プロジェクトのルートディレクトリ(**composer.json** ファイルが置かれている場所です)
+プロジェクトのルートディレクトリ( **composer.json** ファイルが置かれている場所です)
 
 .. code-block:: bash
 
@@ -23,7 +23,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
 認証プラグインは、ミドルウェアとしてアプリケーションと統合します。 `middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_
 また、認証されていないアクセスをより簡単にするためのコンポーネントとして使用することもできます。  まずはミドルウェアを適用してみましょう。
-**src/Application.php** , に以下のクラスを追加します。
+ **src/Application.php** , に以下のクラスを追加します。
 インポート::
 
     use Authentication\AuthenticationService;
@@ -48,7 +48,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
 リクエストの処理を開始すると、 ``AuthenticationMiddleware`` はフックメソッドを呼び出します。
 このフックメソッドにより、アプリケーションが使用したい ``AuthenticationService`` を定義することができます。
-以下のメソッドを**src/Application.php** に記述します。::
+以下のメソッドを **src/Application.php** に記述します。::
 
     /**
      * Returns a service provider instance.
@@ -90,7 +90,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
  ``Session`` はセッション内のデータに基づいてユーザを識別し、 ``Form`` はログインフォームを ``loginUrl`` で扱うことを可能にします。
 最後に、ログインしたユーザーを表す :doc:`identifier </identifiers>` に変換するための :doc:`identity </identity-object>` をアタッチします。
 
-認証が確認できた場合、ミドルウェアは認証サービスを `attribute <http://www.php-fig.org/psr/psr-7/>`_. としてリクエストオブジェクトに追加します。
+認証が確認できた場合、ミドルウェアは認証サービスを `属性 <http://www.php-fig.org/psr/psr-7/>`_. としてリクエストオブジェクトに追加します。
 
 次に、 ``AppController`` に :doc:`/authentication-component` を呼び出します。::
 
