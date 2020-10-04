@@ -1,14 +1,14 @@
 Quick Start
 ###########
 
-CakePHPから`composer <https://getcomposer.org/>`_ でプラグインをインストールします。
+CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをインストールします。
 プロジェクトのルートディレクトリ(**composer.json** ファイルが置かれている場所です)
 
 .. code-block:: bash
 
     php composer.phar require cakephp/authentication:^2.0
 
-プロジェクトの ``src/Application.php`` に以下の文を追加してプラグインをロードしてください。 ::
+プロジェクトの ``src/Application.php``  に以下の文を追加してプラグインをロードしてください。 ::
 
     public function bootstrap(): void
     {
@@ -34,19 +34,19 @@ CakePHPから`composer <https://getcomposer.org/>`_ でプラグインをイン�
     use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
 
-次に、アプリケーションに実装されたインターフェースに``AuthenticationProviderInterface``を追加します。::
+次に、アプリケーションに実装されたインターフェースに ``AuthenticationProviderInterface`` を追加します。::
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 
 
-次に、 ``middleware()`` メソッドに以下の ``AuthenticationMiddleware`` を追加します。
+次に、 ``middleware()`` メソッドに以下の `AuthenticationMiddleware` を追加します。
 
     $middleware->add(new AuthenticationMiddleware($this));
 
 .. note::
     両方ある場合は ``AuthenticationMiddleware`` の前に  ``AuthorizationMiddleware`` を追加するようにしてください。
 
-リクエストの処理を開始すると、``AuthenticationMiddleware`` はフックメソッドを呼び出します。
+リクエストの処理を開始すると、 ``AuthenticationMiddleware`` はフックメソッドを呼び出します。
 このフックメソッドにより、アプリケーションが使用したい ``AuthenticationService`` を定義することができます。
 以下のメソッドを**src/Application.php** に記述します。::
 
@@ -70,6 +70,7 @@ CakePHPから`composer <https://getcomposer.org/>`_ でプラグインをイン�
             IdentifierInterface::CREDENTIAL_USERNAME => 'email',
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
         ];
+        
         // 認証者を読み込みます。セッションを優先してください。
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
@@ -82,10 +83,11 @@ CakePHPから`composer <https://getcomposer.org/>`_ でプラグインをイン�
 
         return $service;
     }
-
+    
+ 
 まず、ユーザーが認証されていない場合にどうするかを設定します。
-次に、アプリケーションがユーザーを認証するための仕組みを定義する``Session`` と``Form`` :doc:`/authenticators` をアタッチします。
-``Session`` はセッション内のデータに基づいてユーザを識別し、``Form``はログインフォームを ``loginUrl`` で扱うことを可能にします。
+次に、アプリケーションがユーザーを認証するための仕組みを定義する ``Session`` と ``Form`` :doc:`/authenticators` をアタッチします。
+ ``Session`` はセッション内のデータに基づいてユーザを識別し、 ``Form`` はログインフォームを ``loginUrl`` で扱うことを可能にします。
 最後に、ログインしたユーザーを表す :doc:`identifier </identifiers>` に変換するための :doc:`identity </identity-object>` をアタッチします。
 
 認証が確認できた場合、ミドルウェアは認証サービスを `attribute <http://www.php-fig.org/psr/psr-7/>`_. としてリクエストオブジェクトに追加します。
@@ -101,7 +103,7 @@ CakePHPから`composer <https://getcomposer.org/>`_ でプラグインをイン�
     }
 
 デフォルトでコンポーネントは、 **全て** のアクションに認証済みのユーザーを必要とします。
-特定のコントローラでこの動作を無効にするには、``allowUnauthenticated()`` を使用してください。::
+特定のコントローラでこの動作を無効にするには、 ``allowUnauthenticated()`` を使用してください。::
 
     // コントローラの beforeFilter か initialize で、
     // ログインしている必要のないview()とindex()を作成します。
@@ -126,7 +128,7 @@ CakePHPから`composer <https://getcomposer.org/>`_ でプラグインをイン�
         }
     }
 
-前のセクションで述べたように、コントローラの``beforeFilter()`` コールバックで``login`` アクションにアクセスできるようにして、
+前のセクションで述べたように、コントローラの ``beforeFilter()`` コールバックで ``login`` アクションにアクセスできるようにして、
 認証されていないユーザがアクセスできるようにしてください。::
 
     public function beforeFilter(\Cake\Event\EventInterface $event)
