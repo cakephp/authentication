@@ -23,7 +23,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
 認証プラグインは、ミドルウェアとしてアプリケーションと統合します。 `middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_
 また、認証されていないアクセスをより簡単にするためのコンポーネントとして使用することもできます。  まずはミドルウェアを適用してみましょう。
- **src/Application.php** , に以下のクラスを追加します。
+ **src/Application.php** に以下のクラスを追加します。
 インポート::
 
     use Authentication\AuthenticationService;
@@ -51,7 +51,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 以下のメソッドを **src/Application.php** に記述します。::
 
     /**
-     * Returns a service provider instance.
+     * サービスプロバイダのインスタンスを返します。
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
      * @return \Authentication\AuthenticationServiceInterface
