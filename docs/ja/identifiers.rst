@@ -1,10 +1,9 @@
 Identifiers
 ###########
 
-Identifiers will identify an user or service based on the information
-that was extracted from the request by the authenticators. Identifiers
-can take options in the ``loadIdentifier`` method. A holistic example of
-using the Password Identifier looks like::
+Identifiersは認証者がリクエストから抽出した情報に基づいてユーザやサービスを識別します。
+Identifiersは ``loadIdentifier`` メソッドでオプション指定することができます。
+パスワード識別子を使用した全体的な例は次のようになります。::
 
    $service->loadIdentifier('Authentication.Password', [
        'fields' => [
@@ -30,90 +29,71 @@ using the Password Identifier looks like::
 Password
 ========
 
-The password identifier checks the passed credentials against a
-datasource.
+パスワード識別子は、渡された資格情報をデータソースに対してチェックします。
 
-Configuration options:
+設定オプション:
 
--  **fields**: The fields for the lookup. Default is
-   ``['username' => 'username', 'password' => 'password']``. You can
-   also set the ``username`` to an array. For e.g. using
-   ``['username' => ['username', 'email'], 'password' => 'password']``
-   will allow you to match value of either username or email columns.
--  **resolver**: The identity resolver. Default is
-   ``Authentication.Orm`` which uses CakePHP ORM.
--  **passwordHasher**: Password hasher. Default is
-   ``DefaultPasswordHasher::class``.
+-  **fields**: 調べるためのフィールドです。デフォルトは ``['username' => 'username', 'password' => 'password']``。
+   ``ユーザー名`` を配列にすることができます。
+   例えば、 ``['username' => ['username', 'email'], 'password' => 'password']`` を使うと、
+   ユーザ名とemailのどちらかのカラムの値をマッチさせることができます。
+-  **resolver**: 同一性を決意します. デフォルトは ``Authentication.Orm`` で、CakePHPのORMを使用しています。
+-  **passwordHasher**: パスワードハッシャー. デフォルトは、
+   ``DefaultPasswordHasher::class`` 。
 
-Token
-=====
+トークン
+==========
 
-Checks the passed token against a datasource.
+渡されたトークンをデータソースと照合します。
 
-Configuration options:
+設定オプション:
 
--  **tokenField**: The field in the database to check against. Default
-   is ``token``.
--  **dataField**: The field in the passed data from the authenticator.
-   Default is ``token``.
--  **resolver**: The identity resolver. Default is
-   ``Authentication.Orm`` which uses CakePHP ORM.
+-  **tokenField**: データベース内のフィールドをチェックします。 デフォルトは ``token`` です。
+-  **dataField**: 認証器から渡されたデータの中のフィールド。デフォルトは ``token`` です。
+-  **resolver**: 同一性を決意します。デフォルトは ``Authentication.Orm`` で、CakePHPのORMを使用しています。
 
-JWT Subject
-===========
+JWT サブジェクト
+=================
 
-Checks the passed JWT token against a datasource.
+渡された JWT トークンをデータソースと照合します。
 
--  **tokenField**: The field in the database to check against. Default
-   is ``id``.
--  **dataField**: The payload key to get user identifier from. Default
-   is ``sub``.
--  **resolver**: The identity resolver. Default is
-   ``Authentication.Orm`` which uses CakePHP ORM.
+-  **tokenField**: データベース内のフィールドをチェックします。デフォルトは ``id`` です。
+-  **dataField**: ユーザ識別子を取得するためのペイロードキー。デフォルトは、 ``sub`` です。
+-  **resolver**: 同一性を決意します。デフォルトは ``Authentication.Orm`` で、CakePHPのORMを使用しています。
 
 LDAP
 ====
 
-Checks the passed credentials against a LDAP server. This identifier
-requires the PHP LDAP extension.
+LDAP サーバーに対して渡された資格情報をチェックします。 この識別子には PHP LDAP 拡張モジュールが必要です。
 
--  **fields**: The fields for the lookup. Default is
-   ``['username' => 'username', 'password' => 'password']``.
--  **host**: The FQDN of your LDAP server.
--  **port**: The port of your LDAP server. Defaults to ``389``.
--  **bindDN**: The Distinguished Name of the user to authenticate. Must
-   be a callable. Anonymous binds are not supported.
--  **ldap**: The extension adapter. Defaults to
-   ``\Authentication\Identifier\Ldap\ExtensionAdapter``. You can pass a
-   custom object/classname here if it implements the
-   ``AdapterInterface``.
--  **options**: Additional LDAP options, like
-   ``LDAP_OPT_PROTOCOL_VERSION`` or ``LDAP_OPT_NETWORK_TIMEOUT``. See
-   `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__
-   for more valid options.
+-  **fields**: 調べるためのフィールドです。 デフォルトは ``['username' => 'username', 'password' => 'password']`` です。
+-  **host**: LDAPサーバーのFQDN。
+-  **port**: LDAPサバーのポート。デフォルトは ``389`` 。
+-  **bindDN**:  認証するユーザーの識別名。呼び出し可能である必要があります。匿名バインドはサポートされていません。
+-  **ldap**: 延長アダプターです。 デフォルトは ``\Authentication\Identifier\Ldap\ExtensionAdapter``。
+   もしそれが ``AdapterInterface`` を実装しているならば、そのobject/classnameをここに渡すことができます。
+-  **options**: 付加的な LDAP オプション, like ``LDAP_OPT_PROTOCOL_VERSION`` または ``LDAP_OPT_NETWORK_TIMEOUT`` のようなものです。
+   `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__ をみてより多くのオプションを参照してください。
 
-Callback
-========
+コールバック
+============
 
-Allows you to use a callback for identification. This is useful for
-simple identifiers or quick prototyping.
+識別のためにコールバックを使用できるようにします。 シンプルな識別子やクイックプロトタイピングに便利です。
 
-Configuration options:
+設定オプション:
 
--  **callback**: Default is ``null`` and will cause an exception. You’re
-   required to pass a valid callback to this option to use the
-   authenticator.
+-  **callback**: デフォルトは ``null`` で例外が発生します。
+   認証機能を使用するには、このオプションに有効なコールバックを渡す必要があります。
 
-Callback identifiers can either return ``null|ArrayAccess`` for simple results,
-or an ``Authentication\Authenticator\Result`` if you want to forward error
-messages::
+コールバックの識別子は、単純な結果を得るために ``null|ArrayAccess`` を返すこともできます。,
+または、エラーメッセージを転送したい場合、 ``Authentication\Authenticator\Result`` を使用します。::
 
-    // A simple callback identifier
+    // シンプルなコールバック識別子
     $authenticationService->loadIdentifier('Authentication.Callback', [
         'callback' => function($data) {
-            // do identifier logic
+            // 識別子のロジック
 
-            // Return an array of the identified user or null for failure.
+            // 識別されたユーザの配列を返すか、失敗した場合はnullを返します。
             if ($result) {
                 return $result;
             }
@@ -122,10 +102,10 @@ messages::
         }
     ]);
 
-    // Using a result object to return error messages.
+    // エラーメッセージを返すために結果オブジェクトを使用します。
     $authenticationService->loadIdentifier('Authentication.Callback', [
         'callback' => function($data) {
-            // do identifier logic
+            // 識別子のロジック
 
             if ($result) {
                 return new Result($result, Result::SUCCESS);
@@ -141,47 +121,44 @@ messages::
 
 
 Identity resolvers
-==================
+======================
 
-Identity resolvers provide adapters for different datasources. They
-allow you to control which source identities are searched in. They are
-separate from the identifiers so that they can be swapped out
-independently from the identifier method (form, jwt, basic auth).
+Identity resolvers は、異なるデータソース用のアダプタを提供する。
+これにより、どのソースのアイデンティティを検索するかを制御することができます。
+これらは識別子とは別個のものであり、
+識別子の方法(form, jwt, basic auth)とは独立してスワップアウトできるようになっています。
 
 ORM Resolver
-------------
+------------------
 
-Identity resolver for the CakePHP ORM.
+CakePHP ORM の Identity resolvers。
 
-Configuration options:
+設定オプション:
 
--  **userModel**: The user model identities are located in. Default is
-   ``Users``.
--  **finder**: The finder to use with the model. Default is ``all``.
+-  **userModel**: ユーザーモデルのアイデンティティが配置されています。 デフォルトは ``Users`` 。
+-  **finder**: モデルと一緒に使うファインダー. デフォルトは ``all`` 。
 
-In order to use ORM resolver you must require ``cakephp/orm`` in your
-``composer.json`` file.
+ORM resolverを使用するには ``composer.json`` ファイルの中に ``cakephp/orm`` が必要です。
 
-Writing your own resolver
+独自のリゾルバを書く
 -------------------------
 
-Any ORM or datasource can be adapted to work with authentication by
-creating a resolver. Resolvers must implement
-``Authentication\Identifier\Resolver\ResolverInterface`` and should
-reside under ``App\Identifier\Resolver`` namespace.
+どんなORMやデータソースでも、リゾルバを作成することで認証に対応できるようにすることができます。
+リゾルバは、``App\Identifier\Resolver`` の名前空間の下に、
+``Authentication\Identifier\Resolver\ResolverInterface`` を実装しなければなりません。
 
-Resolver can be configured using ``resolver`` config option::
+リゾルバの設定は``resolver`` のconfigオプションを使って行えます。::
 
    $service->loadIdentifier('Authentication.Password', [
        'resolver' => [
-            // can be a full class name: \Some\Other\Custom\Resolver::class
+            // name: \Some\Other\Custom\Resolver::class フルのクラス名です。
            'className' => 'MyResolver',
-           // Pass additional options to the resolver constructor.
+           // レゾルバのコンストラクタに追加のオプションを渡します。
            'option' => 'value'
        ]
    ]);
 
-Or injected using a setter::
+またはセッターを使用して注入してください。::
 
    $resolver = new \App\Identifier\Resolver\CustomResolver();
    $identifier = $service->loadIdentifier('Authentication.Password');
