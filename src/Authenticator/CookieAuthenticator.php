@@ -49,11 +49,6 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         ],
         'cookie' => [
             'name' => 'CookieAuth',
-            'expire' => null,
-            'path' => '/',
-            'domain' => '',
-            'secure' => false,
-            'httpOnly' => false,
         ],
         'passwordHasher' => 'Authentication.Default',
     ];
@@ -215,16 +210,25 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     protected function _createCookie($value): CookieInterface
     {
-        $data = $this->getConfig('cookie');
+        $options = $this->getConfig('cookie');
+        $name = $options['name'];
+        unset($options['name']);
 
-        $cookie = new Cookie(
-            $data['name'],
+        if (array_key_exists('expire', $options)) {
+            deprecationWarning('Config key `expire` is deprecated, use `expires` instead.');
+            $options['expires'] = $options['expire'];
+            unset($options['expire']);
+        }
+        if (array_key_exists('httpOnly', $options)) {
+            deprecationWarning('Config key `httpOnly` is deprecated, use `httponly` instead.');
+            $options['httponly'] = $options['httpOnly'];
+            unset($options['httpOnly']);
+        }
+
+        $cookie = Cookie::create(
+            $name,
             $value,
-            $data['expire'],
-            $data['path'],
-            $data['domain'],
-            $data['secure'],
-            $data['httpOnly']
+            $options
         );
 
         return $cookie;
