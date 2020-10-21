@@ -1,12 +1,10 @@
 Identity Objects
 ################
 
-Identity objects are returned by the authentication service and made available
-in the request. Identities provides a method ``getIdentifier()`` that can be
-called to get the primary id value of the current log in identity.
+Identity オブジェクトは、認証サービスによって返され、リクエストで利用可能になる。
+Identitiesは現在のログインIDのプライマリIDの値を取得するためのメソッド ``getIdentifier()`` を提供しています。
 
-The reason this object exists is to provide an interface that makes it
-implementations/sources::
+このオブジェクトが存在する理由は、それを実装/ソースにするインターフェースを提供するためです::
 
    // Service
    $authenticationService
@@ -23,25 +21,25 @@ implementations/sources::
        ->getAttribute('identity')
        ->getIdentifier();
 
-The identity object provides ArrayAccess but as well a ``get()`` method to
-access data.  It is strongly recommended to use the ``get()`` method over array
-access because the get method is aware of the field mapping::
+identityオブジェクトはArrayAccessを提供していますが、
+データにアクセスするための ``get()`` メソッドも提供しています。
+getメソッドはフィールドマッピングを認識しているので、
+配列へのアクセスよりも ``get()`` メソッドを使うことを強く推奨します。
 
     $identity->get('email');
     $identity->get('username');
 
-The ``get()`` method can also be type-hinted via IDE meta file, e.g. through
-`IdeHelper <https://github.com/dereuromark/cakephp-ide-helper>`__.
+また、 ``get`` メソッドはIDEのメタファイルを介してタイプヒントを与えることもできます。
+例えば、 `IdeHelper <https://github.com/dereuromark/cakephp-ide-helper>`__ 。
 
-If you want, you can use property access, however::
+もしあなたが望むならば、プロパティアクセスを使用することができます。::
 
     $identity->email;
     $identity->username;
 
-The default Identity object class can be configured to map fields. This
-is pretty useful if the identifier of the identity is a non-conventional
-``id`` field or if you want to map other fields to more generic and
-common names::
+デフォルトの Identity オブジェクトクラスは、フィールドをマップするように構成できます。
+これは、ID の識別子が型にはまらない ``id`` フィールドである場合や、
+他のフィールドをより一般的で一般的な名前にマップしたい場合に非常に便利です。
 
    $identity = new Identity($data, [
        'fieldMap' => [
@@ -50,19 +48,17 @@ common names::
        ]
    ]);
 
-Creating your own Identity Object
+独自のIdentityオブジェクトの作成
 ---------------------------------
 
-By default the Authentication plugin will wrap your returned user data in an
-``IdentityDecorator`` that proxies methods and property access.  If you want to
-create your own identity object, your object must implement the
-``IdentityInterface``.
+デフォルトでは、Authentication プラグインは
+メソッドとプロパティアクセスをプロキシする ``IdentityDecorator`` で返されたユーザーデータをラップします。
+自分の ID オブジェクトを作りたい場合は ``IdentityInterface`` を実装しなければなりません。
 
-Implementing the IdentityInterface on your User class
+User クラスへの IdentityInterface の実装
 -----------------------------------------------------
 
-If you’d like to continue using your existing User class with this
-plugin you can implement the ``Authentication\IdentityInterface``::
+このプラグインで既存のUserクラスを使い続けたい場合は、 ``Authentication\IdentityInterface`` を実装してください::
 
    namespace App\Model\Entity;
 
@@ -90,22 +86,20 @@ plugin you can implement the ``Authentication\IdentityInterface``::
        // Other methods
    }
 
-Using a Custom Identity Decorator
----------------------------------
+カスタムIdentityデコレータを使用する
+-----------------------------------
 
-If your identifiers cannot have their resulting objects modified to
-implement the ``IdentityInterface`` you can implement a custom decorator
-that implements the required interface::
-
-   // You can use a callable...
+もしあなたの識別子が ``IdentityInterface`` を実装したオブジェクトに変更を加えることができない場合は、
+必要なインターフェイスを実装したカスタムデコレータを実装することができます。
+   // 呼び出し可能な...
    $identityResolver = function ($data) {
        return new MyCustomIdentity($data);
    };
 
-   //...or a class name to set the identity wrapper.
+   //...またはクラス名を指定して ID ラッパーを設定することができます。
    $identityResolver = MyCustomIdentity::class;
 
-   // Then pass it to the service configuration
+   // そしてそれをサービスの設定に渡します。
    $service = new AuthenticationService([
        'identityClass' => $identityResolver,
        'identifiers' => [

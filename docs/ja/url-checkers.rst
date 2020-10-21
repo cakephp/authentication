@@ -1,38 +1,35 @@
-URL Checkers
-############
+URL チェッカー
+###################
 
-To provide an abstract and framework agnostic solution there are URL
-checkers implemented that allow you to customize the comparision of the
-current URL if needed. For example to another frameworks routing.
+抽象的でフレームワークに依存しないソリューションを提供するために、
+必要に応じて現在のURLの比較をカスタマイズできるURLチェッカーが実装されています。
+例えば、別のフレームワークのルーティングなど。
 
-Included Checkers
+付属のチェッカー
 =================
 
 DefaultUrlChecker
 -----------------
 
-The default checker allows you to compare an URL by regex or string
-URLs.
+デフォルトのチェッカーでは、正規表現や文字列のURLでURLを比較することができます。
 
-Options:
+オプション:
 
--  **checkFullUrl**: To compare the full URL, including protocol, host
-   and port or not. Default is ``false``
--  **useRegex**: Compares the URL by a regular expression provided in
-   the ``$loginUrls`` argument of the checker.
+-  **checkFullUrl**: フルURLを比較するには, プロトコルを含みます。
+   ホストとポートの有無を指定します。 デフォルトは ``false``です。
+-  **useRegex**: チェッカーの引数 ``$loginUrls`` で指定された正規表現でURLを比較します。
 
 CakeRouterUrlChecker
 --------------------
 
-Options:
+オプション:
 
-Use this checker if you want to use the array notation of CakePHPs
-routing system. The checker also works with named routes.
+CakePHPsのルーティングシステムの配列表記を使用したい場合は、このチェッカーを使用します。
+チェッカーは名前付きルートでも動作します。
 
--  **checkFullUrl**: To compare the full URL, including protocol, host
-   and port or not. Default is ``false``
+-  **checkFullUrl**: プロトコル、ホスト、ポートを含む完全なURLを比較するかどうか。デフォルトは ``false``
 
-Implementing your own Checker
+独自のチェッカーの実装
 -----------------------------
 
-An URL checker **must** implement the ``UrlCheckterInterface``.
+URLチェッカーは ``UrlCheckterInterface``` を実装 *していなければなりません* 。
