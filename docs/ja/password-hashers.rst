@@ -4,45 +4,45 @@ Password Hashers
 Default
 =======
 
-This is using the php constant ``PASSWORD_DEFAULT`` for the encryption
-method. The default hash type is ``bcrypt``.
+暗号化方法にPHPの定数 ``PASSWORD_DEFAULT`` を使用しています。
+デフォルトのハッシュ型は ``bcrypt`` です。
 
-See `the php
-documentation <http://php.net/manual/en/function.password-hash.php>`__
-for further information on bcrypt and PHP’s password hashing.
 
-The config options for this adapter are:
+こちらをご覧ください `PHPのドキュメント <http://php.net/manual/en/function.password-hash.php>`__
+bcryptとPHPのパスワードハッシュについての詳細情報が書かれています。
 
--  **hashType**: Hashing algorithm to use. Valid values are those
-   supported by ``$algo`` argument of ``password_hash()``. Defaults to
-   ``PASSWORD_DEFAULT``
--  **hashOptions**: Associative array of options. Check the PHP manual
-   for supported options for each hash type. Defaults to empty array.
+このアダプタの設定オプションは次のとおりです:
 
-Legacy
-======
+-  **hashType**: 使用するハッシュ化アルゴリズム。
+   有効な値は ``password_hash()`` の引数 ``$algo`` でサポートされている値です。
+   デフォルトは、 ``PASSWORD_DEFAULT`` です。
+-  **hashOptions**: オプションの連想配列。
+   各ハッシュ型でサポートしているオプションについてはPHPマニュアルを参照してください。
+   デフォルトは空の配列です。
 
-This is a password hasher for applications that have migrated from
-CakePHP2.
+レガシー
+=========
 
-Fallback
-========
+cakePHP2から移行したアプリケーションのためのパスワードハッシャーです。
 
-The fallback password hasher allows you to configure multiple hashers
-and will check them sequentially. This allows users to login with an old
-hash type until their password is reset and upgraded to a new hash.
+フォールバック
+================
 
-Upgrading Hashing Algorithms
-============================
+フォールバックパスワードハッシャーでは、
+複数のハッシャーを設定することができ、それらを順次チェックしていきます。
+これにより、パスワードがリセットされて新しいハッシュにアップグレードされるまで、
+古いハッシュタイプでログインすることができます。
 
-CakePHP provides a clean way to migrate your users’ passwords from one
-algorithm to another, this is achieved through the
-``FallbackPasswordHasher`` class. Assuming you want to migrate from a
-Legacy password to the Default bcrypt hasher, you can configure the
-fallback hasher as follows::
+ハッシュアルゴリズムのアップグレード
+=================================
+
+CakePHPは、ユーザーのパスワードをあるアルゴリズムから別のアルゴリズムに移行するためのクリーンな方法を提供します。
+これは ``FallbackPasswordHasher`` クラスによって実現されます。
+レガシーパスワードからデフォルトのbcryptハッシャーに移行したい場合を想定しています。
+以下のようにフォールバックハッシュアーを想定することができます。::
 
    $service->loadIdentifier('Authentication.Password', [
-       // Other config options
+       // その他の設定オプション
        'passwordHasher' => [
            'className' => 'Authentication.Fallback',
            'hashers' => [
@@ -50,31 +50,30 @@ fallback hasher as follows::
                [
                    'className' => 'Authentication.Legacy',
                    'hashType' => 'md5',
-                   'salt' => false // turn off default usage of salt
+                   'salt' => false // saltのデフォルトをoffにする
                ],
            ]
        ]
    ]);
 
-Then in your login action you can use the authentication service to
-access the ``Password`` identifier and check if the current user’s
-password needs to be upgraded::
+ログインアクションの中で認証サービスを使って ``Password`` 識別子にアクセスし、
+現在のユーザーのパスワードをアップグレードする必要があるかどうかをチェックすることができます。
 
    public function login()
    {
        $authentication = $this->request->getAttribute('authentication');
        $result = $authentication->getResult();
 
-       // regardless of POST or GET, redirect if user is logged in
+       // POST  GETに関係なくログインする時にリダイレクトする
        if ($result->isValid()) {
-           // Assuming you are using the `Password` identifier.
+           // 識別子に `Password` を使用していると仮定します。
            if ($authentication->identifiers()->get('Password')->needsPasswordRehash()) {
-               // Rehash happens on save.
+               // セーブ時にリハッシュが発生します。
                $user = $this->Users->get($this->Auth->user('id'));
                $user->password = $this->request->getData('password');
                $this->Users->save($user);
            }
 
-           // Redirect or display a template.
+           // テンプレートをリダイレクトしたり、表示したりします。
        }
    }
