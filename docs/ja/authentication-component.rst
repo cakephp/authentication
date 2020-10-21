@@ -1,43 +1,41 @@
-Authentication Component
-========================
+認証 Component
+===================
 
-You can use the ``AuthenticationComponent`` to access the result of
-authentication, get user identity and logout user. Load the component in your
-``AppController::initialize()`` like any other component::
+認証結果にアクセスするために ``AuthenticationComponent`` にアクセスすることができます。
+ユーザーの身元とログアウトユーザーを取得できます。
+他のコンポーネントと同じように ``AppController::initialize()`` でコンポーネントをロードします ::
 
     $this->loadComponent('Authentication.Authentication', [
-        'logoutRedirect' => '/users/login'  // Default is false
+        'logoutRedirect' => '/users/login'  // デフォルトはfalse
     ]);
 
-Once loaded, the ``AuthenticationComponent`` will require that all actions have an
-authenticated user present, but perform no other access control checks. You can
-disable this check for specific actions using ``allowUnauthenticated()``::
+一旦ロードされると、全てのアクションが認証済みユーザーでしか入れなくなります。
+しかし、他のアクセス制御チェックは行わないでください。
+このチェックを無効にするには ``allowUnauthenticated()``を使います::
 
-    // In your controller's beforeFilter method.
+    // beforeFilter メソッドの中に記述してください。
     $this->Authentication->allowUnauthenticated(['view']);
 
-Accessing the logged in user
-----------------------------
+ログインしているユーザーへのアクセス
+--------------------------------------
 
-You can get the authenticated user identity data using the authentication
-component::
+認証されたユーザーデータを取得するには認証コンポーネントのこちらを使用します ::
 
     $user = $this->Authentication->getIdentity();
 
-You can also get the identity directly from the request instance::
+リクエストインスタンスから直接ユーザーデータ を取得することもできます。::
 
     $user = $request->getAttribute('identity');
 
-Checking the login status
+ログイン状態を確認する
 -------------------------
 
-You can check if the authentication process was successful by accessing the
-result object::
+認証処理が成功したかどうかは、結果オブジェクトにアクセスすることで確認できます。::
 
-    // Using Authentication component
+    // 認証コンポーネントを使います。
     $result = $this->Authentication->getResult();
 
-    // Using request object
+    // リクエストオブジェクトを使います。
     $result = $request->getAttribute('authentication')->getResult();
 
     if ($result->isValid()) {
@@ -47,37 +45,37 @@ result object::
         $this->log($result->getErrors());
     }
 
-The result sets objects status returned from ``getStatus()`` will match one of
-these these constants in the Result object:
+結果セットは ``getStatus()`` から返されたオブジェクトの状態が、結果オブジェクトの中のこれらの定数のいずれかと一致します。:
 
-* ``ResultInterface::SUCCESS``, when successful.
-* ``ResultInterface::FAILURE_IDENTITY_NOT_FOUND``, when identity could not be found.
-* ``ResultInterface::FAILURE_CREDENTIALS_INVALID``, when credentials are invalid.
-* ``ResultInterface::FAILURE_CREDENTIALS_MISSING``, when credentials are missing in the request.
-* ``ResultInterface::FAILURE_OTHER``, on any other kind of failure.
+* ``ResultInterface::SUCCESS``, うまくいった場合。
+* ``ResultInterface::FAILURE_IDENTITY_NOT_FOUND``, 身元が不明の場合。
+* ``ResultInterface::FAILURE_CREDENTIALS_INVALID``, クレデンシャルが無効な場合。
+* ``ResultInterface::FAILURE_CREDENTIALS_MISSING``, クレデンシャルがリクエストに含まれていない場合。
+* ``ResultInterface::FAILURE_OTHER``, その他の種類の障害が発生した場合。
 
-The error array returned by ``getErrors()`` contains **additional** information
-coming from the specific system against which the authentication attempt was
-made. For example LDAP or OAuth would put errors specific to their
-implementation in here for easier logging and debugging the cause. But most of
-the included authenticators don't put anything in here.
+``getErrors()`` が返すエラー配列には、
+認証を試みた特定のシステムから得られる **追加の** 情報が含まれています。
+例えば、LDAPやOAuthなどは、その実装に特有のエラーをここに書き込むことで、
+原因のロギングやデバッグを容易にすることができます。
+しかし、同梱されている認証子のほとんどはここには何も入れていません。
 
-Logging out the identity
+identity のログアウト
 ------------------------
 
-To log an identity out just do::
+ログアウトするには::
 
     $this->Authentication->logout();
 
-If you have set the ``logoutRedirect`` config, ``Authentication::logout()`` will
-return that value else will return ``false``. It won't perform any actual redirection
-in either case.
+もし、 ``logoutRedirect`` を設定しているならば、
+``Authentication::logout()`` はその値を返します。
+それ以外の場合は、 ``false`` を返します。
+どちらの場合も実際のリダイレクトは行われません。
 
-Alternatively, instead of the component you can also use the service to log out::
+あるいは、 コンポーネントの代わりに、サービスを使ってログアウトすることもできます ::
 
     $return = $request->getAttribute('authentication')->clearIdentity($request, $response);
 
-The result returned will contain an array like this::
+返される結果には、次のような配列が含まれます。::
 
     [
         'response' => object(Cake\Http\Response) { ... },
@@ -85,22 +83,20 @@ The result returned will contain an array like this::
     ]
 
 .. note::
-    This will return an array containing the request and response
-    objects. Since both are immutable you'll get new objects back. Depending on your
-    context you're working in you'll have to use these instances from now on if you
-    want to continue to work with the modified response and request objects.
+    これはリクエストオブジェクトとレスポンスオブジェクトを含む配列を返します。
+    両方とも不変なので、新しいオブジェクトを取り戻すことができます。
+    変更されたレスポンスやリクエストオブジェクトを使い続けたい場合は、
+    作業しているコンテキストに応じて、今後はこれらのインスタンスを使用しなければならないでしょう。
 
-Configure Automatic Identity Checks
------------------------------------
+自動Identityチェックを構成する
+----------------------------
+デフォルトでは ``認証コンポーネント`` は、 ``Controller.initialize``
+イベントの間に存在するIDを自動的に強制します。
+このチェックは ``Controller.startup`` イベント中に適用することもできます::
 
-By default ``AuthenticationComponent`` will automatically enforce an identity to
-be present during the ``Controller.initialize`` event. You can have this check
-applied during the ``Controller.startup`` event instead::
-
-    // In your controller's initialize() method.
+    // コントローラの initialize() メソッドの中です。
     $this->loadComponent('Authentication.Authentication', [
         'identityCheckEvent' => 'Controller.startup',
     ]);
 
-You can also disable identity checks entirely with the ``requireIdentity``
-option.
+また、 ``requireIdentity`` オプションを使って ID チェックを完全に無効にすることもできます。

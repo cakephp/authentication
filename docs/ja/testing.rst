@@ -1,18 +1,16 @@
-Testing with Authentication
-###########################
+認証によるテスト
+######################
 
-With the ``authentication`` middleware active in your application you'll
-need to simulate authentication credentials in your integration tests.
-Based on the type of authentication you're using you will need to
-simulate credentials differently. Lets review a few more common types of
-authentication.
+アプリケーションで ``authentication`` ミドルウェアがアクティブな状態であれば、
+統合テストで認証情報をシミュレートする必要があります。
+使用している認証の種類に応じて、クレデンシャルを異なる方法でシミュレートする必要があります。
+認証の一般的なタイプをいくつか確認してみましょう。
 
-Session based authentication
+セッションベースの認証
 ============================
 
-Session based authentication requires simulating the User data that
-normally would be found in the session. In your test cases you can
-define a helper method that lets you 'login'::
+セッションベースの認証では、通常セッションで見つかるであろうユーザデータをシミュレートする必要があります。
+テストケースでは、「ログイン」するためのヘルパーメソッドを定義することができます。::
 
    protected function login($userId = 1)
    {
@@ -21,8 +19,7 @@ define a helper method that lets you 'login'::
        $this->session(['Auth' => $user]);
    }
 
-In your integration tests you can use ``login()`` to simulate a user
-being logged in::
+統合テストでは ``login()`` を使ってユーザがログインしたときのシミュレーションをすることができます。::
 
    public function testGet()
    {
@@ -31,11 +28,11 @@ being logged in::
        $this->assertResponseOk();
    }
 
-Token based authentication
+トークンベースの認証
 ==========================
 
-With token based authentication you need to simulate the
-``Authorization`` header. After getting valid token setup the request::
+トークンベースの認証では ``Authorization`` ヘッダーをシミュレートする必要があります。
+有効なトークンを取得した後、リクエスト::
 
    public function testGet()
    {
