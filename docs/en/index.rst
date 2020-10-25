@@ -87,7 +87,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
     }
 
 First, we configure what to do with users when they are not authenticated.
-Next, we attache the ``Session`` and ``Form`` :doc:`/authenticators` which define the
+Next, we attach the ``Session`` and ``Form`` :doc:`/authenticators` which define the
 mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
 users based on data in the session while ``Form`` enables us
 to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
