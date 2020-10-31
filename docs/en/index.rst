@@ -211,15 +211,12 @@ user.
 Further Reading
 ===============
 
-.. toctree::
-    :maxdepth: 1
-
-    /authenticators
-    /identifiers
-    /password-hashers
-    /identity-object
-    /authentication-component
-    /migration-from-the-authcomponent
-    /url-checkers
-    /testing
-    /view-helper
+* :doc:`/authenciators`
+* :doc:`/identifiers`
+* :doc:`/password-hashers`
+* :doc:`/identity-object`
+* :doc:`/authentication-component`
+* :doc:`/migration-from-the-authcomponent`
+* :doc:`/url-checkers`
+* :doc:`/testing`
+* :doc:`/view-helper`
