@@ -211,7 +211,7 @@ user.
 Further Reading
 ===============
 
-* :doc:`/authenciators`
+* :doc:`/authenticators`
 * :doc:`/identifiers`
 * :doc:`/password-hashers`
 * :doc:`/identity-object`
