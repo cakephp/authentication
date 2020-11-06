@@ -239,10 +239,10 @@ Configuration options:
    -  **name**: Cookie name, default is ``CookieAuth``
    -  **expire**: Expiration, default is ``null``
    -  **path**: Path, default is ``/``
-   -  **domain**: Domain, default is an empty string \`\`
+   -  **domain**: Domain, default is an empty string.
    -  **secure**: Bool, default is ``false``
    -  **httpOnly**: Bool, default is ``false``
-   -  **value**: Value, default is an empty string \`\`
+   -  **value**: Value, default is an empty string.
 
 -  **fields**: Array that maps ``username`` and ``password`` to the
    specified identity fields.
