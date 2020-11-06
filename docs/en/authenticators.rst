@@ -294,8 +294,8 @@ You'll also need to add a checkbox to your login form to have cookies created::
     <?= $this->Form->control('remember_me', ['type' => 'checkbox']);
 
 After logging in, if the checkbox was checked you should see a ``CookieAuth``
-cookie in your browser dev tools. The cookie stores the username field, and
-a hashed token, that is used to reauthenticate later.
+cookie in your browser dev tools. The cookie stores the username field and
+a hashed token that is used to reauthenticate later.
 
 Events
 ======
