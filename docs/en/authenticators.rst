@@ -239,10 +239,10 @@ Configuration options:
    -  **name**: Cookie name, default is ``CookieAuth``
    -  **expire**: Expiration, default is ``null``
    -  **path**: Path, default is ``/``
-   -  **domain**: Domain, default is an empty string \`\`
+   -  **domain**: Domain, default is an empty string.
    -  **secure**: Bool, default is ``false``
    -  **httpOnly**: Bool, default is ``false``
-   -  **value**: Value, default is an empty string \`\`
+   -  **value**: Value, default is an empty string.
 
 -  **fields**: Array that maps ``username`` and ``password`` to the
    specified identity fields.
@@ -253,17 +253,49 @@ Configuration options:
 -  **passwordHasher**: Password hasher to use for token hashing. Default
    is ``DefaultPasswordHasher::class``.
 
-OAuth
-=====
+Usage
+-----
 
-There are currently no plans to implement an OAuth authenticator. The
-main reason for this is that OAuth 2.0 is not an authentication
-protocol.
+The cookie authenticator can be added to a Form & Session based
+authentication system. Cookie authentication will automatically re-login users
+after their session expires for as long as the cookie is valid. If a user is
+explicity logged out via ``AuthenticationComponent::logout()`` the
+authentication cookie is **also destroyed**. An example configuration would be::
 
-Read more about this topic
-`here <https://oauth.net/articles/authentication/>`__.
+    // In Application::getAuthService()
 
-We will maybe add an OpenID Connect authenticator in the future.
+    // Reuse fields in multiple authenticators.
+    $fields = [
+        IdentifierInterface::CREDENTIAL_USERNAME => 'email',
+        IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+    ];
+
+    // Put form authentication first so that users can re-login via
+    // the login form if necessary.
+    $service->loadAuthenticator('Authentication.Form', [
+        'loginUrl' => '/users/login',
+        'fields' => [
+            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        ],
+    ]);
+    // Then use sessions if they are active.
+    $service->loadAuthenticator('Authentication.Session');
+
+    // If the user is on the login page, check for a cookie as well.
+    $service->loadAuthenticator('Authentication.Cookie', [
+        'fields' => $fields,
+        'loginUrl' => '/users/login',
+    ]);
+
+You'll also need to add a checkbox to your login form to have cookies created::
+
+    // In your login view
+    <?= $this->Form->control('remember_me', ['type' => 'checkbox']);
+
+After logging in, if the checkbox was checked you should see a ``CookieAuth``
+cookie in your browser dev tools. The cookie stores the username field and
+a hashed token that is used to reauthenticate later.
 
 Events
 ======
