@@ -9,9 +9,8 @@
 .gitignore export-ignore
 .github export-ignore
 .scrutinizer.yml export-ignore
-.travis.yml export-ignore
 appveyor.yml export-ignore
 CONTRIBUTING.md export-ignore
-phpunit.xml.dist export-ignore
-phpcs.xml.dist export-ignore
-tests/test_app/ export-ignore
+phpunit.xml export-ignore
+phpcs.xml export-ignore
+tests/ export-ignore
