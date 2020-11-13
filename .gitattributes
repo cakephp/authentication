@@ -7,7 +7,7 @@
 .editorconfig export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
-.stickler.yml
+.stickler.yml export-ignore
 CONTRIBUTING.md export-ignore
 phpunit.xml export-ignore
 phpcs.xml export-ignore
