@@ -9,6 +9,8 @@
 .gitignore export-ignore
 .stickler.yml export-ignore
 CONTRIBUTING.md export-ignore
+Dockerfile export-ignore
+docs.Dockerfile export-ignore
 phpunit.xml export-ignore
 phpcs.xml export-ignore
 /.github export-ignore
