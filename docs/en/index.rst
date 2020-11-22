@@ -6,7 +6,7 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication:^2.0
+    php composer.phar require "cakephp/authentication:^2.0"
 
 Load the plugin by adding the following statement in your project's ``src/Application.php``::
 

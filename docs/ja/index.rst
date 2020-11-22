@@ -6,7 +6,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication:^2.0
+    php composer.phar require "cakephp/authentication:^2.0"
 
 プロジェクトの ``src/Application.php``  に以下の文を追加してプラグインをロードしてください。 ::
 
