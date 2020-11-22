@@ -34,6 +34,7 @@ imports::
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
+    use Cake\Routing\Router;
 
 Next, add the ``AuthenticationProviderInterface`` to the implemented interfaces
 on your application::
@@ -43,7 +44,7 @@ on your application::
 
 Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
 
-    $middleware->add(new AuthenticationMiddleware($this));
+    $middlewareQueue->add(new AuthenticationMiddleware($this));
     
 .. note::
     Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both.
@@ -65,7 +66,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
 
         // Define where users should be redirected to when they are not authenticated
         $service->setConfig([
-            'unauthenticatedRedirect' => '/users/login',
+            'unauthenticatedRedirect' => Router::url(['controller' => 'users', 'action' => 'login']),
             'queryParam' => 'redirect',
         ]);
 
@@ -77,7 +78,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => '/users/login'
+            'loginUrl' => Router::url(['controller' => 'users', 'action' => 'login'])'
         ]);
 
         // Load identifiers
