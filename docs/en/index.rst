@@ -66,7 +66,12 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
 
         // Define where users should be redirected to when they are not authenticated
         $service->setConfig([
-            'unauthenticatedRedirect' => Router::url(['controller' => 'users', 'action' => 'login']),
+            'unauthenticatedRedirect' => Router::url([
+                    'prefix' => false,
+                    'plugin' => null,
+                    'controller' => 'Users',
+                    'action' => 'login',
+            ]),
             'queryParam' => 'redirect',
         ]);
 
