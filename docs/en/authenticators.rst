@@ -139,7 +139,8 @@ Add the following to your ``Application`` class::
     }
 
 In your ``UsersController``::
-
+    use Firebase\JWT\JWT;
+    
     public function login()
     {
         $result = $this->Authentication->getResult();
