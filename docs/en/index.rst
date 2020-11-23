@@ -43,7 +43,7 @@ on your application::
 
 Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
 
-    $middleware->add(new AuthenticationMiddleware($this));
+    $middlewareQueue->add(new AuthenticationMiddleware($this));
     
 .. note::
     Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both.
