@@ -74,22 +74,23 @@ class AuthenticationService implements AuthenticationServiceInterface
      *   user data.
      * - `identityClass` - The class name of identity or a callable identity builder.
      * - `identityAttribute` - The request attribute used to store the identity. Default to `identity`.
-     *
-     *   ```
-     *   $service = new AuthenticationService([
-     *      'authenticators' => [
-     *          'Authentication.Form
-     *      ],
-     *      'identifiers' => [
-     *          'Authentication.Password'
-     *      ]
-     *   ]);
-     *   ```
-     * - `identityAttribute` - The request attribute to store the identity in.
      * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
      *    AuthenticationComponent::allowUnauthenticated()
      * - `queryParam` - Set to a string to have unauthenticated redirects contain a `redirect` query string
      *   parameter with the previously blocked URL.
+     *
+     * ### Example:
+     *
+     * ```
+     * $service = new AuthenticationService([
+     *    'authenticators' => [
+     *        'Authentication.Form
+     *    ],
+     *    'identifiers' => [
+     *        'Authentication.Password'
+     *    ]
+     * ]);
+     * ```
      *
      * @var array
      */
@@ -372,6 +373,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
         $query = urlencode($param) . '=' . urlencode($redirect);
 
+        /** @var array $url */
         $url = parse_url($target);
         if (isset($url['query']) && strlen($url['query'])) {
             $url['query'] .= '&' . $query;
@@ -413,9 +415,11 @@ class AuthenticationService implements AuthenticationServiceInterface
             return null;
         }
         $parsed += ['path' => '/', 'query' => ''];
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
             $parsed['path'] = "/{$parsed['path']}";
         }
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if ($parsed['query']) {
             $parsed['query'] = "?{$parsed['query']}";
         }

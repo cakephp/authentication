@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Test\TestCase\Identifier;
 
 use ArrayAccess;
+use Authentication\Authenticator\Result;
 use Authentication\Identifier\CallbackIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\ORM\Entity;
@@ -112,5 +113,32 @@ class CallbackIdentifierTest extends TestCase
             },
         ]);
         $identifier->identify([]);
+    }
+
+    /**
+     * testResultReturn
+     *
+     * @return void
+     */
+    public function testResultReturn()
+    {
+        $identifier = new CallbackIdentifier([
+            'callback' => function ($data) {
+                if (isset($data['username']) && $data['username'] === 'florian') {
+                    return new Result(new Entity($data), Result::SUCCESS);
+                }
+
+                return new Result(null, Result::FAILURE_OTHER, ['message' => 'Access denied by 3rd party API']);
+            },
+        ]);
+        $result = $identifier->identify(['username' => 'florian']);
+
+        $this->assertInstanceOf(Entity::class, $result);
+        $this->assertSame('florian', $result->username);
+
+        $result = $identifier->identify(['username' => 'larry']);
+
+        $this->assertNull($result);
+        $this->assertEquals(['message' => 'Access denied by 3rd party API'], $identifier->getErrors());
     }
 }

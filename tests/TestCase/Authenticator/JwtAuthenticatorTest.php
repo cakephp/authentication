@@ -61,7 +61,7 @@ class JwtAuthenticatorTest extends TestCase
         parent::setUp();
 
         $data = [
-            'sub' => 3,
+            'subjectId' => 3,
             'id' => 3,
             'username' => 'larry',
             'firstname' => 'larry',
@@ -86,11 +86,12 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
     }
 
@@ -108,11 +109,12 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
     }
 
@@ -132,10 +134,10 @@ class JwtAuthenticatorTest extends TestCase
         $this->identifiers->expects($this->once())
             ->method('identify')
             ->with([
-                'sub' => 3,
+                'subjectId' => 3,
             ])
             ->willReturn(new ArrayObject([
-                'sub' => 3,
+                'subjectId' => 3,
                 'id' => 3,
                 'username' => 'larry',
                 'firstname' => 'larry',
@@ -144,11 +146,12 @@ class JwtAuthenticatorTest extends TestCase
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
             'returnPayload' => false,
+            'subjectKey' => 'subjectId',
         ]);
 
         $result = $authenticator->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::SUCCESS, $result->getStatus());
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
     }
 
@@ -183,7 +186,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $result = $authenticator->authenticate($request, $response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertSame(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
         $this->assertNull($result->getData());
     }
 
@@ -216,7 +219,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $result = $authenticator->authenticate($request, $response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
+        $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
         $this->assertNUll($result->getData());
     }
 
@@ -233,7 +236,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $result = $authenticator->authenticate($this->request, $this->response);
         $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
+        $this->assertSame(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
         $this->assertNUll($result->getData());
         $errors = $result->getErrors();
         $this->assertArrayHasKey('message', $errors);
@@ -263,7 +266,7 @@ class JwtAuthenticatorTest extends TestCase
         $authenticator->authenticate($this->request, $this->response);
 
         $expected = [
-            'sub' => 3,
+            'subjectId' => 3,
             'id' => 3,
             'username' => 'larry',
             'firstname' => 'larry',

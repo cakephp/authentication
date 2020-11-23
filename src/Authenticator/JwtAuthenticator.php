@@ -37,6 +37,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'algorithms' => ['HS256'],
         'returnPayload' => true,
         'secretKey' => null,
+        'subjectKey' => IdentifierInterface::CREDENTIAL_JWT_SUBJECT,
     ];
 
     /**
@@ -89,8 +90,8 @@ class JwtAuthenticator extends TokenAuthenticator
 
         $result = json_decode(json_encode($result), true);
 
-        $key = IdentifierInterface::CREDENTIAL_JWT_SUBJECT;
-        if (empty($result[$key])) {
+        $subjectKey = $this->getConfig('subjectKey');
+        if (empty($result[$subjectKey])) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
@@ -101,7 +102,7 @@ class JwtAuthenticator extends TokenAuthenticator
         }
 
         $user = $this->_identifier->identify([
-            $key => $result[$key],
+            $subjectKey => $result[$subjectKey],
         ]);
 
         if (empty($user)) {

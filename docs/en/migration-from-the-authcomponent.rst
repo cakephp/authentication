@@ -16,9 +16,10 @@ Differences
    data from the session you’ll have to use the
    ``SessionAuthenticator``. It will check the session if there is data
    in the configured session key and put it into the identity object.
--  The user data is no longer available through the AuthComponent but is
+-  The user data is no longer available through the old AuthComponent but is
    accessible via a request attribute and encapsulated in an identity
-   object: ``$request->getAttribute('authentication')->getIdentity();``
+   object: ``$request->getAttribute('authentication')->getIdentity();``.
+   Additionally, you can leverage the ``AuthenticationComponent`` ``getIdentity()`` or ``getIdentityData()`` methods.
 -  The logic of the authentication process has been split into
    authenticators and identifiers. An authenticator will extract the
    credentials from the request, while identifiers verify the

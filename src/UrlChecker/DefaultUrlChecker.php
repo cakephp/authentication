@@ -40,11 +40,11 @@ class DefaultUrlChecker implements UrlCheckerInterface
     /**
      * @inheritDoc
      */
-    public function check(ServerRequestInterface $request, $urls, array $options = []): bool
+    public function check(ServerRequestInterface $request, $loginUrls, array $options = []): bool
     {
         $options = $this->_mergeDefaultOptions($options);
 
-        $urls = (array)$urls;
+        $urls = (array)$loginUrls;
 
         if (empty($urls)) {
             return true;

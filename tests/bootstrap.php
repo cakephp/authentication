@@ -51,10 +51,10 @@ Configure::write('App', [
     ],
 ]);
 
-if (!getenv('db_dsn')) {
-    putenv('db_dsn=sqlite:///:memory:');
+if (!getenv('DB_URL')) {
+    putenv('DB_URL=sqlite:///:memory:');
 }
-ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
+ConnectionManager::setConfig('test', ['url' => getenv('DB_URL')]);
 Router::reload();
 Security::setSalt('YJfIxfs2guVoUubWDYhG93b0qyJfIxfs2guwvniR2G0FgaC9mi');
 

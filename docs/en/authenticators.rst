@@ -106,14 +106,95 @@ example.
    secret key if you’re not in the context of a CakePHP application that
    provides it through ``Security::salt()``.
 
-If you want to identify the user based on the ``sub`` (subject) of the
-token you can use the JwtSubject identifier::
+By default the ``JwtAuthenticator`` uses ``HS256`` symmetric key algorithm and uses
+the value of ``Cake\Utility\Security::salt()`` as encryption key.
+For enhanced security one can instead use the ``RS256`` asymmetric key algorithm.
+You can generate the required keys for that as follows::
 
-   $service = new AuthenticationService();
-   $service->loadIdentifier('Authentication.JwtSubject');
-   $service->loadAuthenticator('Authentication.Jwt', [
-       'returnPayload' => false
-   ]);
+    # generate private key
+    openssl genrsa -out config/jwt.key 1024
+    # generate public key
+    openssl rsa -in config/jwt.key -outform PEM -pubout -out config/jwt.pem
+
+The ``jwt.key`` file is the private key and should be kept safe.
+The ``jwt.pem`` file is the public key. This file should be used when you need to verify tokens
+created by external applications, eg: mobile apps.
+
+The following example allows you to identify the user based on the ``sub`` (subject) of the
+token by using ``JwtSubject`` identifier, and configures the ``Authenticator`` to use public key
+for token verification::
+
+Add the following to your ``Application`` class::
+
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+        // ...
+        $service->loadIdentifier('Authentication.JwtSubject');
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
+            'algorithms' => ['RS256'],
+            'returnPayload' => false
+        ]);
+    }
+
+In your ``UsersController``::
+
+    public function login()
+    {
+        $result = $this->Authentication->getResult();
+        if ($result->isValid()) {
+            $privateKey = file_get_contents(CONFIG . '/jwt.key');
+            $user = $result->getData();
+            $payload = [
+                'iss' => 'myapp',
+                'sub' => $user->id,
+                'exp' => time() + 60,
+            ];
+            $json = [
+                'token' => JWT::encode($payload, $privateKey, 'RS256'),
+            ];
+        } else {
+            $this->response = $this->response->withStatus(401);
+            $json = [];
+        }
+        $this->set(compact('json'));
+        $this->viewBuilder()->setOption('serialize', 'json');
+    }
+
+Beside from sharing the public key file to external application, you can distribute it via a JWKS endpoint by
+configuring your app as follows::
+
+    // config/routes.php
+    $builder->setExtensions('json');
+    $builder->connect('/.well-known/:controller/*', [
+        'action' => 'index',
+    ], [
+        'controller' => '(jwks)',
+    ]); // connect /.well-known/jwks.json to JwksController
+    
+    // controller/JwksController.php
+    public function index()
+    {
+        $pubKey = file_get_contents(CONFIG . './jwt.pem');
+        $res = openssl_pkey_get_public($pubKey);
+        $detail = openssl_pkey_get_details($res);
+        $key = [
+            'kty' => 'RSA',
+            'alg' => 'RS256',
+            'use' => 'sig',
+            'e' => JWT::urlsafeB64Encode($detail['rsa']['e']),
+            'n' => JWT::urlsafeB64Encode($detail['rsa']['n']),
+        ];
+        $keys['keys'][] = $key;
+
+        $this->viewBuilder()->setClassName('Json');
+        $this->set(compact('keys'));
+        $this->viewBuilder()->setOption('serialize', 'keys');
+    }
+    
+Refer to https://tools.ietf.org/html/rfc7517 or https://auth0.com/docs/tokens/concepts/jwks for
+more information about JWKS.
 
 HttpBasic
 =========
@@ -158,10 +239,10 @@ Configuration options:
    -  **name**: Cookie name, default is ``CookieAuth``
    -  **expire**: Expiration, default is ``null``
    -  **path**: Path, default is ``/``
-   -  **domain**: Domain, default is an empty string \`\`
+   -  **domain**: Domain, default is an empty string.
    -  **secure**: Bool, default is ``false``
    -  **httpOnly**: Bool, default is ``false``
-   -  **value**: Value, default is an empty string \`\`
+   -  **value**: Value, default is an empty string.
 
 -  **fields**: Array that maps ``username`` and ``password`` to the
    specified identity fields.
@@ -172,17 +253,49 @@ Configuration options:
 -  **passwordHasher**: Password hasher to use for token hashing. Default
    is ``DefaultPasswordHasher::class``.
 
-OAuth
-=====
+Usage
+-----
 
-There are currently no plans to implement an OAuth authenticator. The
-main reason for this is that OAuth 2.0 is not an authentication
-protocol.
+The cookie authenticator can be added to a Form & Session based
+authentication system. Cookie authentication will automatically re-login users
+after their session expires for as long as the cookie is valid. If a user is
+explicity logged out via ``AuthenticationComponent::logout()`` the
+authentication cookie is **also destroyed**. An example configuration would be::
 
-Read more about this topic
-`here <https://oauth.net/articles/authentication/>`__.
+    // In Application::getAuthService()
 
-We will maybe add an OpenID Connect authenticator in the future.
+    // Reuse fields in multiple authenticators.
+    $fields = [
+        IdentifierInterface::CREDENTIAL_USERNAME => 'email',
+        IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+    ];
+
+    // Put form authentication first so that users can re-login via
+    // the login form if necessary.
+    $service->loadAuthenticator('Authentication.Form', [
+        'loginUrl' => '/users/login',
+        'fields' => [
+            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        ],
+    ]);
+    // Then use sessions if they are active.
+    $service->loadAuthenticator('Authentication.Session');
+
+    // If the user is on the login page, check for a cookie as well.
+    $service->loadAuthenticator('Authentication.Cookie', [
+        'fields' => $fields,
+        'loginUrl' => '/users/login',
+    ]);
+
+You'll also need to add a checkbox to your login form to have cookies created::
+
+    // In your login view
+    <?= $this->Form->control('remember_me', ['type' => 'checkbox']);
+
+After logging in, if the checkbox was checked you should see a ``CookieAuth``
+cookie in your browser dev tools. The cookie stores the username field and
+a hashed token that is used to reauthenticate later.
 
 Events
 ======
@@ -289,7 +402,7 @@ authenticators must send specific challenge headers in the response::
     // Load the authenticators leaving Basic as the last one.
     $service->loadAuthenticator('Authentication.Session');
     $service->loadAuthenticator('Authentication.Form');
-    $service->loadAuthenticator('Authentication.Token');
+    $service->loadAuthenticator('Authentication.HttpBasic');
 
 If you want to combine ``HttpBasic`` or ``HttpDigest`` with other
 authenticators, be aware that these authenticators will abort the request and
