@@ -83,7 +83,12 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => Router::url(['controller' => 'users', 'action' => 'login'])'
+            'loginUrl' => Router::url([
+                'prefix' => false,
+                'plugin' => null,
+                'controller' => 'Users',
+                'action' => 'login',
+            ]),
         ]);
 
         // Load identifiers
