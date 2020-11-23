@@ -33,8 +33,9 @@ imports::
     use Authentication\Identifier\IdentifierInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
-    use Psr\Http\Message\ServerRequestInterface;
     use Cake\Routing\Router;
+    use Psr\Http\Message\ServerRequestInterface;
+    
 
 Next, add the ``AuthenticationProviderInterface`` to the implemented interfaces
 on your application::
