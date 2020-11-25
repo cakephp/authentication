@@ -1,38 +1,33 @@
 Middleware
 ##########
 
-``AuthenticationMiddleware`` forms the heart of the authentication plugin.
-It intercepts each request to your application and attempts to authenticate
-a user with one of the authenticators. Each authenticator is tried in order
-until a user is authenticated or no user could be found. The ``authentication``,
-``identity`` and ``authenticationResult`` attributes are set on the request
-containing the identity if one was found and the authentication result object
-which can contain additional errors provided by the authenticators.
+``AuthenticationMiddleware`` は認証プラグインの中で成形しています。
+これは、アプリケーションへの各リクエストを捕らえ、いずれかの認証証明証でユーザーの認証を試みます。
+各認証機能は、ユーザが認証されるまで、あるいはユーザが見つからないまで順番に試行されます。
+認証された場合の ID と認証結果オブジェクトを含むリクエストには ``authentication`` 、``identity`` 、 ``authenticationResult``
+属性が設定され、認証子によって提供された追加のエラーを含むことができます。
 
-At the end of each request  the ``identity`` is persisted into each stateful
-authenticator, like the ``Session`` authenticator.
+各リクエストの最後に ``identity`` は ``Session`` のようなステートフルな認証機能に保持されます。
 
-Configuration
-=============
+設定
+=========
 
-All configuration for the middleware is done on the ``AuthenticationService``.
-On the service you can use the following configuration options:
+ミドルウェアの設定は全て ``AuthenticationService`` で行います。
+サービスでは、次の構成オプションを使用できます:
 
-- ``identityClass`` - The class name of identity or a callable identity builder.
-- ``identityAttribute`` - The request attribute used to store the identity.
-  Default to ``identity``.
-- ``unauthenticatedRedirect`` - The URL to redirect unauthenticated errors to.
-- ``queryParam`` - Set to a string to have unauthenticated redirects contain
-  a ``redirect`` query string parameter with the previously blocked URL.
+- ``identityClass`` - IDのクラス名、または呼び出し可能なIDビルダー。
+- ``identityAttribute`` - ID を格納するために使用されるリクエスト属性。デフォルトは ``identity``。
+- ``unauthenticatedRedirect`` - 認証されていない場合リダイレクトするURL。
+- ``queryParam`` - 文字列を設定すると、認証されていないリダイレクトに
+ ``redirect`` クエリ文字列パラメータに以前にブロックされたURLが含まれるようになります。
 
 
-Configuring Multiple Authentication Setups
-==========================================
+複数の認証設定の設定
+=========================
 
-If your application requires different authentication setups for different parts
-of the application for example the API and Web UI. You can do so by using conditional
-logic in your applications ``getAuthenticationService()`` hook method. By
-inspecting the request object you can configure authentication appropriately::
+アプリケーションがAPIやWeb UIなど、アプリケーションのさまざまな部分で異なる認証設定を必要とする場合。
+これはアプリケーションの ``getAuthenticationService()`` フックメソッドで条件付きロジックを使用することで可能です。
+リクエストオブジェクトを検査することで、認証を適切に設定することができます::
 
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
@@ -47,8 +42,8 @@ inspecting the request object you can configure authentication appropriately::
             return $service;
         }
 
-        // Web authentication
-        // Support sessions and form login.
+        // Web 認証
+        // サポートセッションとフォームログイン
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form');
 
@@ -57,5 +52,5 @@ inspecting the request object you can configure authentication appropriately::
         return $service;
     }
 
-While the above example uses a path prefix, you could apply similar logic to the
-subdomain, domain, or any other header or attribute present in the request.
+上記の例ではパスプレフィックスを使用していますが、同様のロジックをサブドメインやドメイン、
+リクエストに存在するその他のヘッダや属性にも適用することができます。
