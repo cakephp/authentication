@@ -6,7 +6,7 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication:^2.0
+    php composer.phar require "cakephp/authentication:^2.0"
 
 Load the plugin by adding the following statement in your project's ``src/Application.php``::
 
@@ -33,7 +33,9 @@ imports::
     use Authentication\Identifier\IdentifierInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
+    use Cake\Routing\Router;
     use Psr\Http\Message\ServerRequestInterface;
+    
 
 Next, add the ``AuthenticationProviderInterface`` to the implemented interfaces
 on your application::
@@ -43,7 +45,7 @@ on your application::
 
 Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
 
-    $middleware->add(new AuthenticationMiddleware($this));
+    $middlewareQueue->add(new AuthenticationMiddleware($this));
     
 .. note::
     Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both.
@@ -65,7 +67,12 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
 
         // Define where users should be redirected to when they are not authenticated
         $service->setConfig([
-            'unauthenticatedRedirect' => '/users/login',
+            'unauthenticatedRedirect' => Router::url([
+                    'prefix' => false,
+                    'plugin' => null,
+                    'controller' => 'Users',
+                    'action' => 'login',
+            ]),
             'queryParam' => 'redirect',
         ]);
 
@@ -77,7 +84,12 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => '/users/login'
+            'loginUrl' => Router::url([
+                'prefix' => false,
+                'plugin' => null,
+                'controller' => 'Users',
+                'action' => 'login',
+            ]),
         ]);
 
         // Load identifiers
@@ -87,7 +99,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
     }
 
 First, we configure what to do with users when they are not authenticated.
-Next, we attache the ``Session`` and ``Form`` :doc:`/authenticators` which define the
+Next, we attach the ``Session`` and ``Form`` :doc:`/authenticators` which define the
 mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
 users based on data in the session while ``Form`` enables us
 to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
@@ -120,9 +132,17 @@ Building a Login Action
 =======================
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. A basic login action in your ``UsersController`` would look
+users to login. First generate a Users model and controller with bake:
+
+.. code-block:: shell
+
+    bin/cake bake model Users
+    bin/cake bake controller Users
+
+Then, we'll add a basic login action to your ``UsersController``. It should look
 like::
 
+    // in src/Controller/UsersController.php
     public function login()
     {
         $result = $this->Authentication->getResult();
@@ -140,6 +160,7 @@ Make sure that you allow access to the ``login`` action in your controller's
 ``beforeFilter()`` callback as mentioned in the previous section, so that
 unauthenticated users are able to access it::
 
+    // in src/Controller/UsersController.php
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -147,13 +168,33 @@ unauthenticated users are able to access it::
         $this->Authentication->allowUnauthenticated(['login']);
     }
 
+Next we'll add a view template for our login form::
+
+    // in templates/Users/login.php
+    <div class="users form content">
+        <?= $this->Form->create() ?>
+        <fieldset>
+            <legend><?= __('Please enter your email and password') ?></legend>
+            <?= $this->Form->control('email') ?>
+            <?= $this->Form->control('password') ?>
+        </fieldset>
+        <?= $this->Form->button(__('Login')); ?>
+        <?= $this->Form->end() ?>
+    </div>
+
 Then add a simple logout action::
 
+    // in src/Controller/UsersController.php
     public function logout()
     {
         $this->Authentication->logout();
         return $this->redirect(['controller' => 'Users', 'action' => 'login']);
     }
+
+We don't need a template for our logout action as we redirect at the end of it.
+
+Adding Password Hashing
+=======================
 
 In order to login your users will need to have hashed passwords. You can
 automatically hash passwords when users update their password using an entity
@@ -174,19 +215,20 @@ setter method::
         }
     }
 
+You should now be able to go to ``/users/add`` and register a new user. Once
+registered you can go to ``/users/login`` and login with your newly created
+user.
+
 
 Further Reading
 ===============
 
-.. toctree::
-    :maxdepth: 1
-
-    /authenticators
-    /identifiers
-    /password-hashers
-    /identity-object
-    /authentication-component
-    /migration-from-the-authcomponent
-    /url-checkers
-    /testing
-    /view-helper
+* :doc:`/authenticators`
+* :doc:`/identifiers`
+* :doc:`/password-hashers`
+* :doc:`/identity-object`
+* :doc:`/authentication-component`
+* :doc:`/migration-from-the-authcomponent`
+* :doc:`/url-checkers`
+* :doc:`/testing`
+* :doc:`/view-helper`

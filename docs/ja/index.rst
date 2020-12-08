@@ -6,7 +6,8 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication:^2.0
+    php composer.phar require "cakephp/authentication:^2.0"
+
 
 プロジェクトの ``src/Application.php``  に以下の文を追加してプラグインをロードしてください。 ::
 
@@ -23,7 +24,9 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
 認証プラグインは、ミドルウェアとしてアプリケーションと統合します。 `middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_
 また、認証されていないアクセスをより簡単にするためのコンポーネントとして使用することもできます。  まずはミドルウェアを適用してみましょう。
+
 **src/Application.php** に以下のクラスを追加します。
+
 インポート::
 
     use Authentication\AuthenticationService;
@@ -88,6 +91,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 まず、ユーザーが認証されていない場合にどうするかを設定します。
 次に、アプリケーションがユーザーを認証するための仕組みを定義する ``Session`` と ``Form`` :doc:`/authenticators` をアタッチします。
 ``Session`` はセッション内のデータに基づいてユーザを識別し、 ``Form`` はログインフォームを ``loginUrl`` で扱うことを可能にします。
+
 最後に、ログインしたユーザーを表す :doc:`identifier </identifiers>` に変換するための :doc:`identity </identity-object>` をアタッチします。
 
 認証が確認できた場合、ミドルウェアは認証サービスを `属性 <http://www.php-fig.org/psr/psr-7/>`_. としてリクエストオブジェクトに追加します。

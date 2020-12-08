@@ -20,8 +20,8 @@
     "require-dev": {
         "cakephp/cakephp": "^4.0",
         "cakephp/cakephp-codesniffer": "^4.0",
-        "phpunit/phpunit": "^8.0",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^5.0",
+        "phpunit/phpunit": "^8.5 || ^9.3"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
