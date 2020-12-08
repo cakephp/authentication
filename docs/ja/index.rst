@@ -41,8 +41,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 
-
-次に、 ``middleware()`` メソッドに以下の `AuthenticationMiddleware` を追加します。
+次に、 ``middleware()`` メソッドに以下の `AuthenticationMiddleware` を追加します。::
 
     $middleware->add(new AuthenticationMiddleware($this));
 

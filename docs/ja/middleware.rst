@@ -19,7 +19,7 @@ Middleware
 - ``identityAttribute`` - ID を格納するために使用されるリクエスト属性。デフォルトは ``identity``。
 - ``unauthenticatedRedirect`` - 認証されていない場合リダイレクトするURL。
 - ``queryParam`` - 文字列を設定すると、認証されていないリダイレクトに
- ``redirect`` クエリ文字列パラメータに以前にブロックされたURLが含まれるようになります。
+  ``redirect`` クエリ文字列パラメータに以前にブロックされたURLが含まれるようになります。
 
 
 複数の認証設定の設定

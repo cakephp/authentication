@@ -86,7 +86,7 @@ JWT 認証機能は、ヘッダまたはクエリパラメータから `JWT toke
 -  **secretKey**: デフォルトは ``null`` ですが、秘密鍵を ``Security::salt()`` 提供しているCakePHPアプリケーションのコンテキストではない場合は **必須** です。
 
 デフォルトでは、 ``JwtAuthenticator`` は対称鍵アルゴリズム ``HS256`` を使用し、暗号化鍵として、
-``Cake\Utility\Security::salt()``  の値を使用します。
+``Cake\Utility\Security::salt()``  の値を使用します。::
 
     # 秘密鍵生成
     openssl genrsa -out config/jwt.key 1024

@@ -158,7 +158,7 @@ AuthComponent の設定の移行
 
 この``AuthenticationMiddleware``はあなたの認証子に基づいたアイデンティティのチェックと設定を行います。
 通常、ログイン後に ``AuthComponent`` は設定した場所にリダイレクトします。
-ログインが成功したときにリダイレクトするには、ログインアクションを変更して新しいIDの結果を確認してください。
+ログインが成功したときにリダイレクトするには、ログインアクションを変更して新しいIDの結果を確認してください。::
 
     public function login()
     {
@@ -211,7 +211,7 @@ AuthComponent の設定の移行
 
 ``AuthComponent`` と同様に、
 ``AuthenticationComponent`` は特定の動作を簡単に '公開' し、
-有効なIDを必要としないようにします。
+有効なIDを必要としないようにします。::
 
    // In your controller's beforeFilter method.
    $this->Authentication->allowUnauthenticated(['view']);
