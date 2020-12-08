@@ -8,6 +8,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
     php composer.phar require "cakephp/authentication:^2.0"
 
+
 プロジェクトの ``src/Application.php``  に以下の文を追加してプラグインをロードしてください。 ::
 
     public function bootstrap(): void
@@ -73,8 +74,6 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
         ];
 
-=======
-        
         // 認証者を読み込みます。セッションを優先してください。
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
@@ -87,6 +86,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 
         return $service;
     }
+
 
 まず、ユーザーが認証されていない場合にどうするかを設定します。
 次に、アプリケーションがユーザーを認証するための仕組みを定義する ``Session`` と ``Form`` :doc:`/authenticators` をアタッチします。

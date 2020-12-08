@@ -210,7 +210,7 @@ EncryptedCookieMiddlewareをアプリに追加したことを確認してくだ�
 -  **rememberMeField**: デフォルトは ``remember_me`` です。
 -  **cookie**: クッキーオプションの配列:
 
--  **name**: クッキー名, デフォルトは ``CookieAuth``
+   -  **name**: クッキー名, デフォルトは ``CookieAuth``
    -  **expire**: 有効期限, デフォルトは ``null`` です。
    -  **path**: パス, デフォルトは ``/`` です。
    -  **domain**: ドメイン, デフォルトは空の文字列です \`\`
