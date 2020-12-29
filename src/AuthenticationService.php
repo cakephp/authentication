@@ -247,9 +247,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             }
         }
 
-        if (!($identity instanceof IdentityInterface)) {
-            $identity = $this->buildIdentity($identity);
-        }
+        $identity = $this->buildIdentity($identity);
 
         return [
             'request' => $request->withAttribute($this->getConfig('identityAttribute'), $identity),

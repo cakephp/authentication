@@ -396,13 +396,13 @@ class AuthenticationServiceTest extends TestCase
     {
         $request = new ServerRequest();
         $response = new Response();
-        $identity = $this->createMock(IdentityInterface::class);
+        $identity = new ArrayObject();
 
         $service = new AuthenticationService();
 
         $result = $service->persistIdentity($request, $response, $identity);
 
-        $this->assertSame($identity, $result['request']->getAttribute('identity'));
+        $this->assertInstanceOf(IdentityInterface::class, $result['request']->getAttribute('identity'));
     }
 
     /**
