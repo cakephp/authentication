@@ -498,6 +498,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionMessage('Authentication is required to continue');
         $this->expectExceptionCode(401);
 
         $component->setConfig('identityCheckEvent', 'Controller.initialize');

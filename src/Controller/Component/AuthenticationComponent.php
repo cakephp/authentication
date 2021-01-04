@@ -172,9 +172,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $identity = $request->getAttribute($this->getConfig('identityAttribute'));
         if (!$identity) {
-            throw new UnauthenticatedException(
-                'No identity found. You can skip this check by configuring  `requireIdentity` to be `false`.'
-            );
+            throw new UnauthenticatedException();
         }
     }
 
