@@ -45,6 +45,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * - `requireIdentity` - By default AuthenticationComponent will require an
      *   identity to be present whenever it is active. You can set the option to
      *   false to disable that behavior. See allowUnauthenticated() as well.
+     * - `unauthenticatedMessage` - Error message to use when `UnauthenticatedException` is thrown.
      *
      * @var array
      */
@@ -53,6 +54,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         'requireIdentity' => true,
         'identityAttribute' => 'identity',
         'identityCheckEvent' => 'Controller.startup',
+        'unauthenticatedMessage' => null,
     ];
 
     /**
@@ -172,7 +174,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $identity = $request->getAttribute($this->getConfig('identityAttribute'));
         if (!$identity) {
-            throw new UnauthenticatedException();
+            throw new UnauthenticatedException($this->getConfig('unauthenticatedMessage', ''));
         }
     }
 
