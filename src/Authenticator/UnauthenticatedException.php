@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use RuntimeException;
+use Cake\Http\Exception\HttpException;
 use Throwable;
 
 /**
@@ -26,7 +26,7 @@ use Throwable;
  * uses the 401 status code by default as this exception is used when the application
  * has rejected a request but we do not know which authenticator the user should try.
  */
-class UnauthenticatedException extends RuntimeException
+class UnauthenticatedException extends HttpException
 {
     /**
      * Constructor

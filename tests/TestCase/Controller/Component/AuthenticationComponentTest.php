@@ -498,9 +498,30 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionMessage('Authentication is required to continue');
         $this->expectExceptionCode(401);
 
         $component->setConfig('identityCheckEvent', 'Controller.initialize');
+        $component->allowUnauthenticated(['index', 'add']);
+        $component->beforeFilter();
+    }
+
+    public function testCustomUnauthenticatedMessage()
+    {
+        $request = $this->request
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $errorMessage = 'You shall not pass!';
+        $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionMessage($errorMessage);
+        $this->expectExceptionCode(401);
+
+        $component->setConfig('identityCheckEvent', 'Controller.initialize');
+        $component->setConfig('unauthenticatedMessage', $errorMessage);
         $component->allowUnauthenticated(['index', 'add']);
         $component->beforeFilter();
     }

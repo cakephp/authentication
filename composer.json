@@ -10,7 +10,7 @@
     "type": "cakephp-plugin",
     "homepage": "https://cakephp.org",
     "require": {
-        "cakephp/core": "^4.0",
+        "cakephp/http": "^4.0",
         "laminas/laminas-diactoros": "^2.2.2",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.0",
