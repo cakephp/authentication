@@ -6,7 +6,7 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 .. code-block:: bash
 
-    php composer.phar require cakephp/authentication:^2.0
+    php composer.phar require "cakephp/authentication:^2.0"
 
 Load the plugin by adding the following statement in your project's ``src/Application.php``::
 
@@ -33,7 +33,9 @@ imports::
     use Authentication\Identifier\IdentifierInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
+    use Cake\Routing\Router;
     use Psr\Http\Message\ServerRequestInterface;
+    
 
 Next, add the ``AuthenticationProviderInterface`` to the implemented interfaces
 on your application::
@@ -43,7 +45,7 @@ on your application::
 
 Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
 
-    $middleware->add(new AuthenticationMiddleware($this));
+    $middlewareQueue->add(new AuthenticationMiddleware($this));
     
 .. note::
     Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both.
@@ -65,7 +67,12 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
 
         // Define where users should be redirected to when they are not authenticated
         $service->setConfig([
-            'unauthenticatedRedirect' => '/users/login',
+            'unauthenticatedRedirect' => Router::url([
+                    'prefix' => false,
+                    'plugin' => null,
+                    'controller' => 'Users',
+                    'action' => 'login',
+            ]),
             'queryParam' => 'redirect',
         ]);
 
@@ -77,7 +84,12 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
-            'loginUrl' => '/users/login'
+            'loginUrl' => Router::url([
+                'prefix' => false,
+                'plugin' => null,
+                'controller' => 'Users',
+                'action' => 'login',
+            ]),
         ]);
 
         // Load identifiers
@@ -87,7 +99,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method y
     }
 
 First, we configure what to do with users when they are not authenticated.
-Next, we attache the ``Session`` and ``Form`` :doc:`/authenticators` which define the
+Next, we attach the ``Session`` and ``Form`` :doc:`/authenticators` which define the
 mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
 users based on data in the session while ``Form`` enables us
 to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
@@ -211,15 +223,12 @@ user.
 Further Reading
 ===============
 
-.. toctree::
-    :maxdepth: 1
-
-    /authenticators
-    /identifiers
-    /password-hashers
-    /identity-object
-    /authentication-component
-    /migration-from-the-authcomponent
-    /url-checkers
-    /testing
-    /view-helper
+* :doc:`/authenticators`
+* :doc:`/identifiers`
+* :doc:`/password-hashers`
+* :doc:`/identity-object`
+* :doc:`/authentication-component`
+* :doc:`/migration-from-the-authcomponent`
+* :doc:`/url-checkers`
+* :doc:`/testing`
+* :doc:`/view-helper`
