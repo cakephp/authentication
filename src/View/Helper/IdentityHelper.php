@@ -28,6 +28,17 @@ use RuntimeException;
 class IdentityHelper extends Helper
 {
     /**
+     * Configuration options
+     *
+     * - `identityAttribute` - The request attribute which holds the identity.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'identityAttribute' => 'identity',
+    ];
+
+    /**
      * Identity Object
      *
      * @var null|\Authentication\IdentityInterface
@@ -44,7 +55,7 @@ class IdentityHelper extends Helper
      */
     public function initialize(array $config): void
     {
-        $this->_identity = $this->getView()->getRequest()->getAttribute('identity');
+        $this->_identity = $this->_View->getRequest()->getAttribute($this->getConfig('identityAttribute'));
 
         if (empty($this->_identity)) {
             return;
