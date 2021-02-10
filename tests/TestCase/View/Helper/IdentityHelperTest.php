@@ -76,6 +76,22 @@ class IdentityHelperTest extends TestCase
         $this->assertFalse($helper->is(2));
     }
 
+    public function testIdentityWithCustomAttribute()
+    {
+        $identity = new Identity([
+            'id' => 1,
+            'username' => 'cakephp',
+            'profile' => [
+                'first_name' => 'cake',
+            ],
+        ]);
+        $request = (new ServerRequest())->withAttribute('customIdentity', $identity);
+        $view = new View($request);
+
+        $helper = new IdentityHelper($view, ['identityAttribute' => 'customIdentity']);
+        $this->assertEquals($identity->getOriginalData(), $helper->get());
+    }
+
     /**
      * testWithOutIdentity
      *
