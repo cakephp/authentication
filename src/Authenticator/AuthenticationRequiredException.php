@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use RuntimeException;
+use Cake\Http\Exception\HttpException;
 
 /**
  * An exception for stateless authenticators when credentials are wrong/missing.
@@ -24,7 +24,7 @@ use RuntimeException;
  * Unlike `UnauthenticatedException` this class can carry authentication challenge headers.
  * and is used by stateless authenticators.
  */
-class AuthenticationRequiredException extends RuntimeException
+class AuthenticationRequiredException extends HttpException
 {
     /**
      * @var array
