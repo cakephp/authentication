@@ -239,7 +239,7 @@ Configuration options:
 -  **cookie**: Array of cookie options:
 
    -  **name**: Cookie name, default is ``CookieAuth``
-   -  **expire**: Expiration, default is ``null``
+   -  **expires**: Expiration, default is ``null``
    -  **path**: Path, default is ``/``
    -  **domain**: Domain, default is an empty string.
    -  **secure**: Bool, default is ``false``
