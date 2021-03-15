@@ -22,7 +22,6 @@ use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
-use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
@@ -66,8 +65,6 @@ class HttpDigestAuthenticatorTest extends TestCase
         $password = HttpDigestAuthenticator::password('mariano', 'cake', 'localhost');
         $User = TableRegistry::get('Users');
         $User->updateAll(['password' => $password], []);
-
-        $this->response = $this->getMockBuilder(Response::class)->getMock();
     }
 
     /**
@@ -102,7 +99,7 @@ class HttpDigestAuthenticatorTest extends TestCase
             ['REQUEST_URI' => '/posts/index']
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
     }
@@ -133,7 +130,7 @@ opaque="123abc"
 DIGEST;
         $_SERVER['PHP_AUTH_DIGEST'] = $digest;
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid(), 'Should fail');
     }
 
@@ -163,7 +160,7 @@ DIGEST;
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $expected = [
             'id' => 1,
             'username' => 'mariano',
@@ -206,7 +203,7 @@ DIGEST;
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
     }
@@ -237,7 +234,7 @@ DIGEST;
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
     }
@@ -264,7 +261,7 @@ DIGEST;
         $data['response'] = $this->auth->generateResponseHash($data, '09faa9931501bf30f0d4253fa7763022', 'GET');
         $request = $request->withEnv('PHP_AUTH_DIGEST', $this->digestHeader($data));
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertFalse($result->isValid());
     }
