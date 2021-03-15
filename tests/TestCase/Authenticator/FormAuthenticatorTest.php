@@ -20,7 +20,6 @@ use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use RuntimeException;
 
@@ -52,10 +51,9 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers);
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -77,11 +75,10 @@ class FormAuthenticatorTest extends TestCase
             [],
             []
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
@@ -104,11 +101,10 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => '', 'password' => '']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
@@ -131,13 +127,12 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_OTHER, $result->getStatus());
@@ -160,7 +155,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => [
@@ -169,7 +163,7 @@ class FormAuthenticatorTest extends TestCase
             ],
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_OTHER, $result->getStatus());
@@ -196,13 +190,12 @@ class FormAuthenticatorTest extends TestCase
         $uri->base = '/base';
         $request = $request->withUri($uri);
         $request = $request->withAttribute('base', $uri->base);
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_OTHER, $result->getStatus());
@@ -225,13 +218,12 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/Users/login',
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -254,7 +246,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => [
@@ -263,7 +254,7 @@ class FormAuthenticatorTest extends TestCase
             ],
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -290,13 +281,12 @@ class FormAuthenticatorTest extends TestCase
         $uri->base = '/base';
         $request = $request->withUri($uri);
         $request = $request->withAttribute('base', $uri->base);
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/base/users/login',
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -319,7 +309,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '%^/[a-z]{2}/users/login/?$%',
@@ -328,7 +317,7 @@ class FormAuthenticatorTest extends TestCase
             ],
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -353,7 +342,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
@@ -363,7 +351,7 @@ class FormAuthenticatorTest extends TestCase
             ],
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_OTHER, $result->getStatus());
@@ -389,7 +377,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
@@ -399,7 +386,7 @@ class FormAuthenticatorTest extends TestCase
             ],
         ]);
 
-        $result = $form->authenticate($request, $response);
+        $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -420,7 +407,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['email' => 'mariano@cakephp.org', 'secret' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
@@ -441,7 +427,7 @@ class FormAuthenticatorTest extends TestCase
                 'password' => 'password',
             ]);
 
-        $form->authenticate($request, $response);
+        $form->authenticate($request);
     }
 
     /**
@@ -458,7 +444,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['id' => 1, 'username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
@@ -475,7 +460,7 @@ class FormAuthenticatorTest extends TestCase
                 'password' => 'password',
             ]);
 
-        $form->authenticate($request, $response);
+        $form->authenticate($request);
     }
 
     /**
@@ -492,7 +477,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['id' => 1, 'username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
@@ -502,7 +486,7 @@ class FormAuthenticatorTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('URL checker class `Foo` was not found.');
 
-        $form->authenticate($request, $response);
+        $form->authenticate($request);
     }
 
     /**
@@ -519,7 +503,6 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['id' => 1, 'username' => 'mariano', 'password' => 'password']
         );
-        $response = new Response();
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
@@ -532,6 +515,6 @@ class FormAuthenticatorTest extends TestCase
             'does not implement the `Authentication\UrlChecker\UrlCheckerInterface` interface.'
         );
 
-        $form->authenticate($request, $response);
+        $form->authenticate($request);
     }
 }

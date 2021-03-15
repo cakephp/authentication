@@ -20,7 +20,6 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
@@ -49,7 +48,6 @@ class HttpBasicAuthenticatorTest extends TestCase
         ]);
 
         $this->auth = new HttpBasicAuthenticator($this->identifiers);
-        $this->response = new Response();
     }
 
     /**
@@ -84,7 +82,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
     }
 
@@ -102,7 +100,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
     }
 
@@ -120,7 +118,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
     }
 
@@ -139,7 +137,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
     }
 
@@ -175,7 +173,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             'created' => new Time('2007-03-17 01:16:23'),
             'updated' => new Time('2007-03-17 01:18:31'),
         ];
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $this->assertTrue($result->isValid());
 
         $value = $result->getData()->toArray();
@@ -224,7 +222,7 @@ class HttpBasicAuthenticatorTest extends TestCase
             ]
         );
 
-        $result = $this->auth->authenticate($request, $this->response);
+        $result = $this->auth->authenticate($request);
         $expected = [
             'id' => 1,
             'username' => 'mariano',

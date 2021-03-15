@@ -67,7 +67,6 @@ class SessionAuthenticatorTest extends TestCase
     public function testAuthenticate()
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
-        $response = new Response();
 
         $this->sessionMock->expects($this->at(0))
             ->method('read')
@@ -80,7 +79,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers);
-        $result = $authenticator->authenticate($request, $response);
+        $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -93,7 +92,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
 
         $authenticator = new SessionAuthenticator($this->identifiers);
-        $result = $authenticator->authenticate($request, $response);
+        $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
@@ -107,7 +106,6 @@ class SessionAuthenticatorTest extends TestCase
     public function testVerifyByDatabase()
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
-        $response = new Response();
 
         $this->sessionMock->expects($this->at(0))
             ->method('read')
@@ -122,7 +120,7 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers, [
             'identify' => true,
         ]);
-        $result = $authenticator->authenticate($request, $response);
+        $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
@@ -140,7 +138,7 @@ class SessionAuthenticatorTest extends TestCase
         $authenticator = new SessionAuthenticator($this->identifiers, [
             'identify' => true,
         ]);
-        $result = $authenticator->authenticate($request, $response);
+        $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());

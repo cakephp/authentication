@@ -20,7 +20,6 @@ use Authentication\Authenticator\Result;
 use Authentication\Authenticator\TokenAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 
 class TokenAuthenticatorTest extends TestCase
@@ -53,8 +52,6 @@ class TokenAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-
-        $this->response = new Response();
     }
 
     /**
@@ -68,7 +65,7 @@ class TokenAuthenticatorTest extends TestCase
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'queryParam' => 'token',
         ]);
-        $result = $tokenAuth->authenticate($this->request, $this->response);
+        $result = $tokenAuth->authenticate($this->request);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
 
@@ -77,7 +74,7 @@ class TokenAuthenticatorTest extends TestCase
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'header' => 'Token',
         ]);
-        $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
+        $result = $tokenAuth->authenticate($requestWithHeaders);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
     }
@@ -94,7 +91,7 @@ class TokenAuthenticatorTest extends TestCase
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'queryParam' => 'token',
         ]);
-        $result = $tokenAuth->authenticate($requestWithParams, $this->response);
+        $result = $tokenAuth->authenticate($requestWithParams);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
 
@@ -103,7 +100,7 @@ class TokenAuthenticatorTest extends TestCase
         $tokenAuth = new TokenAuthenticator($this->identifiers, [
             'queryParam' => 'token',
         ]);
-        $result = $tokenAuth->authenticate($requestWithParams, $this->response);
+        $result = $tokenAuth->authenticate($requestWithParams);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
     }
@@ -121,7 +118,7 @@ class TokenAuthenticatorTest extends TestCase
             'header' => 'Token',
             'tokenPrefix' => 'identity',
         ]);
-        $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
+        $result = $tokenAuth->authenticate($requestWithHeaders);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
 
@@ -131,7 +128,7 @@ class TokenAuthenticatorTest extends TestCase
             'header' => 'Token',
             'tokenPrefix' => 'identity',
         ]);
-        $result = $tokenAuth->authenticate($requestWithHeaders, $this->response);
+        $result = $tokenAuth->authenticate($requestWithHeaders);
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
     }
@@ -147,7 +144,7 @@ class TokenAuthenticatorTest extends TestCase
             'header' => 'Token',
         ]);
 
-        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
+        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals());
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
@@ -163,7 +160,7 @@ class TokenAuthenticatorTest extends TestCase
             'queryParam' => 'token',
         ]);
 
-        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
+        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals());
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
@@ -177,7 +174,7 @@ class TokenAuthenticatorTest extends TestCase
     {
         $tokenAuth = new TokenAuthenticator($this->identifiers);
 
-        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals(), $this->response);
+        $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals());
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
