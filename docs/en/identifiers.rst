@@ -160,7 +160,7 @@ Configuration options:
 -  **finder**: The finder to use with the model. Default is ``all``.
 
 In order to use ORM resolver you must require ``cakephp/orm`` in your
-``composer.json`` file.
+``composer.json`` file (if you are not already using the full CakePHP framework).
 
 Writing your own resolver
 -------------------------
