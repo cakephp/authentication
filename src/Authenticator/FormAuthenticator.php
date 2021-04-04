@@ -89,10 +89,17 @@ class FormAuthenticator extends AbstractAuthenticator
             $uri = $uri->withPath((string)$base . $uri->getPath());
         }
 
+        $checkFullUrl = $this->getConfig('urlChecker.checkFullUrl', false);
+        if ($checkFullUrl) {
+            $uri = (string)$uri;
+        } else {
+            $uri = $uri->getPath();
+        }
+
         $errors = [
             sprintf(
                 'Login URL `%s` did not match `%s`.',
-                (string)$uri,
+                $uri,
                 implode('` or `', (array)$this->getConfig('loginUrl'))
             ),
         ];
