@@ -21,9 +21,8 @@ Load the plugin by adding the following statement in your project's ``src/Applic
 Getting Started
 ===============
 
-The authentication plugin integrates with your application as a middleware
-`middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
-be used as a component to make unauthenticated access simpler. First, lets
+The authentication plugin integrates with your application as a `middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
+be used as a component to make unauthenticated access simpler. First, let's
 apply the middleware. In **src/Application.php**, add the following to the class
 imports::
 
@@ -52,7 +51,7 @@ Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middlewa
 
 ``AuthenticationMiddleware`` will call a hook method on your application when
 it starts handling the request. This hook method allows your application to
-define the ``AuthenticationService`` it wants to use. Add the following method your
+define the ``AuthenticationService`` it wants to use. Add the following method to your
 **src/Application.php**::
 
     /**
