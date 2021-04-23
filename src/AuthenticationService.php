@@ -292,12 +292,12 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function getIdentity(): ?IdentityInterface
     {
-        if ($this->_result === null || !$this->_result->isValid()) {
+        if ($this->_result === null) {
             return null;
         }
 
         $identityData = $this->_result->getData();
-        if ($identityData === null) {
+        if (!$this->_result->isValid() || $identityData === null) {
             return null;
         }
 
