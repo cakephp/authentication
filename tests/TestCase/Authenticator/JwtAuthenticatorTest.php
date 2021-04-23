@@ -176,7 +176,7 @@ class JwtAuthenticatorTest extends TestCase
             ])
             ->getMock();
 
-        $authenticator->expects($this->at(0))
+        $authenticator->expects($this->once())
             ->method('getPayLoad')
             ->willThrowException(new Exception());
 
@@ -207,7 +207,7 @@ class JwtAuthenticatorTest extends TestCase
             ])
             ->getMock();
 
-        $authenticator->expects($this->at(0))
+        $authenticator->expects($this->once())
             ->method('getPayLoad')
             ->will($this->returnValue(new \stdClass()));
 

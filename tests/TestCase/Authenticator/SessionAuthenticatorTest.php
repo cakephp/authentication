@@ -64,11 +64,11 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticate()
+    public function testAuthenticateSuccess()
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
-        $this->sessionMock->expects($this->at(0))
+        $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
             ->will($this->returnValue([
@@ -83,8 +83,18 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
 
-        $this->sessionMock->expects($this->at(0))
+    /**
+     * Test authentication
+     *
+     * @return void
+     */
+    public function testAuthenticateFailure()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+
+        $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
             ->will($this->returnValue(null));
@@ -99,15 +109,15 @@ class SessionAuthenticatorTest extends TestCase
     }
 
     /**
-     * Test session data verification by database lookup
+     * Test successful session data verification by database lookup
      *
      * @return void
      */
-    public function testVerifyByDatabase()
+    public function testVerifyByDatabaseSuccess()
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
-        $this->sessionMock->expects($this->at(0))
+        $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
             ->will($this->returnValue([
@@ -124,8 +134,18 @@ class SessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
 
-        $this->sessionMock->expects($this->at(0))
+    /**
+     * Test session data verification by database lookup failure
+     *
+     * @return void
+     */
+    public function testVerifyByDatabaseFailure()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+
+        $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
             ->will($this->returnValue([
@@ -159,10 +179,10 @@ class SessionAuthenticatorTest extends TestCase
         $data = new ArrayObject(['username' => 'florian']);
 
         $this->sessionMock
-            ->expects($this->at(0))
+            ->expects($this->exactly(2))
             ->method('check')
-            ->with('Auth')
-            ->willReturn(false);
+            ->withConsecutive(['Auth'], ['Auth'])
+            ->willReturnOnConsecutiveCalls(false, true);
 
         $this->sessionMock
             ->expects($this->once())
@@ -172,12 +192,6 @@ class SessionAuthenticatorTest extends TestCase
             ->expects($this->once())
             ->method('write')
             ->with('Auth', $data);
-
-        $this->sessionMock
-            ->expects($this->at(3))
-            ->method('check')
-            ->with('Auth')
-            ->willReturn(true);
 
         $result = $authenticator->persistIdentity($request, $response, $data);
         $this->assertIsArray($result);
@@ -203,12 +217,12 @@ class SessionAuthenticatorTest extends TestCase
 
         $authenticator = new SessionAuthenticator($this->identifiers);
 
-        $this->sessionMock->expects($this->at(0))
+        $this->sessionMock->expects($this->once())
             ->method('delete')
             ->with('Auth');
 
         $this->sessionMock
-            ->expects($this->at(1))
+            ->expects($this->once())
             ->method('renew');
 
         $result = $authenticator->clearIdentity($request, $response);
