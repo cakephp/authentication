@@ -425,6 +425,28 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * Test that the persistIdentity() called with an identity instance sets
+     * this instance as a request attribute.
+     *
+     * For example the identity data passed to this method (eg. User entity)
+     * may already implement the IdentityInterface itself.
+     *
+     * @return void
+     */
+    public function testPersistIdentityInstance()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+        $identity = new Identity([]);
+
+        $service = new AuthenticationService();
+
+        $result = $service->persistIdentity($request, $response, $identity);
+
+        $this->assertSame($identity, $result['request']->getAttribute('identity'));
+    }
+
+    /**
      * testGetResult
      *
      * @return void
@@ -493,6 +515,25 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Identity::class, $service->buildIdentity(new ArrayObject([])));
+    }
+
+    /**
+     * Tests that passing the identity instance buildIdentity() gets the same result
+     *
+     * @return void
+     */
+    public function testBuildIdentityWithInstance()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+        ]);
+
+        $identity = new Identity([]);
+        $result = $service->buildIdentity($identity);
+
+        $this->assertSame($result, $identity);
     }
 
     /**
@@ -603,6 +644,29 @@ class AuthenticationServiceTest extends TestCase
         $service->authenticate($request);
 
         $this->assertSame($identity, $service->getIdentity());
+    }
+
+    /**
+     * testGetIdentityNull
+     *
+     * @return void
+     */
+    public function testGetIdentityNull()
+    {
+        $request = new ServerRequest();
+
+        $result = new Result(null, Result::FAILURE_OTHER);
+
+        $authenticator = $this->createMock(AuthenticatorInterface::class);
+        $authenticator->method('authenticate')
+            ->willReturn($result);
+
+        $service = new AuthenticationService();
+        $service->authenticators()->set('Test', $authenticator);
+
+        $service->authenticate($request);
+
+        $this->assertNull($service->getIdentity());
     }
 
     public function testGetIdentityAttribute()

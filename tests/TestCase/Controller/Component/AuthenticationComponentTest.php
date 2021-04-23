@@ -203,6 +203,26 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * Test that the setIdentity() called with an identity instance sets
+     * this instance as a request attribute
+     *
+     * @eturn void
+     */
+    public function testSetIdentityInstance()
+    {
+        $request = $this->request->withAttribute('authentication', $this->service);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $identity = new Identity($this->identityData);
+        $component->setIdentity($identity);
+        $result = $component->getIdentity();
+        $this->assertSame($identity, $result);
+    }
+
+    /**
      * Ensure setIdentity() clears identity and persists identity data.
      *
      * @eturn void

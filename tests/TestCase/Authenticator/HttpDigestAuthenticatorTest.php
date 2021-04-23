@@ -26,6 +26,7 @@ use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Constraint\RegularExpression;
 
 /**
  * Test case for HttpDigestAuthentication
@@ -283,7 +284,7 @@ DIGEST;
         } catch (AuthenticationRequiredException $e) {
             $this->assertSame(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
-            $this->assertRegexp(
+            $this->assertMatchesRegularExpression(
                 '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
                 $header
             );
@@ -326,7 +327,7 @@ DIGEST;
         } catch (AuthenticationRequiredException $e) {
             $this->assertSame(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
-            $this->assertRegexp(
+            $this->assertMatchesRegularExpression(
                 '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
                 $header
             );
@@ -514,5 +515,20 @@ DIGEST;
         $nonceValue = $expiryTime . ':' . $signatureValue;
 
         return base64_encode($nonceValue);
+    }
+
+    /**
+     * Asserts that a string matches a given regular expression.
+     *
+     * @param string $pattern Regex pattern
+     * @param string $string String to test
+     * @param string $message Message
+     * @return void
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @codeCoverageIgnore
+     */
+    public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
+    {
+        static::assertThat($string, new RegularExpression($pattern), $message);
     }
 }
