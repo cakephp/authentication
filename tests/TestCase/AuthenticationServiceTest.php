@@ -425,6 +425,25 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * Test that the persistIdentity() called with an identity instance sets
+     * this instance as a request attribute
+     *
+     * @return void
+     */
+    public function testPersistIdentityInstance()
+    {
+        $request = new ServerRequest();
+        $response = new Response();
+        $identity = new Identity([]);
+
+        $service = new AuthenticationService();
+
+        $result = $service->persistIdentity($request, $response, $identity);
+
+        $this->assertSame($identity, $result['request']->getAttribute('identity'));
+    }
+
+    /**
      * testGetResult
      *
      * @return void
