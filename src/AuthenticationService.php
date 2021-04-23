@@ -297,6 +297,9 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         $identityData = $this->_result->getData();
+        if ($identityData === null) {
+            return null;
+        }
 
         return $this->buildIdentity($identityData);
     }

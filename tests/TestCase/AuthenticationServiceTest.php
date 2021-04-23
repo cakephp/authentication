@@ -646,6 +646,29 @@ class AuthenticationServiceTest extends TestCase
         $this->assertSame($identity, $service->getIdentity());
     }
 
+    /**
+     * testGetIdentityNull
+     *
+     * @return void
+     */
+    public function testGetIdentityNull()
+    {
+        $request = new ServerRequest();
+
+        $result = new Result(null, Result::FAILURE_OTHER);
+
+        $authenticator = $this->createMock(AuthenticatorInterface::class);
+        $authenticator->method('authenticate')
+            ->willReturn($result);
+
+        $service = new AuthenticationService();
+        $service->authenticators()->set('Test', $authenticator);
+
+        $service->authenticate($request);
+
+        $this->assertNull($service->getIdentity());
+    }
+
     public function testGetIdentityAttribute()
     {
         $service = new AuthenticationService(['identityAttribute' => 'user']);
