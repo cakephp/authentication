@@ -426,7 +426,10 @@ class AuthenticationServiceTest extends TestCase
 
     /**
      * Test that the persistIdentity() called with an identity instance sets
-     * this instance as a request attribute
+     * this instance as a request attribute.
+     *
+     * For example the identity data passed to this method (eg. User entity)
+     * may already implement the IdentityInterface itself.
      *
      * @return void
      */
