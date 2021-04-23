@@ -296,12 +296,9 @@ class AuthenticationService implements AuthenticationServiceInterface
             return null;
         }
 
-        $identity = $this->_result->getData();
-        if (!($identity instanceof IdentityInterface)) {
-            $identity = $this->buildIdentity($identity);
-        }
+        $identityData = $this->_result->getData();
 
-        return $identity;
+        return $this->buildIdentity($identityData);
     }
 
     /**
@@ -322,6 +319,10 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function buildIdentity($identityData): IdentityInterface
     {
+        if ($identityData instanceof IdentityInterface) {
+            return $identityData;
+        }
+
         $class = $this->getConfig('identityClass');
 
         if (is_callable($class)) {

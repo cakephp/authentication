@@ -515,6 +515,25 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * Tests that passing the identity instance buildIdentity() gets the same result
+     *
+     * @return void
+     */
+    public function testBuildIdentityWithInstance()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+        ]);
+
+        $identity = new Identity([]);
+        $result = $service->buildIdentity($identity);
+
+        $this->assertSame($result, $identity);
+    }
+
+    /**
      * testBuildIdentityRuntimeException
      *
      * @return void
