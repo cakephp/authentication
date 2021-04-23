@@ -283,7 +283,7 @@ DIGEST;
         } catch (AuthenticationRequiredException $e) {
             $this->assertSame(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
-            $this->assertRegexp(
+            $this->assertMatchesRegularExpression(
                 '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
                 $header
             );
@@ -326,7 +326,7 @@ DIGEST;
         } catch (AuthenticationRequiredException $e) {
             $this->assertSame(401, $e->getCode());
             $header = $e->getHeaders()['WWW-Authenticate'];
-            $this->assertRegexp(
+            $this->assertMatchesRegularExpression(
                 '/^Digest realm="localhost",qop="auth",nonce="[A-Za-z0-9=]+",opaque="123abc"$/',
                 $header
             );
