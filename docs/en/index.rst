@@ -47,7 +47,7 @@ Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middlewa
     $middlewareQueue->add(new AuthenticationMiddleware($this));
     
 .. note::
-    Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both.
+    Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both, and after ``RoutingMiddleware``.
 
 ``AuthenticationMiddleware`` will call a hook method on your application when
 it starts handling the request. This hook method allows your application to
