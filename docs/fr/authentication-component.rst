@@ -1,43 +1,46 @@
-Authentication Component
+Composant Authentication
 ========================
 
-You can use the ``AuthenticationComponent`` to access the result of
-authentication, get user identity and logout user. Load the component in your
-``AppController::initialize()`` like any other component::
+Vous pouvez utiliser ``AuthenticationComponent`` pour accéder au résultat de
+l'authentification, obtenir l'identité de l'utilisateur et déconnecter
+l'utilisateur. Chargez le composant dans votre méthode
+``AppController::initialize()`` comme n'importe quel autre composant::
 
     $this->loadComponent('Authentication.Authentication', [
-        'logoutRedirect' => '/users/login'  // Default is false
+        'logoutRedirect' => '/users/login'  // false par défaut
     ]);
 
-Once loaded, the ``AuthenticationComponent`` will require that all actions have an
-authenticated user present, but perform no other access control checks. You can
-disable this check for specific actions using ``allowUnauthenticated()``::
+Une fois chargé, ``AuthenticationComponent`` exigera la présence d'un
+utilisateur authentifié pour toutes les actions, mais ne réalise pas d'autres
+contrôles d'accès. Vous pouvez désactiver cette vérification pour certaines
+actions en utilisant ``allowUnauthenticated()``::
 
-    // In your controller's beforeFilter method.
+    // Dans la méthode beforeFilter de votre contrôleur.
     $this->Authentication->allowUnauthenticated(['view']);
 
-Accessing the logged in user
-----------------------------
+Accéder à l'utiliseur connecté
+------------------------------
 
-You can get the authenticated user identity data using the authentication
-component::
+Vous pouvez obtenir les données d'identité de l'utilisateur authentifié à partir
+du composant Authentication::
 
     $user = $this->Authentication->getIdentity();
 
-You can also get the identity directly from the request instance::
+Vous pouvez aussi obtenir l'identité directement depuis l'instance de la
+requête::
 
     $user = $request->getAttribute('identity');
 
-Checking the login status
--------------------------
+Vérifier le statut de connexion
+-------------------------------
 
-You can check if the authentication process was successful by accessing the
-result object::
+Vous pouvez vérifier si le processus d'authentification s'est bien déroulé en
+accédant à l'objet résultat::
 
-    // Using Authentication component
+    // En utilisant le composant Authentication
     $result = $this->Authentication->getResult();
 
-    // Using request object
+    // En utilisant l'objet requête
     $result = $request->getAttribute('authentication')->getResult();
 
     if ($result->isValid()) {
@@ -47,37 +50,38 @@ result object::
         $this->log($result->getErrors());
     }
 
-The result sets objects status returned from ``getStatus()`` will match one of
-these these constants in the Result object:
+Le statut des objets result sets renvoyé par ``getStatus()`` correspondra à
+l'une de ces constantes dans l'objet Result:
 
-* ``ResultInterface::SUCCESS``, when successful.
-* ``ResultInterface::FAILURE_IDENTITY_NOT_FOUND``, when identity could not be found.
-* ``ResultInterface::FAILURE_CREDENTIALS_INVALID``, when credentials are invalid.
-* ``ResultInterface::FAILURE_CREDENTIALS_MISSING``, when credentials are missing in the request.
-* ``ResultInterface::FAILURE_OTHER``, on any other kind of failure.
+* ``ResultInterface::SUCCESS``, en cas de succès.
+* ``ResultInterface::FAILURE_IDENTITY_NOT_FOUND``, lorsque l'identité n'a pas été trouvée.
+* ``ResultInterface::FAILURE_CREDENTIALS_INVALID``, lorsque les identifiants de connexion sont invalides.
+* ``ResultInterface::FAILURE_CREDENTIALS_MISSING``, lorsque les identifiants sont absents de la requête.
+* ``ResultInterface::FAILURE_OTHER``, en cas d'échec pour toute autre raison.
 
-The error array returned by ``getErrors()`` contains **additional** information
-coming from the specific system against which the authentication attempt was
-made. For example LDAP or OAuth would put errors specific to their
-implementation in here for easier logging and debugging the cause. But most of
-the included authenticators don't put anything in here.
+Le tableau d'erreur renvoyé par ``getErrors()`` contient des informations
+**supplémentaires** venant du système spécifique qui a tenté l'authentification.
+Par exemple LDAP ou OAuth y placeraient les erreurs spécifiques à leurs
+implémentations pour faciliter le logging et déboguer le problème. Mais la
+plupart des <em>authenticators</em> n'insèrent rien à cet endroit.
 
-Logging out the identity
-------------------------
+Déconnecter l'utilisateur
+-------------------------
 
-To log an identity out just do::
+Pour déconnecter un utilisateur, exécutez simplement::
 
     $this->Authentication->logout();
 
-If you have set the ``logoutRedirect`` config, ``Authentication::logout()`` will
-return that value else will return ``false``. It won't perform any actual redirection
-in either case.
+Si vous avez défini une configuration pour le paramètre ``logoutRedirect``,
+``Authentication::logout()`` renverra cette valeur, sinon il renverra ``false``.
+Dans tous les cas, il ne fera aucune redirection.
 
-Alternatively, instead of the component you can also use the service to log out::
+Au choix, vous pouvez déconnecter l'utilisateur en utilisant le service plutôt
+que le composant::
 
     $return = $request->getAttribute('authentication')->clearIdentity($request, $response);
 
-The result returned will contain an array like this::
+Le résultat renvoyé contiendra un tableau tel que celui-ci::
 
     [
         'response' => object(Cake\Http\Response) { ... },
@@ -85,22 +89,23 @@ The result returned will contain an array like this::
     ]
 
 .. note::
-    This will return an array containing the request and response
-    objects. Since both are immutable you'll get new objects back. Depending on your
-    context you're working in you'll have to use these instances from now on if you
-    want to continue to work with the modified response and request objects.
+    Cela renverra un tableau contenant les objets requête et réponse. Puisque
+    les deux sont immuables, vous aurez de nouveaux objets en retour. À partir
+    de ce pointe, selon le contexte dans lequel vous travaillez, vous devrez
+    utiliser ces instances si vous voulez continuer à travailler avec les objets
+    requête et réponse modifiés.
 
-Configure Automatic Identity Checks
------------------------------------
+Configurer les Vérifications d'Identité Automatiques
+----------------------------------------------------
 
-By default ``AuthenticationComponent`` will automatically enforce an identity to
-be present during the ``Controller.initialize`` event. You can have this check
-applied during the ``Controller.startup`` event instead::
+Par défaut, ``AuthenticationComponent`` imposera qu'une identité soit présente
+pendant l'événement ``Controller.initialize``. Vous pouvez faire appliquer cette
+vérification plutôt dans l'événement ``Controller.startup``::
 
-    // In your controller's initialize() method.
+    // Dans la méthode initialize() de votre contrôleur.
     $this->loadComponent('Authentication.Authentication', [
         'identityCheckEvent' => 'Controller.startup',
     ]);
 
-You can also disable identity checks entirely with the ``requireIdentity``
-option.
+Vous pouvez aussi désactiver entièrement ces vérifications d'identité avec
+l'option ``requireIdentity``.
