@@ -1,10 +1,11 @@
-Identifiers
-###########
+Identificateurs
+###############
 
-Identifiers will identify an user or service based on the information
-that was extracted from the request by the authenticators. Identifiers
-can take options in the ``loadIdentifier`` method. A holistic example of
-using the Password Identifier looks like::
+Les identificateurs vont identifier un utilisateur ou un service à partir des
+informations qui auront été extraites de la requête par les authentificateurs.
+Les identificateurs peuvent prendre des options dans la méthode
+``loadIdentifier``.
+Voici un exemple général d'utilisation du <em>Password Identifier</em>::
 
    $service->loadIdentifier('Authentication.Password', [
        'fields' => [
@@ -30,90 +31,93 @@ using the Password Identifier looks like::
 Password
 ========
 
-The password identifier checks the passed credentials against a
-datasource.
+L'identificateur par mot de passe confronte les identifiants avec la source de
+données.
 
-Configuration options:
+Options de configuration:
 
--  **fields**: The fields for the lookup. Default is
-   ``['username' => 'username', 'password' => 'password']``. You can
-   also set the ``username`` to an array. For e.g. using
-   ``['username' => ['username', 'email'], 'password' => 'password']``
-   will allow you to match value of either username or email columns.
--  **resolver**: The identity resolver. Default is
-   ``Authentication.Orm`` which uses CakePHP ORM.
--  **passwordHasher**: Password hasher. Default is
+-  **fields**: Les champs à regarder. Par défaut
+   ``['username' => 'username', 'password' => 'password']``. Vous pouvez aussi
+   définir le ``username`` en tableau. Par exemple, utiliser
+   ``['username' => ['username', 'email'], 'password' => 'password']`` vous
+   permettra de confronter la valeur soit de la colonne ``username``, soit de la
+   colonne ``email``.
+-  **resolver**: Le résolveur d'identité. Par défaut ``Authentication.Orm``, qui
+   utilise l'ORM CakePHP.
+-  **passwordHasher**: Le hacheur de mots de passe. Par défaut
    ``DefaultPasswordHasher::class``.
 
 Token
 =====
 
-Checks the passed token against a datasource.
+Confronte le jeton d'accès avec la source de données.
 
-Configuration options:
+Options de configuration:
 
--  **tokenField**: The field in the database to check against. Default
-   is ``token``.
--  **dataField**: The field in the passed data from the authenticator.
-   Default is ``token``.
--  **resolver**: The identity resolver. Default is
-   ``Authentication.Orm`` which uses CakePHP ORM.
+-  **tokenField**: Le champ à confronter dans la base de données. Par défaut
+   ``token``.
+-  **dataField**: Le champ dans les données transmises par l'authentificateur.
+   Par défaut ``token``.
+-  **resolver**: Le résolveur d'identité. Par défaut ``Authentication.Orm``, qui
+   utilise l'ORM CakePHP.
 
 JWT Subject
 ===========
 
-Checks the passed JWT token against a datasource.
+Confronte le jeton d'accès JWT avec la source de données.
 
--  **tokenField**: The field in the database to check against. Default
-   is ``id``.
--  **dataField**: The payload key to get user identifier from. Default
-   is ``sub``.
--  **resolver**: The identity resolver. Default is
-   ``Authentication.Orm`` which uses CakePHP ORM.
+-  **tokenField**: Le champ à confronter dans la base de données. Par défaut
+   ``id``.
+-  **dataField**: La clé payload à partir de laquelle obtenir l'utilisateur. Par
+   défaut ``sub``.
+-  **resolver**: Le résolveur d'identité. Par défaut ``Authentication.Orm``, qui
+   utilise l'ORM CakePHP.
 
 LDAP
 ====
 
-Checks the passed credentials against a LDAP server. This identifier
-requires the PHP LDAP extension.
+Confronte les identifiants fournis avec un serveur LDAP. Cet identificateur
+nécessite l'extention PHP LDAP.
 
--  **fields**: The fields for the lookup. Default is
+-  **fields**: Les champs à regarder. Par défaut
    ``['username' => 'username', 'password' => 'password']``.
--  **host**: The FQDN of your LDAP server.
--  **port**: The port of your LDAP server. Defaults to ``389``.
--  **bindDN**: The Distinguished Name of the user to authenticate. Must
-   be a callable. Anonymous binds are not supported.
--  **ldap**: The extension adapter. Defaults to
-   ``\Authentication\Identifier\Ldap\ExtensionAdapter``. You can pass a
-   custom object/classname here if it implements the
-   ``AdapterInterface``.
--  **options**: Additional LDAP options, like
-   ``LDAP_OPT_PROTOCOL_VERSION`` or ``LDAP_OPT_NETWORK_TIMEOUT``. See
+-  **host**: Le nom complet de domaine (FQDN) de votre serveur LDAP.
+-  **port**: Le port de votre serveur LDAP. Par défaut ``389``.
+-  **bindDN**: Le nom distinctif (<em>Distinguished Name</em>) de l'utilisateur
+   à identifier. Doit être <em>callable</em>. Les <em>binds</em> anonymes de
+   sont pas supportés.
+-  **ldap**: L'adaptateur d'extension. Par défaut
+   ``\Authentication\Identifier\Ldap\ExtensionAdapter``. Vous pouvez passer un
+   objet ou une classe personnalisée ici à condition qu'elle implémente
+   l'\ ``AdapterInterface``.
+-  **options**: Options supplémentaires LDAP, telles que
+   ``LDAP_OPT_PROTOCOL_VERSION`` ou ``LDAP_OPT_NETWORK_TIMEOUT``. Cf.
    `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__
-   for more valid options.
+   pour en savoir plus sur les options valides.
 
 Callback
 ========
 
-Allows you to use a callback for identification. This is useful for
-simple identifiers or quick prototyping.
+Permet d'utiliser un callback pour l'identification. C'est utile pour des
+identificateurs simples ou pour un prototypage rapide.
 
-Configuration options:
+Options de configuration:
 
--  **callback**: Default is ``null`` and will cause an exception. You’re
-   required to pass a valid callback to this option to use the
-   authenticator.
+-  **callback**: La valeur par défaut est ``null`` et entraînera une exception.
+   Vous devez impérativement placer un callback valide dans cette option pour
+   utiliser l'authentificateur.
 
-Callback identifiers can either return ``null|ArrayAccess`` for simple results,
-or an ``Authentication\Authenticator\Result`` if you want to forward error
-messages::
+Les identificateurs Callback peuvent renvoyer soit ``null|ArrayAccess`` pour des
+résultats simples, soit un ``Authentication\Authenticator\Result`` si vous
+voulez transférer des messages d'erreur::
 
-    // A simple callback identifier
+    // Un identificateur simple par callback
     $authenticationService->loadIdentifier('Authentication.Callback', [
         'callback' => function($data) {
-            // do identifier logic
+            // faire la logique de l'identification
 
-            // Return an array of the identified user or null for failure.
+            // Renvoyer un tableau de l'utilisateur identifié
+            // ou null en cas d'échec
             if ($result) {
                 return $result;
             }
@@ -122,10 +126,10 @@ messages::
         }
     ]);
 
-    // Using a result object to return error messages.
+    // Utiliser un objet result pour renvoyer des messages d'erreur.
     $authenticationService->loadIdentifier('Authentication.Callback', [
         'callback' => function($data) {
-            // do identifier logic
+            // faire la logique de l'identification
 
             if ($result) {
                 return new Result($result, Result::SUCCESS);
@@ -134,54 +138,57 @@ messages::
             return new Result(
                 null,
                 Result::FAILURE_OTHER,
-                ['message' => 'Removed user.']
+                ['message' => 'Utilisateur effacé.']
             );
         }
     ]);
 
 
-Identity resolvers
-==================
+Résolveurs d'identité
+=====================
 
-Identity resolvers provide adapters for different datasources. They
-allow you to control which source identities are searched in. They are
-separate from the identifiers so that they can be swapped out
-independently from the identifier method (form, jwt, basic auth).
+Les résolveurs d'identité fournissent des adaptateurs pour différentes sources
+de données. Ils vous permettent de contrôler dans quelle source les identités
+sont recherchées. Ils sont séparés des identificateurs, de sorte qu'ils sont
+interchangeables indépendamment de la méthode d'identification (form, jwt, basic
+auth).
 
-ORM Resolver
-------------
+Résolveur ORM
+-------------
 
-Identity resolver for the CakePHP ORM.
+Le résolveur d'identité pour l'ORM CakePHP.
 
-Configuration options:
+Options de configuration:
 
--  **userModel**: The user model identities are located in. Default is
-   ``Users``.
--  **finder**: The finder to use with the model. Default is ``all``.
+-  **userModel**: Le modèle utilisateur dans lequel sont situées les identités.
+   Par défaut ``Users``.
+-  **finder**: Le finder à utiliser avec le modèle. Par défaut ``all``.
 
-In order to use ORM resolver you must require ``cakephp/orm`` in your
-``composer.json`` file (if you are not already using the full CakePHP framework).
+Afin d'utiliser le résolveur ORM, vous devez requérir ``cakephp/orm`` dans votre
+fichier ``composer.json`` (si vous n'utilisez pas déjà le framework CakePHP
+complet).
 
-Writing your own resolver
--------------------------
+Écrire vos propres résolveurs
+-----------------------------
 
-Any ORM or datasource can be adapted to work with authentication by
-creating a resolver. Resolvers must implement
-``Authentication\Identifier\Resolver\ResolverInterface`` and should
-reside under ``App\Identifier\Resolver`` namespace.
+Chaque ORM ou source de données peut être adapté pour fonctionner avec
+l'authentification en créant un résolveur. Les résolveurs doivent implémenter
+``Authentication\Identifier\Resolver\ResolverInterface`` et devraient être
+placés dans le namespace ``App\Identifier\Resolver``.
 
-Resolver can be configured using ``resolver`` config option::
+Les résolveurs peuvent être configurés en utilisant l'option de configuration
+``resolver``::
 
    $service->loadIdentifier('Authentication.Password', [
        'resolver' => [
-            // can be a full class name: \Some\Other\Custom\Resolver::class
+            // peut être un nom de classe complet: \Some\Other\Custom\Resolver::class
            'className' => 'MyResolver',
-           // Pass additional options to the resolver constructor.
+           // Passer des options supplémentaires pour le constructeur du résolveur.
            'option' => 'value'
        ]
    ]);
 
-Or injected using a setter::
+Ou être injectés avec un setter::
 
    $resolver = new \App\Identifier\Resolver\CustomResolver();
    $identifier = $service->loadIdentifier('Authentication.Password');
