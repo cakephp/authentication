@@ -3,7 +3,7 @@ Contents
 
 .. toctree::
     :maxdepth: 2
-    :caption: CakePHP Authentication
+    :caption: Authentification CakePHP
 
     /index
     /authenticators
