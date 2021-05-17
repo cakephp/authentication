@@ -1,38 +1,45 @@
 Middleware
 ##########
 
-``AuthenticationMiddleware`` forms the heart of the authentication plugin.
-It intercepts each request to your application and attempts to authenticate
-a user with one of the authenticators. Each authenticator is tried in order
-until a user is authenticated or no user could be found. The ``authentication``,
-``identity`` and ``authenticationResult`` attributes are set on the request
-containing the identity if one was found and the authentication result object
-which can contain additional errors provided by the authenticators.
+``AuthenticationMiddleware`` forme le cœur du plugin authentication. Il
+intercepte chaque requête à destination de votre application et tente
+d'authentifier l'utilisateur avec l'un des authentificateurs. Chaque
+authentificateur est essayé dans l'ordre, jusqu'à ce qu'un utilisateur soit
+authentifié ou qu'aucun utilisateur ne soit trouvé. Les attributs
+``authentication``, ``identity`` et ``authenticationResult`` sont définis sur la
+requête et contiennent l'identité, s'il y en a une qui a été trouvée, et l'objet
+résultat de l'authentification qui peut contenir des messages d'erreur
+supplémentaires fournis par les authentificateurs.
 
-At the end of each request  the ``identity`` is persisted into each stateful
-authenticator, like the ``Session`` authenticator.
+À la fin de chaque requête, l'\ ``identity`` est rendue persistante dans chaque
+authentificateur qui supporte les états, tels que l'authentificateur
+``Session``.
 
 Configuration
 =============
 
-All configuration for the middleware is done on the ``AuthenticationService``.
-On the service you can use the following configuration options:
+Toute la configuration du middleware se fait dans l'\ ``AuthenticationService``.
+Vous pouvez utiliser les options de configuration suivantes sur le service:
 
-- ``identityClass`` - The class name of identity or a callable identity builder.
-- ``identityAttribute`` - The request attribute used to store the identity.
-  Default to ``identity``.
-- ``unauthenticatedRedirect`` - The URL to redirect unauthenticated errors to.
-- ``queryParam`` - Set to a string to have unauthenticated redirects contain
-  a ``redirect`` query string parameter with the previously blocked URL.
+- ``identityClass`` - Le nom de la classe de l'identité ou un constructeur
+  d'identité callable.
+- ``identityAttribute`` - L'attribut de la requête utilisé pour stocker
+  l'identité. Par défaut ``identity``.
+- ``unauthenticatedRedirect`` - L'URL vers laquelle rediriger les erreurs dues à
+  l'absence d'authentification.
+- ``queryParam`` - Défini comme une chaîne de texte pour que les redirections en
+  cas de non-authentification contiennent un paramètre ``redirect`` dans la
+  <em>query string</em> contenant l'URL précédemment bloquée.
 
 
-Configuring Multiple Authentication Setups
-==========================================
+Configurer Plusieurs Paramétrages d'Authentification
+====================================================
 
-If your application requires different authentication setups for different parts
-of the application for example the API and Web UI. You can do so by using conditional
-logic in your applications ``getAuthenticationService()`` hook method. By
-inspecting the request object you can configure authentication appropriately::
+Si votre application a besoin de plusieurs paramétrages d'authentification
+différents pour différentes parties de l'application, par exemple l'API et le
+Web UI, vous pouvez y parvenir en utilisant une logique conditionnelle dans la
+méthode crochet ``getAuthenticationService()``de vos applications. En inspectant
+l'objet requête, vous pouvez configurer l'authentification de façon appropriée::
 
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
@@ -40,15 +47,15 @@ inspecting the request object you can configure authentication appropriately::
 
         $service = new AuthenticationService();
         if (strpos($path, '/api') === 0) {
-            // Accept API tokens only
+            // Accepter uniquement les jetons d'accès API
             $service->loadAuthenticator('Authentication.Token');
             $service->loadIdentifier('Authentication.Token');
 
             return $service;
         }
 
-        // Web authentication
-        // Support sessions and form login.
+        // Authentication web
+        // Supporter les sessions et le formulaire de connexion.
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form');
 
@@ -57,5 +64,6 @@ inspecting the request object you can configure authentication appropriately::
         return $service;
     }
 
-While the above example uses a path prefix, you could apply similar logic to the
-subdomain, domain, or any other header or attribute present in the request.
+De même que l'exemple ci-dessus utilise un préfixe de chemin, vous pouvez
+appliquer une logique similaire au sous-domaine, au domaine, ou à n'importe quel
+autre en-tête ou attribut présent dans la requête.
