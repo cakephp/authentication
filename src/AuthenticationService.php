@@ -76,8 +76,8 @@ class AuthenticationService implements AuthenticationServiceInterface
      * - `identityAttribute` - The request attribute used to store the identity. Default to `identity`.
      * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
      *    AuthenticationComponent::allowUnauthenticated()
-     * - `queryParam` - Set to a string to have unauthenticated redirects contain a `redirect` query string
-     *   parameter with the previously blocked URL.
+     * - `queryParam` - The name of the query string parameter containing the previously blocked URL
+     *   in case of unauthenticated redirect, or null to disable appending the denied URL.
      *
      * ### Example:
      *
