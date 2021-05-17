@@ -1,14 +1,16 @@
-Quick Start
-###########
+Prise en main rapide
+####################
 
-Install the plugin with `composer <https://getcomposer.org/>`_ from your CakePHP
-Project's ROOT directory (where the **composer.json** file is located)
+Installez le plugin avec `composer <https://getcomposer.org/>`_ depuis le
+répertoire ROOT de votre projet CakePHP (là où se trouve le fichier
+**composer.json**).
 
 .. code-block:: bash
 
     php composer.phar require "cakephp/authentication:^2.0"
 
-Load the plugin by adding the following statement in your project's ``src/Application.php``::
+Chargez le plugin en ajoutant l'instruction suivante dans le fichier
+``src/Application.php`` de votre projet::
 
     public function bootstrap(): void
     {
@@ -18,13 +20,14 @@ Load the plugin by adding the following statement in your project's ``src/Applic
     }
 
 
-Getting Started
-===============
+Pour commencer
+==============
 
-The authentication plugin integrates with your application as a `middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
-be used as a component to make unauthenticated access simpler. First, let's
-apply the middleware. In **src/Application.php**, add the following to the class
-imports::
+Le plugin d'authentification s'intègre dans votre application comme un
+`middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. Il
+peut aussi être utilisé comme un composant pour faciliter l'accès sans
+authentification. Tout d'abord, mettons en place le middleware. Dans votre
+**src/Application.php**, ajoutez ce qui suit aux imports de la classe::
 
     use Authentication\AuthenticationService;
     use Authentication\AuthenticationServiceInterface;
@@ -36,26 +39,30 @@ imports::
     use Psr\Http\Message\ServerRequestInterface;
     
 
-Next, add the ``AuthenticationProviderInterface`` to the implemented interfaces
-on your application::
+Ensuite, ajoutez ``AuthenticationProviderInterface`` aux interfaces implémentées
+par votre application::
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 
 
-Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
+Puis ajoutez ``AuthenticationMiddleware`` à la liste des middlewares dans votre
+fonction ``middleware()``::
 
     $middlewareQueue->add(new AuthenticationMiddleware($this));
     
 .. note::
-    Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both, and after ``RoutingMiddleware``.
+    Assurez-vous d'ajouter ``AuthenticationMiddleware`` avant
+    ``AuthorizationMiddleware`` si vous avez les deux, et après
+    ``RoutingMiddleware``.
 
-``AuthenticationMiddleware`` will call a hook method on your application when
-it starts handling the request. This hook method allows your application to
-define the ``AuthenticationService`` it wants to use. Add the following method to your
-**src/Application.php**::
+``AuthenticationMiddleware`` appellera une méthode-crochet (<em>hook</em>) dans
+votre application quand il commencera à traiter la requête. Cette
+méthode-crochet permet à votre application de définir
+l'\ ``AuthenticationService`` qu'elle veut utiliser. Ajoutez la méthode suivante
+à votre **src/Application.php**::
 
     /**
-     * Returns a service provider instance.
+     * Renvoie une instance du fournisseur de service.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
      * @return \Authentication\AuthenticationServiceInterface
@@ -64,7 +71,8 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
     {
         $service = new AuthenticationService();
 
-        // Define where users should be redirected to when they are not authenticated
+        // Définissez vers où les utilisateurs doivent être redirigés s'ils ne
+        // sont pas authentifiés
         $service->setConfig([
             'unauthenticatedRedirect' => Router::url([
                     'prefix' => false,
@@ -79,7 +87,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
             IdentifierInterface::CREDENTIAL_USERNAME => 'email',
             IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
         ];
-        // Load the authenticators. Session should be first.
+        // Chargez les authentificateurs. Session est censé figurer en premier.
         $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
             'fields' => $fields,
@@ -91,27 +99,31 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
             ]),
         ]);
 
-        // Load identifiers
+        // Chargez les identificateurs
         $service->loadIdentifier('Authentication.Password', compact('fields'));
 
         return $service;
     }
 
-First, we configure what to do with users when they are not authenticated.
-Next, we attach the ``Session`` and ``Form`` :doc:`/authenticators` which define the
-mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
-users based on data in the session while ``Form`` enables us
-to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
-</identifiers>` to convert the credentials users will give us into an
-:doc:`identity </identity-object>` which represents our logged in user.
+Premièrement, nous configurons ce qu'il faut faire lorsque les utilisateurs ne
+sont pas authentifiés.
+Puis nous rattachons les :doc:`/authenticators` ``Session`` et ``Form`` qui
+définissent les mécanismes que votre application utilisera pour authentifier les
+utilisateurs. ``Session`` active l'identification des utilisateurs à partir des
+données de session, tandis que ``Form`` active le traitement par un formulaire
+de connexion à l'adresse ``loginUrl``.
+Enfin, nous rattachons un :doc:`identifier </identifiers>` pour convertir les
+identifiants que l'utilisateur nous donnera en une
+:doc:`identity </identity-object>` qui représentera l'utilisateur connecté.
 
-If one of the configured authenticators was able to validate the credentials,
-the middleware will add the authentication service to the request object as an
-`attribute <http://www.php-fig.org/psr/psr-7/>`_.
+Si l'un des authentificateurs configurés a été en mesure de valider les
+identifiants utilisateur, le middleware ajoutera le service d'authentification à
+l'objet requête en tant qu'\ `attribut <http://www.php-fig.org/psr/psr-7/>`_.
 
-Next, in your ``AppController`` load the :doc:`/authentication-component`::
+Ensuite, chargez le :doc:`/authentication-component` dans votre
+``AppController``::
 
-    // in src/Controller/AppController.php
+    // dans src/Controller/AppController.php
     public function initialize()
     {
         parent::initialize();
@@ -119,47 +131,49 @@ Next, in your ``AppController`` load the :doc:`/authentication-component`::
         $this->loadComponent('Authentication.Authentication');
     }
 
-By default the component will require an authenticated user for **all** actions.
-You can disable this behavior in specific controllers using
-``allowUnauthenticated()``::
+Par défaut, ce composant exigera un utilisateur authentifié pour **toutes** les
+actions. Vous pouvez désactiver ce comportement dans certains contrôleurs en
+utilisant ``allowUnauthenticated()``::
 
-    // in a controller beforeFilter or initialize
-    // Make view and index not require a logged in user.
+    // dans beforeFilter ou initialize d'un contrôleur
+    // Faire que view et index n'exigent pas un utilisateur connecté.
     $this->Authentication->allowUnauthenticated(['view', 'index']);
 
-Building a Login Action
-=======================
+Construire une Action Login
+===========================
 
-Once you have the middleware applied to your application you'll need a way for
-users to login. First generate a Users model and controller with bake:
+Une fois que vous aurez appliqué le middleware à votre application, vous aurez
+besoin d'un moyen pour connecter les utilisateurs. Tout d'abord, générez un
+modèle et un contrôleur Users avec bake:
 
 .. code-block:: shell
 
     bin/cake bake model Users
     bin/cake bake controller Users
 
-Then, we'll add a basic login action to your ``UsersController``. It should look
-like::
+Ensuite, nous allons ajouter une action de connexion basique à votre
+``UsersController``. Cela devrait ressembler à::
 
-    // in src/Controller/UsersController.php
+    // dans src/Controller/UsersController.php
     public function login()
     {
         $result = $this->Authentication->getResult();
-        // If the user is logged in send them away.
+        // Si l'utilisateur est connecté, le renvoyer ailleurs
         if ($result->isValid()) {
             $target = $this->Authentication->getLoginRedirect() ?? '/home';
             return $this->redirect($target);
         }
         if ($this->request->is('post') && !$result->isValid()) {
-            $this->Flash->error('Invalid username or password');
+            $this->Flash->error('Identifiant ou mot de passe invalide');
         }
     }
 
-Make sure that you allow access to the ``login`` action in your controller's
-``beforeFilter()`` callback as mentioned in the previous section, so that
-unauthenticated users are able to access it::
+Assurez-vous d'autoriser l'accès à l'action ``login`` dans le callback
+``beforeFilter()`` de votre contrôleur comme mentionné dans la section
+précédente, de façon à ce que les utilisateurs non authentifiés puissent y avoir
+accès::
 
-    // in src/Controller/UsersController.php
+    // dans src/Controller/UsersController.php
     public function beforeFilter(\Cake\Event\EventInterface $event)
     {
         parent::beforeFilter($event);
@@ -167,13 +181,14 @@ unauthenticated users are able to access it::
         $this->Authentication->allowUnauthenticated(['login']);
     }
 
-Next we'll add a view template for our login form::
+Ensuite nous allons ajouter un template de vue pour notre formulaire de
+connexion::
 
-    // in templates/Users/login.php
+    // dans templates/Users/login.php
     <div class="users form content">
         <?= $this->Form->create() ?>
         <fieldset>
-            <legend><?= __('Please enter your email and password') ?></legend>
+            <legend><?= __('Saisissez votre identifiant et votre mot de passe svp') ?></legend>
             <?= $this->Form->control('email') ?>
             <?= $this->Form->control('password') ?>
         </fieldset>
@@ -181,32 +196,34 @@ Next we'll add a view template for our login form::
         <?= $this->Form->end() ?>
     </div>
 
-Then add a simple logout action::
+Puis ajoutez une action de déconnexion toute simple::
 
-    // in src/Controller/UsersController.php
+    // dans src/Controller/UsersController.php
     public function logout()
     {
         $this->Authentication->logout();
         return $this->redirect(['controller' => 'Users', 'action' => 'login']);
     }
 
-We don't need a template for our logout action as we redirect at the end of it.
+Nous n'avons pas besoin de template pour notre action logout puisque nous
+faisons une redirection à la fin de celle-ci.
 
-Adding Password Hashing
-=======================
+Ajouter un Hachage de Mot de Passe
+==================================
 
-In order to login your users will need to have hashed passwords. You can
-automatically hash passwords when users update their password using an entity
-setter method::
+Pour connecter vos utilisateurs, vous aurez besoin d'avoir des mots de passe
+hachés. Vous pouvez hacher des mots de passe automatiquement quand les
+utilisateurs mettent à jour leur mot de passe en utilisant un setter de
+l'entité::
 
-    // in src/Model/Entity/User.php
+    // dans src/Model/Entity/User.php
     use Authentication\PasswordHasher\DefaultPasswordHasher;
 
     class User extends Entity
     {
-        // ... other methods
+        // ... autres méthodes
 
-        // Automatically hash passwords when they are changed.
+        // Hacher automatiquement les mots de passe quand ils sont modifiés.
         protected function _setPassword(string $password)
         {
             $hasher = new DefaultPasswordHasher();
@@ -214,13 +231,13 @@ setter method::
         }
     }
 
-You should now be able to go to ``/users/add`` and register a new user. Once
-registered you can go to ``/users/login`` and login with your newly created
-user.
+Vous devriez maintenant pouvoir aller à ``/users/add`` et enregistrer un nouvel
+utilisateur. Une fois enregistré, vous pouvez aller à ``/users/login`` et vous
+connecter sous le nom de l'utilisateur que vous venez de créer.
 
 
-Further Reading
-===============
+Pour en savoir plus
+===================
 
 * :doc:`/authenticators`
 * :doc:`/identifiers`
