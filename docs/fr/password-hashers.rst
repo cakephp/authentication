@@ -1,48 +1,48 @@
-Password Hashers
-################
+Hacheurs de mots de passe
+#########################
 
 Default
 =======
 
-This is using the php constant ``PASSWORD_DEFAULT`` for the encryption
-method. The default hash type is ``bcrypt``.
+Ce hacheur utilise la constante PHP ``PASSWORD_DEFAULT`` comme méthode de
+cryptage. Le type de hachage par défaut est ``bcrypt``.
 
-See `the php
-documentation <http://php.net/manual/en/function.password-hash.php>`__
-for further information on bcrypt and PHP’s password hashing.
+Cf. `la documentation PHP <https://www.php.net/manual/fr/function.password-hash.php>`__
+pour plus d'informations sur bcrypt et le hachage de mots de passe de PHP.
 
-The config options for this adapter are:
+Les options de configuration pour cet adaptateur sont:
 
--  **hashType**: Hashing algorithm to use. Valid values are those
-   supported by ``$algo`` argument of ``password_hash()``. Defaults to
-   ``PASSWORD_DEFAULT``
--  **hashOptions**: Associative array of options. Check the PHP manual
-   for supported options for each hash type. Defaults to empty array.
+-  **hashType**: L'algorithme de hachage à utiliser. Les valeurs valides sont
+   celles qui sont supportées par l'argument ``$algo`` de ``password_hash()``.
+   Par défaut ``PASSWORD_DEFAULT``.
+-  **hashOptions**: Tableau associatif d'options. Consultez le manuel PHP pour
+   les options supportées pour chaque type de hachage. Par défaut un tableau
+   vide.
 
 Legacy
 ======
 
-This is a password hasher for applications that have migrated from
-CakePHP2.
+C'est un hacheur de mots de passe pour les applications migrées de CakePHP2.
 
 Fallback
 ========
 
-The fallback password hasher allows you to configure multiple hashers
-and will check them sequentially. This allows users to login with an old
-hash type until their password is reset and upgraded to a new hash.
+Le hacheur de mots de passe de repli (<em>fallback</em>) vous permet de
+configurer plusieurs hacheurs qu'il vérifiera séquentiellement. Cela permet aux
+utilisateurs de se connecter avec un ancien type de hachage jusqu'à ce que leur
+mot de passe soit redéfini et mis à niveau vers le nouveau hachage.
 
-Upgrading Hashing Algorithms
-============================
+Mettre à Niveau les Algorithmes de Hachage
+==========================================
 
-CakePHP provides a clean way to migrate your users’ passwords from one
-algorithm to another, this is achieved through the
-``FallbackPasswordHasher`` class. Assuming you want to migrate from a
-Legacy password to the Default bcrypt hasher, you can configure the
-fallback hasher as follows::
+CakePHP propose un moyen propre de migrer les mots de passe de vos utilisateurs
+d'un algorithme à un autre ; cela s'accomplit avec la classe
+``FallbackPasswordHasher``. En supposant que vous veuillez migrer un mot de
+passe Legacy vers le hacheur par défaut bcrypt, vous pouvez configurer le
+hacheur fallback comme suit::
 
    $service->loadIdentifier('Authentication.Password', [
-       // Other config options
+       // Autres options de configuration
        'passwordHasher' => [
            'className' => 'Authentication.Fallback',
            'hashers' => [
@@ -50,31 +50,31 @@ fallback hasher as follows::
                [
                    'className' => 'Authentication.Legacy',
                    'hashType' => 'md5',
-                   'salt' => false // turn off default usage of salt
+                   'salt' => false // coupe l'utilisation par défaut du sel
                ],
            ]
        ]
    ]);
 
-Then in your login action you can use the authentication service to
-access the ``Password`` identifier and check if the current user’s
-password needs to be upgraded::
+Ensuite, dans votre action login, vous pouvez utiliser le service
+d'authentification pour accéder à l'identificateur ``Password`` et vérifier si
+le mot de passe de l'utilisateur actuel a besoin d'être mis à niveau::
 
    public function login()
    {
        $authentication = $this->request->getAttribute('authentication');
        $result = $authentication->getResult();
 
-       // regardless of POST or GET, redirect if user is logged in
+       // Que l'on soit en POST ou GET, rediriger l'utilisateur s'il est connecté
        if ($result->isValid()) {
-           // Assuming you are using the `Password` identifier.
+           // En supposant que vous utilisez l'identificateur `Password`.
            if ($authentication->identifiers()->get('Password')->needsPasswordRehash()) {
-               // Rehash happens on save.
+               // Le re-hachage se produit lors de la sauvegarde.
                $user = $this->Users->get($this->Auth->user('id'));
                $user->password = $this->request->getData('password');
                $this->Users->save($user);
            }
 
-           // Redirect or display a template.
+           // Rediriger ou afficher un template.
        }
    }
