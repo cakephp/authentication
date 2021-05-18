@@ -1,64 +1,70 @@
-Migration from the AuthComponent
-################################
+Migration depuis AuthComponent
+##############################
 
-Differences
+Différences
 ===========
 
--  This plugin intentionally **does not** handle authorization. It was
-   `decoupled <https://en.wikipedia.org/wiki/Coupling_(computer_programming)>`__
-   from authorization on purpose for a clear `separation of
-   concerns <https://en.wikipedia.org/wiki/Separation_of_concerns>`__.
-   See also `Computer access
-   control <https://en.wikipedia.org/wiki/Computer_access_control>`__.
-   This plugin handles only *identification* and *authentication*. We
-   might have another plugin for authorization.
--  There is no automatic checking of the session. To get the actual user
-   data from the session you’ll have to use the
-   ``SessionAuthenticator``. It will check the session if there is data
-   in the configured session key and put it into the identity object.
--  The user data is no longer available through the old AuthComponent but is
-   accessible via a request attribute and encapsulated in an identity
-   object: ``$request->getAttribute('authentication')->getIdentity();``.
-   Additionally, you can leverage the ``AuthenticationComponent`` ``getIdentity()`` or ``getIdentityData()`` methods.
--  The logic of the authentication process has been split into
-   authenticators and identifiers. An authenticator will extract the
-   credentials from the request, while identifiers verify the
-   credentials and find the matching user.
--  DigestAuthenticate has been renamed to HttpDigestAuthenticator
--  BasicAuthenticate has been renamed to HttpBasicAuthenticator
+-  Volontairement, ce plugin **ne** gère **pas** les autorisations. La
+   fonctionnalité a été `découplée
+   <https://fr.wikipedia.org/wiki/Couplage_(informatique)>`__ de l'autorisation
+   dans le but de proposer une
+   `séparation des préoccupations <https://fr.wikipedia.org/wiki/S%C3%A9paration_des_pr%C3%A9occupations>`__
+   claire. Cf. aussi
+   `Contrôle d'accès <https://fr.wikipedia.org/wiki/Contr%C3%B4le_d%27acc%C3%A8s_logique>`__.
+   Ce plugin gère seulement l'\ *identification* et l'\ *authentification*. On
+   peut avoir un autre plugin pour l'autorisation.
+-  Il n'y a pas de vérification automatique de la session. Pour aller chercher
+   les informations utilisateur dans la session, vous devrez utiliser le
+   ``SessionAuthenticator``. Il va vérifier dans la session s'il y a des données
+   sous la clé de session configurée, et les place ensuite dans l'objet
+   Identité.
+-  Les informations sur l'utilisateur ne sont plus disponibles en passant par
+   l'ancien AuthComponent, mais sont accessibles <em>via</em> un attribut de la
+   requête et encapsulées dans un objet Identité:
+   ``$request->getAttribute('authentication')->getIdentity();``.
+   En complément, vous pouvez exploiter les méthodes ``getIdentity()`` ou
+   ``getIdentityData()`` de ``AuthenticationComponent``.
+-  La logique du processus d'authentification a été scindée en authentificateurs
+   et identificateurs. Un authentificateur va extraire les identifiants de
+   l'utilisateur (<em>credentials</em>) dans la requête, tandis que les
+   identificateurs les vérifieront et désigneront l'utilisateur correspondant.
+-  DigestAuthenticate a été renommé en HttpDigestAuthenticator.
+-  BasicAuthenticate a été renommé en HttpBasicAuthenticator.
 
-Similarities
-============
+Similitudes
+===========
 
--  All the existing authentication adapters, Form, Basic, Digest are
-   still there but have been refactored into authenticators.
+-  Tous les adaptateurs d'authentification existants, Form, Basic, Digest sont
+   toujours là mais ont été remodelés en authentificateurs.
 
-Identifiers and authenticators
-==============================
+Identificateurs et authentificateurs
+====================================
 
-Following the principle of separation of concerns, the former
-authentication objects were split into separate objects, identifiers and
-authenticators.
+Suivant en cela le principe de séparation des préoccupations, les anciens objets
+d'authentification ont été scindés en objets bien séparés, les identificateurs
+et les authentificateurs.
 
--  **Authenticators** take the incoming request and try to extract
-   identification credentials from it. If credentials are found, they
-   are passed to a collection of identifiers where the user is located.
-   For that reason authenticators take an IdentifierCollection as first
-   constructor argument.
--  **Identifiers** verify identification credentials against a storage
-   system. eg. (ORM tables, LDAP etc) and return identified user data.
+-  Les **authentificateurs** prennent la requête entrante et tentent d'en
+   extraire les identifiants de l'utilisateur. S'ils les trouvent, ils les
+   passent à une collection d'identificateurs qui recherchent où se trouve
+   l'utilisateur.
+   Pour cette raison, les authentificateurs prennent une IdentifierCollection en
+   premier argument dans leur constructeur.
+-  Les **identificateurs** confrontent les identifiants à un système de stockage
+   (par exemple des tables ORM, LDAP, etc) et renvoient les informations de
+   l'utilisateur identifié.
 
-This makes it easy to change the identification logic as needed or use
-several sources of user data.
+Cela facilite le changement de logique d'identification en tant que de besoin,
+ou l'utilisation de plusieurs sources d'informations sur les utilisateurs.
 
-If you want to implement your own identifiers, your identifier must
-implement the ``IdentifierInterface``.
+Si vous voulez implémenter vos propres identificateurs, votre identificateur
+doit implémenter l'interface ``IdentifierInterface``.
 
-Migrating your authentication setup
-===================================
+Migrer votre système d'authentification
+=======================================
 
-The first step to migrating your application is to load the authentication
-plugin in your application's bootstrap method::
+La première chose à faire pour migrer votre application est de charger le plugin
+authentication dans la méthode bootstrap de votre application::
 
     public function bootstrap(): void
     {
@@ -66,13 +72,14 @@ plugin in your application's bootstrap method::
         $this->addPlugin('Authentication');
     }
 
-Then update your application to implement the authentication provider interface.
-This lets the AuthenticationMiddleware know how to get the authentication
-service from your application::
+Ensuite, modifiez votre application pour lui faire implémenter l'interface de
+fournisseur de service d'authentification. Cela permet à votre
+AuthenticationMiddleware de savoir comment obtenir un service d'authentification
+à partir de votre application::
 
-    // in src/Application.php
+    // dans src/Application.php
 
-    // Add the following use statements.
+    // Ajoutez les instructions 'use' suivantes.
     use Authentication\AuthenticationService;
     use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
@@ -80,11 +87,11 @@ service from your application::
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
 
-    // Add the authentication interface.
+    // Ajoutez l'interface d'authentification.
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
     {
         /**
-         * Returns a service provider instance.
+         * Renvoie une instance du service provider.
          *
          * @param \Psr\Http\Message\ServerRequestInterface $request Request
          * @param \Psr\Http\Message\ResponseInterface $response Response
@@ -93,30 +100,30 @@ service from your application::
         public function getAuthenticationService(ServerRequestInterface $request) : AuthenticationServiceInterface
         {
             $service = new AuthenticationService();
-            // Configure the service. (see below for more details)
+            // Configurez le service. (cf. ci-dessous pour les détails)
             return $service;
         }
     }
 
-Next add the ``AuthenticationMiddleware`` to your application::
+Puis ajoutez l'\ ``AuthenticationMiddleware`` à votre application::
 
-    // in src/Application.php
+    // dans src/Application.php
     public function middleware($middlewareQueue)
     {
-        // Various other middlewares for error handling, routing etc. added here.
+        // Divers autres middlewares pour la gestion des erreurs, le routing, etc, sont ajoutés ici.
 
-        // Add the middleware to the middleware queue
+        // Ajoutez le middleware à la middleware queue
         $middlewareQueue->add(new AuthenticationMiddleware($this));
 
         return $middlewareQueue;
     }
 
-Migrate AuthComponent settings
-------------------------------
+Migrer vos réglages de AuthComponent
+------------------------------------
 
-The configuration array from ``AuthComponent`` needs to be split into
-identifiers and authenticators when configuring the service. So when you
-had your ``AuthComponent`` configured this way::
+Le tableau de configuration de ``AuthComponent`` a besoin d'être scindé en
+identificateurs et authentificateurs lors de la configuration du service. Ainsi,
+si votre ``AuthComponent`` était configuré de cette façon::
 
    $this->loadComponent('Auth', [
        'authentication' => [
@@ -129,12 +136,12 @@ had your ``AuthComponent`` configured this way::
        ]
    ]);
 
-You’ll now have to configure it this way::
+Vous devrez maintenant le configurer de cette façon::
 
-   // Instantiate the service
+   // Instancier le service
    $service = new AuthenticationService();
 
-   // Load identifiers
+   // Charger les identificateurs
    $service->loadIdentifier('Authentication.Password', [
        'fields' => [
            'username' => 'email',
@@ -142,21 +149,21 @@ You’ll now have to configure it this way::
        ]
    ]);
 
-   // Load the authenticators
+   // Charger les authentificateurs
    $service->loadAuthenticator('Authentication.Session');
    $service->loadAuthenticator('Authentication.Form');
 
-If you have customized the ``userModel`` you can use the following
-configuration::
+Si vous aviez personnalisé le ``userModel``, vous pouvez utiliser la
+configuration suivante::
 
-   // Instantiate the service
+   // Instancier le service
    $service = new AuthenticationService();
 
-   // Load identifiers
+   // Charger les identificateurs
    $service->loadIdentifier('Authentication.Password', [
        'resolver' => [
            'className' => 'Authentication.Orm',
-           'userModel' => 'Employees',
+           'userModel' => 'Employes',
        ],
        'fields' => [
            'username' => 'email',
@@ -164,112 +171,115 @@ configuration::
        ]
    ]);
 
-While there is a bit more code than before, you have more flexibility in
-how your authentication is handled.
+Bien qu'il y ait un petit peu plus de code qu'avant, vous avez plus de souplesse
+dans la gestion des authentifications.
 
-Login action
+Action Login
 ------------
 
-The ``AuthenticationMiddleware`` will handle checking and setting the
-identity based on your authenticators. Usually after logging in,
-``AuthComponent`` would redirect to a configured location. To redirect
-upon a successful login, change your login action to check the new
-identity results::
+L'\ ``AuthenticationMiddleware`` va se charger de la vérification et de la
+définition de l'identité de l'utilisateur en s'appuyant sur les
+authentificateurs. D'habitude, après la connexion, ``AuthComponent`` redirigeait
+vers une URL définie dans la configuration. Pour rediriger après une connexion
+réussie, changez votre action login pour vérifier le résultat de la nouvelle
+identité::
 
     public function login()
     {
         $result = $this->Authentication->getResult();
 
-        // regardless of POST or GET, redirect if user is logged in
+        // Que l'on soit en POST ou GET, rediriger l'utilisateur s'il est connecté
         if ($result->isValid()) {
             $target = $this->Authentication->getLoginRedirect();
             return $this->redirect($target);
         }
 
-        // display error if user submitted and authentication failed
+        // Afficher une erreur si l'utilisateur a validé le formulaire et que
+        // l'authentification a échoué
         if ($this->request->is(['post']) && !$result->isValid()) {
-            $this->Flash->error('Invalid username or password');
+            $this->Flash->error('Identifiant ou mot de passe invalide');
         }
     }
 
-Checking identities
--------------------
+Vérifier les identités
+----------------------
 
-After applying the middleware you can use identity data by using the
-``identity`` request attribute. This replaces the
-``$this->Auth->user()`` calls you are using now. If the current
-user is unauthenticated or if the provided credentials were invalid, the
-``identity`` attribute will be ``null``::
+Après avoir appliqué le middleware vous pouvez utiliser les données d'identité
+en consultant l'attribut ``identity`` de la requête. Cela remplace les appels à
+``$this->Auth->user()`` que vous utilisiez jusqu'à présent. Si l'utilisateur en
+cours n'est pas authentifié ou si les identifiants fournis étaient invalides,
+l'attribut ``identity`` sera ``null``::
 
    $user = $request->getAttribute('identity');
 
-For more details about the result of the authentication process you can
-access the result object that also comes with the request and is
-accessible on the ``authentication`` attribute::
+Pour plus de détails sur le résultat du processus d'authentification, vous
+pouvez accéder à l'objet Résultat qui est aussi fourni dans la requête et est
+accessible sous l'attribut ``authentication``::
 
    $result = $request->getAttribute('authentication')->getResult();
-   // Boolean if the result is valid
+   // Booléen si le résultat est valide
    $isValid = $result->isValid();
-   // A status code
+   // Un code de statut
    $statusCode = $result->getStatus();
-   // An array of error messages or data if the identifier provided any
+   // Un tableau de messages d'erreur, ou des données si l'identificateur en a fournies
    $errors = $result->getErrors();
 
-Any place you were calling ``AuthComponent::setUser()``, you should now
-use ``setIdentity()``::
+À chaque endroit où vous appeliez ``AuthComponent::setUser()``, vous devriez à
+présent utiliser ``setIdentity()``::
 
-   // Assume you need to read a user by access token
+   // Supposons que vous ayez besoin de rechercher un utilisateur à partir d'un jeton d'accès
    $user = $this->Users->find('byToken', ['token' => $token])->first();
 
-   // Persist the user into configured authenticators.
+   // Rendre l'utilisateur persistant dans les authentificateurs configurés.
    $this->Authentication->setIdentity($user);
 
 
-Migrating allow/deny logic
---------------------------
+Migrer la logique allow/deny
+----------------------------
 
-Like ``AuthComponent`` the ``AuthenticationComponent`` makes it easy to
-make specific actions ‘public’ and not require a valid identity to be
-present::
+Comme ``AuthComponent``, l'\ ``AuthenticationComponent`` rend aisé le marquage
+d'actions spécifiques comme étant 'publiques' et ne nécessitant pas la présence
+d'une identité valide::
 
-   // In your controller's beforeFilter method.
+   // Dans la méthode beforeFilter de votre contrôleur.
    $this->Authentication->allowUnauthenticated(['view']);
 
-Each call to ``allowUnauthenticated()`` will overwrite the current
-action list.
+Chaque appel à ``allowUnauthenticated()`` écrasera la liste d'actions en cours.
 
-Migrating Unauthenticated Redirects
-===================================
+Migrer les Redirections en cas de Non Authentification
+======================================================
 
-By default ``AuthComponent`` redirects users back to the login page when
-authentication is required. In contrast, the ``AuthenticationComponent``
-in this plugin will raise an exception in this scenario. You can convert
-this exception into a redirect using the ``unauthenticatedRedirect``
-when configuring the ``AuthenticationService``.
+Par défaut, ``AuthComponent`` renvoie les utilisateurs vers la page de connexion
+lorsqu'une authentification est exigée. Au contraire, dans ce scénario,
+l'\ ``AuthenticationComponent`` de ce plugin soulèvera une exception. Vous
+pouvez convertir cette exception en redirection en utilisant
+``unauthenticatedRedirect`` dans la configuration de
+l'\ ``AuthenticationService``.
 
-You can also pass the current request target URI as a query parameter
-using the ``queryParam`` option::
+Vous pouvez aussi passer l'URI ciblée par la requête en cours en tant que
+paramètre dans la query string de la redirection avec l'option ``queryParam``::
 
-   // In the getAuthenticationService() method of your src/Application.php
+   // Dans la méthode getAuthenticationService() de votre src/Application.php
 
    $service = new AuthenticationService();
 
-   // Configure unauthenticated redirect
+   // Configurer la redirection en cas de non authentification
    $service->setConfig([
        'unauthenticatedRedirect' => '/users/login',
        'queryParam' => 'redirect',
    ]);
 
-Then in your controller's login method you can use ``getLoginRedirect()`` to get
-the redirect target safely from the query string parameter::
+Puis, dans la méthode login de votre contrôleur, vous pouvez utiliser en toute
+sécurité ``getLoginRedirect()`` pour obtenir la cible redirigée, à partir du
+paramètre de la query string::
 
     public function login()
     {
         $result = $this->Authentication->getResult();
 
-        // Regardless of POST or GET, redirect if user is logged in
+        // Que l'on soit en POST ou GET, rediriger l'utilisateur s'il est connecté
         if ($result->isValid()) {
-            // Use the redirect parameter if present.
+            // Utiliser le paramètre de redirection s'il est présent.
             $target = $this->Authentication->getLoginRedirect();
             if (!$target) {
                 $target = ['controller' => 'Pages', 'action' => 'display', 'home'];
@@ -278,30 +288,30 @@ the redirect target safely from the query string parameter::
         }
     }
 
-Migrating Hashing Upgrade Logic
-===============================
+Migrer la Mise à Niveau de la Logique de Hachage
+================================================
 
-If your application uses ``AuthComponent``\ ’s hash upgrade
-functionality. You can replicate that logic with this plugin by
-leveraging the ``AuthenticationService``::
+Si votre application utilise la fonctionnalité de ``AuthComponent`` de mise à
+niveau du hachage. Vous pouvez répliquer cette logique dans ce plugin en tirant
+parti de l'\ ``AuthenticationService``::
 
    public function login()
    {
        $result = $this->Authentication->getResult();
 
-       // regardless of POST or GET, redirect if user is logged in
+       // Que l'on soit en POST ou GET, rediriger l'utilisateur s'il est connecté
        if ($result->isValid()) {
            $authService = $this->Authentication->getAuthenticationService();
 
-           // Assuming you are using the `Password` identifier.
+           // En supposant que vous utilisez l'identificateur `Password`.
            if ($authService->identifiers()->get('Password')->needsPasswordRehash()) {
-               // Rehash happens on save.
+               // Le re-hachage se produit lors de la sauvegarde.
                $user = $this->Users->get($this->Authentication->getIdentityData('id'));
                $user->password = $this->request->getData('password');
                $this->Users->save($user);
            }
 
-           // Redirect to a logged in page
+           // Rediriger vers une page connectée
            return $this->redirect([
                'controller' => 'Pages',
                'action' => 'display',

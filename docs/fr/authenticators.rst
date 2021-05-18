@@ -466,7 +466,7 @@ partir du paramètre de la <em>query string</em>::
     {
         $result = $this->Authentication->getResult();
 
-        // Qu'on soit en POST ou GET, rediriger l'utilisateur s'il est connecté
+        // Que l'on soit en POST ou GET, rediriger l'utilisateur s'il est connecté
         if ($result->isValid()) {
             // Utiliser le paramètre de redirection s'il est présent
             $target = $this->Authentication->getLoginRedirect();
