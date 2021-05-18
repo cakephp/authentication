@@ -27,9 +27,9 @@ Vous pouvez utiliser les options de configuration suivantes sur le service:
   l'identité. Par défaut ``identity``.
 - ``unauthenticatedRedirect`` - L'URL vers laquelle rediriger les erreurs dues à
   l'absence d'authentification.
-- ``queryParam`` - Défini comme une chaîne de texte pour que les redirections en
-  cas de non-authentification contiennent un paramètre ``redirect`` dans la
-  <em>query string</em> contenant l'URL précédemment bloquée.
+- ``queryParam`` - Le nom du paramètre de la query string qui contiendra l'URL
+  précédemment bloquée en cas de redirection due à l'absence d'authentification,
+  ou null pour désactiver l'ajout de l'URL refusée. Par défaut ``null``.
 
 
 Configurer Plusieurs Paramétrages d'Authentification
