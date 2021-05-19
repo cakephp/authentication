@@ -1,25 +1,28 @@
-View Helper
-===========
+View Helper (Assistant)
+=======================
 
-In your AppView, load the Helper as::
+Dans votre AppView, chargez le Helper ainsi::
 
    $this->loadHelper('Authentication.Identity');
 
-For very simple checking whether the user is logged in you can use::
+Pour vérifier très simplement si l'utilisateur est connecté, vous pouvez
+utiliser::
 
    if ($this->Identity->isLoggedIn()) {
        ...
    }
 
-Getting user data can be done with::
+Il est possible d'obtenir les informations sur l'utilisateur avec::
 
    $username = $this->Identity->get('username');
 
-The following check can be used to tell if a record that belongs to some
-user is the current logged in user and compare other fields as well::
+Vous pouvez utiliser la vérification suivante pour savoir si un enregistrement
+qui appartient à un certain utilisateur est bien celui de l'utilisateur
+actuellement connecté, et même pour comparer d'autres champs::
 
    $isCurrentUser = $this->Identity->is($user->id);
    $isCurrentRole = $this->Identity->is($user->role_id, 'role_id');
 
-This method is mostly a convenience method for simple cases and not
-intended to replace any kind of proper authorization implementation.
+Cette méthode est surtout une méthode de confort pour les cas simples et n'a pas
+vocation à remplacer une quelconque implémentation d'autorisations à proprement
+parler.
