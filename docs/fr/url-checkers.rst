@@ -1,38 +1,40 @@
-URL Checkers
-############
+Vérificateurs d'URL
+###################
 
-To provide an abstract and framework agnostic solution there are URL
-checkers implemented that allow you to customize the comparision of the
-current URL if needed. For example to another frameworks routing.
+Afin de fournir une solution abstraite et ignorante du framework, des
+vérificateurs d'URL ont été implémentés qui vous permettent de personnaliser si
+besoin la comparaison de l'URL en cours, par exemple avec le routage d'un autre
+framework.
 
-Included Checkers
-=================
+Vérificateurs inclus
+====================
 
 DefaultUrlChecker
 -----------------
 
-The default checker allows you to compare an URL by regex or string
-URLs.
+Le vérificateur par défaut vous permet de comparer une URL par expression
+régulière ou chaînes URL.
 
 Options:
 
--  **checkFullUrl**: To compare the full URL, including protocol, host
-   and port or not. Default is ``false``
--  **useRegex**: Compares the URL by a regular expression provided in
-   the ``$loginUrls`` argument of the checker.
+-  **checkFullUrl**: Pour comparer l'URL entière, y compris le protocole, l'hôte
+   et le port, ou pas. La valeur par défaut est ``false``
+-  **useRegex**: Compare l'URL par une expression régulière fournie dans
+   l'argument ``$loginUrls`` du vérificateur.
 
 CakeRouterUrlChecker
 --------------------
 
 Options:
 
-Use this checker if you want to use the array notation of CakePHPs
-routing system. The checker also works with named routes.
+Utilisez ce vérificateur si vous voulez utiliser la notation en tableaux du
+système de routage de CakePHP. Le vérificateur marche aussi avec les routes
+nommées (<em>named routes</em>).
 
--  **checkFullUrl**: To compare the full URL, including protocol, host
-   and port or not. Default is ``false``
+-  **checkFullUrl**: Pour comparer l'URL entière, y compris le protocole, l'hôte
+   et le port, ou pas. La valeur par défaut est ``false``
 
-Implementing your own Checker
------------------------------
+Implémenter votre propre Vérificateur
+-------------------------------------q
 
-An URL checker **must** implement the ``UrlCheckterInterface``.
+Un vérificateur d'URL **doit** implémenter l'interface ``UrlCheckerInterface``.
