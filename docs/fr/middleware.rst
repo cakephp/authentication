@@ -38,7 +38,7 @@ Configurer Plusieurs Paramétrages d'Authentification
 Si votre application a besoin de plusieurs paramétrages d'authentification
 différents pour différentes parties de l'application, par exemple l'API et le
 Web UI, vous pouvez y parvenir en utilisant une logique conditionnelle dans la
-méthode crochet ``getAuthenticationService()``de vos applications. En inspectant
+méthode crochet ``getAuthenticationService()`` de vos applications. En inspectant
 l'objet requête, vous pouvez configurer l'authentification de façon appropriée::
 
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
