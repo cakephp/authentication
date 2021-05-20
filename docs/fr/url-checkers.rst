@@ -35,6 +35,6 @@ nommées (<em>named routes</em>).
    et le port, ou pas. La valeur par défaut est ``false``
 
 Implémenter votre propre Vérificateur
--------------------------------------q
+-------------------------------------
 
 Un vérificateur d'URL **doit** implémenter l'interface ``UrlCheckerInterface``.
