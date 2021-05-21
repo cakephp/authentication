@@ -460,7 +460,7 @@ paramètre de requête en utilisant l'option ``queryParam``::
 
 Ensuite, dans la méthode login de votre contrôleur, vous pouvez utiliser
 ``getLoginRedirect()`` pour obtenir la cible de redirection en toute sécurité à
-partir du paramètre de la <em>query string</em>::
+partir du paramètre de la *query string*::
 
     public function login()
     {
