@@ -57,7 +57,7 @@ Créer votre propre Objet Identité
 ---------------------------------
 
 Par défaut le plugin Authentication va envelopper les données utilisateur
-renvoyées dans un ``IdentityDecorator`` qui mandate (<em>proxy</em>) l'accès aux
+renvoyées dans un ``IdentityDecorator`` qui mandate (*proxy*) l'accès aux
 méthodes et aux propriétés. Si vous voulez créer votre propre objet identité,
 votre objet doit implémenter ``IdentityInterface``.
 
