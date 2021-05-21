@@ -84,7 +84,7 @@ nécessite l'extention PHP LDAP.
 -  **host**: Le nom complet de domaine (FQDN) de votre serveur LDAP.
 -  **port**: Le port de votre serveur LDAP. Par défaut ``389``.
 -  **bindDN**: Le nom distinctif (*Distinguished Name*) de l'utilisateur
-   à identifier. Doit être <em>callable</em>. Les <em>binds</em> anonymes de
+   à identifier. Doit être *callable*. Les *binds* anonymes de
    sont pas supportés.
 -  **ldap**: L'adaptateur d'extension. Par défaut
    ``\Authentication\Identifier\Ldap\ExtensionAdapter``. Vous pouvez passer un
