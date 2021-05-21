@@ -5,7 +5,7 @@ Les identificateurs vont identifier un utilisateur ou un service à partir des
 informations qui auront été extraites de la requête par les authentificateurs.
 Les identificateurs peuvent prendre des options dans la méthode
 ``loadIdentifier``.
-Voici un exemple général d'utilisation du <em>Password Identifier</em>::
+Voici un exemple général d'utilisation du *Password Identifier*::
 
    $service->loadIdentifier('Authentication.Password', [
        'fields' => [
