@@ -281,7 +281,7 @@ Utilisation
 L'authentificateur par cookie peut compléter un système d'authentification basé
 sur Form & Session. L'authentificateur Cookie reconnectera automatiquement les
 utilisateurs après que leur session aura expiré, aussi longtemps que le cookie
-restera valide. Si un utilisateur est explicitement déconnecté <em>via</em>
+restera valide. Si un utilisateur est explicitement déconnecté via
 ``AuthenticationComponent::logout()``, l'authentificateur cookie est **lui aussi
 détruit**. Un exemple de configuration serait::
 
