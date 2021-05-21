@@ -26,7 +26,7 @@ Différences
    ``getIdentityData()`` de ``AuthenticationComponent``.
 -  La logique du processus d'authentification a été scindée en authentificateurs
    et identificateurs. Un authentificateur va extraire les identifiants de
-   l'utilisateur (<em>credentials</em>) dans la requête, tandis que les
+   l'utilisateur (*credentials*) dans la requête, tandis que les
    identificateurs les vérifieront et désigneront l'utilisateur correspondant.
 -  DigestAuthenticate a été renommé en HttpDigestAuthenticator.
 -  BasicAuthenticate a été renommé en HttpBasicAuthenticator.
