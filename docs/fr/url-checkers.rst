@@ -29,7 +29,7 @@ Options:
 
 Utilisez ce vérificateur si vous voulez utiliser la notation en tableaux du
 système de routage de CakePHP. Le vérificateur marche aussi avec les routes
-nommées (<em>named routes</em>).
+nommées (*named routes*).
 
 -  **checkFullUrl**: Pour comparer l'URL entière, y compris le protocole, l'hôte
    et le port, ou pas. La valeur par défaut est ``false``
