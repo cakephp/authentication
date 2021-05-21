@@ -44,7 +44,7 @@ Options de configuration:
    données POST spécifiés.
 -  **urlChecker**: La classe ou l'instance de vérification d'URL. Par défaut
    ``DefaultUrlChecker``.
--  **useRegex**: Indique si l'<em>URL matching</em> doit ou non utiliser des
+-  **useRegex**: Indique si l' *URL matching* doit ou non utiliser des
    expressions régulières. Par défaut ``false``.
 -  **checkFullUrl**: Indique s'il faut vérifier l'URL entière, y compris la
    <em>query string</em>. Utile quand le formulaire de connexion est dans un
