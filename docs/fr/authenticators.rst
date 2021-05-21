@@ -177,7 +177,7 @@ Dans votre ``UsersController``::
     }
 
 Au lieu de partager votre clé publique avec des applications externes, vous
-pouvez les distribuer <em>via</em> un point terminal JWKS en configurant votre
+pouvez les distribuer via un point terminal JWKS en configurant votre
 application comme suit::
 
     // config/routes.php
