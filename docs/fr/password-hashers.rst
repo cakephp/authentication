@@ -27,7 +27,7 @@ C'est un hacheur de mots de passe pour les applications migrées de CakePHP2.
 Fallback
 ========
 
-Le hacheur de mots de passe de repli (<em>fallback</em>) vous permet de
+Le hacheur de mots de passe de repli (*fallback*) vous permet de
 configurer plusieurs hacheurs qu'il vérifiera séquentiellement. Cela permet aux
 utilisateurs de se connecter avec un ancien type de hachage jusqu'à ce que leur
 mot de passe soit redéfini et mis à niveau vers le nouveau hachage.
