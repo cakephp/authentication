@@ -35,4 +35,4 @@ routing system. The checker also works with named routes.
 Implementing your own Checker
 -----------------------------
 
-An URL checker **must** implement the ``UrlCheckterInterface``.
+An URL checker **must** implement the ``UrlCheckerInterface``.

@@ -48,7 +48,7 @@ result object::
     }
 
 The result sets objects status returned from ``getStatus()`` will match one of
-these these constants in the Result object:
+these constants in the Result object:
 
 * ``ResultInterface::SUCCESS``, when successful.
 * ``ResultInterface::FAILURE_IDENTITY_NOT_FOUND``, when identity could not be found.
