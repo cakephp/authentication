@@ -63,7 +63,7 @@ Le tableau d'erreur renvoyé par ``getErrors()`` contient des informations
 **supplémentaires** venant du système spécifique qui a tenté l'authentification.
 Par exemple LDAP ou OAuth y placeraient les erreurs spécifiques à leurs
 implémentations pour faciliter le logging et déboguer le problème. Mais la
-plupart des <em>authenticators</em> n'insèrent rien à cet endroit.
+plupart des *authenticators* n'insèrent rien à cet endroit.
 
 Déconnecter l'utilisateur
 -------------------------
