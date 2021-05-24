@@ -1,7 +1,7 @@
 Authentificateurs
 #################
 
-Les authentificateurs (<em>authenticators</em>) sont chargés de convertir les
+Les authentificateurs (*authenticators*) sont chargés de convertir les
 données de la requête en opérations d'authentification. Ils s'appuient sur les
 :doc:`/identifiers` pour trouver un :doc:`/identity-object` connu.
 
@@ -21,14 +21,14 @@ Les options de configuration:
    défaut ``Auth``.
 -  **identify**: Définissez cette clé avec la valeur booléenne ``true`` pour
    activer la confrontation des identifiants utilisateur contenus dans la
-   session avec les identificateurs (<em>identifiers</em>). Lorsque que la
-   valeur est ``true``, les :doc:`/identifiers` configurés sont utilisés à
-   chaque requête pour identifier l'utilisateur à partir des informations
-   stockées en session. La valeur par défaut est ``false``.
+   session avec les identificateurs (*identifiers*). Lorsque que la valeur est
+   ``true``, les :doc:`/identifiers` configurés sont utilisés à chaque requête
+   pour identifier l'utilisateur à partir des informations stockées en session.
+   La valeur par défaut est ``false``.
 -  **fields**: Vous permet de mapper le champ ``username`` à l'identifiant
    unique dans votre système de stockage des utilisateurs. Vaut ``username`` par
    défaut. Cette option est utilisée quand l'option ``identify`` est définie à
-   <em>true</em>.
+   *true*.
 
 Form
 ====
@@ -47,7 +47,7 @@ Options de configuration:
 -  **useRegex**: Indique si l' *URL matching* doit ou non utiliser des
    expressions régulières. Par défaut ``false``.
 -  **checkFullUrl**: Indique s'il faut vérifier l'URL entière, y compris la
-   <em>query string</em>. Utile quand le formulaire de connexion est dans un
+   *query string*. Utile quand le formulaire de connexion est dans un
    sous-domaine différent. Par défaut ``false``. Cette option ne fonctionne pas
    correctement lorsqu'on conserve des redirections en cas de
    non-authentification dans la query string.
@@ -61,7 +61,7 @@ Options de configuration:
 Token
 =====
 
-L'authentificateur par jeton d'accès (<em>token</em>) peut authentifier une
+L'authentificateur par jeton d'accès (*token*) peut authentifier une
 requête en se fondant sur un jeton d'accès qui est transmis avec la requête,
 que ce soit dans les en-têtes ou dans les paramètres de cette dernière.
 
@@ -132,9 +132,9 @@ vous avez besoin de vérifier les jetons d'accès créés par une application
 externe, par exemple les applications mobiles.
 
 L'exemple suivant vous permet d'identifier l'utilisateur à partir du ``sub``
-(<em>subject</em>) du jeton d'accès en utilisant l'identificateur
-``JwtSubject``, et configure l'\ ``Authenticator`` pour utiliser une clé
-publique lors de la vérification du jeton d'accès::
+(*subject*) du jeton d'accès en utilisant l'identificateur ``JwtSubject``, et
+configure l'\ ``Authenticator`` pour utiliser une clé publique lors de la
+vérification du jeton d'accès::
 
 Ajoutez ce qui suit dans votre classe ``Application``::
 
@@ -319,7 +319,7 @@ générer la création de cookie::
 
 Après la connexion, si votre case à cocher a été cochée, vous devriez voir un
 cookie ``CookieAuth`` dans les outils de développement de votre navigateur. Le
-cookie enregistre l'identifiant de l'utilisateur (<em>username</em>) et un jeton
+cookie enregistre l'identifiant de l'utilisateur (*username*) et un jeton
 d'accès haché qui est utilisé ultérieurement pour se réauthentifier.
 
 Événements

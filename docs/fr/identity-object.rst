@@ -26,13 +26,13 @@ qui réalise ces implémentations/sources::
 
 L'objet identité fournit ArrayAccess mais aussi une méthode ``get()`` pour
 accéder aux données. Il est fortement recommandé d'utiliser la méthode ``get()``
-plutôt qu'un accès à la façon des tableaux parce que la méthode get a
+plutôt qu'un accès à la façon des tableaux parce que la méthode ``get()`` a
 connaissance du mappage des champs::
 
     $identity->get('email');
     $identity->get('username');
 
-La méthode ``get()`` peut aussi être typée explicitement <em>via</em> un
+La méthode ``get()`` peut aussi être typée explicitement *via* un
 méta-fichier EDI, par exemple avec
 `IdeHelper <https://github.com/dereuromark/cakephp-ide-helper>`__.
 

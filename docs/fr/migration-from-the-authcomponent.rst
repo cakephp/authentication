@@ -19,8 +19,8 @@ Différences
    sous la clé de session configurée, et les place ensuite dans l'objet
    Identité.
 -  Les informations sur l'utilisateur ne sont plus disponibles en passant par
-   l'ancien AuthComponent, mais sont accessibles <em>via</em> un attribut de la
-   requête et encapsulées dans un objet Identité:
+   l'ancien AuthComponent, mais sont accessibles *via* un attribut de la requête
+   et encapsulées dans un objet Identité:
    ``$request->getAttribute('authentication')->getIdentity();``.
    En complément, vous pouvez exploiter les méthodes ``getIdentity()`` ou
    ``getIdentityData()`` de ``AuthenticationComponent``.

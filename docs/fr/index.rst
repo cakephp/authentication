@@ -55,11 +55,10 @@ fonction ``middleware()``::
     ``AuthorizationMiddleware`` si vous avez les deux, et après
     ``RoutingMiddleware``.
 
-``AuthenticationMiddleware`` appellera une méthode-crochet (<em>hook</em>) dans
-votre application quand il commencera à traiter la requête. Cette
-méthode-crochet permet à votre application de définir
-l'\ ``AuthenticationService`` qu'elle veut utiliser. Ajoutez la méthode suivante
-à votre **src/Application.php**::
+``AuthenticationMiddleware`` appellera une méthode-crochet (*hook*) dans votre
+application quand il commencera à traiter la requête. Cette méthode-crochet
+permet à votre application de définir l'\ ``AuthenticationService`` qu'elle veut
+utiliser. Ajoutez la méthode suivante à votre **src/Application.php**::
 
     /**
      * Renvoie une instance du fournisseur de service.
