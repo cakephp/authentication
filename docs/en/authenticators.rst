@@ -1,7 +1,7 @@
 Authenticators
 ##############
 
-Authenticators handle convert request data into an authentication
+Authenticators handle converting request data into an authentication
 operations. They leverage :doc:`/identifiers` to find a
 known :doc:`/identity-object`.
 
