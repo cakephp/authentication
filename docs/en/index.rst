@@ -36,7 +36,7 @@ imports::
     use Psr\Http\Message\ServerRequestInterface;
     
 
-Next, add the ``AuthenticationServiceProviderInterface`` to the implemented interfaces
+Next, add ``AuthenticationServiceProviderInterface`` to the implemented interfaces
 on your application::
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
