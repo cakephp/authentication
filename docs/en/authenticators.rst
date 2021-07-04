@@ -474,7 +474,7 @@ path, or any other request attribute::
 
         // Configuration common to both the API and web goes here.
 
-        if ($request->getParam('prefix') == 'api') {
+        if ($request->getParam('prefix') == 'Api') {
             // Include API specific authenticators
         } else {
             // Web UI specific authenticators.
