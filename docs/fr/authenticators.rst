@@ -52,6 +52,10 @@ Options de configuration:
    correctement lorsqu'on conserve des redirections en cas de
    non-authentification dans la query string.
 
+Si vous construisez une API et que vous voulez accepter les identifiants envoyés
+dans une requête JSON, veillez à ce que ``BodyParserMiddleware`` soit défini
+**avant** le ``AuthenticationMiddleware``.
+
 .. warning::
     Si vous utilisez la syntaxe en tableau pour l'URL, l'URL sera générée par le
     routeur de CakePHP. Selon la gestion des routes, **il se peut** que le résultat soit différent de ce que
@@ -475,4 +479,31 @@ partir du paramètre de la *query string*::
             }
             return $this->redirect($target);
         }
+    }
+
+Avoir Plusieurs Canaux d'Authentication
+=======================================
+
+Dans une application qui fournit à la fois une API et une interface web, vous
+voudrez probablement des configurations différentes d'authentification selon que
+la requête est ou non une requête d'API. Par exemple, vous pourriez vouloir
+utiliser une authentification JWT pour votre API, mais des sessions pour votre
+interface web. Pour prendre en charge ces différents flux, vous pouvez renvoyer
+des services d'authentification différents selon le chemin de l'URL, ou selon
+n'importe quel autre attribut de la requête::
+
+    public function getAuthenticationService(
+        ServerRequestInterface $request
+    ): AuthenticationServiceInterface {
+        $service = new AuthenticationService();
+
+        // La configuration commune à l'API et au web est placée ici.
+
+        if ($request->getParam('prefix') == 'Api') {
+            // Inclure les authentificateurs spécifiques pour l'API
+        } else {
+            // Authentificateurs spécifiques pour l'interface web.
+        }
+
+        return $service;
     }

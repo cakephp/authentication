@@ -39,7 +39,7 @@ authentification. Tout d'abord, mettons en place le middleware. Dans votre
     use Psr\Http\Message\ServerRequestInterface;
     
 
-Ensuite, ajoutez ``AuthenticationProviderInterface`` aux interfaces implémentées
+Ensuite, ajoutez ``AuthenticationServiceProviderInterface`` aux interfaces implémentées
 par votre application::
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
