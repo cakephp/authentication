@@ -263,6 +263,7 @@ Configuration options:
    ``null`` and all pages will be checked.
 -  **passwordHasher**: Password hasher to use for token hashing. Default
    is ``DefaultPasswordHasher::class``.
+-  **useSalt**: When true, the application's `Security.salt` will be appended to the token before hashing. Default is `true`.
 
 Usage
 -----
