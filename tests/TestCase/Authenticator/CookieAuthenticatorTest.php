@@ -46,7 +46,7 @@ class CookieAuthenticatorTest extends TestCase
     {
         $this->skipIf(!class_exists(Cookie::class));
 
-        Configure::write('Security.salt', 'secret_application_salt');
+        // Note: security salt is written in tests/bootstrap.php
 
         parent::setUp();
     }
@@ -95,7 +95,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             [
                 // hash(username . password . salt)
-                'CookieAuth' => '["mariano","$2y$10$sNYbczYutzXiun6kiA7vb.kHFwiRCiEImX1CJC6MH1V8kWPONu1UK"]',
+                'CookieAuth' => '["mariano","$2y$10$ADBUQO3lj8S/VDjpX5t99uaLV6tTm2npenJfvQq0Fs270/XM8Ftpi"]',
             ]
         );
 
@@ -122,7 +122,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => ['mariano', '$2y$10$sNYbczYutzXiun6kiA7vb.kHFwiRCiEImX1CJC6MH1V8kWPONu1UK'],
+                'CookieAuth' => ['mariano', '$2y$10$ADBUQO3lj8S/VDjpX5t99uaLV6tTm2npenJfvQq0Fs270/XM8Ftpi'],
             ]
         );
 
@@ -156,7 +156,7 @@ class CookieAuthenticatorTest extends TestCase
             ]
         );
 
-        $authenticator = new CookieAuthenticator($identifiers, ['useSalt' => false]);
+        $authenticator = new CookieAuthenticator($identifiers, ['salt' => false]);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);

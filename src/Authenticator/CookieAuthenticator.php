@@ -20,9 +20,9 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Authentication\UrlChecker\UrlCheckerTrait;
-use Cake\Core\Configure;
 use Cake\Http\Cookie\Cookie;
 use Cake\Http\Cookie\CookieInterface;
+use Cake\Utility\Security;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -52,7 +52,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             'name' => 'CookieAuth',
         ],
         'passwordHasher' => 'Authentication.Default',
-        'useSalt' => true,
+        'salt' => true,
     ];
 
     /**
@@ -156,12 +156,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
 
-        if (!$this->getConfig('useSalt')) {
+        if (!$this->getConfig('salt')) {
             return $identity[$usernameField] . $identity[$passwordField];
         }
 
-        // Prevent user from unknowingly using an empty salt
-        $salt = Configure::readOrFail('Security.salt');
+        if (is_string($this->getConfig('salt'))) {
+            $salt = $this->getConfig('salt');
+        } else {
+            $salt = Security::getSalt();
+        }
 
         return $identity[$usernameField] . $identity[$passwordField] . $salt;
     }
