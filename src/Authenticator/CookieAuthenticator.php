@@ -22,6 +22,7 @@ use Authentication\PasswordHasher\PasswordHasherTrait;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Http\Cookie\Cookie;
 use Cake\Http\Cookie\CookieInterface;
+use Cake\Utility\Security;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -51,6 +52,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             'name' => 'CookieAuth',
         ],
         'passwordHasher' => 'Authentication.Default',
+        'salt' => true,
     ];
 
     /**
@@ -144,7 +146,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * Creates a plain part of a cookie token.
      *
-     * Returns concatenated username and password hash.
+     * Returns concatenated username, password and application salt hash.
      *
      * @param array|\ArrayAccess $identity Identity data.
      * @return string
@@ -154,7 +156,17 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
 
-        return $identity[$usernameField] . $identity[$passwordField];
+        if (!$this->getConfig('salt')) {
+            return $identity[$usernameField] . $identity[$passwordField];
+        }
+
+        if (is_string($this->getConfig('salt'))) {
+            $salt = $this->getConfig('salt');
+        } else {
+            $salt = Security::getSalt();
+        }
+
+        return $identity[$usernameField] . $identity[$passwordField] . $salt;
     }
 
     /**
