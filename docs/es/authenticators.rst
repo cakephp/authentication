@@ -271,7 +271,7 @@ El autenticador de cookies se puede agregar a un sistema de autenticación basad
 en Form & Session. La autenticación de cookies volverá a iniciar sesión automáticamente a los
 usuarios después de que expire su sesión durante el tiempo que la cookie sea válida. Si un usuario
 se desconecta explícitamente vía ``AuthenticationComponent::logout()``, la cookie de autenticación
-**también se destruye**. Una configuración de ejemplo sería:
+**también se destruye**. Una configuración de ejemplo sería::
 
     // In Application::getAuthService()
 
