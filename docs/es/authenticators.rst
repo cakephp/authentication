@@ -10,13 +10,13 @@ Sesión
 
 Este autenticador comprobará si la sesión contiene datos de usuario o
 credenciales. Cuando utilice un autenticador con estado como el ``Form`` listado
-debajo, asegúrese de cargar primero el autenticador de ``Session`` authenticator para que una vez
-el usuario inicie sesión, los datos del usuario se obtengan de la sesión en las solicitudes posteriores
-requests.
+más abajo, asegúrese de cargar primero el autenticador de ``Session`` para que una vez
+el usuario inicie sesión, los datos del usuario se obtengan de la sesión en las requests
+posteriores.
 
 Opciones de configuración:
 
--  **sessionKey**: La key para los datos de usuario, por defecto es
+-  **sessionKey**: Key para los datos de usuario, por defecto es
    ``Auth``
 -  **identify**: Establezca esta key con un valor ``true`` para permitir la verificación de las
    credenciales de sesión con los identificadores. Cuando es ``true``, los
@@ -34,16 +34,16 @@ formulario vía POST / PUT.
 
 Opciones de configuración:
 
--  **loginUrl**: Es la URL login, cadena o array de URLs. Por defecto es
+-  **loginUrl**: La URL login, puede ser un string o un array de URLs. Por defecto es
    ``null`` y se comprobarán todas las páginas.
 -  **fields**: Array que mapea ``username`` y ``password`` a los campos de
    datos POST especificados.
--  **urlChecker**: La clase u objeto URL checker. Por defecto es
+-  **urlChecker**: La clase u objeto comprobador de URL. Por defecto es
    ``DefaultUrlChecker``.
 -  **useRegex**: Usar o no expresiones regulares para la coincidencia de URL
    Por defecto es ``false``.
--  **checkFullUrl**: Comprobar o no la URL completa incluida la query
-   string. Útil cuando un formulario login form está en un subdominio diferente. Por defecto es
+-  **checkFullUrl**: Comprobar o no la URL completa incluida en la query
+   string. Útil cuando un formulario login está en un subdominio diferente. Por defecto es
    ``false``. Esta opción no funciona bien cuando se conservan los redireccionamientos
    no autenticados en la query string.
 
@@ -52,8 +52,8 @@ de tener el ``BodyParserMiddleware`` aplicado **antes** del
 ``AuthenticationMiddleware``.
 
 .. warning::
-    Si usa la sintaxis de array syntax para la URL, la URL será generada
-    por el CakePHP router. El resultad **podría** diferir de lo que realmente tiene
+    Si usa la sintaxis de array para la URL, la URL será generada
+    por el router de CakePHP. El resultado **podría** diferir de lo que realmente tiene
     en la request URI según el manejo de su ruta. ¡Debe considerar que es sensible
     a mayúsculas y minúsculas!
 
@@ -69,7 +69,7 @@ Opciones de configuración:
    el token de los parámetros de la query.
 -  **header**: Nombre del header. Configúrelo si desea obtener el token
    del encabezado.
--  **tokenPrefix**: El prefijo opcional de token.
+-  **tokenPrefix**: Prefijo opcional del token.
 
 Un ejemplo de cómo obtener un token de un header o una query string sería::
 
@@ -329,7 +329,7 @@ El evento contiene los siguientes datos:
 -  **service**: Un objeto que implementa
    ``\Authentication\AuthenticationServiceInterface``
 
-El subject del evento será la instancia de controlador actual a la que
+El asunto del evento será la instancia de controlador actual a la que
 está adjunto el AuthenticationComponent.
 
 Pero el evento solo se activa si el autenticador que se utilizó para identificar
@@ -343,9 +343,6 @@ el evento. Después de eso, el autenticador de sesión proporcionará la identid
 Comprobadores de URL
 ====================
 
-Some authenticators like ``Form`` or ``Cookie`` should be executed only
-on certain pages like ``/login`` page. This can be achieved using URL
-Checkers.
 Algunos autenticadores como ``Form`` o ``Cookie`` deben ejecutarse solo
 en ciertas páginas como la página ``/login``. Esto se puede lograr utilizando 
 comprobadores de URL.
