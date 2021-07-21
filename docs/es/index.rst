@@ -6,6 +6,7 @@ del Proyecto CakePHP (donde está localizado el archivo **composer.json**)
 
 .. code-block:: bash
     php composer.phar require "cakephp/authentication:^2.0"
+
 Carge el plugin agregando la siguiente declaración en ``src/Application.php``::
 
     public function bootstrap(): void
