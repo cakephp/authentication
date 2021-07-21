@@ -135,6 +135,7 @@ usuarios inicien sesión. Primero genere un modelo y un controlador de usuarios 
 .. code-block:: shell
     bin/cake bake model Users
     bin/cake bake controller Users
+
 Luego, agregue una acción login a su ``UsersController``. Debería verse 
 así::
 
