@@ -5,6 +5,7 @@ Instale el plugin con `composer <https://getcomposer.org/>`_ desde el directorio
 del Proyecto CakePHP (donde está localizado el archivo **composer.json**)
 
 .. code-block:: bash
+
     php composer.phar require "cakephp/authentication:^2.0"
 
 Carge el plugin agregando la siguiente declaración en ``src/Application.php``::
@@ -33,20 +34,20 @@ de clase::
     use Cake\Http\MiddlewareQueue;
     use Cake\Routing\Router;
     use Psr\Http\Message\ServerRequestInterface;
-    
 
 A continuación, agregue ``AuthenticationServiceProviderInterface`` a las interfaces implementadas
 en su aplicación::
 
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 
-
 Luego agregue ``AuthenticationMiddleware`` a la cola de middleware en la función ``middleware()``::
 
     $middlewareQueue->add(new AuthenticationMiddleware($this));
-    
+
 .. note::
-    Asegúrese de agregar ``AuthenticationMiddleware`` antes de ``AuthorizationMiddleware`` si tiene ambos, y después de ``RoutingMiddleware``.
+    Asegúrese de agregar ``AuthenticationMiddleware`` antes de
+    ``AuthorizationMiddleware`` si tiene ambos, y después de
+    ``RoutingMiddleware``.
 
 ``AuthenticationMiddleware`` llamará a un método hook en su aplicación cuando
 comience a manejar la solicitud. Este método hook permite que su aplicación defina
@@ -133,6 +134,7 @@ Una vez que haya aplicado el middleware a su aplicación, necesitará una forma 
 usuarios inicien sesión. Primero genere un modelo y un controlador de usuarios con ``bake``:
 
 .. code-block:: shell
+
     bin/cake bake model Users
     bin/cake bake controller Users
 
@@ -215,16 +217,8 @@ entity setter::
 Ahora debería poder ir a ``/users/add`` y registrar un nuevo usuario. Una vez registrado,
 puede ir a ``/users/login``  iniciar sesión con su usuario recién creado.
 
-
 Otras lecturas
 ==============
 
 * :doc:`/authenticators`
-* :doc:`/identifiers`
-* :doc:`/password-hashers`
-* :doc:`/identity-object`
 * :doc:`/authentication-component`
-* :doc:`/migration-from-the-authcomponent`
-* :doc:`/url-checkers`
-* :doc:`/testing`
-* :doc:`/view-helper`
