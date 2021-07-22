@@ -126,7 +126,7 @@ creados por aplicaciones externas, por ejemplo: aplicaciones móviles.
 
 El siguiente ejemplo le permite identificar al usuario basado en el ``sub`` (asunto) del token
 usando el identificador ``JwtSubject`` y configura el ``Authenticator`` para usar la key pública
-para la verificación del token::
+para la verificación del token.
 
 Agregue lo siguiente a su clase ``Application``::
 

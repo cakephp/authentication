@@ -126,7 +126,7 @@ created by external applications, eg: mobile apps.
 
 The following example allows you to identify the user based on the ``sub`` (subject) of the
 token by using ``JwtSubject`` identifier, and configures the ``Authenticator`` to use public key
-for token verification::
+for token verification.
 
 Add the following to your ``Application`` class::
 
