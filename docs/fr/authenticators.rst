@@ -333,7 +333,7 @@ Il n'y a qu'un événement déclenché par l'authentification:
 ``Authentication.afterIdentify``.
 
 Si vous ne savez pas ce que sont les événements ou comment les utiliser,
-`consultez la documentation <https://book.cakephp.org/3.0/en/core-libraries/events.html>`__.
+`consultez la documentation <https://book.cakephp.org/4/fr/core-libraries/events.html>`__.
 
 L'événement ``Authentication.afterIdentify`` est lancé par
 l'\ ``AuthenticationComponent`` après qu'une identité a été identifiée avec
