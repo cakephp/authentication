@@ -44,10 +44,29 @@ on your application::
 
 Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
 
+Then update your application's ``middleware()`` method to look like::
+
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
+        $middlewareQueue->add(new ErrorHandlerMiddleware(Configure::read('Error')))
+            // Other middleware that CakePHP provides.
+            ->add(new AssetMiddleware())
+            ->add(new RoutingMiddleware($this))
+            ->add(new BodyParserMiddleware())
+
+            // Add the AuthenticationMiddleware. It should be
+            // after routing and body parser.
+            ->add(new AuthenticationMiddleware($this));
+
+        return $middlewareQueue();
+    }
     $middlewareQueue->add(new AuthenticationMiddleware($this));
-    
-.. note::
-    Make sure you add ``AuthenticationMiddleware`` before ``AuthorizationMiddleware`` if you have both, and after ``RoutingMiddleware``.
+
+.. warning::
+    The order of middleware is important. Ensure that you have
+    ``AuthenticationMiddleware`` after the routing and body parser middleware.
+    If you're having trouble logging in with JSON requests or redirects are
+    incorrect double check your middleware order.
 
 ``AuthenticationMiddleware`` will call a hook method on your application when
 it starts handling the request. This hook method allows your application to
