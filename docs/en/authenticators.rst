@@ -199,7 +199,7 @@ distribute it via a JWKS endpoint by configuring your app as follows::
         $this->viewBuilder()->setOption('serialize', 'keys');
     }
 
-Refer to https://tools.ietf.org/html/rfc7517 or https://auth0.com/docs/tokens/concepts/jwks for
+Refer to https://datatracker.ietf.org/doc/html/rfc7517 or https://auth0.com/docs/tokens/concepts/jwks for
 more information about JWKS.
 
 HttpBasic

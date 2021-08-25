@@ -171,7 +171,7 @@ JWKSのエンドポイントを経由して公開鍵ファイルを配布する�
         $this->viewBuilder()->setOption('serialize', 'keys');
     }
 
-JWKSの詳細情報は https://tools.ietf.org/html/rfc7517
+JWKSの詳細情報は https://datatracker.ietf.org/doc/html/rfc7517
 または https://auth0.com/docs/tokens/concepts/jwks を参照してください。
 
 Http基本

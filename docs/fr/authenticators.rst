@@ -212,7 +212,7 @@ application comme suit::
         $this->viewBuilder()->setOption('serialize', 'keys');
     }
 
-Consultez https://tools.ietf.org/html/rfc7517 ou
+Consultez https://datatracker.ietf.org/doc/html/rfc7517 ou
 https://auth0.com/docs/tokens/concepts/jwks pour plus d'informations à propos de
 JWKS.
 
