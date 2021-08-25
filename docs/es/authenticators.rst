@@ -92,7 +92,7 @@ El token siempre se pasará al identificador configurado de la siguiente manera:
 JWT
 ===
 
-El autenticador JWT obtiene el `JWT token <https://jwt.io/>`__ del header o el parámetro 
+El autenticador JWT obtiene el `JWT token <https://jwt.io/>`__ del header o el parámetro
 de la query y devuelve el payload directamente o lo pasa
 a los identificadores para verificarlos con otra fuente de datos por
 ejemplo.
@@ -110,7 +110,7 @@ ejemplo.
    key secreta si no está en el contexto de una aplicación CakePHP que la
    provee mediante ``Security::salt()``.
 
-Por defecto, el ``JwtAuthenticator`` usa el algoritmo de key simétrica ``HS256`` 
+Por defecto, el ``JwtAuthenticator`` usa el algoritmo de key simétrica ``HS256``
 y usa el valor de ``Cake\Utility\Security::salt()`` como key de cifrado.
 Para mayor seguridad, se puede utilizar en su lugar el algoritmo de key asimétrica ``RS256``.
 Puede generar las keys necesarias para eso de la siguiente manera::
@@ -199,7 +199,7 @@ distribuirlo a través de un endpoint JWKS configurando su aplicación de la sig
         $this->viewBuilder()->setOption('serialize', 'keys');
     }
 
-Ir a https://tools.ietf.org/html/rfc7517 o https://auth0.com/docs/tokens/concepts/jwks para
+Ir a https://datatracker.ietf.org/doc/html/rfc7517 o https://auth0.com/docs/tokens/concepts/jwks para
 mas información sobre JWKS.
 
 HttpBasic
@@ -227,7 +227,7 @@ Opciones de configuración:
 Cookie Authenticator también conocido como "Remember Me"
 ========================================================
 
-El Autenticador de cookies le permite implementar la función "remember me" 
+El Autenticador de cookies le permite implementar la función "remember me"
 para sus formularios de login.
 
 Solo asegúrese de que su formulario de login tenga un campo que coincida
@@ -344,10 +344,10 @@ Comprobadores de URL
 ====================
 
 Algunos autenticadores como ``Form`` o ``Cookie`` deben ejecutarse solo
-en ciertas páginas como la página ``/login``. Esto se puede lograr utilizando 
+en ciertas páginas como la página ``/login``. Esto se puede lograr utilizando
 comprobadores de URL.
 
-De forma predeterminada, se usa un ``DefaultUrlChecker``, que usa URLs string 
+De forma predeterminada, se usa un ``DefaultUrlChecker``, que usa URLs string
 para comparar con soporte para la verificación de expresiones regulares.
 
 Opciones de configuración:
@@ -361,7 +361,7 @@ Se puede implementar un verificador de URL personalizado, por ejemplo,
 si se necesita soporte para un famework URL específico. En este caso, debe implementarse
 la ``Authentication\UrlChecker\UrlCheckerInterface``.
 
-Para mas detalles de Comprobadores de URL Checkers :doc:`ver esta página de 
+Para mas detalles de Comprobadores de URL Checkers :doc:`ver esta página de
 la documentación </url-checkers>`.
 
 Obtener el Successful Authenticator o el Identifier
@@ -420,7 +420,7 @@ Manejo de Errores por no Autenticación
 ======================================
 
 El ``AuthenticationComponent`` generará una excepción cuando los usuarios no estén
-autenticados. Puede convertir esta excepción en una redirección utilizando el 
+autenticados. Puede convertir esta excepción en una redirección utilizando el
 ``unauthenticatedRedirect`` al configurar el ``AuthenticationService``.
 
 También puede pasar el URI de destino de la request actual como un parámetro
@@ -460,7 +460,7 @@ Múltiples Flujos de Autenticación
 En una aplicación que proporciona tanto una API como una interfaz web,
 es posible que desee diferentes configuraciones de autenticación en función de
 si la request es una API request o no. Por ejemplo, puede utilizar la autenticación JWT
-para su API, pero sesiones para su interfaz web. Para admitir este flujo, puede 
+para su API, pero sesiones para su interfaz web. Para admitir este flujo, puede
 devolver diferentes servicios de autenticación basados en la ruta URL o cualquier
 otro atributo de la request::
 
