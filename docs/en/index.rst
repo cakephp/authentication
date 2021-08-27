@@ -8,6 +8,8 @@ Project's ROOT directory (where the **composer.json** file is located)
 
     php composer.phar require "cakephp/authentication:^2.0"
 
+Version 2 of the Authentication Plugin is compatible with CakePHP 4.
+
 Load the plugin by adding the following statement in your project's ``src/Application.php``::
 
     public function bootstrap(): void
