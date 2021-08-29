@@ -199,7 +199,7 @@ distribuirlo a través de un endpoint JWKS configurando su aplicación de la sig
         $this->viewBuilder()->setOption('serialize', 'keys');
     }
 
-Ir a https://datatracker.ietf.org/doc/html/rfc7517 o https://auth0.com/docs/tokens/concepts/jwks para
+Ir a https://datatracker.ietf.org/doc/html/rfc7517 o https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets para
 mas información sobre JWKS.
 
 HttpBasic
