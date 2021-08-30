@@ -213,7 +213,7 @@ application comme suit::
     }
 
 Consultez https://datatracker.ietf.org/doc/html/rfc7517 ou
-https://auth0.com/docs/tokens/concepts/jwks pour plus d'informations à propos de
+https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets pour plus d'informations à propos de
 JWKS.
 
 HttpBasic

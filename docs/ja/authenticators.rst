@@ -172,7 +172,7 @@ JWKSのエンドポイントを経由して公開鍵ファイルを配布する�
     }
 
 JWKSの詳細情報は https://datatracker.ietf.org/doc/html/rfc7517
-または https://auth0.com/docs/tokens/concepts/jwks を参照してください。
+または https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets を参照してください。
 
 Http基本
 =========
