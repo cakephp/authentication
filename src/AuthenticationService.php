@@ -30,6 +30,7 @@ use RuntimeException;
 
 /**
  * Authentication Service
+ *
  * @mixin \Authentication\Controller\Component\AuthenticationComponent
  */
 class AuthenticationService implements AuthenticationServiceInterface
