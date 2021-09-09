@@ -20,6 +20,7 @@ use ArrayAccess;
 use BadMethodCallException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
+use ReturnTypeWillChange;
 
 /**
  * Identity object
@@ -139,7 +140,8 @@ class Identity implements IdentityInterface
      * @param mixed $offset Offset
      * @return mixed
      */
-    public function offsetGet(mixed $offset) : mixed
+    #[ReturnTypeWillChange]
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
@@ -151,9 +153,10 @@ class Identity implements IdentityInterface
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value Value
      * @throws \BadMethodCallException
-     * @return void
+     * @return mixed
      */
-    public function offsetSet(mixed $offset, mixed $value) : void
+    #[ReturnTypeWillChange]
+    public function offsetSet($offset, $value)
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
