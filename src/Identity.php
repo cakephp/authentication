@@ -20,6 +20,7 @@ use ArrayAccess;
 use BadMethodCallException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
+use ReturnTypeWillChange;
 
 /**
  * Identity object
