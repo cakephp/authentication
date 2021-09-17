@@ -23,7 +23,7 @@ use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\ServerRequestFactory;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use PHPUnit\Framework\Constraint\RegularExpression;
@@ -64,7 +64,7 @@ class HttpDigestAuthenticatorTest extends TestCase
         ]);
 
         $password = HttpDigestAuthenticator::password('mariano', 'cake', 'localhost');
-        $User = TableRegistry::get('Users');
+        $User = TableRegistry::getTableLocator()->get('Users');
         $User->updateAll(['password' => $password], []);
     }
 
@@ -165,8 +165,8 @@ DIGEST;
         $expected = [
             'id' => 1,
             'username' => 'mariano',
-            'created' => new Time('2007-03-17 01:16:23'),
-            'updated' => new Time('2007-03-17 01:18:31'),
+            'created' => new FrozenTime('2007-03-17 01:16:23'),
+            'updated' => new FrozenTime('2007-03-17 01:18:31'),
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());

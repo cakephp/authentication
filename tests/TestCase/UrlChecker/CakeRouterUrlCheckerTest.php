@@ -33,16 +33,16 @@ class CakeRouterUrlCheckerTest extends TestCase
     {
         parent::setUp();
 
-        Router::reload();
         Router::fullBaseUrl('http://localhost');
-        Router::connect(
+
+        $builder = Router::createRouteBuilder('/');
+        $builder->connect(
             '/login',
             ['controller' => 'Users', 'action' => 'login'],
             ['_name' => 'login']
         );
-        Router::connect('/:controller/:action');
-
-        Router::connect(
+        $builder->connect('/{controller}/{action}');
+        $builder->connect(
             '/login',
             ['controller' => 'Users', 'action' => 'login'],
             [
