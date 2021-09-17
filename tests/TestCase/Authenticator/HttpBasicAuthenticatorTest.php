@@ -21,7 +21,7 @@ use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
-use Cake\I18n\Time;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 
 class HttpBasicAuthenticatorTest extends TestCase
@@ -148,7 +148,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      */
     public function testAuthenticateUsernameZero()
     {
-        $User = TableRegistry::get('Users');
+        $User = TableRegistry::getTableLocator()->get('Users');
         $User->updateAll(['username' => '0'], ['username' => 'mariano']);
 
         $_SERVER['PHP_AUTH_USER'] = '0';
@@ -170,8 +170,8 @@ class HttpBasicAuthenticatorTest extends TestCase
         $expected = [
             'id' => 1,
             'username' => '0',
-            'created' => new Time('2007-03-17 01:16:23'),
-            'updated' => new Time('2007-03-17 01:18:31'),
+            'created' => new FrozenTime('2007-03-17 01:16:23'),
+            'updated' => new FrozenTime('2007-03-17 01:18:31'),
         ];
         $result = $this->auth->authenticate($request);
         $this->assertTrue($result->isValid());
@@ -226,8 +226,8 @@ class HttpBasicAuthenticatorTest extends TestCase
         $expected = [
             'id' => 1,
             'username' => 'mariano',
-            'created' => new Time('2007-03-17 01:16:23'),
-            'updated' => new Time('2007-03-17 01:18:31'),
+            'created' => new FrozenTime('2007-03-17 01:16:23'),
+            'updated' => new FrozenTime('2007-03-17 01:18:31'),
         ];
 
         $this->assertTrue($result->isValid());

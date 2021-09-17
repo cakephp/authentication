@@ -48,12 +48,12 @@ class AuthenticationTestCase extends TestCase
     protected function _setupUsersAndPasswords()
     {
         $password = password_hash('password', PASSWORD_DEFAULT);
-        TableRegistry::clear();
+        TableRegistry::getTableLocator()->clear();
 
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::getTableLocator()->get('Users');
         $Users->updateAll(['password' => $password], []);
 
-        $AuthUsers = TableRegistry::get('AuthUsers', [
+        $AuthUsers = TableRegistry::getTableLocator()->get('AuthUsers', [
             'className' => 'TestApp\Model\Table\AuthUsersTable',
         ]);
         $AuthUsers->updateAll(['password' => $password], []);
