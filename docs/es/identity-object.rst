@@ -59,7 +59,7 @@ Si desea crear su propio objeto de identidad, su objeto debe implementar el
 ``IdentityInterface``.
 
 Implementar IdentityInterface en su clase User
--------------------------------------------------
+----------------------------------------------
 
 Si desea continuar usando su clase User existente con este plugin,
 puede implementar ``Authentication\IdentityInterface``::
