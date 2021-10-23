@@ -109,7 +109,7 @@ Opciones de configuración:
    suministrar un callback válido en esta opción para usar el
    autenticador.
 
-Los identificadores callback pueden retornar ``null|ArrayAccess`` para resultados simples,
+Los identificadores callback pueden retornar ``ArrayAccess|null`` para resultados simples,
 o un ``Authentication\Authenticator\Result`` si se quiere enviar mensajes de
 error::
 
