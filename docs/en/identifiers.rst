@@ -65,6 +65,8 @@ JWT Subject
 
 Checks the passed JWT token against a datasource.
 
+Configuration options:
+
 -  **tokenField**: The field in the database to check against. Default
    is ``id``.
 -  **dataField**: The payload key to get user identifier from. Default
@@ -77,6 +79,8 @@ LDAP
 
 Checks the passed credentials against a LDAP server. This identifier
 requires the PHP LDAP extension.
+
+Configuration options:
 
 -  **fields**: The fields for the lookup. Default is
    ``['username' => 'username', 'password' => 'password']``.
