@@ -36,7 +36,7 @@ imports::
     use Cake\Http\MiddlewareQueue;
     use Cake\Routing\Router;
     use Psr\Http\Message\ServerRequestInterface;
-    
+
 
 Next, add ``AuthenticationServiceProviderInterface`` to the implemented interfaces
 on your application::
@@ -62,7 +62,6 @@ Then update your application's ``middleware()`` method to look like::
 
         return $middlewareQueue();
     }
-    $middlewareQueue->add(new AuthenticationMiddleware($this));
 
 .. warning::
     The order of middleware is important. Ensure that you have
