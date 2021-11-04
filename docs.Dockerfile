@@ -9,11 +9,17 @@ RUN cd /data/docs-builder && \
 
 
 # Build a small nginx container with just the static site in it.
-FROM nginx:1.15-alpine
+FROM markstory/cakephp-docs-builder:runtime as runtime
 
+ENV SEARCH_SOURCE="/data/docs"
+ENV SEARCH_URL_PREFIX="/authentication/2"
+
+COPY --from=builder /data/docs /data/docs
 COPY --from=builder /data/website /data/website
 COPY --from=builder /data/docs-builder/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Move files into final location
 RUN cp -R /data/website/html/* /usr/share/nginx/html \
   && rm -rf /data/website/
+
+CMD ["/data/run.sh"]
