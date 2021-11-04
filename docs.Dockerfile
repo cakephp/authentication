@@ -2,7 +2,7 @@
 FROM markstory/cakephp-docs-builder as builder
 
 COPY docs /data/docs
-ENV LANGS = "en es fr ja"
+ENV LANGS="en es fr ja"
 
 # Build the docs with sphinx
 RUN cd /data/docs-builder && \
