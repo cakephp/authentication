@@ -7,7 +7,6 @@ COPY docs /data/docs
 RUN cd /data/docs-builder && \
   make website SOURCE=/data/docs DEST=/data/website
 
-
 # Build a small nginx container with just the static site in it.
 FROM markstory/cakephp-docs-builder:runtime as runtime
 
@@ -21,5 +20,3 @@ COPY --from=builder /data/docs-builder/nginx.conf /etc/nginx/conf.d/default.conf
 # Move files into final location
 RUN cp -R /data/website/html/* /usr/share/nginx/html \
   && rm -rf /data/website/
-
-CMD ["/data/run.sh"]
