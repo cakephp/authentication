@@ -207,6 +207,10 @@ HttpBasic
 
 See https://en.wikipedia.org/wiki/Basic_access_authentication
 
+.. note::
+
+    This authenticator will halt the request when authentication credentials are missing or invalid. 
+
 Configuration options:
 
 -  **realm**: Default is ``$_SERVER['SERVER_NAME']`` override it as
@@ -216,6 +220,10 @@ HttpDigest
 ==========
 
 See https://en.wikipedia.org/wiki/Digest_access_authentication
+
+.. note::
+
+    This authenticator will halt the request when authentication credentials are missing or invalid. 
 
 Configuration options:
 
