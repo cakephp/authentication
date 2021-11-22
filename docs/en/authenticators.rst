@@ -209,7 +209,7 @@ See https://en.wikipedia.org/wiki/Basic_access_authentication
 
 .. note::
 
-    This authenticator will halt the request when authentication credentials are missing or invalid. 
+    This authenticator will halt the request when authentication credentials are missing or invalid.
 
 Configuration options:
 
@@ -223,7 +223,7 @@ See https://en.wikipedia.org/wiki/Digest_access_authentication
 
 .. note::
 
-    This authenticator will halt the request when authentication credentials are missing or invalid. 
+    This authenticator will halt the request when authentication credentials are missing or invalid.
 
 Configuration options:
 
@@ -399,7 +399,7 @@ You can also get the identifier that identified the user as well::
 Using Stateless Authenticators with Stateful Authenticators
 ===========================================================
 
-When using ``Token`` or ``HttpBasic``, ``HttpDigest`` with other authenticators,
+When using ``HttpBasic``, ``HttpDigest`` with other authenticators,
 you should remember that these authenticators will halt the request when
 authentication credentials are missing or invalid. This is necessary as these
 authenticators must send specific challenge headers in the response::

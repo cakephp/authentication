@@ -34,39 +34,24 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     public function authenticate(ServerRequestInterface $request): ResultInterface
     {
-        $user = $this->getUser($request);
+        $server = $request->getServerParams();
+        $username = $server['PHP_AUTH_USER'] ?? '';
+        $password = $server['PHP_AUTH_PW'] ?? '';
 
-        if (empty($user)) {
+        if ($username === '' || $password === '') {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        return new Result($user, Result::SUCCESS);
-    }
-
-    /**
-     * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
-     * @return \ArrayAccess|array|null User entity or null on failure.
-     */
-    public function getUser(ServerRequestInterface $request)
-    {
-        $server = $request->getServerParams();
-        if (!isset($server['PHP_AUTH_USER']) || !isset($server['PHP_AUTH_PW'])) {
-            return null;
-        }
-
-        $username = $server['PHP_AUTH_USER'];
-        $password = $server['PHP_AUTH_PW'];
-
-        if (!is_string($username) || $username === '' || !is_string($password) || $password === '') {
-            return null;
-        }
-
-        return $this->_identifier->identify([
+        $user = $this->_identifier->identify([
             IdentifierInterface::CREDENTIAL_USERNAME => $username,
             IdentifierInterface::CREDENTIAL_PASSWORD => $password,
         ]);
+
+        if ($user === null) {
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
+        }
+
+        return new Result($user, Result::SUCCESS);
     }
 
     /**
