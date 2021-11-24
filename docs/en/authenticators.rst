@@ -102,13 +102,16 @@ example.
 -  **queryParam**: The query param to check for the token. The default
    is ``token``.
 -  **tokenPrefix**: The token prefix. Default is ``bearer``.
--  **algorithms**: An array of hashing algorithms for Firebase JWT.
-   Default is an array ``['HS256']``.
+-  **algorithm**: The hashing algorithm for Firebase JWT.
+   Default is ``'HS256'``.
 -  **returnPayload**: To return or not return the token payload directly
    without going through the identifiers. Default is ``true``.
 -  **secretKey**: Default is ``null`` but you’re **required** to pass a
    secret key if you’re not in the context of a CakePHP application that
    provides it through ``Security::salt()``.
+
+You need to add the lib `firebase/php-jwt <https://github.com/firebase/php-jwt>`_
+v5.5 or above to your app to use the ``JwtAuthenticator``.
 
 By default the ``JwtAuthenticator`` uses ``HS256`` symmetric key algorithm and uses
 the value of ``Cake\Utility\Security::salt()`` as encryption key.
@@ -137,7 +140,7 @@ Add the following to your ``Application`` class::
         $service->loadIdentifier('Authentication.JwtSubject');
         $service->loadAuthenticator('Authentication.Jwt', [
             'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
-            'algorithms' => ['RS256'],
+            'algorithm' => 'RS256',
             'returnPayload' => false
         ]);
     }
@@ -209,7 +212,7 @@ See https://en.wikipedia.org/wiki/Basic_access_authentication
 
 .. note::
 
-    This authenticator will halt the request when authentication credentials are missing or invalid. 
+    This authenticator will halt the request when authentication credentials are missing or invalid.
 
 Configuration options:
 
@@ -223,7 +226,7 @@ See https://en.wikipedia.org/wiki/Digest_access_authentication
 
 .. note::
 
-    This authenticator will halt the request when authentication credentials are missing or invalid. 
+    This authenticator will halt the request when authentication credentials are missing or invalid.
 
 Configuration options:
 

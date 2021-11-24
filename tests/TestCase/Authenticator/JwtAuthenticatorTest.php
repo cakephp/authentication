@@ -94,6 +94,25 @@ class JwtAuthenticatorTest extends TestCase
     }
 
     /**
+     * @deprecated
+     */
+    public function testUsingDeprecatedConfig()
+    {
+        $this->request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/']
+        );
+        $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
+
+        $this->deprecated(function() {
+            $authenticator = new JwtAuthenticator($this->identifiers, [
+                'secretKey' => 'secretKey',
+                'subjectKey' => 'subjectId',
+                'algorithms' => ['HS256'],
+            ]);
+        });
+    }
+
+    /**
      * testAuthenticateViaQueryParamToken
      *
      * @return void
