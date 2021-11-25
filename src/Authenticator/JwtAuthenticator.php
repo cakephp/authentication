@@ -21,6 +21,7 @@ use Authentication\Identifier\IdentifierInterface;
 use Cake\Utility\Security;
 use Exception;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use stdClass;
@@ -34,7 +35,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'header' => 'Authorization',
         'queryParam' => 'token',
         'tokenPrefix' => 'bearer',
-        'algorithms' => ['HS256'],
+        'algorithm' => 'HS256',
         'returnPayload' => true,
         'secretKey' => null,
         'subjectKey' => IdentifierInterface::CREDENTIAL_JWT_SUBJECT,
@@ -63,6 +64,14 @@ class JwtAuthenticator extends TokenAuthenticator
                 throw new RuntimeException('You must set the `secretKey` config key for JWT authentication.');
             }
             $this->setConfig('secretKey', \Cake\Utility\Security::getSalt());
+        }
+
+        if (isset($config['algorithms'])) {
+            deprecationWarning(
+                'The `algorithms` array config is deprecated, use the `algorithm` string config instead.'
+                . ' This is due to the new recommended usage of `firebase/php-jwt`.'
+                . 'See https://github.com/firebase/php-jwt/releases/tag/v5.5.0'
+            );
         }
     }
 
@@ -148,10 +157,17 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     protected function decodeToken(string $token): ?object
     {
-        return JWT::decode(
-            $token,
-            $this->getConfig('secretKey'),
-            $this->getConfig('algorithms')
-        );
+        $algorithms = $this->getConfig('algorithms');
+        if ($algorithms) {
+            return JWT::decode(
+                $token,
+                $this->getConfig('secretKey'),
+                $algorithms
+            );
+        }
+
+        $key = new Key($this->getConfig('secretKey'), $this->getConfig('algorithm'));
+
+        return JWT::decode($token, $key);
     }
 }
