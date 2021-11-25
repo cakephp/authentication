@@ -73,15 +73,18 @@ class JwtAuthenticatorTest extends TestCase
     /**
      * Test that "algorithms" config overwrites the default value instead of merging.
      *
+     * @deprecated
      * @return void
      */
     public function testAlgorithmsOverwrite()
     {
-        $authenticator = new JwtAuthenticator($this->identifiers, [
-            'algorithms' => ['RS256'],
-        ]);
+        $this->deprecated(function () {
+            $authenticator = new JwtAuthenticator($this->identifiers, [
+                'algorithms' => ['RS256'],
+            ]);
 
-        $this->assertSame(['RS256'], $authenticator->getConfig('algorithms'));
+            $this->assertSame(['RS256'], $authenticator->getConfig('algorithms'));
+        });
     }
 
     /**
@@ -123,6 +126,8 @@ class JwtAuthenticatorTest extends TestCase
                 'subjectKey' => 'subjectId',
                 'algorithms' => ['HS256'],
             ]);
+            // Appease lowest build
+            $this->assertNotEmpty($authenticator);
         });
     }
 
