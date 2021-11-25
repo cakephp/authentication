@@ -71,6 +71,20 @@ class JwtAuthenticatorTest extends TestCase
     }
 
     /**
+     * Test that "algorithms" config overwrites the default value instead of merging.
+     *
+     * @return void
+     */
+    public function testAlgorithmsOverwrite()
+    {
+        $authenticator = new JwtAuthenticator($this->identifiers, [
+            'algorithms' => ['RS256'],
+        ]);
+
+        $this->assertSame(['RS256'], $authenticator->getConfig('algorithms'));
+    }
+
+    /**
      * testAuthenticateViaHeaderToken
      *
      * @return void
