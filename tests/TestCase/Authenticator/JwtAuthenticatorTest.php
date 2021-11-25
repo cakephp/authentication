@@ -103,7 +103,7 @@ class JwtAuthenticatorTest extends TestCase
         );
         $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
 
-        $this->deprecated(function() {
+        $this->deprecated(function () {
             $authenticator = new JwtAuthenticator($this->identifiers, [
                 'secretKey' => 'secretKey',
                 'subjectKey' => 'subjectId',
