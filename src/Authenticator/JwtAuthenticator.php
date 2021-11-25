@@ -54,6 +54,10 @@ class JwtAuthenticator extends TokenAuthenticator
     {
         parent::__construct($identifier, $config);
 
+        if (isset($config['algorithms'])) {
+            $this->setConfig('algorithms', $config['algorithms'], false);
+        }
+
         if (empty($this->_config['secretKey'])) {
             if (!class_exists(Security::class)) {
                 throw new RuntimeException('You must set the `secretKey` config key for JWT authentication.');
