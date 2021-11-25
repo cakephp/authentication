@@ -26,6 +26,22 @@ use Psr\Http\Message\ServerRequestInterface;
 class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessInterface
 {
     /**
+     * Default config for this object.
+     * - `fields` The fields to use to identify a user by.
+     * - `skipChallenge` If set to `true` then challenge exception will not be
+     *   generated in case of authentication failure. Defaults to `false`.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'fields' => [
+            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
+            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        ],
+        'skipChallenge' => false,
+    ];
+
+    /**
      * Authenticate a user using HTTP auth. Will use the configured User model and attempt a
      * login using HTTP auth.
      *
@@ -63,6 +79,10 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     public function unauthorizedChallenge(ServerRequestInterface $request): void
     {
+        if ($this->getConfig('skipChallenge')) {
+            return;
+        }
+
         throw new AuthenticationRequiredException($this->loginHeaders($request), '');
     }
 
