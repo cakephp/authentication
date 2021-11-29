@@ -105,6 +105,35 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * Test that no exception if thrown when challenge is disabled for authenticator
+     *
+     * @return void
+     */
+    public function testAuthenticateWithChallengeDisabled()
+    {
+        $request = ServerRequestFactory::fromGlobals([
+            'SERVER_NAME' => 'example.com',
+            'REQUEST_URI' => '/testpath',
+            'PHP_AUTH_USER' => 'admad',
+            'PHP_AUTH_PW' => 'WRONG',
+        ]);
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.HttpBasic' => [
+                    'skipChallenge' => true,
+                ],
+            ],
+        ]);
+
+        $result = $service->authenticate($request);
+        $this->assertFalse($result->isValid());
+    }
+
+    /**
      * testLoadAuthenticatorException
      */
     public function testLoadAuthenticatorException()

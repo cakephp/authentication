@@ -18,6 +18,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\HttpBasicAuthenticator;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
@@ -84,6 +85,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
+        $this->assertSame(ResultInterface::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
 
     /**
@@ -102,6 +104,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
+        $this->assertSame(ResultInterface::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
 
     /**
@@ -120,6 +123,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
+        $this->assertSame(ResultInterface::FAILURE_CREDENTIALS_MISSING, $result->getStatus());
     }
 
     /**
@@ -139,6 +143,7 @@ class HttpBasicAuthenticatorTest extends TestCase
 
         $result = $this->auth->authenticate($request);
         $this->assertFalse($result->isValid());
+        $this->assertSame(ResultInterface::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
     }
 
     /**
