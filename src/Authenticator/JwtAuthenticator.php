@@ -18,8 +18,10 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
+use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Exception;
+use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
@@ -163,6 +165,24 @@ class JwtAuthenticator extends TokenAuthenticator
                 $token,
                 $this->getConfig('secretKey'),
                 $algorithms
+            );
+        }
+
+        $jsonWebKeySet = $this->getConfig('jsonWebKeySet');
+        if ($jsonWebKeySet) {
+            $keySet = JWK::parseKeySet($jsonWebKeySet);
+            /*
+             * TODO Converting Keys to Key Objects is no longer needed in firebase/php-jwt ^6.0
+             * @link https://github.com/firebase/php-jwt/pull/376/files#diff-374f5998b3c572d86be0e79432aac3de362c79e8fb146b9ce422dc2388cdc5daR50
+             */
+            $keyAlgorithms = Hash::combine($jsonWebKeySet['keys'], '{n}.kid', '{n}.alg');
+            array_walk($keySet, function (&$keyMaterial, $k) use ($keyAlgorithms) {
+                $keyMaterial = new Key($keyMaterial, $keyAlgorithms[$k]);
+            });
+
+            return JWT::decode(
+                $token,
+                $keySet
             );
         }
 

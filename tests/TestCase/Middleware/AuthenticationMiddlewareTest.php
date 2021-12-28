@@ -657,7 +657,7 @@ class AuthenticationMiddlewareTest extends TestCase
             'firstname' => 'larry',
         ];
 
-        $token = JWT::encode($data, 'secretKey');
+        $token = JWT::encode($data, 'secretKey', 'HS256');
 
         $this->service = new AuthenticationService([
             'identifiers' => [
