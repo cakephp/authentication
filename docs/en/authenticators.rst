@@ -204,9 +204,8 @@ prepared to handle signing key rotations.
 
 .. warning::
 
-    An application would need to decide on a cache lifetime that strikes a good
-    balance between performance and security, particularly for the emergency
-    case where a private key is compromised.
+    Applications need to pick a cache lifetime that balances performance and security.
+    This is particularly important in situations where a private key is compromised.
 
 Beside from sharing the public key file to external application, you can
 distribute it via a JWKS endpoint by configuring your app as follows::
