@@ -62,6 +62,24 @@ made. For example LDAP or OAuth would put errors specific to their
 implementation in here for easier logging and debugging the cause. But most of
 the included authenticators don't put anything in here.
 
+
+Access JWT payload 
+------------------------
+
+ To access jwt payload ::
+ 
+    use Firebase\JWT\JWT;
+
+    $privateKey = file_get_contents(CONFIG . '/jwt.pem');
+    $token = $this->request->getEnv('HTTP_AUTHORIZATION');
+    $jwt = explode(" ", $token)[1];
+    $payload = JWT::decode(
+        $jwt,
+        $privateKey,
+        ['RS256'] // use same keyword used in login function
+    );
+    
+
 Logging out the identity
 ------------------------
 
