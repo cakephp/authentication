@@ -95,7 +95,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                // hash(username . password . hmac(username . password, salt)
+                // hash(username . password . hmac(username . password, salt))
                 'CookieAuth' => '["mariano","$2y$10$RlCAFt3e/9l42f8SIaIbqejOg9/b/HklPo.fjXY.tFGuluafugssa"]',
             ]
         );
