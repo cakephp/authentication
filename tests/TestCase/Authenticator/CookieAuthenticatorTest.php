@@ -19,10 +19,12 @@ use ArrayObject;
 use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
+use Cake\Core\Configure;
 use Cake\Http\Cookie\Cookie;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -45,6 +47,8 @@ class CookieAuthenticatorTest extends TestCase
     {
         $this->skipIf(!class_exists(Cookie::class));
 
+        // Note: security salt is written in tests/bootstrap.php
+
         parent::setUp();
     }
 
@@ -64,7 +68,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => '["$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]',
+                'CookieAuth' => '["$2y$10$O5VgLDfIqszzr0Q47Ygkc.LkoLIwlIjc/OzoGp6yJasQlxcHU4.ES"]',
             ]
         );
 
@@ -91,7 +95,8 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => '["mariano","$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES"]',
+                // hash(username . password . hmac(username . password, salt))
+                'CookieAuth' => '["mariano","$2y$10$RlCAFt3e/9l42f8SIaIbqejOg9/b/HklPo.fjXY.tFGuluafugssa"]',
             ]
         );
 
@@ -118,7 +123,7 @@ class CookieAuthenticatorTest extends TestCase
             null,
             null,
             [
-                'CookieAuth' => ['mariano', '$2y$10$1bE1SgasKoz9WmEvUfuZLeYa6pQgxUIJ5LAoS/KGmC1hNuWkUG7ES'],
+                'CookieAuth' => ['mariano', '$2y$10$RlCAFt3e/9l42f8SIaIbqejOg9/b/HklPo.fjXY.tFGuluafugssa'],
             ]
         );
 
@@ -127,6 +132,62 @@ class CookieAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * testAuthenticateSuccessNoSalt
+     *
+     * @return void
+     */
+    public function testAuthenticateNoSalt()
+    {
+        Configure::delete('Security.salt');
+
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password',
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                // hash(username . password)
+                'CookieAuth' => '["mariano","$2y$10$yq91zLgrlF0TUzPjFj49DOL44svGrOYxaBfB6QYWEvxVKzNkvcVom"]',
+            ]
+        );
+
+        $authenticator = new CookieAuthenticator($identifiers, ['salt' => false]);
+        $result = $authenticator->authenticate($request);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * testAuthenticateSuccessNoSalt
+     *
+     * @return void
+     */
+    public function testAuthenticateInvalidSalt()
+    {
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password',
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            null,
+            null,
+            [
+                'CookieAuth' => '["mariano","some_hash"]',
+            ]
+        );
+
+        $authenticator = new CookieAuthenticator($identifiers, ['salt' => '']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $authenticator->authenticate($request);
     }
 
     /**
@@ -241,7 +302,7 @@ class CookieAuthenticatorTest extends TestCase
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
         $this->assertStringContainsString(
-            'CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24',
+            'CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24', // `CookieAuth=["mariano","$2y$10$`
             $result['response']->getHeaderLine('Set-Cookie')
         );
         $this->assertStringContainsString(

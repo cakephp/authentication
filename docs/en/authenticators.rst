@@ -274,6 +274,10 @@ Configuration options:
    ``null`` and all pages will be checked.
 -  **passwordHasher**: Password hasher to use for token hashing. Default
    is ``DefaultPasswordHasher::class``.
+-  **salt**: When ``false`` no salt is used. When a string is passed that value is used as a salt value. 
+   When ``true`` the default Security.salt is used. Default is ``true``. When a salt is used, the cookie value 
+   will contain `hash(username + password + hmac(username + password, salt))`. This helps harden tokens against possible 
+   database leaks and enables cookie values to be invalidated by rotating the salt value.
 
 Usage
 -----
