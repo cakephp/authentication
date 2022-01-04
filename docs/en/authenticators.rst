@@ -109,7 +109,7 @@ example.
 -  **secretKey**: Default is ``null`` but you’re **required** to pass a
    secret key if you’re not in the context of a CakePHP application that
    provides it through ``Security::salt()``.
--  **jsonWebKeySet**: Default is ``null``. Associative array with a ``'keys'`` key.
+-  **jwks**: Default is ``null``. Associative array with a ``'keys'`` key.
    If provided will be used instead of the secret key.
 
 You need to add the lib `firebase/php-jwt <https://github.com/firebase/php-jwt>`_
@@ -193,7 +193,7 @@ Using a JWKS fetched from an external JWKS endpoint is supported as well::
         });
 
         $service->loadAuthenticator('Authentication.Jwt', [
-            'jsonWebKeySet' => $jsonWebKeySet,
+            'jwks' => $jsonWebKeySet,
             'returnPayload' => false
         ]);
     }

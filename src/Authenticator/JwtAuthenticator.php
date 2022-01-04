@@ -41,6 +41,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'returnPayload' => true,
         'secretKey' => null,
         'subjectKey' => IdentifierInterface::CREDENTIAL_JWT_SUBJECT,
+        'jwks' => null,
     ];
 
     /**
@@ -168,7 +169,7 @@ class JwtAuthenticator extends TokenAuthenticator
             );
         }
 
-        $jsonWebKeySet = $this->getConfig('jsonWebKeySet');
+        $jsonWebKeySet = $this->getConfig('jwks');
         if ($jsonWebKeySet) {
             $keySet = JWK::parseKeySet($jsonWebKeySet);
             /*

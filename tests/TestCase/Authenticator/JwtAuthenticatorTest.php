@@ -332,7 +332,7 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
-            'jsonWebKeySet' => json_decode(file_get_contents(__DIR__ . '/../../data/rsa-jwkset.json'), true),
+            'jwks' => json_decode(file_get_contents(__DIR__ . '/../../data/rsa-jwkset.json'), true),
         ]);
 
         $result = $authenticator->getPayload();
