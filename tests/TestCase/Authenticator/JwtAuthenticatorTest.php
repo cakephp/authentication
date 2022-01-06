@@ -39,11 +39,18 @@ class JwtAuthenticatorTest extends TestCase
     ];
 
     /**
-     * Test token
+     * Test token encoded via HS256
      *
      * @var string
      */
-    public $token;
+    protected $tokenHS256;
+
+    /**
+     * Test token encoded via RS256
+     *
+     * @var string
+     */
+    protected $tokenRS256;
 
     /**
      * Identifier Collection
@@ -66,7 +73,11 @@ class JwtAuthenticatorTest extends TestCase
             'firstname' => 'larry',
         ];
 
-        $this->token = JWT::encode($data, 'secretKey');
+        $this->tokenHS256 = JWT::encode($data, 'secretKey', 'HS256');
+
+        $privKey1 = file_get_contents(__DIR__ . '/../../data/rsa1-private.pem');
+        $this->tokenRS256 = JWT::encode($data, $privKey1, 'RS256', 'jwk1');
+
         $this->identifiers = new IdentifierCollection([]);
     }
 
@@ -97,7 +108,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
         );
-        $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
+        $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->tokenHS256);
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
@@ -118,7 +129,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
         );
-        $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->token);
+        $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->tokenHS256);
 
         $this->deprecated(function () {
             $authenticator = new JwtAuthenticator($this->identifiers, [
@@ -140,7 +151,7 @@ class JwtAuthenticatorTest extends TestCase
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
-            ['token' => $this->token]
+            ['token' => $this->tokenHS256]
         );
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
@@ -163,7 +174,7 @@ class JwtAuthenticatorTest extends TestCase
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
-            ['token' => $this->token]
+            ['token' => $this->tokenHS256]
         );
 
         $this->identifiers = $this->createMock(IdentifierCollection::class);
@@ -202,7 +213,7 @@ class JwtAuthenticatorTest extends TestCase
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
-            ['token' => $this->token]
+            ['token' => $this->tokenHS256]
         );
 
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
@@ -233,7 +244,7 @@ class JwtAuthenticatorTest extends TestCase
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
-            ['token' => $this->token]
+            ['token' => $this->tokenHS256]
         );
 
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
@@ -277,19 +288,51 @@ class JwtAuthenticatorTest extends TestCase
     }
 
     /**
-     * testGetPayload
+     * testGetPayload with HS256 token
      *
      * @return void
      */
-    public function testGetPayload()
+    public function testGetPayloadHS256()
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
-            ['token' => $this->token]
+            ['token' => $this->tokenHS256]
         );
 
         $authenticator = new JwtAuthenticator($this->identifiers, [
             'secretKey' => 'secretKey',
+        ]);
+
+        $result = $authenticator->getPayload();
+        $this->assertNull($result);
+
+        $authenticator->authenticate($this->request);
+
+        $expected = [
+            'subjectId' => 3,
+            'id' => 3,
+            'username' => 'larry',
+            'firstname' => 'larry',
+        ];
+
+        $result = $authenticator->getPayload();
+        $this->assertEquals($expected, (array)$result);
+    }
+
+    /**
+     * testGetPayload with RS256 token
+     *
+     * @return void
+     */
+    public function testGetPayloadRS256()
+    {
+        $this->request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            ['token' => $this->tokenRS256]
+        );
+
+        $authenticator = new JwtAuthenticator($this->identifiers, [
+            'jwks' => json_decode(file_get_contents(__DIR__ . '/../../data/rsa-jwkset.json'), true),
         ]);
 
         $result = $authenticator->getPayload();

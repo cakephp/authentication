@@ -109,6 +109,8 @@ example.
 -  **secretKey**: Default is ``null`` but you’re **required** to pass a
    secret key if you’re not in the context of a CakePHP application that
    provides it through ``Security::salt()``.
+-  **jwks**: Default is ``null``. Associative array with a ``'keys'`` key.
+   If provided will be used instead of the secret key.
 
 You need to add the lib `firebase/php-jwt <https://github.com/firebase/php-jwt>`_
 v5.5 or above to your app to use the ``JwtAuthenticator``.
@@ -170,6 +172,40 @@ In your ``UsersController``::
         $this->set(compact('json'));
         $this->viewBuilder()->setOption('serialize', 'json');
     }
+
+Using a JWKS fetched from an external JWKS endpoint is supported as well::
+
+    // Application.php
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+        // ...
+        $service->loadIdentifier('Authentication.JwtSubject');
+
+        $jwksUrl = 'https://appleid.apple.com/auth/keys';
+
+        // Set of keys. The "keys" key is required. Additionally keys require a "alg" key.
+        // Add it manually to your JWK array if it doesn't already exist.
+        $jsonWebKeySet = Cache::remember('jwks-' . md5($jwksUrl), function () use ($jwksUrl) {
+            $http = new Client();
+            $response = $http->get($jwksUrl);
+            return $response->getJson();
+        });
+
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'jwks' => $jsonWebKeySet,
+            'returnPayload' => false
+        ]);
+    }
+
+The JWKS resource will return the same set of keys most of the time.
+Applications should cache these resources, but they also need to be
+prepared to handle signing key rotations.
+
+.. warning::
+
+    Applications need to pick a cache lifetime that balances performance and security.
+    This is particularly important in situations where a private key is compromised.
 
 Beside from sharing the public key file to external application, you can
 distribute it via a JWKS endpoint by configuring your app as follows::

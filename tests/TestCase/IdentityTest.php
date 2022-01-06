@@ -72,7 +72,7 @@ class IdentityTest extends TestCase
         $this->assertTrue(isset($identity->first_name), 'old alias responds to isset.');
         $this->assertFalse(isset($identity->missing));
 
-        $this->assertSame('florian', $identity['username'], 'renamed field responsds to offsetget');
+        $this->assertSame('florian', $identity['username'], 'renamed field responds to offsetget');
         $this->assertSame('florian', $identity->username, 'renamed field responds to__get');
         $this->assertNull($identity->missing);
     }
