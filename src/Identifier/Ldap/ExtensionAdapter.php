@@ -92,7 +92,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param bool $tls if to try starting TLS
      * @return void
      */
-    public function connect(string $host, int $port, array $options, bool $tls): void
+    public function connect(string $host, int $port, array $options, bool $tls = false): void
     {
         $this->_setErrorHandler();
         $resource = ldap_connect($host, $port);
