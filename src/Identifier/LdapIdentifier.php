@@ -179,7 +179,7 @@ class LdapIdentifier extends AbstractIdentifier
             $config['host'],
             $config['port'],
             (array)$this->getConfig('options'),
-            (bool)$config['tls'],
+            (bool)$config['tls']
         );
     }
 
