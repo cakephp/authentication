@@ -36,7 +36,7 @@ interface AdapterInterface
      * @param bool $tls If true try starting TLS.
      * @return void
      */
-    public function connect(string $host, int $port, array $options, bool $tls): void;
+    public function connect(string $host, int $port, array $options, bool $tls = false): void;
 
     /**
      * Unbind from LDAP directory
