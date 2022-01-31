@@ -35,7 +35,7 @@ interface AdapterInterface
      * @param array $options Additional options
      * @return void
      */
-    public function connect(string $host, int $port, array $options): void;
+    public function connect(string $host, int $port, array $options, bool $tls): void;
 
     /**
      * Unbind from LDAP directory

@@ -58,6 +58,7 @@ class LdapIdentifier extends AbstractIdentifier
             self::CREDENTIAL_PASSWORD => 'password',
         ],
         'port' => 389,
+        'tls' => false,
     ];
 
     /**
@@ -177,7 +178,8 @@ class LdapIdentifier extends AbstractIdentifier
         $this->_ldap->connect(
             $config['host'],
             $config['port'],
-            (array)$this->getConfig('options')
+            (array)$this->getConfig('options'),
+            (bool)$config['tls'],
         );
     }
 
