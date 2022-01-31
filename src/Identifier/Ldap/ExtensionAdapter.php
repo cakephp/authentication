@@ -89,6 +89,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param string $host Hostname
      * @param int $port Port
      * @param array $options Additonal LDAP options
+     * @param bool $tls if to try starting TLS
      * @return void
      */
     public function connect(string $host, int $port, array $options, bool $tls): void
