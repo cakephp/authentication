@@ -39,6 +39,7 @@ class LdapIdentifierTest extends TestCase
         };
         $options = [
             'foo' => 3,
+            'tls' => false,
         ];
 
         $ldap = $this->createMock(AdapterInterface::class);
