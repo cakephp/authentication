@@ -89,22 +89,22 @@ class ExtensionAdapter implements AdapterInterface
      * @param string $host Hostname
      * @param int $port Port
      * @param array $options Additonal LDAP options
-     * @param bool $tls if to try starting TLS
      * @return void
      */
-    public function connect(string $host, int $port, array $options, bool $tls = false): void
+    public function connect(string $host, int $port, array $options): void
     {
         $this->_setErrorHandler();
         $resource = ldap_connect($host, $port);
         if ($resource === false) {
             throw new RuntimeException('Unable to connect to LDAP server.');
         }
-        if ($tls) {
+        if ($options['tls']) {
             //convert the connection to TLS
             if (!ldap_start_tls($resource)) {
                 throw new RuntimeException('Starting TLS failed on connection to LDAP server.');
             }
         }
+        unset($options['tls']); //don't pass through to PHP LDAP functions
         $this->_connection = $resource;
         $this->_unsetErrorHandler();
 

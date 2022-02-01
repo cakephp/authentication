@@ -33,10 +33,9 @@ interface AdapterInterface
      * @param string $host Hostname
      * @param int $port Port
      * @param array $options Additional options
-     * @param bool $tls If true try starting TLS.
      * @return void
      */
-    public function connect(string $host, int $port, array $options, bool $tls = false): void;
+    public function connect(string $host, int $port, array $options): void;
 
     /**
      * Unbind from LDAP directory
