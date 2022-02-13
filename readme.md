@@ -40,4 +40,4 @@ public function bootstrap(): void
 ## Documentation
 
 Documentation for this plugin can be found in the [CakePHP
-Cookbook](https://book.cakephp.org/authentication/2/en/)
+Cookbook](https://book.cakephp.org/authentication/2/en/).
