@@ -13,7 +13,7 @@ using the Password Identifier looks like::
        ],
        'resolver' => [
            'className' => 'Authentication.Orm',
-           'userModel' => 'Users'
+           'userModel' => 'Users',
            'finder' => 'active'
        ],
        'passwordHasher' => [
