@@ -2,7 +2,21 @@ Testing with Authentication
 ###########################
 
 With the ``authentication`` middleware active in your application you'll
-need to simulate authentication credentials in your integration tests.
+need to simulate authentication credentials in your integration tests. First,
+ensure that your controller or middleware tests are using the
+``IntegrationTestTrait``::
+
+    // In a controller test.
+    use Cake\TestSuite\IntegrationTestTrait;
+    use Cake\TestSuite\TestCase;
+
+    class ArticlesControllerTest extends TestCase
+    {
+        use IntegrationTestTrait;
+
+        // Test methods and helpers to follow.
+    }
+
 Based on the type of authentication you're using you will need to
 simulate credentials differently. Lets review a few more common types of
 authentication.
