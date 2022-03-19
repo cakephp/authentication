@@ -16,7 +16,7 @@ DefaultUrlChecker
 オプション:
 
 - **checkFullUrl**: フルURLを比較するには, プロトコルを含みます。
-  ホストとポートの有無を指定します。 デフォルトは ``false``です。
+  ホストとポートの有無を指定します。 デフォルトは ``false`` です。
 - **useRegex**: チェッカーの引数 ``$loginUrls`` で指定された正規表現でURLを比較します。
 
 CakeRouterUrlChecker
