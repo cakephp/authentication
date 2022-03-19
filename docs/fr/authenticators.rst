@@ -138,7 +138,7 @@ externe, par exemple les applications mobiles.
 L'exemple suivant vous permet d'identifier l'utilisateur à partir du ``sub``
 (*subject*) du jeton d'accès en utilisant l'identificateur ``JwtSubject``, et
 configure l'\ ``Authenticator`` pour utiliser une clé publique lors de la
-vérification du jeton d'accès::
+vérification du jeton d'accès.
 
 Ajoutez ce qui suit dans votre classe ``Application``::
 

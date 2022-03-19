@@ -11,7 +11,7 @@
 
 一旦ロードされると、全てのアクションが認証済みユーザーでしか入れなくなります。
 しかし、他のアクセス制御チェックは行わないでください。
-このチェックを無効にするには ``allowUnauthenticated()``を使います::
+このチェックを無効にするには ``allowUnauthenticated()`` を使います::
 
     // beforeFilter メソッドの中に記述してください。
     $this->Authentication->allowUnauthenticated(['view']);
