@@ -10,6 +10,7 @@ RUN cd /data/docs-builder && \
 # Build a small nginx container with just the static site in it.
 FROM markstory/cakephp-docs-builder:runtime as runtime
 
+ENV LANGS="en"
 ENV SEARCH_SOURCE="/data/website/html"
 ENV SEARCH_URL_PREFIX="/authentication/1"
 
