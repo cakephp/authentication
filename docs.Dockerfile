@@ -11,7 +11,7 @@ RUN cd /data/docs-builder && \
 FROM markstory/cakephp-docs-builder:runtime as runtime
 
 ENV LANGS="en"
-ENV SEARCH_SOURCE="/data/website/html"
+ENV SEARCH_SOURCE="/usr/share/nginx/html"
 ENV SEARCH_URL_PREFIX="/authentication/1"
 
 COPY --from=builder /data/docs /data/docs
