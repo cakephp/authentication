@@ -20,7 +20,7 @@
     "require-dev": {
         "cakephp/cakephp": "^4.0",
         "cakephp/cakephp-codesniffer": "^4.0",
-        "firebase/php-jwt": "^5.5",
+        "firebase/php-jwt": "^6.1",
         "phpunit/phpunit": "^8.5 || ^9.3"
     },
     "suggest": {
