@@ -32,7 +32,7 @@ class IdentityHelper extends Helper
      *
      * - `identityAttribute` - The request attribute which holds the identity.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_defaultConfig = [
         'identityAttribute' => 'identity',
