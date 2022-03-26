@@ -47,7 +47,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *   false to disable that behavior. See allowUnauthenticated() as well.
      * - `unauthenticatedMessage` - Error message to use when `UnauthenticatedException` is thrown.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_defaultConfig = [
         'logoutRedirect' => false,

@@ -66,11 +66,11 @@ class CallbackIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $data)
+    public function identify(array $credentials)
     {
         $callback = $this->getConfig('callback');
 
-        $result = $callback($data);
+        $result = $callback($credentials);
         if ($result instanceof Result) {
             $this->_errors = $result->getErrors();
 
