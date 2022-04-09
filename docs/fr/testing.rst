@@ -4,6 +4,20 @@ Tester avec Authentication
 Une fois le middleware ``authentication`` activé dans votre application, vous
 aurez besoin de simuler des identifiants de connexion dans vos tests
 d'intégration.
+Pour commencer, assurez-vous que vos tests de controller ou de middleware
+utilisent ``IntegrationTestTrait``::
+
+    // Dans un test de controller.
+    use Cake\TestSuite\IntegrationTestTrait;
+    use Cake\TestSuite\TestCase;
+
+    class ArticlesControllerTest extends TestCase
+    {
+        use IntegrationTestTrait;
+
+        // Méthodes de test et helpers
+    }
+
 Selon le type d'authentification que vous utilisez, vous aurez besoin de
 simuler les identifiants de connexion d'une certaine façon ou d'une autre.
 Examinons quelques types d'authentification parmi les plus répandus.

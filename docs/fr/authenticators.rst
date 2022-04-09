@@ -110,14 +110,20 @@ source de données, par exemple.
    d'accès. La valeur par défaut est ``token``.
 -  **tokenPrefix**: Le préfixe du jeton d'accès. La valeur par défaut est
    ``bearer``.
--  **algorithms**: Un tableau d'algorithmes de hachage pour Firebase JWT. La
-   valeur par défaut est un tableau ``['HS256']``.
+-  **algorithms**: L'algorithme de hachage pour Firebase JWT. La valeur par
+   défaut est ``['HS256']``.
 -  **returnPayload**: Renvoyer ou non la payload du jeton d'accès directement
    sans passer par les identificateurs. La valeur par défaut est ``true``.
 -  **secretKey**: La valeur par défaut est ``null`` mais vous **devez
    impérativement** transmettre une clé secrète si vous n'êtes pas dans le
    contexte d'une application CakePHP qui le fournit déjà par
    ``Security::salt()``.
+-  **jwks**: Par défaut ``null``. Tableau associatif avec une clé ``'keys'``.
+   S'il est fourni, il sera utilisé à la place de ``secret key``.
+
+Pour utiliser le ``JwtAuthenticator``, vous devez ajouter à votre application la
+bibliothèque `firebase/php-jwt <https://github.com/firebase/php-jwt>`_v5.5 ou
+supérieure.
 
 Par défaut, le ``JwtAuthenticator`` utilise l'algorithme de clé symétrique
 ``HS256`` et utilise la valeur de ``Cake\Utility\Security::salt()`` comme clé de
@@ -149,7 +155,7 @@ Ajoutez ce qui suit dans votre classe ``Application``::
         $service->loadIdentifier('Authentication.JwtSubject');
         $service->loadAuthenticator('Authentication.Jwt', [
             'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
-            'algorithms' => ['RS256'],
+            'algorithms' => 'RS256',
             'returnPayload' => false
         ]);
     }
@@ -179,6 +185,44 @@ Dans votre ``UsersController``::
         $this->set(compact('json'));
         $this->viewBuilder()->setOption('serialize', 'json');
     }
+
+Cela marche aussi en utilisant un JWKS récupéré depuis un terminal JWKS
+extérieur::
+
+    // Application.php
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
+    {
+        $service = new AuthenticationService();
+        // ...
+        $service->loadIdentifier('Authentication.JwtSubject');
+
+        $jwksUrl = 'https://appleid.apple.com/auth/keys';
+
+        // Ensemble de clés. La clé "keys" est nécessaire. De plus les clés
+        // nécessitent une clé "alg".
+        // Ajoutez-la manuellement à votre tableau JWK si elle n'existe pas déjà.
+        $jsonWebKeySet = Cache::remember('jwks-' . md5($jwksUrl), function () use ($jwksUrl) {
+            $http = new Client();
+            $response = $http->get($jwksUrl);
+            return $response->getJson();
+        });
+
+        $service->loadAuthenticator('Authentication.Jwt', [
+            'jwks' => $jsonWebKeySet,
+            'returnPayload' => false
+        ]);
+    }
+
+La ressource JWKS renverra la plupart du temps le même ensemble de clés.
+Les applications devraient mettre ces ressources en cache, mais elles doivent
+aussi être préparées à gérer la rotation des clés de chiffrement.
+
+.. warning::
+
+    Les applications doivent choisir une durée de vie du cache qui fasse un
+    compromis entre la performance et la sécurité.
+    C'est particulièrement important dans les situations où une clé privée
+    serait compromise.
 
 Au lieu de partager votre clé publique avec des applications externes, vous
 pouvez les distribuer via un point terminal JWKS en configurant votre
@@ -213,13 +257,18 @@ application comme suit::
     }
 
 Consultez https://datatracker.ietf.org/doc/html/rfc7517 ou
-https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets pour plus d'informations à propos de
-JWKS.
+https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets pour plus
+d'informations à propos de JWKS.
 
 HttpBasic
 =========
 
 Cf. https://en.wikipedia.org/wiki/Basic_access_authentication
+
+.. note::
+
+    Cet authentificateur arrêtera la requête si les identifiants
+    d'authentification sont absents ou invalides.
 
 Options de configuration:
 
@@ -278,6 +327,13 @@ Options de configuration:
    ``null`` et toutes les pages seront vérifiées.
 -  **passwordHasher**: Le hacheur de mot de passe à utiliser pour le hachage du
    jeton d'accès. Par défaut ``DefaultPasswordHasher::class``.
+-  **salt**: Si ``false``, aucun grain de sel n'est utilisé. Si c'est une chaîne
+   de caractères, cette chaîne est utilisée comme grain de sel. Si ``true``,
+   c'est la valeur par défaut Security.salt qui sera utilisée. ``true`` Par
+   défaut. Quand un grain de sel est utilisé, la valeur du cookie contiendra
+   `hash(username + password + hmac(username + password, salt))`. Cela contribue
+   à durcir les jetons contre de possible failles de la base de données et
+   active l'invalidation des cookies à chaque rotation du grain de sel.
 
 Utilisation
 -----------
@@ -412,7 +468,7 @@ l'utilisateur::
 Utiliser conjointement des Authentificateurs Stateless et Stateful
 ==================================================================
 
-Quand vous utilisez ``Token`` ou ``HttpBasic``, ``HttpDigest`` avec d'autres
+Quand vous utilisez ``HttpBasic``, ``HttpDigest`` avec d'autres
 authentificateurs, vous devez vous souvenir que ces authentificateurs arrêteront
 la requête si les identifiants de connexion sont absents ou invalides. C'est
 indispensable puisque ces authentificateurs doivent envoyer dans la réponse des
