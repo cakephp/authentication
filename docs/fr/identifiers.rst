@@ -14,7 +14,8 @@ Voici un exemple général d'utilisation du *Password Identifier*::
        ],
        'resolver' => [
            'className' => 'Authentication.Orm',
-           'finder' => 'active'
+           'userModel' => 'Users',
+           'finder' => 'active',
        ],
        'passwordHasher' => [
            'className' => 'Authentication.Fallback',
@@ -22,7 +23,7 @@ Voici un exemple général d'utilisation du *Password Identifier*::
                'Authentication.Default',
                [
                    'className' => 'Authentication.Legacy',
-                   'hashType' => 'md5'
+                   'hashType' => 'md5',
                ],
            ]
        ]
@@ -66,6 +67,8 @@ JWT Subject
 
 Confronte le jeton d'accès JWT avec la source de données.
 
+Options de configuration:
+
 -  **tokenField**: Le champ à confronter dans la base de données. Par défaut
    ``id``.
 -  **dataField**: La clé payload à partir de laquelle obtenir l'utilisateur. Par
@@ -78,6 +81,8 @@ LDAP
 
 Confronte les identifiants fournis avec un serveur LDAP. Cet identificateur
 nécessite l'extention PHP LDAP.
+
+Options de configuration:
 
 -  **fields**: Les champs à regarder. Par défaut
    ``['username' => 'username', 'password' => 'password']``.
@@ -123,7 +128,7 @@ voulez transférer des messages d'erreur::
             }
 
             return null;
-        }
+        },
     ]);
 
     // Utiliser un objet result pour renvoyer des messages d'erreur.
@@ -140,7 +145,7 @@ voulez transférer des messages d'erreur::
                 Result::FAILURE_OTHER,
                 ['message' => 'Utilisateur effacé.']
             );
-        }
+        },
     ]);
 
 
@@ -163,6 +168,8 @@ Options de configuration:
 -  **userModel**: Le modèle utilisateur dans lequel sont situées les identités.
    Par défaut ``Users``.
 -  **finder**: Le finder à utiliser avec le modèle. Par défaut ``all``.
+   Pour en savoir plus sur les finders de modèle, consultez
+   `cette documentation <https://book.cakephp.org/4/en/orm/retrieving-data-and-resultsets.html#custom-finder-methods>`__.
 
 Afin d'utiliser le résolveur ORM, vous devez requérir ``cakephp/orm`` dans votre
 fichier ``composer.json`` (si vous n'utilisez pas déjà le framework CakePHP
@@ -184,8 +191,8 @@ Les résolveurs peuvent être configurés en utilisant l'option de configuration
             // peut être un nom de classe complet: \Some\Other\Custom\Resolver::class
            'className' => 'MyResolver',
            // Passer des options supplémentaires pour le constructeur du résolveur.
-           'option' => 'value'
-       ]
+           'option' => 'value',
+       ],
    ]);
 
 Ou être injectés avec un setter::
