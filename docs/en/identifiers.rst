@@ -14,7 +14,7 @@ using the Password Identifier looks like::
        'resolver' => [
            'className' => 'Authentication.Orm',
            'userModel' => 'Users',
-           'finder' => 'active',
+           'finder' => 'active', // default: 'all'
        ],
        'passwordHasher' => [
            'className' => 'Authentication.Fallback',
