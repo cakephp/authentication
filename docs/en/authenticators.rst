@@ -113,7 +113,7 @@ example.
    If provided will be used instead of the secret key.
 
 You need to add the lib `firebase/php-jwt <https://github.com/firebase/php-jwt>`_
-v5.5 or above to your app to use the ``JwtAuthenticator``.
+^5.5 to your app to use the ``JwtAuthenticator`` (v6.0 is not currently supported). 
 
 By default the ``JwtAuthenticator`` uses ``HS256`` symmetric key algorithm and uses
 the value of ``Cake\Utility\Security::salt()`` as encryption key.
