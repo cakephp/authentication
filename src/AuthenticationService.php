@@ -215,6 +215,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
+                $authenticator->stopImpersonate($request, $response);
                 $result = $authenticator->clearIdentity($request, $response);
                 $request = $result['request'];
                 $response = $result['response'];
@@ -427,5 +428,51 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return $parsed['path'] . $parsed['query'];
+    }
+
+    /**
+     * Impersonates a user
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param \ArrayAccess|array $impersonator
+     * @param \ArrayAccess|array $impersonated
+     * @return \ArrayAccess|array
+     */
+    public function impersonate(ServerRequestInterface $request, ResponseInterface $response, \ArrayAccess|array $impersonator, \ArrayAccess|array $impersonated): \ArrayAccess|array
+    {
+        /** @var PersistenceInterface $provider */
+        $provider = $this->getAuthenticationProvider();
+        if (!($provider instanceof PersistenceInterface)) {
+            throw new \InvalidArgumentException('Provider must implement PersistenceInterface to be able to impersonate user.');
+        }
+        return $provider->impersonate($request, $response, $impersonator, $impersonated);
+    }
+
+    /**
+     * Stops impersonation
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return \ArrayAccess|array
+     */
+    public function stopImpersonate(ServerRequestInterface $request, ResponseInterface $response): \ArrayAccess|array
+    {
+        /** @var PersistenceInterface $provider */
+        $provider = $this->getAuthenticationProvider();
+        if (!($provider instanceof PersistenceInterface)) {
+            throw new \InvalidArgumentException('Provider must implement PersistenceInterface to be able to impersonate user.');
+        }
+        return $provider->stopImpersonate($request, $response);
+    }
+
+    public function isImpersonating(ServerRequestInterface $request, ResponseInterface $response): bool
+    {
+        /** @var PersistenceInterface $provider */
+        $provider = $this->getAuthenticationProvider();
+        if (!($provider instanceof PersistenceInterface)) {
+            throw new \InvalidArgumentException('Provider must implement PersistenceInterface to be able to impersonate user.');
+        }
+        return $provider->isImpersonating($request, $response);
     }
 }

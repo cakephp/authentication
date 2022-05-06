@@ -252,4 +252,42 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         return $cookie;
     }
+
+    /**
+     * Impersonates a user
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param \ArrayAccess|array $impersonator
+     * @param \ArrayAccess|array $impersonated
+     * @return \ArrayAccess|array
+     */
+    public function impersonate(ServerRequestInterface $request, ResponseInterface $response, \ArrayAccess|array $impersonator, \ArrayAccess|array $impersonated): \ArrayAccess|array
+    {
+        // TODO: Implement impersonate() method.
+    }
+
+    /**
+     * Stops impersonation
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return \ArrayAccess|array
+     */
+    public function stopImpersonate(ServerRequestInterface $request, ResponseInterface $response): \ArrayAccess|array
+    {
+        // TODO: Implement stopImpersonate() method.
+    }
+
+    /**
+     * Returns true if impersonation is being done
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return bool
+     */
+    public function isImpersonating(ServerRequestInterface $request, ResponseInterface $response): bool
+    {
+        // TODO: Implement isImpersonating() method.
+    }
 }

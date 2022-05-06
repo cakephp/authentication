@@ -41,4 +41,33 @@ interface PersistenceInterface
      * @psalm-return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface} Returns an array containing the request and response object
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array;
+
+    /**
+     * Impersonates a user
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param \ArrayAccess|array $impersonator
+     * @param \ArrayAccess|array $impersonated
+     * @return \ArrayAccess|array
+     */
+    public function impersonate(ServerRequestInterface $request, ResponseInterface $response, \ArrayAccess|array $impersonator, \ArrayAccess|array $impersonated): \ArrayAccess|array;
+
+    /**
+     * Stops impersonation
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return \ArrayAccess|array
+     */
+    public function stopImpersonate(ServerRequestInterface $request, ResponseInterface $response): \ArrayAccess|array;
+
+    /**
+     * Returns true if impersonation is being done
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @return bool
+     */
+    public function isImpersonating(ServerRequestInterface $request, ResponseInterface $response): bool;
 }

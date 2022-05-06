@@ -18,12 +18,16 @@ namespace Authentication\Controller\Component;
 
 use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\AbstractAuthenticator;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
+use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\IdentityInterface;
 use Cake\Controller\Component;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
@@ -347,5 +351,44 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             'Controller.initialize' => 'beforeFilter',
             'Controller.startup' => 'startup',
         ];
+    }
+
+    /**
+     * @param ArrayAccess|array $user
+     * @return bool
+     * @throws Exception
+     */
+    public function impersonate(ArrayAccess|array $impersonated): bool
+    {
+        $service = $this->getAuthenticationService();
+        $controller = $this->getController();
+        $identity = $service->impersonate($controller->getRequest(),
+            $controller->getResponse(), $this->getIdentity(), $impersonated);
+
+        return $service->isImpersonating($controller->getRequest(),
+            $controller->getResponse());
+    }
+
+    /**
+     * @param ArrayAccess|array $user
+     * @return bool
+     * @throws Exception
+     */
+    public function stopImpersonate(): bool
+    {
+        $service = $this->getAuthenticationService();
+        $controller = $this->getController();
+        $identity = $service->stopImpersonate($controller->getRequest(),
+            $controller->getResponse());
+        return !$service->isImpersonating($controller->getRequest(),
+            $controller->getResponse());
+    }
+
+    public function isImpersonating(): bool
+    {
+        $service = $this->getAuthenticationService();
+        $controller = $this->getController();
+        return $service->isImpersonating($controller->getRequest(),
+            $controller->getResponse());
     }
 }
