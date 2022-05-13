@@ -368,7 +368,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             $impersonated
         );
 
-        if (!$service->isImpersonating($controller->getRequest(), $controller->getResponse())) {
+        if (!$service->isImpersonating($controller->getRequest())) {
             throw new \UnexpectedValueException('An error has occurred impersonating user.');
         }
 
@@ -395,7 +395,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             $controller->getResponse()
         );
 
-        if ($service->isImpersonating($controller->getRequest(), $controller->getResponse())) {
+        if ($service->isImpersonating($controller->getRequest())) {
             throw new \UnexpectedValueException('An error has occurred stopping impersonation.');
         }
 
