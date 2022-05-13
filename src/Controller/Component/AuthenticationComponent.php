@@ -18,16 +18,12 @@ namespace Authentication\Controller\Component;
 
 use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
-use Authentication\Authenticator\AbstractAuthenticator;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
-use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
-use Authentication\Identifier\IdentifierInterface;
 use Authentication\IdentityInterface;
 use Cake\Controller\Component;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
@@ -354,41 +350,74 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
-     * @param ArrayAccess|array $user
-     * @return bool
-     * @throws Exception
+     * Impersonates a user
+     *
+     * @param \ArrayAccess $impersonated User impersonated
+     * @return $this
+     * @throws \Exception
      */
-    public function impersonate(ArrayAccess|array $impersonated): bool
+    public function impersonate(ArrayAccess $impersonated)
     {
         $service = $this->getAuthenticationService();
         $controller = $this->getController();
-        $identity = $service->impersonate($controller->getRequest(),
-            $controller->getResponse(), $this->getIdentity(), $impersonated);
+        /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
+        $result = $service->impersonate(
+            $controller->getRequest(),
+            $controller->getResponse(),
+            $this->getIdentity(),
+            $impersonated
+        );
 
-        return $service->isImpersonating($controller->getRequest(),
-            $controller->getResponse());
+        if (!$service->isImpersonating($controller->getRequest(), $controller->getResponse())) {
+            throw new \UnexpectedValueException('An error has occurred impersonating user.');
+        }
+
+        $controller->setRequest($result['request']);
+        $controller->setResponse($result['response']);
+
+        return $this;
     }
 
     /**
-     * @param ArrayAccess|array $user
-     * @return bool
-     * @throws Exception
+     * Stops impersonation
+     *
+     * @return $this
+     * @throws \Exception
      */
-    public function stopImpersonate(): bool
+    public function stopImpersonating()
     {
         $service = $this->getAuthenticationService();
         $controller = $this->getController();
-        $identity = $service->stopImpersonate($controller->getRequest(),
-            $controller->getResponse());
-        return !$service->isImpersonating($controller->getRequest(),
-            $controller->getResponse());
+
+        /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
+        $result = $service->stopImpersonating(
+            $controller->getRequest(),
+            $controller->getResponse()
+        );
+
+        if ($service->isImpersonating($controller->getRequest(), $controller->getResponse())) {
+            throw new \UnexpectedValueException('An error has occurred stopping impersonation.');
+        }
+
+        $controller->setRequest($result['request']);
+        $controller->setResponse($result['response']);
+
+        return $this;
     }
 
+    /**
+     * Returns true if impersonation is being done
+     *
+     * @return bool
+     * @throws \Exception
+     */
     public function isImpersonating(): bool
     {
         $service = $this->getAuthenticationService();
         $controller = $this->getController();
-        return $service->isImpersonating($controller->getRequest(),
-            $controller->getResponse());
+
+        return $service->isImpersonating(
+            $controller->getRequest()
+        );
     }
 }

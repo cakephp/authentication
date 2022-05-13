@@ -45,29 +45,33 @@ interface PersistenceInterface
     /**
      * Impersonates a user
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param \ArrayAccess|array $impersonator
-     * @param \ArrayAccess|array $impersonated
-     * @return \ArrayAccess|array
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @param \ArrayAccess $impersonator User who impersonates
+     * @param \ArrayAccess $impersonated User impersonated
+     * @return \ArrayAccess
      */
-    public function impersonate(ServerRequestInterface $request, ResponseInterface $response, \ArrayAccess|array $impersonator, \ArrayAccess|array $impersonated): \ArrayAccess|array;
+    public function impersonate(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        \ArrayAccess $impersonator,
+        \ArrayAccess $impersonated
+    ): array;
 
     /**
      * Stops impersonation
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return \ArrayAccess|array
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @return \ArrayAccess
      */
-    public function stopImpersonate(ServerRequestInterface $request, ResponseInterface $response): \ArrayAccess|array;
+    public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array;
 
     /**
      * Returns true if impersonation is being done
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @return bool
      */
-    public function isImpersonating(ServerRequestInterface $request, ResponseInterface $response): bool;
+    public function isImpersonating(ServerRequestInterface $request): bool;
 }

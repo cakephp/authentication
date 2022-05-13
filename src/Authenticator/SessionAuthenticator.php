@@ -121,64 +121,76 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     /**
      * Impersonates a user
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param \ArrayAccess|array $impersonator
-     * @param \ArrayAccess|array $impersonated
-     * @return \ArrayAccess|array
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @param \ArrayAccess $impersonator User who impersonates
+     * @param \ArrayAccess $impersonated User impersonated
+     * @return array
      */
-    public function impersonate(ServerRequestInterface $request, ResponseInterface $response, \ArrayAccess|array $impersonator, \ArrayAccess|array $impersonated): \ArrayAccess|array
-    {   $sessionKey = $this->getConfig('sessionKey');
+    public function impersonate(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        \ArrayAccess $impersonator,
+        \ArrayAccess $impersonated
+    ): array {
+        $sessionKey = $this->getConfig('sessionKey');
         $impersonateSessionKey = $this->getConfig('impersonateSessionKey');
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         if ($session->check($impersonateSessionKey)) {
-            //throw new UnauthorizedException('You are already impersonating a user.');
+            throw new UnauthorizedException(
+                'You are impersonating a user already. Stops impersonation before doing another one.'
+            );
         }
         $session->write($impersonateSessionKey, $impersonator);
         $session->write($sessionKey, $impersonated);
         $this->setConfig('identify', true);
 
-        return $impersonated;
-
+        return [
+            'request' => $request,
+            'response' => $response,
+        ];
     }
 
     /**
      * Stops impersonation
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return \ArrayAccess|array
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @return array
      */
-    public function stopImpersonate(ServerRequestInterface $request, ResponseInterface $response): \ArrayAccess|array
+    public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
     {
         $sessionKey = $this->getConfig('sessionKey');
         $impersonateSessionKey = $this->getConfig('impersonateSessionKey');
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         if (!$session->check($impersonateSessionKey)) {
-           // throw new UnauthorizedException('You are not impersonating a user.');
+            throw new UnauthorizedException('You are not impersonating a user.');
         }
         $identity = $session->read($impersonateSessionKey);
         $session->delete($impersonateSessionKey);
         $session->write($sessionKey, $identity);
         $this->setConfig('identify', true);
 
-        return $identity ?? [];
+        return [
+            'request' => $request,
+            'response' => $response,
+        ];
     }
 
     /**
      * Returns true if impersonation is being done
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @return bool
      */
-    public function isImpersonating(ServerRequestInterface $request, ResponseInterface $response): bool
+    public function isImpersonating(ServerRequestInterface $request): bool
     {
         $impersonateSessionKey = $this->getConfig('impersonateSessionKey');
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
+
         return $session->check($impersonateSessionKey);
     }
 }

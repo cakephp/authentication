@@ -256,38 +256,51 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * Impersonates a user
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param \ArrayAccess|array $impersonator
-     * @param \ArrayAccess|array $impersonated
-     * @return \ArrayAccess|array
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @param \ArrayAccess $impersonator User who impersonates
+     * @param \ArrayAccess $impersonated User impersonated
+     * @return array
      */
-    public function impersonate(ServerRequestInterface $request, ResponseInterface $response, \ArrayAccess|array $impersonator, \ArrayAccess|array $impersonated): \ArrayAccess|array
-    {
-        // TODO: Implement impersonate() method.
+    public function impersonate(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        \ArrayAccess $impersonator,
+        \ArrayAccess $impersonated
+    ): array {
+        // TODO: Implement stopImpersonate() method.
+        return [
+            'request' => $request,
+            'response' => $response,
+        ];
     }
 
     /**
      * Stops impersonation
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return \ArrayAccess|array
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @return array
      */
-    public function stopImpersonate(ServerRequestInterface $request, ResponseInterface $response): \ArrayAccess|array
+    public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
     {
         // TODO: Implement stopImpersonate() method.
+        return [
+            'request' => $request,
+            'response' => $response,
+        ];
     }
 
     /**
      * Returns true if impersonation is being done
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
      * @return bool
      */
     public function isImpersonating(ServerRequestInterface $request, ResponseInterface $response): bool
     {
         // TODO: Implement isImpersonating() method.
+        return false;
     }
 }
