@@ -298,7 +298,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param \Psr\Http\Message\ResponseInterface $response The response
      * @return bool
      */
-    public function isImpersonating(ServerRequestInterface $request, ResponseInterface $response): bool
+    public function isImpersonating(ServerRequestInterface $request): bool
     {
         // TODO: Implement isImpersonating() method.
         return false;
