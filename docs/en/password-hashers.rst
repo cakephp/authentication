@@ -70,7 +70,7 @@ password needs to be upgraded::
            // Assuming you are using the `Password` identifier.
            if ($authentication->identifiers()->get('Password')->needsPasswordRehash()) {
                // Rehash happens on save.
-               $user = $this->Users->get($this->Auth->user('id'));
+               $user = $this->Users->get($authentication->getIdentity()->getIdentifier());
                $user->password = $this->request->getData('password');
                $this->Users->save($user);
            }
