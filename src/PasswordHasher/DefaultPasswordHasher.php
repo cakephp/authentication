@@ -30,7 +30,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * - `hashOptions` - Associative array of options. Check the PHP manual for
      *   supported options for each hash type. Defaults to empty array.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_defaultConfig = [
         'hashType' => PASSWORD_DEFAULT,
@@ -43,7 +43,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * @param string $password Plain text password to hash.
      * @return string Password hash or false on failure.
      */
-    public function hash($password): string
+    public function hash(string $password): string
     {
         return password_hash(
             $password,
@@ -59,7 +59,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check($password, string $hashedPassword): bool
+    public function check(string $password, string $hashedPassword): bool
     {
         return password_verify($password, $hashedPassword);
     }
