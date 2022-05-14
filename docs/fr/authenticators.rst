@@ -110,8 +110,8 @@ source de données, par exemple.
    d'accès. La valeur par défaut est ``token``.
 -  **tokenPrefix**: Le préfixe du jeton d'accès. La valeur par défaut est
    ``bearer``.
--  **algorithms**: L'algorithme de hachage pour Firebase JWT. La valeur par
-   défaut est ``['HS256']``.
+-  **algorithm**: L'algorithme de hachage pour Firebase JWT. La valeur par défaut
+   est ``'HS256'``.
 -  **returnPayload**: Renvoyer ou non la payload du jeton d'accès directement
    sans passer par les identificateurs. La valeur par défaut est ``true``.
 -  **secretKey**: La valeur par défaut est ``null`` mais vous **devez
@@ -122,7 +122,7 @@ source de données, par exemple.
    S'il est fourni, il sera utilisé à la place de ``secret key``.
 
 Pour utiliser le ``JwtAuthenticator``, vous devez ajouter à votre application la
-bibliothèque `firebase/php-jwt <https://github.com/firebase/php-jwt>`__ v5.5 ou
+bibliothèque `firebase/php-jwt <https://github.com/firebase/php-jwt>`__ v6.2 ou
 supérieure.
 
 Par défaut, le ``JwtAuthenticator`` utilise l'algorithme de clé symétrique
@@ -155,7 +155,7 @@ Ajoutez ce qui suit dans votre classe ``Application``::
         $service->loadIdentifier('Authentication.JwtSubject');
         $service->loadAuthenticator('Authentication.Jwt', [
             'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
-            'algorithms' => 'RS256',
+            'algorithm' => 'RS256',
             'returnPayload' => false
         ]);
     }
