@@ -18,14 +18,19 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
+use Cake\Cache\Cache;
+use Cake\Http\Client;
 use Cake\Utility\Security;
 use Exception;
+use Firebase\JWT\CachedKeySet;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Laminas\Diactoros\RequestFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use stdClass;
+use Symfony\Component\Cache\Adapter\Psr16Adapter;
 
 class JwtAuthenticator extends TokenAuthenticator
 {
@@ -41,6 +46,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'secretKey' => null,
         'subjectKey' => IdentifierInterface::CREDENTIAL_JWT_SUBJECT,
         'jwks' => null,
+        'jwksCache' => null,
     ];
 
     /**
@@ -149,7 +155,18 @@ class JwtAuthenticator extends TokenAuthenticator
     {
         $jsonWebKeySet = $this->getConfig('jwks');
         if ($jsonWebKeySet) {
-            $keySet = JWK::parseKeySet($jsonWebKeySet);
+            $jsonWebKeySetCache = $this->getConfig('jwksCache');
+            if ($jsonWebKeySetCache) {
+                $keySet = new CachedKeySet(
+                    $jsonWebKeySet,
+                    new Client(),
+                    new RequestFactory(),
+                    new Psr16Adapter(Cache::pool($jsonWebKeySetCache)),
+                    3000
+                );
+            } else {
+                $keySet = JWK::parseKeySet($jsonWebKeySet);
+            }
 
             return JWT::decode(
                 $token,
