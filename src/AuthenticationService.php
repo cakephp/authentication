@@ -32,7 +32,7 @@ use RuntimeException;
 /**
  * Authentication Service
  */
-class AuthenticationService implements AuthenticationServiceInterface
+class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface
 {
     use InstanceConfigTrait;
 
@@ -215,7 +215,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
         foreach ($this->authenticators() as $authenticator) {
-            if ($authenticator instanceof PersistenceInterface) {
+            if ($authenticator instanceof ImpersonationInterface) {
                 if ($authenticator->isImpersonating($request)) {
                     /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $stopImpersonationResult */
                     $stopImpersonationResult = $authenticator->stopImpersonating($request, $response);
