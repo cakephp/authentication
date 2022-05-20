@@ -219,10 +219,10 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
                 if ($authenticator->isImpersonating($request)) {
                     /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $stopImpersonationResult */
                     $stopImpersonationResult = $authenticator->stopImpersonating($request, $response);
-                    [$request, $response] = $stopImpersonationResult;
+                    ['request' => $request, 'response' => $response] = $stopImpersonationResult;
                 }
                 $result = $authenticator->clearIdentity($request, $response);
-                [$request, $response] = $result;
+                ['request' => $request, 'response' => $response] = $result;
             }
         }
         $this->_successfulAuthenticator = null;
