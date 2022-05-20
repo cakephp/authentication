@@ -18,6 +18,7 @@ namespace Authentication;
 
 use Authentication\Authenticator\AuthenticatorCollection;
 use Authentication\Authenticator\AuthenticatorInterface;
+use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -218,12 +219,10 @@ class AuthenticationService implements AuthenticationServiceInterface
                 if ($authenticator->isImpersonating($request)) {
                     /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $stopImpersonationResult */
                     $stopImpersonationResult = $authenticator->stopImpersonating($request, $response);
-                    $request = $stopImpersonationResult['request'];
-                    $response = $stopImpersonationResult['response'];
+                    [$request, $response] = $stopImpersonationResult;
                 }
                 $result = $authenticator->clearIdentity($request, $response);
-                $request = $result['request'];
-                $response = $result['response'];
+                [$request, $response] = $result;
             }
         }
         $this->_successfulAuthenticator = null;
@@ -452,9 +451,10 @@ class AuthenticationService implements AuthenticationServiceInterface
     ): array {
         /** @var \Authentication\Authenticator\PersistenceInterface $provider */
         $provider = $this->getAuthenticationProvider();
-        if (!($provider instanceof PersistenceInterface)) {
+        if (!($provider instanceof ImpersonationInterface)) {
+            $className = get_class($provider);
             throw new \InvalidArgumentException(
-                'Provider must implement PersistenceInterface to be able to impersonate user.'
+                "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
             );
         }
 
@@ -472,9 +472,10 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         /** @var \Authentication\Authenticator\PersistenceInterface $provider */
         $provider = $this->getAuthenticationProvider();
-        if (!($provider instanceof PersistenceInterface)) {
+        if (!($provider instanceof ImpersonationInterface)) {
+            $className = get_class($provider);
             throw new \InvalidArgumentException(
-                'Provider must implement PersistenceInterface to be able to impersonate user.'
+                "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
             );
         }
 
@@ -491,9 +492,10 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         /** @var \Authentication\Authenticator\PersistenceInterface $provider */
         $provider = $this->getAuthenticationProvider();
-        if (!($provider instanceof PersistenceInterface)) {
+        if (!($provider instanceof ImpersonationInterface)) {
+            $className = get_class($provider);
             throw new \InvalidArgumentException(
-                'Provider must implement PersistenceInterface to be able to impersonate user.'
+                "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
             );
         }
 

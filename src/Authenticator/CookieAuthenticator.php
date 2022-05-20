@@ -51,6 +51,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         ],
         'cookie' => [
             'name' => 'CookieAuth',
+            'impersonateName' => 'CookieAuthImpersonate',
         ],
         'passwordHasher' => 'Authentication.Default',
         'salt' => true,
@@ -251,55 +252,5 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         );
 
         return $cookie;
-    }
-
-    /**
-     * Impersonates a user
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @param \ArrayAccess $impersonator User who impersonates
-     * @param \ArrayAccess $impersonated User impersonated
-     * @return array
-     */
-    public function impersonate(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        \ArrayAccess $impersonator,
-        \ArrayAccess $impersonated
-    ): array {
-        // TODO: Implement stopImpersonate() method.
-        return [
-            'request' => $request,
-            'response' => $response,
-        ];
-    }
-
-    /**
-     * Stops impersonation
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @return array
-     */
-    public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
-    {
-        // TODO: Implement stopImpersonate() method.
-        return [
-            'request' => $request,
-            'response' => $response,
-        ];
-    }
-
-    /**
-     * Returns true if impersonation is being done
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return bool
-     */
-    public function isImpersonating(ServerRequestInterface $request): bool
-    {
-        // TODO: Implement isImpersonating() method.
-        return false;
     }
 }

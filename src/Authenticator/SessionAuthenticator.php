@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Session Authenticator
  */
-class SessionAuthenticator extends AbstractAuthenticator implements PersistenceInterface
+class SessionAuthenticator extends AbstractAuthenticator implements PersistenceInterface, ImpersonationInterface
 {
     /**
      * Default config for this object.
@@ -139,7 +139,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         $session = $request->getAttribute('session');
         if ($session->check($impersonateSessionKey)) {
             throw new UnauthorizedException(
-                'You are impersonating a user already. Stops impersonation before doing another one.'
+                'You are impersonating a user already. Stop the current impersonation before impersonating another user.'
             );
         }
         $session->write($impersonateSessionKey, $impersonator);
@@ -165,13 +165,12 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         $impersonateSessionKey = $this->getConfig('impersonateSessionKey');
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
-        if (!$session->check($impersonateSessionKey)) {
-            throw new UnauthorizedException('You are not impersonating a user.');
+        if ($session->check($impersonateSessionKey)) {
+            $identity = $session->read($impersonateSessionKey);
+            $session->delete($impersonateSessionKey);
+            $session->write($sessionKey, $identity);
+            $this->setConfig('identify', true);
         }
-        $identity = $session->read($impersonateSessionKey);
-        $session->delete($impersonateSessionKey);
-        $session->write($sessionKey, $identity);
-        $this->setConfig('identify', true);
 
         return [
             'request' => $request,
