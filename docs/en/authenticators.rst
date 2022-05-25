@@ -113,7 +113,7 @@ example.
    If provided will be used instead of the secret key.
 
 You need to add the lib `firebase/php-jwt <https://github.com/firebase/php-jwt>`_
-^5.5 to your app to use the ``JwtAuthenticator`` (v6.0 is not currently supported). 
+v6.2 or above to your app to use the ``JwtAuthenticator``.
 
 By default the ``JwtAuthenticator`` uses ``HS256`` symmetric key algorithm and uses
 the value of ``Cake\Utility\Security::salt()`` as encryption key.
@@ -310,9 +310,9 @@ Configuration options:
    ``null`` and all pages will be checked.
 -  **passwordHasher**: Password hasher to use for token hashing. Default
    is ``DefaultPasswordHasher::class``.
--  **salt**: When ``false`` no salt is used. When a string is passed that value is used as a salt value. 
-   When ``true`` the default Security.salt is used. Default is ``true``. When a salt is used, the cookie value 
-   will contain `hash(username + password + hmac(username + password, salt))`. This helps harden tokens against possible 
+-  **salt**: When ``false`` no salt is used. When a string is passed that value is used as a salt value.
+   When ``true`` the default Security.salt is used. Default is ``true``. When a salt is used, the cookie value
+   will contain `hash(username + password + hmac(username + password, salt))`. This helps harden tokens against possible
    database leaks and enables cookie values to be invalidated by rotating the salt value.
 
 Usage

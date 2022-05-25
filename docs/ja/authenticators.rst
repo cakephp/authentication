@@ -80,7 +80,7 @@ JWT 認証機能は、ヘッダーまたはクエリパラメータから `JWT t
 -  **header**: トークンを確認するためのヘッダー行です。デフォルトは ``Authorization`` です。
 -  **queryParam**: トークンをチェックするクエリパラメータ。デフォルトは ``token`` です。
 -  **tokenPrefix**: prefixトークン. デフォルトは ``bearer`` です。
--  **algorithms**: Firebase JWT用のハッシュアルゴリズムの配列。デフォルトは配列 ``['HS256']`` です。
+-  **algorithm**: Firebase JWT のハッシュアルゴリズム。デフォルトは ``'HS256'`` です。
 -  **returnPayload**: 識別子を経由せずに、トークンのペイロードを直接返すか返さないか。デフォルトは ``true`` です。
 -  **secretKey**: デフォルトは ``null`` ですが、秘密鍵を ``Security::salt()`` 提供しているCakePHPアプリケーションのコンテキストではない場合は **必須** です。
 
@@ -109,7 +109,7 @@ JWT 認証機能は、ヘッダーまたはクエリパラメータから `JWT t
         $service->loadIdentifier('Authentication.JwtSubject');
         $service->loadAuthenticator('Authentication.Jwt', [
             'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
-            'algorithms' => ['RS256'],
+            'algorithm' => 'RS256',
             'returnPayload' => false
         ]);
     }
