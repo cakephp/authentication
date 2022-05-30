@@ -324,7 +324,7 @@ after their session expires for as long as the cookie is valid. If a user is
 explicity logged out via ``AuthenticationComponent::logout()`` the
 authentication cookie is **also destroyed**. An example configuration would be::
 
-    // In Application::getAuthService()
+    // In Application::getAuthenticationService()
 
     // Reuse fields in multiple authenticators.
     $fields = [
