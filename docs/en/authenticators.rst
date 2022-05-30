@@ -335,11 +335,8 @@ authentication cookie is **also destroyed**. An example configuration would be::
     // Put form authentication first so that users can re-login via
     // the login form if necessary.
     $service->loadAuthenticator('Authentication.Form', [
+        'fields' => $fields,
         'loginUrl' => '/users/login',
-        'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
-        ],
     ]);
     // Then use sessions if they are active.
     $service->loadAuthenticator('Authentication.Session');
