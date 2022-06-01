@@ -70,7 +70,7 @@ le mot de passe de l'utilisateur actuel a besoin d'être mis à niveau::
            // En supposant que vous utilisez l'identificateur `Password`.
            if ($authentication->identifiers()->get('Password')->needsPasswordRehash()) {
                // Le re-hachage se produit lors de la sauvegarde.
-               $user = $this->Users->get($this->Auth->user('id'));
+               $user = $this->Users->get($authentication->getIdentity()->getIdentifier());
                $user->password = $this->request->getData('password');
                $this->Users->save($user);
            }
