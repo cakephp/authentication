@@ -169,6 +169,40 @@ class PasswordIdentifierTest extends TestCase
     }
 
     /**
+     * testIdentifyPasswordAgainstNullValue
+     *
+     * @return void
+     */
+    public function testIdentifyPasswordAgainstNullValue()
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+        $hasher = $this->createMock(PasswordHasherInterface::class);
+
+        $user = new ArrayObject([
+            'username' => 'mariano',
+            'password' => null,
+        ]);
+
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with(['username' => 'mariano'])
+            ->willReturn($user);
+
+        $hasher->expects($this->never())
+            ->method('check');
+
+        $identifier = new PasswordIdentifier();
+        $identifier->setResolver($resolver)->setPasswordHasher($hasher);
+
+        $result = $identifier->identify([
+            'username' => 'mariano',
+            'password' => 'password',
+        ]);
+
+        $this->assertNull($result);
+    }
+
+    /**
      * testIdentifyEmptyPassword
      *
      * @return void
