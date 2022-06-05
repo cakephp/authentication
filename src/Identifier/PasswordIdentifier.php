@@ -128,7 +128,10 @@ class PasswordIdentifier extends AbstractIdentifier
 
         $hasher = $this->getPasswordHasher();
         $hashedPassword = $identity[$passwordField];
-        if (!$hasher->check((string)$password, $hashedPassword)) {
+        if (
+            $hashedPassword === null ||
+            !$hasher->check((string)$password, $hashedPassword)
+        ) {
             return false;
         }
 
