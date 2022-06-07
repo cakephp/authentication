@@ -102,8 +102,7 @@ ejemplo.
 -  **queryParam**: Parámetro de la query para verificar el token. Por defecto
    es ``token``.
 -  **tokenPrefix**: Prefijo del token. Por defecto es ``bearer``.
--  **algorithms**: Array de algoritmos hashing para Firebase JWT.
-   El array por defecto es ``['HS256']``.
+-  **algorithm**: El algoritmo de hash para Firebase JWT. Por defecto es ``'HS256'``.
 -  **returnPayload**: Retornar o no el payload del token directamente
    sin pasar a través de los identificadores. Por defecto es ``true``.
 -  **secretKey**: Por defecto es ``null`` pero será **requerido** pasar una
@@ -137,7 +136,7 @@ Agregue lo siguiente a su clase ``Application``::
         $service->loadIdentifier('Authentication.JwtSubject');
         $service->loadAuthenticator('Authentication.Jwt', [
             'secretKey' => file_get_contents(CONFIG . '/jwt.pem'),
-            'algorithms' => ['RS256'],
+            'algorithm' => 'RS256',
             'returnPayload' => false
         ]);
     }

@@ -18,7 +18,6 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
-use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Exception;
 use Firebase\JWT\JWK;
@@ -58,23 +57,11 @@ class JwtAuthenticator extends TokenAuthenticator
     {
         parent::__construct($identifier, $config);
 
-        if (isset($config['algorithms'])) {
-            $this->setConfig('algorithms', $config['algorithms'], false);
-        }
-
         if (empty($this->_config['secretKey'])) {
             if (!class_exists(Security::class)) {
                 throw new RuntimeException('You must set the `secretKey` config key for JWT authentication.');
             }
             $this->setConfig('secretKey', \Cake\Utility\Security::getSalt());
-        }
-
-        if (isset($config['algorithms'])) {
-            deprecationWarning(
-                'The `algorithms` array config is deprecated, use the `algorithm` string config instead.'
-                . ' This is due to the new recommended usage of `firebase/php-jwt`.'
-                . 'See https://github.com/firebase/php-jwt/releases/tag/v5.5.0'
-            );
         }
     }
 
@@ -160,26 +147,9 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     protected function decodeToken(string $token): ?object
     {
-        $algorithms = $this->getConfig('algorithms');
-        if ($algorithms) {
-            return JWT::decode(
-                $token,
-                $this->getConfig('secretKey'),
-                $algorithms
-            );
-        }
-
         $jsonWebKeySet = $this->getConfig('jwks');
         if ($jsonWebKeySet) {
             $keySet = JWK::parseKeySet($jsonWebKeySet);
-            /*
-             * TODO Converting Keys to Key Objects is no longer needed in firebase/php-jwt ^6.0
-             * @link https://github.com/firebase/php-jwt/pull/376/files#diff-374f5998b3c572d86be0e79432aac3de362c79e8fb146b9ce422dc2388cdc5daR50
-             */
-            $keyAlgorithms = Hash::combine($jsonWebKeySet['keys'], '{n}.kid', '{n}.alg');
-            array_walk($keySet, function (&$keyMaterial, $k) use ($keyAlgorithms) {
-                $keyMaterial = new Key($keyMaterial, $keyAlgorithms[$k]);
-            });
 
             return JWT::decode(
                 $token,

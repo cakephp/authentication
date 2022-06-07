@@ -82,23 +82,6 @@ class JwtAuthenticatorTest extends TestCase
     }
 
     /**
-     * Test that "algorithms" config overwrites the default value instead of merging.
-     *
-     * @deprecated
-     * @return void
-     */
-    public function testAlgorithmsOverwrite()
-    {
-        $this->deprecated(function () {
-            $authenticator = new JwtAuthenticator($this->identifiers, [
-                'algorithms' => ['RS256'],
-            ]);
-
-            $this->assertSame(['RS256'], $authenticator->getConfig('algorithms'));
-        });
-    }
-
-    /**
      * testAuthenticateViaHeaderToken
      *
      * @return void
@@ -119,27 +102,6 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
         $this->assertInstanceOf(ArrayAccess::class, $result->getData());
-    }
-
-    /**
-     * @deprecated
-     */
-    public function testUsingDeprecatedConfig()
-    {
-        $this->request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/']
-        );
-        $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->tokenHS256);
-
-        $this->deprecated(function () {
-            $authenticator = new JwtAuthenticator($this->identifiers, [
-                'secretKey' => 'secretKey',
-                'subjectKey' => 'subjectId',
-                'algorithms' => ['HS256'],
-            ]);
-            // Appease lowest build
-            $this->assertNotEmpty($authenticator);
-        });
     }
 
     /**
