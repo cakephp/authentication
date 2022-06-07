@@ -20,13 +20,16 @@
     "require-dev": {
         "cakephp/cakephp": "^4.0",
         "cakephp/cakephp-codesniffer": "^4.0",
-        "firebase/php-jwt": "^5.5",
+        "firebase/php-jwt": "^6.2",
+        "paragonie/paseto": "^2.4",
+        "paragonie/constant_time_encoding": "^2.2",
         "phpunit/phpunit": "^8.5 || ^9.3"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
         "cakephp/cakephp": "Install full core to use \"CookieAuthenticator\".",
         "firebase/php-jwt": "If you want to use the JWT adapter add this dependency",
+        "paragonie/paseto": "If you want to use PASETO add this dependency",
         "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP adapter for \"LdapIdentifier\".",
         "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
     },
