@@ -177,7 +177,7 @@ Ensuite, nous allons ajouter une action de connexion basique à votre
             $target = $this->Authentication->getLoginRedirect() ?? '/home';
             return $this->redirect($target);
         }
-        if ($this->request->is('post') && !$result->isValid()) {
+        if ($this->request->is('post')) {
             $this->Flash->error('Identifiant ou mot de passe invalide');
         }
     }
