@@ -126,7 +126,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
             $target = $this->Authentication->getLoginRedirect() ?? '/home';
             return $this->redirect($target);
         }
-        if ($this->request->is('post') && !$result->isValid()) {
+        if ($this->request->is('post')) {
             $this->Flash->error('ユーザー名とパスワードが無効です');
         }
     }
