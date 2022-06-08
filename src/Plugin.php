@@ -15,6 +15,8 @@ declare(strict_types=1);
  */
 namespace Authentication;
 
+use Authentication\Command\PasetoCommand;
+use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
 
 /**
@@ -41,5 +43,15 @@ class Plugin extends BasePlugin
      *
      * @var bool
      */
-    protected $consoleEnabled = false;
+    protected $consoleEnabled = true;
+
+    /**
+     * @inheritDoc
+     */
+    public function console(CommandCollection $commands): CommandCollection
+    {
+        $commands->add('paseto gen', PasetoCommand::class);
+
+        return $commands;
+    }
 }
