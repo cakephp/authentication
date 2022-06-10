@@ -13,8 +13,8 @@ using the Password Identifier looks like::
        ],
        'resolver' => [
            'className' => 'Authentication.Orm',
-           'userModel' => 'Users'
-           'finder' => 'active'
+           'userModel' => 'Users',
+           'finder' => 'active',
        ],
        'passwordHasher' => [
            'className' => 'Authentication.Fallback',
@@ -22,10 +22,10 @@ using the Password Identifier looks like::
                'Authentication.Default',
                [
                    'className' => 'Authentication.Legacy',
-                   'hashType' => 'md5'
+                   'hashType' => 'md5',
                ],
-           ]
-       ]
+           ],
+       ],
    ]);
 
 Password
@@ -124,7 +124,7 @@ messages::
             }
 
             return null;
-        }
+        },
     ]);
 
     // Using a result object to return error messages.
@@ -141,7 +141,7 @@ messages::
                 Result::FAILURE_OTHER,
                 ['message' => 'Removed user.']
             );
-        }
+        },
     ]);
 
 
@@ -183,8 +183,8 @@ Resolver can be configured using ``resolver`` config option::
             // can be a full class name: \Some\Other\Custom\Resolver::class
            'className' => 'MyResolver',
            // Pass additional options to the resolver constructor.
-           'option' => 'value'
-       ]
+           'option' => 'value',
+       ],
    ]);
 
 Or injected using a setter::

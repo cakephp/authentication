@@ -1,38 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     colors="true"
     processIsolation="false"
     stopOnFailure="false"
     bootstrap="./tests/bootstrap.php"
-    >
-    <php>
-        <ini name="memory_limit" value="-1"/>
-    </php>
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+>
+  <coverage>
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+    <exclude>
+      <file>src/Identifier/Ldap/ExtensionAdapter.php</file>
+    </exclude>
+  </coverage>
 
-    <!-- Add any additional test suites you want to run here -->
-    <testsuites>
-        <testsuite name="authentication">
-            <directory>tests/TestCase/</directory>
-        </testsuite>
-        <!-- Add plugin test suites here. -->
-    </testsuites>
+  <php>
+    <ini name="memory_limit" value="-1"/>
+    <env name="FIXTURE_SCHEMA_METADATA" value="./vendor/cakephp/cakephp/tests/schema.php"/>
+  </php>
 
-    <!-- Setup a listener for fixtures -->
-    <listeners>
-        <listener class="\Cake\TestSuite\Fixture\FixtureInjector">
-            <arguments>
-                <object class="\Cake\TestSuite\Fixture\FixtureManager" />
-            </arguments>
-        </listener>
-    </listeners>
+  <testsuites>
+    <testsuite name="authentication">
+      <directory>tests/TestCase/</directory>
+    </testsuite>
+  </testsuites>
 
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src/</directory>
-            <exclude>
-                <file>src/Identifier/Ldap/ExtensionAdapter.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-
+  <extensions>
+    <extension class="Cake\TestSuite\Fixture\PHPUnitExtension"/>
+  </extensions>
 </phpunit>

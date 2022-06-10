@@ -39,15 +39,15 @@ class TokenIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $data)
+    public function identify(array $credentials)
     {
         $dataField = $this->getConfig('dataField');
-        if (!isset($data[$dataField])) {
+        if (!isset($credentials[$dataField])) {
             return null;
         }
 
         $conditions = [
-            $this->getConfig('tokenField') => $data[$dataField],
+            $this->getConfig('tokenField') => $credentials[$dataField],
         ];
 
         return $this->getResolver()->find($conditions);

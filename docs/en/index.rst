@@ -44,8 +44,6 @@ on your application::
     class Application extends BaseApplication implements AuthenticationServiceProviderInterface
 
 
-Then add ``AuthenticationMiddleware`` to the middleware queue in your ``middleware()`` function::
-
 Then update your application's ``middleware()`` method to look like::
 
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue

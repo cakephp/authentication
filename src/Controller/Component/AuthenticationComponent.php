@@ -47,7 +47,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *   false to disable that behavior. See allowUnauthenticated() as well.
      * - `unauthenticatedMessage` - Error message to use when `UnauthenticatedException` is thrown.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_defaultConfig = [
         'logoutRedirect' => false,
@@ -139,7 +139,10 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $controller = $this->getController();
         $service = $controller->getRequest()->getAttribute('authentication');
         if ($service === null) {
-            throw new Exception('The request object does not contain the required `authentication` attribute');
+            throw new Exception(
+                'The request object does not contain the required `authentication` attribute. Verify the ' .
+                'AuthenticationMiddleware has been added.'
+            );
         }
 
         if (!($service instanceof AuthenticationServiceInterface)) {
