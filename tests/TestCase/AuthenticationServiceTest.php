@@ -289,7 +289,7 @@ class AuthenticationServiceTest extends TestCase
                 'Authentication.Password',
             ],
             'authenticators' => [
-                'Authentication.Form',
+                'Authentication.Session',
             ],
         ]);
 
@@ -900,7 +900,7 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
-     * testIsImpersonatingNotImpersonating
+     * testImpersonateWrongProvider
      *
      * @return void
      */
@@ -911,7 +911,9 @@ class AuthenticationServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-
+        $response = new Response();
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
         $service = new AuthenticationService([
             'identifiers' => [
                 'Authentication.Password',
@@ -924,7 +926,7 @@ class AuthenticationServiceTest extends TestCase
         $service->authenticate($request);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
-        $service->isImpersonating($request);
+        $service->impersonate($request, $response, $impersonator, $impersonated);
     }
 
     /**
@@ -973,6 +975,7 @@ class AuthenticationServiceTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
+        $response = new Response();
 
         $service = new AuthenticationService([
             'identifiers' => [
@@ -986,7 +989,7 @@ class AuthenticationServiceTest extends TestCase
         $service->authenticate($request);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
-        $service->isImpersonating($request);
+        $service->stopImpersonating($request, $response);
     }
 
     /**
