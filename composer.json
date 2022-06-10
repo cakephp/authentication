@@ -10,7 +10,7 @@
     "type": "cakephp-plugin",
     "homepage": "https://cakephp.org",
     "require": {
-        "cakephp/http": "^4.0",
+        "cakephp/http": "^4.4",
         "laminas/laminas-diactoros": "^2.2.2",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.0",
@@ -18,7 +18,7 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "^4.0",
+        "cakephp/cakephp": "^4.4",
         "cakephp/cakephp-codesniffer": "^4.0",
         "firebase/php-jwt": "^5.5",
         "phpunit/phpunit": "^8.5 || ^9.3"
