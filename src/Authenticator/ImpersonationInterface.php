@@ -19,7 +19,7 @@ namespace Authentication\Authenticator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface ImpersonationInterface
+interface ImpersonationInterface extends PersistenceInterface
 {
     /**
      * Impersonates a user

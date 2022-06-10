@@ -17,12 +17,13 @@ declare(strict_types=1);
 namespace Authentication;
 
 use Authentication\Authenticator\AuthenticatorInterface;
+use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface AuthenticationServiceInterface extends PersistenceInterface
+interface AuthenticationServiceInterface extends ImpersonationInterface
 {
     /**
      * Loads an authenticator.
