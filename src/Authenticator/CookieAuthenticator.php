@@ -51,7 +51,6 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         ],
         'cookie' => [
             'name' => 'CookieAuth',
-            'impersonateName' => 'CookieAuthImpersonate',
         ],
         'passwordHasher' => 'Authentication.Default',
         'salt' => true,

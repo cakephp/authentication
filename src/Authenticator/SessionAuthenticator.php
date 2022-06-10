@@ -139,7 +139,8 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         $session = $request->getAttribute('session');
         if ($session->check($impersonateSessionKey)) {
             throw new UnauthorizedException(
-                'You are impersonating a user already. Stop the current impersonation before impersonating another user.'
+                'You are impersonating a user already. ' .
+                'Stop the current impersonation before impersonating another user.'
             );
         }
         $session->write($impersonateSessionKey, $impersonator);

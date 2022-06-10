@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Test\TestCase\Controller\Component;
 
+use ArrayObject;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
@@ -544,5 +545,94 @@ class AuthenticationComponentTest extends TestCase
         $component->setConfig('unauthenticatedMessage', $errorMessage);
         $component->allowUnauthenticated(['index', 'add']);
         $component->beforeFilter();
+    }
+
+    /**
+     * testImpersonate
+     *
+     * @return void
+     */
+    public function testImpersonate()
+    {
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $this->request->getSession()->write('Auth', $impersonator);
+        $this->service->authenticate($this->request);
+        $identity = new Identity($impersonator);
+        $request = $this->request
+            ->withAttribute('identity', $identity)
+            ->withAttribute('authentication', $this->service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
+        $component->impersonate($impersonated);
+        $this->assertEquals($impersonated, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertEquals($identity, $controller->getRequest()->getSession()->read('AuthImpersonate'));
+    }
+
+    /**
+     * testStopImpersonating
+     *
+     * @return void
+     */
+    public function testStopImpersonating()
+    {
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $this->request->getSession()->write('Auth', $impersonated);
+        $this->request->getSession()->write('AuthImpersonate', $impersonator);
+        $this->service->authenticate($this->request);
+        $request = $this->request->withAttribute('authentication', $this->service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('AuthImpersonate'));
+        $this->assertEquals($impersonated, $controller->getRequest()->getSession()->read('Auth'));
+        $component->stopImpersonating();
+        $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
+        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
+    }
+
+    /**
+     * testIsImpersonating
+     *
+     * @return void
+     */
+    public function testIsImpersonating()
+    {
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $this->request->getSession()->write('Auth', $impersonated);
+        $this->request->getSession()->write('AuthImpersonate', $impersonator);
+        $this->service->authenticate($this->request);
+        $request = $this->request
+            ->withAttribute('authentication', $this->service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $result = $component->isImpersonating();
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testIsImpersonatingNotImpersonating
+     *
+     * @return void
+     */
+    public function testIsImpersonatingNotImpersonating()
+    {
+        $user = new ArrayObject(['username' => 'mariano']);
+        $this->request->getSession()->write('Auth', $user);
+        $this->service->authenticate($this->request);
+        $request = $this->request->withAttribute('authentication', $this->service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $result = $component->isImpersonating();
+        $this->assertFalse($result);
     }
 }

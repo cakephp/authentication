@@ -21,8 +21,10 @@ use Authentication\Authenticator\Result;
 use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
+use Cake\ORM\TableRegistry;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -231,5 +233,181 @@ class SessionAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+    }
+
+    /**
+     * testImpersonate
+     *
+     * @return void
+     */
+    public function testImpersonate()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request = $request->withAttribute('session', $this->sessionMock);
+        $response = new Response();
+
+        $authenticator = new SessionAuthenticator($this->identifiers);
+        $AuthUsers = TableRegistry::getTableLocator()->get('AuthUsers');
+        $impersonator = $AuthUsers->newEntity([
+            'username' => 'mariano',
+            'password' => 'password',
+        ]);
+        $impersonated = $AuthUsers->newEntity(['username' => 'larry']);
+
+        $this->sessionMock->expects($this->once())
+            ->method('check')
+            ->with('AuthImpersonate');
+
+        $this->sessionMock
+            ->expects($this->exactly(2))
+            ->method('write')
+            ->withConsecutive(['AuthImpersonate', $impersonator], ['Auth', $impersonated]);
+
+        $result = $authenticator->impersonate($request, $response, $impersonator, $impersonated);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+    }
+
+    /**
+     * testImpersonateAlreadyImpersonating
+     *
+     * @return void
+     */
+    public function testImpersonateAlreadyImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request = $request->withAttribute('session', $this->sessionMock);
+        $response = new Response();
+
+        $authenticator = new SessionAuthenticator($this->identifiers);
+        $impersonator = new ArrayObject([
+            'username' => 'mariano',
+            'password' => 'password',
+        ]);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+
+        $this->sessionMock->expects($this->once())
+            ->method('check')
+            ->with('AuthImpersonate')
+            ->willReturn(true);
+
+        $this->sessionMock
+            ->expects($this->never())
+            ->method('write');
+
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage(
+            'You are impersonating a user already. Stop the current impersonation before impersonating another user.'
+        );
+        $authenticator->impersonate($request, $response, $impersonator, $impersonated);
+    }
+
+    /**
+     * testStopImpersonating
+     *
+     * @return void
+     */
+    public function testStopImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request = $request->withAttribute('session', $this->sessionMock);
+        $response = new Response();
+
+        $authenticator = new SessionAuthenticator($this->identifiers);
+
+        $impersonator = new ArrayObject([
+            'username' => 'mariano',
+            'password' => 'password',
+        ]);
+
+        $this->sessionMock->expects($this->once())
+            ->method('check')
+            ->with('AuthImpersonate')
+            ->willReturn(true);
+
+        $this->sessionMock
+            ->expects($this->once())
+            ->method('read')
+            ->with('AuthImpersonate')
+            ->willReturn($impersonator);
+
+        $this->sessionMock
+            ->expects($this->once())
+            ->method('delete')
+            ->with('AuthImpersonate');
+
+        $this->sessionMock
+            ->expects($this->once())
+            ->method('write')
+            ->with('Auth', $impersonator);
+
+        $result = $authenticator->stopImpersonating($request, $response);
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+    }
+
+    /**
+     * testStopImpersonatingNotImpersonating
+     *
+     * @return void
+     */
+    public function testStopImpersonatingNotImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request = $request->withAttribute('session', $this->sessionMock);
+        $response = new Response();
+
+        $authenticator = new SessionAuthenticator($this->identifiers);
+
+        $this->sessionMock->expects($this->once())
+            ->method('check')
+            ->with('AuthImpersonate')
+            ->willReturn(false);
+
+        $this->sessionMock
+            ->expects($this->never())
+            ->method('read');
+
+        $this->sessionMock
+            ->expects($this->never())
+            ->method('delete');
+
+        $this->sessionMock
+            ->expects($this->never())
+            ->method('write');
+
+        $result = $authenticator->stopImpersonating($request, $response);
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+    }
+
+    /**
+     * testIsImpersonating
+     *
+     * @return void
+     */
+    public function testIsImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request = $request->withAttribute('session', $this->sessionMock);
+
+        $authenticator = new SessionAuthenticator($this->identifiers);
+
+        $this->sessionMock->expects($this->once())
+            ->method('check')
+            ->with('AuthImpersonate');
+
+        $result = $authenticator->isImpersonating($request);
+        $this->assertFalse($result);
     }
 }

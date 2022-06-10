@@ -27,6 +27,7 @@ use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
@@ -800,5 +801,239 @@ class AuthenticationServiceTest extends TestCase
             '/path/with?query=string',
             $service->getLoginRedirect($request)
         );
+    }
+
+    /**
+     * testImpersonate
+     *
+     * @return void
+     */
+    public function testImpersonate()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            []
+        );
+
+        $response = new Response();
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $request->getSession()->write('Auth', $impersonator);
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Session',
+            ],
+        ]);
+        $service->authenticate($request);
+        $result = $service->impersonate($request, $response, $impersonator, $impersonated);
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertEquals($impersonator, $result['request']->getSession()->read('AuthImpersonate'));
+        $this->assertEquals($impersonated, $result['request']->getSession()->read('Auth'));
+    }
+
+    /**
+     * testImpersonateAlreadyImpersonating
+     *
+     * @return void
+     */
+    public function testImpersonateAlreadyImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            []
+        );
+
+        $response = new Response();
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $request->getSession()->write('Auth', $impersonated);
+        $request->getSession()->write('AuthImpersonate', $impersonator);
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Session',
+            ],
+        ]);
+        $service->authenticate($request);
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('You are impersonating a user already. Stop the current impersonation before impersonating another user.');
+        $service->impersonate($request, $response, $impersonator, $impersonated);
+    }
+
+    /**
+     * testIsImpersonatingNotImpersonating
+     *
+     * @return void
+     */
+    public function testImpersonateWrongProvider()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+            ],
+        ]);
+
+        $service->authenticate($request);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
+        $service->isImpersonating($request);
+    }
+
+    /**
+     * testStopImpersonating
+     *
+     * @return void
+     */
+    public function testStopImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            []
+        );
+
+        $response = new Response();
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $request->getSession()->write('Auth', $impersonated);
+        $request->getSession()->write('AuthImpersonate', $impersonator);
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Session',
+            ],
+        ]);
+        $service->authenticate($request);
+        $result = $service->stopImpersonating($request, $response);
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertNull($result['request']->getSession()->read('AuthImpersonate'));
+        $this->assertEquals($impersonator, $result['request']->getSession()->read('Auth'));
+    }
+
+    /**
+     * testStopImpersonatingWrongProvider
+     *
+     * @return void
+     */
+    public function testStopImpersonatingWrongProvider()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+            ],
+        ]);
+
+        $service->authenticate($request);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
+        $service->isImpersonating($request);
+    }
+
+    /**
+     * testIsImpersonatingImpersonating
+     *
+     * @return void
+     */
+    public function testIsImpersonatingImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            []
+        );
+
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $request->getSession()->write('Auth', $impersonated);
+        $request->getSession()->write('AuthImpersonate', $impersonator);
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Session',
+
+            ],
+        ]);
+        $service->authenticate($request);
+
+        $result = $service->isImpersonating($request);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testIsImpersonatingNotImpersonating
+     *
+     * @return void
+     */
+    public function testIsImpersonatingNotImpersonating()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+            []
+        );
+
+        $user = new ArrayObject(['username' => 'mariano']);
+        $request->getSession()->write('Auth', $user);
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Session',
+
+            ],
+        ]);
+        $service->authenticate($request);
+        $result = $service->isImpersonating($request);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * testIsImpersonatingWrongProvider
+     *
+     * @return void
+     */
+    public function testIsImpersonatingWrongProvider()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+            ],
+        ]);
+
+        $service->authenticate($request);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
+        $service->isImpersonating($request);
     }
 }
