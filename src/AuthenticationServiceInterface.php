@@ -18,7 +18,6 @@ namespace Authentication;
 
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\ImpersonationInterface;
-use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ServerRequestInterface;
