@@ -85,7 +85,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.2'
+        php-version: '7.4'
         extensions: mbstring, intl, apcu
         tools: cs2pr
         coverage: none
