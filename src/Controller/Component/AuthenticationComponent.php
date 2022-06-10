@@ -26,6 +26,7 @@ use Authentication\IdentityInterface;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
@@ -362,12 +363,16 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function impersonate(ArrayAccess $impersonated)
     {
         $service = $this->getAuthenticationService();
+        $identity = $this->getIdentity();
+        if (!$identity) {
+            throw new UnauthorizedException('You must be logged in before impersonating a user.');
+        }
         $controller = $this->getController();
         /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
         $result = $service->impersonate(
             $controller->getRequest(),
             $controller->getResponse(),
-            $this->getIdentity(),
+            $identity,
             $impersonated
         );
 
