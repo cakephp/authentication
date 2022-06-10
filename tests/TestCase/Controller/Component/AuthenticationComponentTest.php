@@ -573,6 +573,53 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * testImpersonateNoIdentity
+     *
+     * @return void
+     */
+    public function testImpersonateNoIdentity()
+    {
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $request = $this->request
+            ->withAttribute('authentication', $this->service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $this->expectException(UnauthenticatedException::class);
+        $this->expectExceptionMessage('You must be logged in before impersonating a user.');
+        $component->impersonate($impersonated);
+    }
+
+    /**
+     * testImpersonateFailure
+     *
+     * @return void
+     */
+    public function testImpersonateFailure()
+    {
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $service = $this->getMockBuilder(AuthenticationService::class)
+            ->onlyMethods(['isImpersonating', 'impersonate'])
+            ->getMock();
+        $service->expects($this->once())
+            ->method('impersonate');
+        $service->expects($this->once())
+            ->method('isImpersonating')
+            ->willReturn(false);
+        $identity = new Identity($impersonator);
+        $request = $this->request
+            ->withAttribute('identity', $identity)
+            ->withAttribute('authentication', $service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('An error has occurred impersonating user.');
+        $component->impersonate($impersonated);
+    }
+
+    /**
      * testStopImpersonating
      *
      * @return void
@@ -593,6 +640,34 @@ class AuthenticationComponentTest extends TestCase
         $component->stopImpersonating();
         $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
         $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
+    }
+
+    /**
+     * testStopImpersonatingFailure
+     *
+     * @return void
+     */
+    public function testStopImpersonatingFailure()
+    {
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $service = $this->getMockBuilder(AuthenticationService::class)
+            ->onlyMethods(['isImpersonating', 'stopImpersonating'])
+            ->getMock();
+        $service->expects($this->once())
+            ->method('stopImpersonating');
+        $service->expects($this->once())
+            ->method('isImpersonating')
+            ->willReturn(true);
+        $identity = new Identity($impersonator);
+        $request = $this->request
+            ->withAttribute('identity', $identity)
+            ->withAttribute('authentication', $service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('An error has occurred stopping impersonation.');
+        $component->stopImpersonating();
     }
 
     /**

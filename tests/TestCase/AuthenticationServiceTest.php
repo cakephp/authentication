@@ -278,6 +278,40 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * testClearIdentity
+     *
+     * @return void
+     */
+    public function testClearIdentityWithImpersonation()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Form',
+            ],
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/']
+        );
+        $response = new Response();
+
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $request = $request->withAttribute('identity', $impersonated);
+        $request->getSession()->write('Auth', $impersonated);
+        $request->getSession()->write('AuthImpersonate', $impersonator);
+        $this->assertNotEmpty($request->getAttribute('identity'));
+        $result = $service->clearIdentity($request, $response);
+        $this->assertIsArray($result);
+        $this->assertInstanceOf(ServerRequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $this->assertNull($result['request']->getAttribute('identity'));
+    }
+
+    /**
      * testPersistIdentity
      *
      * @return void
