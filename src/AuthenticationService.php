@@ -32,7 +32,7 @@ use RuntimeException;
 /**
  * Authentication Service
  */
-class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface
+class AuthenticationService implements AuthenticationServiceInterface
 {
     use InstanceConfigTrait;
 
@@ -215,8 +215,8 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
         foreach ($this->authenticators() as $authenticator) {
-            if ($authenticator instanceof ImpersonationInterface) {
-                if ($authenticator->isImpersonating($request)) {
+            if ($authenticator instanceof PersistenceInterface) {
+                if ($authenticator instanceof ImpersonationInterface && $authenticator->isImpersonating($request)) {
                     /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $stopImpersonationResult */
                     $stopImpersonationResult = $authenticator->stopImpersonating($request, $response);
                     ['request' => $request, 'response' => $response] = $stopImpersonationResult;
@@ -449,14 +449,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         \ArrayAccess $impersonator,
         \ArrayAccess $impersonated
     ): array {
-        /** @var \Authentication\Authenticator\PersistenceInterface $provider */
-        $provider = $this->getAuthenticationProvider();
-        if (!($provider instanceof ImpersonationInterface)) {
-            $className = get_class($provider);
-            throw new \InvalidArgumentException(
-                "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
-            );
-        }
+        $provider = $this->getImpersonationProvider();
 
         return $provider->impersonate($request, $response, $impersonator, $impersonated);
     }
@@ -470,14 +463,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
     {
-        /** @var \Authentication\Authenticator\PersistenceInterface $provider */
-        $provider = $this->getAuthenticationProvider();
-        if (!($provider instanceof ImpersonationInterface)) {
-            $className = get_class($provider);
-            throw new \InvalidArgumentException(
-                "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
-            );
-        }
+        $provider = $this->getImpersonationProvider();
 
         return $provider->stopImpersonating($request, $response);
     }
@@ -490,6 +476,19 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function isImpersonating(ServerRequestInterface $request): bool
     {
+        $provider = $this->getImpersonationProvider();
+
+        return $provider->isImpersonating($request);
+    }
+
+    /**
+     * Get impersonation provider
+     *
+     * @return ImpersonationInterface
+     * @throws \InvalidArgumentException
+     */
+    protected function getImpersonationProvider(): ImpersonationInterface
+    {
         /** @var \Authentication\Authenticator\ImpersonationInterface $provider */
         $provider = $this->getAuthenticationProvider();
         if (!($provider instanceof ImpersonationInterface)) {
@@ -498,7 +497,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
                 "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
             );
         }
-
-        return $provider->isImpersonating($request);
+        return $provider;
     }
 }
