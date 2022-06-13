@@ -18,6 +18,7 @@ namespace Authentication\Controller\Component;
 
 use ArrayAccess;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -361,7 +362,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function impersonate(ArrayAccess $impersonated)
     {
-        $service = $this->getAuthenticationService();
+        $service = $this->getImpersonationAuthenticationService();
+
         $identity = $this->getIdentity();
         if (!$identity) {
             throw new UnauthenticatedException('You must be logged in before impersonating a user.');
@@ -393,7 +395,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function stopImpersonating()
     {
-        $service = $this->getAuthenticationService();
+        $service = $this->getImpersonationAuthenticationService();
+
         $controller = $this->getController();
 
         /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
@@ -420,11 +423,30 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function isImpersonating(): bool
     {
-        $service = $this->getAuthenticationService();
+        $service = $this->getImpersonationAuthenticationService();
         $controller = $this->getController();
 
         return $service->isImpersonating(
             $controller->getRequest()
         );
+    }
+
+    /**
+     * Get impersonation authentication service
+     *
+     * @return \Authentication\Authenticator\ImpersonationInterface
+     * @throws \Exception
+     */
+    protected function getImpersonationAuthenticationService(): ImpersonationInterface
+    {
+        $service = $this->getAuthenticationService();
+        if (!($service instanceof ImpersonationInterface)) {
+            $className = get_class($service);
+            throw new \InvalidArgumentException(
+                "The {$className} must implement ImpersonationInterface in order to use impersonation."
+            );
+        }
+
+        return $service;
     }
 }

@@ -32,7 +32,7 @@ use RuntimeException;
 /**
  * Authentication Service
  */
-class AuthenticationService implements AuthenticationServiceInterface
+class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface
 {
     use InstanceConfigTrait;
 
@@ -484,7 +484,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * Get impersonation provider
      *
-     * @return ImpersonationInterface
+     * @return \Authentication\Authenticator\ImpersonationInterface
      * @throws \InvalidArgumentException
      */
     protected function getImpersonationProvider(): ImpersonationInterface
@@ -497,6 +497,7 @@ class AuthenticationService implements AuthenticationServiceInterface
                 "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
             );
         }
+
         return $provider;
     }
 }
