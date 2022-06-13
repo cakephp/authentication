@@ -693,6 +693,26 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * testGetImpersonationAuthenticationServiceFailure
+     *
+     * @return void
+     */
+    public function testGetImpersonationAuthenticationServiceFailure()
+    {
+        $service = $this->getMockBuilder(AuthenticationServiceInterface::class)->getMock();
+
+        $component = $this->createPartialMock(AuthenticationComponent::class, ['getAuthenticationService']);
+        $component->expects($this->once())
+            ->method('getAuthenticationService')
+            ->willReturn($service);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $classname = get_class($service);
+        $this->expectExceptionMessage("The $classname must implement ImpersonationInterface in order to use impersonation.");
+        $component->isImpersonating();
+    }
+
+    /**
      * testIsImpersonatingNotImpersonating
      *
      * @return void
