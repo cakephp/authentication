@@ -30,6 +30,7 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
+use Cake\Http\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -746,8 +747,7 @@ class AuthenticationServiceTest extends TestCase
             ['REQUEST_URI' => '/secrets']
         );
         $uri = $request->getUri();
-        $uri->base = '/base';
-        $request = $request->withUri($uri);
+        $request = $request->withUri(new Uri($uri, '/base', $uri->webroot));
 
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',

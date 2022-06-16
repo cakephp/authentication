@@ -150,7 +150,7 @@ así::
             $target = $this->Authentication->getLoginRedirect() ?? '/home';
             return $this->redirect($target);
         }
-        if ($this->request->is('post') && !$result->isValid()) {
+        if ($this->request->is('post')) {
             $this->Flash->error('Invalid username or password');
         }
     }

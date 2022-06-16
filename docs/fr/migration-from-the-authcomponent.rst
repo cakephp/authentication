@@ -196,7 +196,7 @@ identité::
 
         // Afficher une erreur si l'utilisateur a validé le formulaire et que
         // l'authentification a échoué
-        if ($this->request->is(['post']) && !$result->isValid()) {
+        if ($this->request->is(['post'])) {
             $this->Flash->error('Identifiant ou mot de passe invalide');
         }
     }

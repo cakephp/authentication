@@ -187,7 +187,7 @@ identity results::
         }
 
         // display error if user submitted and authentication failed
-        if ($this->request->is(['post']) && !$result->isValid()) {
+        if ($this->request->is(['post'])) {
             $this->Flash->error('Invalid username or password');
         }
     }
