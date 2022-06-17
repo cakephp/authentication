@@ -69,7 +69,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param array $config Array of configuration settings.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct($subject, $config = null)
+    public function __construct($subject, $config = [])
     {
         $this->setConfig($config);
 
