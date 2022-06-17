@@ -10,7 +10,7 @@
     "type": "cakephp-plugin",
     "homepage": "https://cakephp.org",
     "require": {
-        "cakephp/http": "^4.4",
+        "cakephp/http": "5.x-dev",
         "laminas/laminas-diactoros": "^2.2.2",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.0",
@@ -18,10 +18,10 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "^4.4",
-        "cakephp/cakephp-codesniffer": "^4.0",
+        "cakephp/cakephp": "5.x-dev",
+        "cakephp/cakephp-codesniffer": "5.x-dev",
         "firebase/php-jwt": "^6.2",
-        "phpunit/phpunit": "^8.5 || ^9.3"
+        "phpunit/phpunit": "^9.5"
     },
     "suggest": {
         "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
