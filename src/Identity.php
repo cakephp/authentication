@@ -36,7 +36,7 @@ class Identity implements IdentityInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'fieldMap' => [
             'id' => 'id',
         ],

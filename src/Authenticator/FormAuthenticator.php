@@ -37,7 +37,7 @@ class FormAuthenticator extends AbstractAuthenticator
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'loginUrl' => null,
         'urlChecker' => 'Authentication.Default',
         'fields' => [

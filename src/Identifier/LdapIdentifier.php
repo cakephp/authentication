@@ -51,7 +51,7 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'ldap' => ExtensionAdapter::class,
         'fields' => [
             self::CREDENTIAL_USERNAME => 'username',

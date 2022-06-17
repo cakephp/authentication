@@ -53,7 +53,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Authentication service or application instance.

@@ -94,7 +94,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'authenticators' => [],
         'identifiers' => [],
         'identityClass' => Identity::class,

@@ -29,7 +29,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'header' => null,
         'queryParam' => null,
         'tokenPrefix' => null,

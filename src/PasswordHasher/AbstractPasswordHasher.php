@@ -31,7 +31,7 @@ abstract class AbstractPasswordHasher implements PasswordHasherInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Constructor
