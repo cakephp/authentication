@@ -23,7 +23,7 @@ use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Http\ServerRequestFactory;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use PHPUnit\Framework\Constraint\RegularExpression;
@@ -165,8 +165,8 @@ DIGEST;
         $expected = [
             'id' => 1,
             'username' => 'mariano',
-            'created' => new FrozenTime('2007-03-17 01:16:23'),
-            'updated' => new FrozenTime('2007-03-17 01:18:31'),
+            'created' => new DateTime('2007-03-17 01:16:23'),
+            'updated' => new DateTime('2007-03-17 01:18:31'),
         ];
         $this->assertInstanceOf(Result::class, $result);
         $this->assertTrue($result->isValid());
