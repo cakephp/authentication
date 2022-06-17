@@ -153,10 +153,9 @@ class Identity implements IdentityInterface
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value Value
      * @throws \BadMethodCallException
-     * @return mixed
+     * @return void
      */
-    #[ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
