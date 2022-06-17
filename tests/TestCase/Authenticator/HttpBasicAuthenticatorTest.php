@@ -32,7 +32,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected array $fixtures = [
         'core.AuthUsers',
         'core.Users',
     ];
