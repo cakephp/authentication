@@ -69,7 +69,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param array $config Array of configuration settings.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct($subject, $config = null)
+    public function __construct($subject, $config = [])
     {
         $this->setConfig($config);
 
@@ -169,6 +169,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $value = $this->getConfig($key);
             if ($value) {
                 deprecationWarning(
+                    '2.x',
                     "The `{$key}` configuration key on AuthenticationMiddleware is deprecated. " .
                     "Instead set the `{$key}` on your AuthenticationService instance."
                 );
