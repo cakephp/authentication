@@ -32,7 +32,7 @@ class PasswordHasherFactory
      * @throws \RuntimeException If password hasher class not found or it does
      *   not implement \Authentication\PasswordHasher\PasswordHasherInterface
      */
-    public static function build(string|array $passwordHasher): PasswordHasherInterface
+    public static function build(array|string $passwordHasher): PasswordHasherInterface
     {
         $config = [];
         if (is_string($passwordHasher)) {

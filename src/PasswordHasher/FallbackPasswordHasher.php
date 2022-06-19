@@ -61,10 +61,10 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      *
      * Uses the first password hasher in the list to generate the hash
      *
-     * @param string $password Plain text password to hash.
+     * @param array|string $password Plain text password to hash.
      * @return string Password hash
      */
-    public function hash(string $password): string
+    public function hash(array|string $password): string
     {
         return $this->_hashers[0]->hash($password);
     }
@@ -75,11 +75,11 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      * This will iterate over all configured hashers until one of them returns
      * true.
      *
-     * @param string $password Plain text password to hash.
+     * @param array|string $password Plain text password to hash.
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check(string $password, string $hashedPassword): bool
+    public function check(array|string $password, string $hashedPassword): bool
     {
         foreach ($this->_hashers as $hasher) {
             if ($hasher->check($password, $hashedPassword)) {

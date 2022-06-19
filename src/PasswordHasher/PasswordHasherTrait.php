@@ -8,9 +8,9 @@ trait PasswordHasherTrait
     /**
      * Password hasher instance.
      *
-     * @var \Authentication\PasswordHasher\PasswordHasherInterface
+     * @var \Authentication\PasswordHasher\PasswordHasherInterface|null
      */
-    protected PasswordHasherInterface $_passwordHasher;
+    protected ?PasswordHasherInterface $_passwordHasher = null;
 
     /**
      * Whether or not the user authenticated by this class

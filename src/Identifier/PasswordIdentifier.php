@@ -91,7 +91,7 @@ class PasswordIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         if (!isset($credentials[self::CREDENTIAL_USERNAME])) {
             return null;

@@ -20,7 +20,6 @@ use ArrayAccess;
 use BadMethodCallException;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
-use ReturnTypeWillChange;
 
 /**
  * Identity object
@@ -74,7 +73,7 @@ class Identity implements IdentityInterface
     /**
      * @inheritDoc
      */
-    public function getIdentifier()
+    public function getIdentifier(): string|int|null
     {
         return $this->get('id');
     }
@@ -94,9 +93,9 @@ class Identity implements IdentityInterface
      * Check if the field isset() using object access.
      *
      * @param string $field Field in the user data.
-     * @return mixed
+     * @return bool
      */
-    public function __isset(string $field): mixed
+    public function __isset(string $field): bool
     {
         return $this->get($field) !== null;
     }
@@ -140,7 +139,6 @@ class Identity implements IdentityInterface
      * @param mixed $offset Offset
      * @return mixed
      */
-    #[ReturnTypeWillChange]
     public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
@@ -153,10 +151,9 @@ class Identity implements IdentityInterface
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value Value
      * @throws \BadMethodCallException
-     * @return mixed
+     * @return void
      */
-    #[ReturnTypeWillChange]
-    public function offsetSet(mixed $offset, mixed $value): mixed
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
@@ -177,7 +174,7 @@ class Identity implements IdentityInterface
     /**
      * @inheritDoc
      */
-    public function getOriginalData()
+    public function getOriginalData(): ArrayAccess|array
     {
         return $this->data;
     }
