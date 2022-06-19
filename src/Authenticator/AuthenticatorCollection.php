@@ -49,19 +49,21 @@ class AuthenticatorCollection extends AbstractCollection
     /**
      * Creates authenticator instance.
      *
-     * @param string $class Authenticator class.
+     * @param object|string $class Authenticator class.
      * @param string $alias Authenticator alias.
      * @param array $config Config array.
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
      */
-    protected function _create(string $class, string $alias, array $config): AuthenticatorInterface
+    protected function _create(object|string $class, string $alias, array $config): AuthenticatorInterface
     {
-        $authenticator = new $class($this->_identifiers, $config);
+        $authenticator = $class;
+        if (is_string($class)) {
+            $authenticator = new $class($this->_identifiers, $config);
+        }
         if (!($authenticator instanceof AuthenticatorInterface)) {
             throw new RuntimeException(sprintf(
-                'Authenticator class `%s` must implement `%s`.',
-                $class,
+                'Authenticator must implement `%s`.',
                 AuthenticatorInterface::class
             ));
         }

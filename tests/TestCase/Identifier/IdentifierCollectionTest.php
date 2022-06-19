@@ -69,7 +69,7 @@ class IdentifierCollectionTest extends TestCase
     public function testLoadExceptionInterfaceNotImplemented()
     {
         $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Identifier class `TestApp\Authentication\Identifier\InvalidIdentifier`');
+        $this->expectExceptionMessage('Identifier must implement `Authentication\Identifier\IdentifierInterface`');
         $collection = new IdentifierCollection();
         $collection->load(InvalidIdentifier::class);
     }

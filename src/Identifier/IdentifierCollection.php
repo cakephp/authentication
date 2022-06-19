@@ -67,19 +67,21 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     /**
      * Creates identifier instance.
      *
-     * @param string $class Identifier class.
+     * @param object|string $class Identifier class.
      * @param string $alias Identifier alias.
      * @param array $config Config array.
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
      */
-    protected function _create(string $class, string $alias, array $config): IdentifierInterface
+    protected function _create(object|string $class, string $alias, array $config): IdentifierInterface
     {
-        $identifier = new $class($config);
+        $identifier = $class;
+        if (is_string($class)) {
+            $identifier = new $class($config);
+        }
         if (!($identifier instanceof IdentifierInterface)) {
             throw new RuntimeException(sprintf(
-                'Identifier class `%s` must implement `%s`.',
-                $class,
+                'Identifier must implement `%s`.',
                 IdentifierInterface::class
             ));
         }
