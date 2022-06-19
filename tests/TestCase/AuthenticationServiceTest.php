@@ -34,6 +34,7 @@ use Cake\Http\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use stdClass;
 use TestApp\Authentication\Authenticator\InvalidAuthenticator;
 
 class AuthenticationServiceTest extends TestCase
@@ -576,7 +577,7 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Object `stdClass` does not implement `Authentication\IdentityInterface`');
         $service = new AuthenticationService([
-            'identityClass' => \stdClass::class,
+            'identityClass' => stdClass::class,
             'identifiers' => [
                 'Authentication.Password',
             ],

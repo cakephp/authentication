@@ -31,7 +31,7 @@ class AuthenticatorCollection extends AbstractCollection
      *
      * @var \Authentication\Identifier\IdentifierCollection
      */
-    protected $_identifiers;
+    protected IdentifierCollection $_identifiers;
 
     /**
      * Constructor.
@@ -55,7 +55,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
      */
-    protected function _create($class, string $alias, array $config): AuthenticatorInterface
+    protected function _create(string $class, string $alias, array $config): AuthenticatorInterface
     {
         $authenticator = new $class($this->_identifiers, $config);
         if (!($authenticator instanceof AuthenticatorInterface)) {
@@ -76,7 +76,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return string|null
      * @psalm-return class-string|null
      */
-    protected function _resolveClassName($class): ?string
+    protected function _resolveClassName(string $class): ?string
     {
         $className = App::className($class, 'Authenticator', 'Authenticator');
 

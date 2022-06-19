@@ -27,7 +27,7 @@ trait ResolverAwareTrait
      *
      * @var \Authentication\Identifier\Resolver\ResolverInterface
      */
-    protected $resolver;
+    protected ResolverInterface $resolver;
 
     /**
      * Returns ResolverInterface instance.
@@ -65,12 +65,12 @@ trait ResolverAwareTrait
     /**
      * Builds a ResolverInterface instance.
      *
-     * @param string|array $config Resolver class name or config.
+     * @param array|string $config Resolver class name or config.
      * @return \Authentication\Identifier\Resolver\ResolverInterface
      * @throws \InvalidArgumentException When className option is missing or class name does not exist.
      * @throws \RuntimeException When resolver does not implement ResolverInterface.
      */
-    protected function buildResolver($config): ResolverInterface
+    protected function buildResolver(string|array $config): ResolverInterface
     {
         if (is_string($config)) {
             $config = [

@@ -130,21 +130,6 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware->process($request, $handler);
     }
 
-    public function testInvalidSubject()
-    {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Subject must be an instance of `Authentication\AuthenticationServiceInterface` or `Authentication\AuthenticationServiceProviderInterface`, `stdClass` given.');
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password']
-        );
-        $handler = new TestRequestHandler();
-
-        $middleware = new AuthenticationMiddleware(new \stdClass());
-        $response = $middleware->process($request, $handler);
-    }
-
     /**
      * testSuccessfulAuthentication
      *

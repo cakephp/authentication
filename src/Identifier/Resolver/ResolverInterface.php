@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier\Resolver;
 
+use ArrayAccess;
+
 interface ResolverInterface
 {
     public const TYPE_OR = 'OR';
@@ -28,5 +30,5 @@ interface ResolverInterface
      * @param string $type Condition type. Can be `AND` or `OR`.
      * @return \ArrayAccess|array|null
      */
-    public function find(array $conditions, string $type = self::TYPE_AND);
+    public function find(array $conditions, string $type = self::TYPE_AND): ArrayAccess|array|null;
 }

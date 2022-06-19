@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
@@ -112,11 +113,11 @@ class PasswordIdentifier extends AbstractIdentifier
      * Input passwords will be hashed even when a user doesn't exist. This
      * helps mitigate timing attacks that are attempting to find valid usernames.
      *
-     * @param array|\ArrayAccess|null $identity The identity or null.
+     * @param \ArrayAccess|array|null $identity The identity or null.
      * @param string|null $password The password.
      * @return bool
      */
-    protected function _checkPassword($identity, ?string $password): bool
+    protected function _checkPassword(ArrayAccess|array|null $identity, ?string $password): bool
     {
         $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
 
@@ -146,7 +147,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string $identifier The username/identifier.
      * @return \ArrayAccess|array|null
      */
-    protected function _findIdentity(string $identifier)
+    protected function _findIdentity(string $identifier): ArrayAccess|array|null
     {
         $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
         $conditions = [];

@@ -28,12 +28,12 @@ interface IdentityInterface extends ArrayAccess
      *
      * @return string|int|null
      */
-    public function getIdentifier();
+    public function getIdentifier(): string|int|null;
 
     /**
      * Gets the original data object.
      *
      * @return \ArrayAccess|array
      */
-    public function getOriginalData();
+    public function getOriginalData(): ArrayAccess|array;
 }

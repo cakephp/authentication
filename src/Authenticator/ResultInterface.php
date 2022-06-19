@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use ArrayAccess;
+
 interface ResultInterface
 {
     /**
@@ -62,7 +64,7 @@ interface ResultInterface
      *
      * @return \ArrayAccess|array|null
      */
-    public function getData();
+    public function getData(): ArrayAccess|array|null;
 
     /**
      * Returns an array of string reasons why the authentication attempt was unsuccessful.

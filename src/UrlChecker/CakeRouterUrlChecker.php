@@ -32,7 +32,7 @@ class CakeRouterUrlChecker extends DefaultUrlChecker
      *
      * @var array
      */
-    protected $_defaultOptions = [
+    protected array $_defaultOptions = [
         'checkFullUrl' => false,
     ];
 

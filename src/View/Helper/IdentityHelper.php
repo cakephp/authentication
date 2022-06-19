@@ -41,9 +41,9 @@ class IdentityHelper extends Helper
     /**
      * Identity Object
      *
-     * @var null|\Authentication\IdentityInterface
+     * @var \Authentication\IdentityInterface|null
      */
-    protected $_identity;
+    protected ?IdentityInterface $_identity = null;
 
     /**
      * Constructor hook method.
@@ -71,9 +71,9 @@ class IdentityHelper extends Helper
     /**
      * Gets the id of the current logged in identity
      *
-     * @return int|null|string
+     * @return string|int|null
      */
-    public function getId()
+    public function getId(): int|string|null
     {
         if ($this->_identity === null) {
             return null;
@@ -104,11 +104,11 @@ class IdentityHelper extends Helper
      * This method is mostly a convenience method for simple cases and not
      * intended to replace any kind of proper authorization implementation.
      *
-     * @param int|string $id Identity id to check against
+     * @param string|int $id Identity id to check against
      * @param string $field Name of the field in the identity data to check against, id by default
      * @return bool
      */
-    public function is($id, $field = 'id'): bool
+    public function is(int|string $id, string $field = 'id'): bool
     {
         return $id === $this->get($field);
     }
@@ -119,7 +119,7 @@ class IdentityHelper extends Helper
      * @param string|null $key Key of something you want to get from the identity data
      * @return mixed
      */
-    public function get(?string $key = null)
+    public function get(?string $key = null): mixed
     {
         if (empty($this->_identity)) {
             return null;

@@ -60,7 +60,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      *
      * @var \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface
      */
-    protected $subject;
+    protected AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject;
 
     /**
      * Constructor
@@ -69,8 +69,10 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param array $config Array of configuration settings.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct($subject, $config = [])
-    {
+    public function __construct(
+        AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject,
+        array $config = []
+    ) {
         $this->setConfig($config);
 
         if (

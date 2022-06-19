@@ -19,7 +19,6 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Authenticator\Result;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
-use stdClass;
 
 class ResultTest extends TestCase
 {
@@ -33,19 +32,6 @@ class ResultTest extends TestCase
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Identity data can not be empty with status success.');
         new Result(null, Result::SUCCESS);
-    }
-
-    /**
-     * testConstructorInvalidData
-     *
-     * @return void
-     */
-    public function testConstructorInvalidData()
-    {
-        $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessage('Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `stdClass` given.');
-
-        new Result(new stdClass(), Result::FAILURE_CREDENTIALS_INVALID);
     }
 
     /**

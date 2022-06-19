@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use ArrayAccess;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
@@ -149,10 +150,10 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * Returns concatenated username, password hash, and HMAC signature.
      *
-     * @param array|\ArrayAccess $identity Identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @return string
      */
-    protected function _createPlainToken($identity): string
+    protected function _createPlainToken(ArrayAccess|array $identity): string
     {
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
@@ -181,10 +182,10 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * Cookie token consists of a username and hashed username + password hash.
      *
-     * @param array|\ArrayAccess $identity Identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @return string
      */
-    protected function _createToken($identity): string
+    protected function _createToken(ArrayAccess|array $identity): string
     {
         $plain = $this->_createPlainToken($identity);
         $hash = $this->getPasswordHasher()->hash($plain);
@@ -197,11 +198,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * Checks whether a token hash matches the identity data.
      *
-     * @param array|\ArrayAccess $identity Identity data.
+     * @param \ArrayAccess|array $identity Identity data.
      * @param string $tokenHash Hashed part of a cookie token.
      * @return bool
      */
-    protected function _checkToken($identity, $tokenHash): bool
+    protected function _checkToken(ArrayAccess|array $identity, string $tokenHash): bool
     {
         $plain = $this->_createPlainToken($identity);
 
@@ -227,7 +228,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param mixed $value Cookie value.
      * @return \Cake\Http\Cookie\CookieInterface
      */
-    protected function _createCookie($value): CookieInterface
+    protected function _createCookie(mixed $value): CookieInterface
     {
         $options = $this->getConfig('cookie');
         $name = $options['name'];

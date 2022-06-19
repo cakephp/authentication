@@ -20,7 +20,6 @@ use ArrayObject;
 use Authentication\Identity;
 use BadMethodCallException;
 use Cake\TestSuite\TestCase;
-use InvalidArgumentException;
 
 class IdentityTest extends TestCase
 {
@@ -117,13 +116,6 @@ class IdentityTest extends TestCase
         $data = ['username' => 'robert'];
         $identity = new Identity($data);
         $this->assertSame($data['username'], $identity['username']);
-    }
-
-    public function testBuildInvalidArgument()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('data must be an `array` or implement `ArrayAccess` interface, `stdClass` given.');
-        new Identity(new \stdClass());
     }
 
     /**

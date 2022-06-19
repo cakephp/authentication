@@ -54,7 +54,7 @@ interface AuthenticationServiceInterface extends PersistenceInterface
     /**
      * Gets an identity object or null if identity has not been resolved.
      *
-     * @return null|\Authentication\IdentityInterface
+     * @return \Authentication\IdentityInterface|null
      */
     public function getIdentity(): ?IdentityInterface;
 

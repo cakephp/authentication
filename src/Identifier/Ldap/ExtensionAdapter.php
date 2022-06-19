@@ -113,7 +113,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param mixed $value The new value for the specified option
      * @return void
      */
-    public function setOption(int $option, $value): void
+    public function setOption(int $option, mixed $value): void
     {
         $this->_setErrorHandler();
         ldap_set_option($this->getConnection(), $option, $value);
@@ -126,7 +126,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param int $option Option to get
      * @return mixed This will be set to the option value.
      */
-    public function getOption(int $option)
+    public function getOption(int $option): mixed
     {
         $this->_setErrorHandler();
         ldap_get_option($this->getConnection(), $option, $returnValue);
@@ -168,7 +168,7 @@ class ExtensionAdapter implements AdapterInterface
     protected function _setErrorHandler(): void
     {
         set_error_handler(
-            function ($errorNumber, $errorText) {
+            function ($errorNumber, $errorText): void {
                 throw new ErrorException($errorText);
             },
             E_ALL

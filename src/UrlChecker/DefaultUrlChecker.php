@@ -32,7 +32,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
      *
      * @var array
      */
-    protected $_defaultOptions = [
+    protected array $_defaultOptions = [
         'useRegex' => false,
         'checkFullUrl' => false,
     ];
@@ -82,9 +82,9 @@ class DefaultUrlChecker implements UrlCheckerInterface
      * Gets the checker function name or a callback
      *
      * @param array $options Array of options
-     * @return string|callable
+     * @return callable|string
      */
-    protected function _getChecker(array $options = [])
+    protected function _getChecker(array $options = []): string|callable
     {
         if (isset($options['useRegex']) && $options['useRegex']) {
             return 'preg_match';

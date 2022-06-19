@@ -10,7 +10,7 @@ trait PasswordHasherTrait
      *
      * @var \Authentication\PasswordHasher\PasswordHasherInterface
      */
-    protected $_passwordHasher;
+    protected PasswordHasherInterface $_passwordHasher;
 
     /**
      * Whether or not the user authenticated by this class
@@ -18,7 +18,7 @@ trait PasswordHasherTrait
      *
      * @var bool
      */
-    protected $_needsPasswordRehash = false;
+    protected bool $_needsPasswordRehash = false;
 
     /**
      * Return password hasher object.

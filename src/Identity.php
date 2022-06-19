@@ -45,18 +45,18 @@ class Identity implements IdentityInterface
     /**
      * Identity data
      *
-     * @var array|\ArrayAccess
+     * @var \ArrayAccess|array
      */
-    protected $data;
+    protected ArrayAccess|array $data;
 
     /**
      * Constructor
      *
-     * @param array|\ArrayAccess $data Identity data
+     * @param \ArrayAccess|array $data Identity data
      * @param array $config Config options
      * @throws \InvalidArgumentException When invalid identity data is passed.
      */
-    public function __construct($data, array $config = [])
+    public function __construct(ArrayAccess|array $data, array $config = [])
     {
         if (!is_array($data) && !($data instanceof ArrayAccess)) {
             $type = is_object($data) ? get_class($data) : gettype($data);
@@ -85,7 +85,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function __get(string $field)
+    public function __get(string $field): mixed
     {
         return $this->get($field);
     }
@@ -96,7 +96,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function __isset(string $field)
+    public function __isset(string $field): mixed
     {
         return $this->get($field) !== null;
     }
@@ -107,7 +107,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function get($field)
+    public function get(string $field): mixed
     {
         $map = $this->_config['fieldMap'];
         if (isset($map[$field])) {
@@ -128,7 +128,7 @@ class Identity implements IdentityInterface
      * @param mixed $offset Offset
      * @return bool
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return $this->get($offset) !== null;
     }
@@ -141,7 +141,7 @@ class Identity implements IdentityInterface
      * @return mixed
      */
     #[ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
@@ -156,7 +156,7 @@ class Identity implements IdentityInterface
      * @return mixed
      */
     #[ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): mixed
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
@@ -169,7 +169,7 @@ class Identity implements IdentityInterface
      * @throws \BadMethodCallException
      * @return void
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }

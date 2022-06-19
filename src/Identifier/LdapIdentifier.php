@@ -65,14 +65,14 @@ class LdapIdentifier extends AbstractIdentifier
      *
      * @var array
      */
-    protected $_errors = [];
+    protected array $_errors = [];
 
     /**
      * LDAP connection object
      *
      * @var \Authentication\Identifier\Ldap\AdapterInterface
      */
-    protected $_ldap;
+    protected AdapterInterface $_ldap;
 
     /**
      * @inheritDoc

@@ -21,32 +21,12 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Authentication\View\Helper\IdentityHelper;
 use Cake\Http\ServerRequest;
 use Cake\View\View;
-use RuntimeException;
 
 /**
  * IdentityHelperTest
  */
 class IdentityHelperTest extends TestCase
 {
-    /**
-     * test bad identity
-     *
-     * @return void
-     */
-    public function testBadIdentityError()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Identity found in request does not');
-
-        $identity = [
-            'id' => 1,
-        ];
-        $request = (new ServerRequest())->withAttribute('identity', $identity);
-        $view = new View($request);
-
-        $helper = new IdentityHelper($view);
-    }
-
     /**
      * testWithIdentity
      *

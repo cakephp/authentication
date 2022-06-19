@@ -60,16 +60,16 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * List of actions that don't require authentication.
      *
-     * @var string[]
+     * @var array<string>
      */
-    protected $unauthenticatedActions = [];
+    protected array $unauthenticatedActions = [];
 
     /**
      * Authentication service instance.
      *
      * @var \Authentication\AuthenticationServiceInterface|null
      */
-    protected $_authentication;
+    protected ?AuthenticationServiceInterface $_authentication = null;
 
     /**
      * Initialize component.
@@ -187,7 +187,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * Actions not in this list will require an identity to be present. Any
      * valid identity will pass this constraint.
      *
-     * @param string[] $actions The action list.
+     * @param array<string> $actions The action list.
      * @return $this
      */
     public function allowUnauthenticated(array $actions)
@@ -200,7 +200,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * Add to the list of actions that don't require an authentication identity to be present.
      *
-     * @param string[] $actions The action or actions to append.
+     * @param array<string> $actions The action or actions to append.
      * @return $this
      */
     public function addUnauthenticatedActions(array $actions)
@@ -214,7 +214,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * Get the current list of actions that don't require authentication.
      *
-     * @return string[]
+     * @return array<string>
      */
     public function getUnauthenticatedActions(): array
     {
@@ -251,7 +251,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @return mixed
      * @throws \RuntimeException If the identity has not been found.
      */
-    public function getIdentityData(string $path)
+    public function getIdentityData(string $path): mixed
     {
         $identity = $this->getIdentity();
 
