@@ -94,7 +94,7 @@ class Identity implements IdentityInterface
      * Check if the field isset() using object access.
      *
      * @param string $field Field in the user data.
-     * @return mixed
+     * @return bool
      */
     public function __isset(string $field)
     {
