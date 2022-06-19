@@ -41,7 +41,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'loginUrl' => null,
         'urlChecker' => 'Authentication.Default',
         'rememberMeField' => 'remember_me',
@@ -234,12 +234,12 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         unset($options['name']);
 
         if (array_key_exists('expire', $options)) {
-            deprecationWarning('Config key `expire` is deprecated, use `expires` instead.');
+            deprecationWarning('2.x', 'Config key `expire` is deprecated, use `expires` instead.');
             $options['expires'] = $options['expire'];
             unset($options['expire']);
         }
         if (array_key_exists('httpOnly', $options)) {
-            deprecationWarning('Config key `httpOnly` is deprecated, use `httponly` instead.');
+            deprecationWarning('2.x', 'Config key `httpOnly` is deprecated, use `httponly` instead.');
             $options['httponly'] = $options['httpOnly'];
             unset($options['httpOnly']);
         }

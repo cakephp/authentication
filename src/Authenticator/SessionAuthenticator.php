@@ -34,7 +34,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'fields' => [
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
         ],

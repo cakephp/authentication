@@ -49,7 +49,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @var array<string, mixed>
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'logoutRedirect' => false,
         'requireIdentity' => true,
         'identityAttribute' => 'identity',

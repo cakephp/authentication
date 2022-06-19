@@ -28,7 +28,7 @@ abstract class AbstractCollection extends ObjectRegistry
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Constructor

@@ -32,7 +32,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'hashType' => PASSWORD_DEFAULT,
         'hashOptions' => [],
     ];
