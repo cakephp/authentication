@@ -60,14 +60,6 @@ class Result implements ResultInterface
         if ($status === self::SUCCESS && empty($data)) {
             throw new InvalidArgumentException('Identity data can not be empty with status success.');
         }
-        if ($data !== null && !is_array($data) && !($data instanceof ArrayAccess)) {
-            $type = is_object($data) ? get_class($data) : gettype($data);
-            $message = sprintf(
-                'Identity data must be `null`, an `array` or implement `ArrayAccess` interface, `%s` given.',
-                $type
-            );
-            throw new InvalidArgumentException($message);
-        }
 
         $this->_status = $status;
         $this->_data = $data;

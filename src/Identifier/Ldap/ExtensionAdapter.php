@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Identifier\Ldap;
 
 use ErrorException;
+use LDAP\Connection;
 use RuntimeException;
 
 /**
@@ -32,9 +33,9 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * LDAP Object
      *
-     * @var resource|null
+     * @var \LDAP\Connection|null
      */
-    protected $_connection;
+    protected ?Connection $_connection = null;
 
     /**
      * Constructor
@@ -71,10 +72,10 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * Get the LDAP connection
      *
-     * @return resource
+     * @return \LDAP\Connection
      * @throws \RuntimeException If the connection is empty
      */
-    public function getConnection()
+    public function getConnection(): Connection
     {
         if (empty($this->_connection)) {
             throw new RuntimeException('You are not connected to a LDAP server.');
@@ -94,7 +95,7 @@ class ExtensionAdapter implements AdapterInterface
     public function connect(string $host, int $port, array $options): void
     {
         $this->_setErrorHandler();
-        $resource = ldap_connect($host, $port);
+        $resource = ldap_connect("{$host}:{$port}");
         if ($resource === false) {
             throw new RuntimeException('Unable to connect to LDAP server.');
         }
