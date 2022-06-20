@@ -40,10 +40,10 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
     /**
      * Generates password hash.
      *
-     * @param array|string $password Plain text password to hash.
+     * @param string $password Plain text password to hash.
      * @return string Password hash or false on failure.
      */
-    public function hash(array|string $password): string
+    public function hash(string $password): string
     {
         return password_hash(
             $password,
@@ -55,11 +55,11 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
     /**
      * Check hash. Generate hash for user provided password and check against existing hash.
      *
-     * @param array|string $password Plain text password to hash.
+     * @param string $password Plain text password to hash.
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check(array|string $password, string $hashedPassword): bool
+    public function check(string $password, string $hashedPassword): bool
     {
         return password_verify($password, $hashedPassword);
     }

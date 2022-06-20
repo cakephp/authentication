@@ -23,21 +23,21 @@ interface PasswordHasherInterface
     /**
      * Generates password hash.
      *
-     * @param array|string $password Plain text password to hash or array of data
+     * @param string $password Plain text password to hash or array of data
      *   required to generate password hash.
      * @return string Password hash
      */
-    public function hash(array|string $password): string;
+    public function hash(string $password): string;
 
     /**
      * Check hash. Generate hash from user provided password string or data array
      * and check against existing hash.
      *
-     * @param array|string $password Plain text password to hash or data array.
+     * @param string $password Plain text password to hash or data array.
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check(array|string $password, string $hashedPassword): bool;
+    public function check(string $password, string $hashedPassword): bool;
 
     /**
      * Returns true if the password need to be rehashed, due to the password being
