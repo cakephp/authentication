@@ -80,7 +80,7 @@ class AuthenticatorCollectionTest extends TestCase
     public function testLoadExceptionInterfaceNotImplemented()
     {
         $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Authenticator class `TestApp\Authentication\Identifier\InvalidIdentifier`');
+        $this->expectExceptionMessage('Authenticator must implement `Authentication\Authenticator\AuthenticatorInterface`');
         $identifiers = $this->createMock(IdentifierCollection::class);
         $collection = new AuthenticatorCollection($identifiers);
         $collection->load(InvalidIdentifier::class);

@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 
 /**
@@ -39,7 +40,7 @@ class TokenIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         $dataField = $this->getConfig('dataField');
         if (!isset($credentials[$dataField])) {

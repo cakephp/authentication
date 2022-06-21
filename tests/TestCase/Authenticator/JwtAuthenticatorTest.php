@@ -25,6 +25,7 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Exception;
 use Firebase\JWT\JWT;
+use stdClass;
 
 class JwtAuthenticatorTest extends TestCase
 {
@@ -220,7 +221,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator->expects($this->once())
             ->method('getPayLoad')
-            ->will($this->returnValue(new \stdClass()));
+            ->will($this->returnValue(new stdClass()));
 
         $result = $authenticator->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);

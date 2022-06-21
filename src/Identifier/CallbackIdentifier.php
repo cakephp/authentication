@@ -66,7 +66,7 @@ class CallbackIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         $callback = $this->getConfig('callback');
 

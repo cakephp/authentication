@@ -19,8 +19,6 @@ namespace Authentication;
 use ArrayAccess;
 use BadMethodCallException;
 use Cake\Core\InstanceConfigTrait;
-use InvalidArgumentException;
-use ReturnTypeWillChange;
 
 /**
  * Identity object
@@ -45,28 +43,19 @@ class Identity implements IdentityInterface
     /**
      * Identity data
      *
-     * @var array|\ArrayAccess
+     * @var \ArrayAccess|array
      */
-    protected $data;
+    protected ArrayAccess|array $data;
 
     /**
      * Constructor
      *
-     * @param array|\ArrayAccess $data Identity data
+     * @param \ArrayAccess|array $data Identity data
      * @param array $config Config options
      * @throws \InvalidArgumentException When invalid identity data is passed.
      */
-    public function __construct($data, array $config = [])
+    public function __construct(ArrayAccess|array $data, array $config = [])
     {
-        if (!is_array($data) && !($data instanceof ArrayAccess)) {
-            $type = is_object($data) ? get_class($data) : gettype($data);
-            $message = sprintf(
-                'Identity data must be an `array` or implement `ArrayAccess` interface, `%s` given.',
-                $type
-            );
-            throw new InvalidArgumentException($message);
-        }
-
         $this->setConfig($config);
         $this->data = $data;
     }
@@ -74,7 +63,7 @@ class Identity implements IdentityInterface
     /**
      * @inheritDoc
      */
-    public function getIdentifier()
+    public function getIdentifier(): string|int|null
     {
         return $this->get('id');
     }
@@ -85,7 +74,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function __get(string $field)
+    public function __get(string $field): mixed
     {
         return $this->get($field);
     }
@@ -94,9 +83,9 @@ class Identity implements IdentityInterface
      * Check if the field isset() using object access.
      *
      * @param string $field Field in the user data.
-     * @return mixed
+     * @return bool
      */
-    public function __isset(string $field)
+    public function __isset(string $field): bool
     {
         return $this->get($field) !== null;
     }
@@ -107,7 +96,7 @@ class Identity implements IdentityInterface
      * @param string $field Field in the user data.
      * @return mixed
      */
-    public function get($field)
+    public function get(string $field): mixed
     {
         $map = $this->_config['fieldMap'];
         if (isset($map[$field])) {
@@ -128,7 +117,7 @@ class Identity implements IdentityInterface
      * @param mixed $offset Offset
      * @return bool
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return $this->get($offset) !== null;
     }
@@ -140,8 +129,7 @@ class Identity implements IdentityInterface
      * @param mixed $offset Offset
      * @return mixed
      */
-    #[ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
@@ -153,10 +141,9 @@ class Identity implements IdentityInterface
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value Value
      * @throws \BadMethodCallException
-     * @return mixed
+     * @return void
      */
-    #[ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
@@ -169,7 +156,7 @@ class Identity implements IdentityInterface
      * @throws \BadMethodCallException
      * @return void
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         throw new BadMethodCallException('Identity does not allow wrapped data to be mutated.');
     }
@@ -177,7 +164,7 @@ class Identity implements IdentityInterface
     /**
      * @inheritDoc
      */
-    public function getOriginalData()
+    public function getOriginalData(): ArrayAccess|array
     {
         return $this->data;
     }

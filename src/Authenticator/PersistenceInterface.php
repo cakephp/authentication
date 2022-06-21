@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use ArrayAccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -30,7 +31,11 @@ interface PersistenceInterface
      * @return array
      * @psalm-return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface} Returns an array containing the request and response object
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array;
+    public function persistIdentity(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        ArrayAccess|array $identity
+    ): array;
 
     /**
      * Clears the identity data

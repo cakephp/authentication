@@ -48,7 +48,7 @@ class JwtAuthenticator extends TokenAuthenticator
      *
      * @var object|null
      */
-    protected $payload;
+    protected ?object $payload = null;
 
     /**
      * @inheritDoc
@@ -61,7 +61,7 @@ class JwtAuthenticator extends TokenAuthenticator
             if (!class_exists(Security::class)) {
                 throw new RuntimeException('You must set the `secretKey` config key for JWT authentication.');
             }
-            $this->setConfig('secretKey', \Cake\Utility\Security::getSalt());
+            $this->setConfig('secretKey', Security::getSalt());
         }
     }
 

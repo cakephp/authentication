@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier;
 
+use ArrayAccess;
 use Authentication\AbstractCollection;
 use Cake\Core\App;
 use RuntimeException;
@@ -30,14 +31,14 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      *
      * @var array
      */
-    protected $_errors = [];
+    protected array $_errors = [];
 
     /**
      * Identifier that successfully Identified the identity.
      *
      * @var \Authentication\Identifier\IdentifierInterface|null
      */
-    protected $_successfulIdentifier;
+    protected ?IdentifierInterface $_successfulIdentifier = null;
 
     /**
      * Identifies an user or service by the passed credentials
@@ -45,7 +46,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @param array $credentials Authentication credentials
      * @return \ArrayAccess|array|null
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         /** @var \Authentication\Identifier\IdentifierInterface $identifier */
         foreach ($this->_loaded as $name => $identifier) {
@@ -66,19 +67,21 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
     /**
      * Creates identifier instance.
      *
-     * @param string $class Identifier class.
+     * @param object|string $class Identifier class.
      * @param string $alias Identifier alias.
      * @param array $config Config array.
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
      */
-    protected function _create($class, string $alias, array $config): IdentifierInterface
+    protected function _create(object|string $class, string $alias, array $config): IdentifierInterface
     {
-        $identifier = new $class($config);
+        $identifier = $class;
+        if (is_string($class)) {
+            $identifier = new $class($config);
+        }
         if (!($identifier instanceof IdentifierInterface)) {
             throw new RuntimeException(sprintf(
-                'Identifier class `%s` must implement `%s`.',
-                $class,
+                'Identifier must implement `%s`.',
                 IdentifierInterface::class
             ));
         }
@@ -103,7 +106,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @return string|null
      * @psalm-return class-string|null
      */
-    protected function _resolveClassName($class): ?string
+    protected function _resolveClassName(string $class): ?string
     {
         $className = App::className($class, 'Identifier', 'Identifier');
 
@@ -127,7 +130,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      *
      * @return \Authentication\Identifier\IdentifierInterface|null
      */
-    public function getIdentificationProvider()
+    public function getIdentificationProvider(): ?IdentifierInterface
     {
         return $this->_successfulIdentifier;
     }

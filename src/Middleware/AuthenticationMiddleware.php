@@ -23,7 +23,6 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Core\InstanceConfigTrait;
-use InvalidArgumentException;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Diactoros\Stream;
@@ -60,7 +59,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
      *
      * @var \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface
      */
-    protected $subject;
+    protected AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject;
 
     /**
      * Constructor
@@ -69,25 +68,12 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * @param array $config Array of configuration settings.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct($subject, $config = [])
-    {
-        $this->setConfig($config);
-
-        if (
-            !($subject instanceof AuthenticationServiceInterface) &&
-            !($subject instanceof AuthenticationServiceProviderInterface)
-        ) {
-            $expected = implode('` or `', [
-                AuthenticationServiceInterface::class,
-                AuthenticationServiceProviderInterface::class,
-            ]);
-            $type = is_object($subject) ? get_class($subject) : gettype($subject);
-            $message = sprintf('Subject must be an instance of `%s`, `%s` given.', $expected, $type);
-
-            throw new InvalidArgumentException($message);
-        }
-
+    public function __construct(
+        AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject,
+        array $config = []
+    ) {
         $this->subject = $subject;
+        $this->setConfig($config);
     }
 
     /**
@@ -154,16 +140,6 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $subject = $subject->getAuthenticationService($request);
         }
 
-        if (!$subject instanceof AuthenticationServiceInterface) {
-            $type = is_object($subject) ? get_class($subject) : gettype($subject);
-            $message = sprintf(
-                'Service provided by a subject must be an instance of `%s`, `%s` given.',
-                AuthenticationServiceInterface::class,
-                $type
-            );
-
-            throw new RuntimeException($message);
-        }
         $forwardKeys = ['identityAttribute', 'unauthenticatedRedirect', 'queryParam'];
         foreach ($forwardKeys as $key) {
             $value = $this->getConfig($key);

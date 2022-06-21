@@ -34,7 +34,7 @@ abstract class AbstractIdentifier implements IdentifierInterface
      *
      * @var array
      */
-    protected $_errors = [];
+    protected array $_errors = [];
 
     /**
      * Constructor

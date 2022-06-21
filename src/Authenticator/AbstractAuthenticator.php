@@ -42,7 +42,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      *
      * @var \Authentication\Identifier\IdentifierInterface
      */
-    protected $_identifier;
+    protected IdentifierInterface $_identifier;
 
     /**
      * Constructor

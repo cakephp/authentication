@@ -14,6 +14,7 @@ declare(strict_types=1);
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+use Authentication\Plugin as AuthenticationPlugin;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
@@ -60,7 +61,7 @@ ConnectionManager::setConfig('test', ['url' => getenv('DB_URL')]);
 Router::reload();
 Security::setSalt('YJfIxfs2guVoUubWDYhG93b0qyJfIxfs2guwvniR2G0FgaC9mi');
 
-Plugin::getCollection()->add(new \Authentication\Plugin());
+Plugin::getCollection()->add(new AuthenticationPlugin());
 
 $_SERVER['PHP_SELF'] = '/';
 

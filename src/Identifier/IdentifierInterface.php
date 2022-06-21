@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier;
 
+use ArrayAccess;
+
 interface IdentifierInterface
 {
     public const CREDENTIAL_USERNAME = 'username';
@@ -32,7 +34,7 @@ interface IdentifierInterface
      * @param array $credentials Authentication credentials
      * @return \ArrayAccess|array|null
      */
-    public function identify(array $credentials);
+    public function identify(array $credentials): ArrayAccess|array|null;
 
     /**
      * Gets a list of errors happened in the identification process
