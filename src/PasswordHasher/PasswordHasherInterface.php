@@ -23,8 +23,7 @@ interface PasswordHasherInterface
     /**
      * Generates password hash.
      *
-     * @param string $password Plain text password to hash or array of data
-     *   required to generate password hash.
+     * @param string $password Plain text password to hash.
      * @return string Password hash
      */
     public function hash(string $password): string;
@@ -33,7 +32,7 @@ interface PasswordHasherInterface
      * Check hash. Generate hash from user provided password string or data array
      * and check against existing hash.
      *
-     * @param string $password Plain text password to hash or data array.
+     * @param string $password Plain text password to hash.
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
