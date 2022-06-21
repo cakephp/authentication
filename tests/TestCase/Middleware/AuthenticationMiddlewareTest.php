@@ -26,6 +26,7 @@ use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
+use Cake\Http\Uri;
 use Firebase\JWT\JWT;
 use TestApp\Application;
 use TestApp\Http\TestRequestHandler;
@@ -592,7 +593,7 @@ class AuthenticationMiddlewareTest extends TestCase
             ['username' => 'mariano', 'password' => 'password']
         );
         $uri = $request->getUri();
-        $uri->base = '/base';
+        $uri = new Uri($uri, '/base', $uri->webroot);
         $request = $request->withUri($uri);
         $handler = new TestRequestHandler(function ($request) {
             throw new UnauthenticatedException();

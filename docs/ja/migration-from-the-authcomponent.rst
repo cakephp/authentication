@@ -171,7 +171,7 @@ AuthComponent の設定の移行
         }
 
         // ユーザの送信と認証に失敗した場合にエラーを表示する
-        if ($this->request->is(['post']) && !$result->isValid()) {
+        if ($this->request->is(['post'])) {
             $this->Flash->error('ユーザー名またはパスワードが無効です');
         }
     }

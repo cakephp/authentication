@@ -324,7 +324,7 @@ after their session expires for as long as the cookie is valid. If a user is
 explicity logged out via ``AuthenticationComponent::logout()`` the
 authentication cookie is **also destroyed**. An example configuration would be::
 
-    // In Application::getAuthService()
+    // In Application::getAuthenticationService()
 
     // Reuse fields in multiple authenticators.
     $fields = [
@@ -335,11 +335,8 @@ authentication cookie is **also destroyed**. An example configuration would be::
     // Put form authentication first so that users can re-login via
     // the login form if necessary.
     $service->loadAuthenticator('Authentication.Form', [
+        'fields' => $fields,
         'loginUrl' => '/users/login',
-        'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
-        ],
     ]);
     // Then use sessions if they are active.
     $service->loadAuthenticator('Authentication.Session');
