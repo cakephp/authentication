@@ -243,8 +243,6 @@ class PasetoAuthenticatorTest extends TestCase
 
         $authenticator = new PasetoAuthenticator($this->identifiers, [
             'secretKey' => self::LOCAL_SECRET_KEY,
-            'purpose' => PasetoAuthenticator::LOCAL,
-            'version' => 'v4',
             'returnPayload' => false,
         ]);
 
@@ -274,8 +272,6 @@ class PasetoAuthenticatorTest extends TestCase
         $request = $request->withAddedHeader('Authorization', 'Bearer 123');
         $authenticator = new PasetoAuthenticator($this->identifiers, [
             'secretKey' => self::LOCAL_SECRET_KEY,
-            'purpose' => PasetoAuthenticator::LOCAL,
-            'version' => 'v4',
         ]);
 
         $result = $authenticator->authenticate($request);
@@ -297,11 +293,8 @@ class PasetoAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
         );
-        $request = $request->withAddedHeader('Authorization', 'Bearer ');
         $authenticator = new PasetoAuthenticator($this->identifiers, [
             'secretKey' => self::LOCAL_SECRET_KEY,
-            'purpose' => PasetoAuthenticator::LOCAL,
-            'version' => 'v4',
         ]);
 
         $result = $authenticator->authenticate($request);
@@ -322,8 +315,6 @@ class PasetoAuthenticatorTest extends TestCase
     {
         $authenticator = new PasetoAuthenticator($this->identifiers, [
             'secretKey' => self::LOCAL_SECRET_KEY,
-            'purpose' => PasetoAuthenticator::LOCAL,
-            'version' => 'v4',
         ]);
 
         $this->assertNull($authenticator->getPayload());
@@ -346,8 +337,6 @@ class PasetoAuthenticatorTest extends TestCase
         $request = $request->withAddedHeader('Authorization', 'Bearer ' . $token->toString());
         $authenticator = new PasetoAuthenticator($this->identifiers, [
             'secretKey' => self::LOCAL_SECRET_KEY,
-            'purpose' => PasetoAuthenticator::LOCAL,
-            'version' => 'v4',
         ]);
 
         $result = $authenticator->authenticate($request);
@@ -374,8 +363,6 @@ class PasetoAuthenticatorTest extends TestCase
 
         $authenticator = new PasetoAuthenticator($this->identifiers, [
             'secretKey' => self::LOCAL_SECRET_KEY,
-            'purpose' => PasetoAuthenticator::LOCAL,
-            'version' => 'v4',
             'returnPayload' => false,
         ]);
 
