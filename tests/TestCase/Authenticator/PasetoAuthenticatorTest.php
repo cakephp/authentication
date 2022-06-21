@@ -27,7 +27,6 @@ use DateInterval;
 use DateTime;
 use Exception;
 use ParagonIE\Paseto\Builder;
-use ParagonIE\Paseto\JsonToken;
 use ParagonIE\Paseto\Keys\AsymmetricSecretKey;
 use ParagonIE\Paseto\Keys\SymmetricKey;
 use ParagonIE\Paseto\Protocol\Version3;
@@ -118,9 +117,12 @@ class PasetoAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
         );
-        /** @var Builder $token extracted */
-        /** @var AsymmetricSecretKey $privateKey extracted */
-        extract($this->buildPublicToken($protocol));
+        /** @var Builder $token */
+        /** @var AsymmetricSecretKey $privateKey */
+        $publicData = $this->buildPublicToken($protocol);
+        $token = $publicData['token'];
+        $privateKey = $publicData['privateKey'];
+
         $request = $request->withAddedHeader('Authorization', 'Bearer ' . $token->toString());
 
         $authenticator = new PasetoAuthenticator($this->identifiers, [
@@ -154,9 +156,11 @@ class PasetoAuthenticatorTest extends TestCase
                 $token = $this->buildLocalToken(new Version4());
                 break;
             case PasetoAuthenticator::PUBLIC:
-                /** @var Builder $token extracted */
-                /** @var AsymmetricSecretKey $privateKey extracted */
-                extract($this->buildPublicToken(new Version4()));
+                /** @var Builder $token */
+                /** @var AsymmetricSecretKey $privateKey */
+                $publicData = $this->buildPublicToken(new Version4());
+                $token = $publicData['token'];
+                $privateKey = $publicData['privateKey'];
                 $secretKey = $privateKey->encode();
                 break;
             default:
@@ -267,25 +271,12 @@ class PasetoAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
         );
-        $token = $this->buildLocalToken(new Version4());
-        $request = $request->withAddedHeader('Authorization', 'Bearer ' . $token->toString());
-
-        $authenticator = $this->getMockBuilder(PasetoAuthenticator::class)
-            ->setConstructorArgs([
-                $this->identifiers,
-                [
-                    'purpose' => PasetoAuthenticator::LOCAL,
-                    'version' => 'v4',
-                ],
-            ])
-            ->onlyMethods([
-                'getPayLoad',
-            ])
-            ->getMock();
-
-        $authenticator->expects($this->once())
-            ->method('getPayLoad')
-            ->willThrowException(new Exception());
+        $request = $request->withAddedHeader('Authorization', 'Bearer 123');
+        $authenticator = new PasetoAuthenticator($this->identifiers, [
+            'secretKey' => self::LOCAL_SECRET_KEY,
+            'purpose' => PasetoAuthenticator::LOCAL,
+            'version' => 'v4',
+        ]);
 
         $result = $authenticator->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);
@@ -306,25 +297,12 @@ class PasetoAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
         );
-        $token = $this->buildLocalToken(new Version4());
-        $request = $request->withAddedHeader('Authorization', 'Bearer ' . $token->toString());
-
-        $authenticator = $this->getMockBuilder(PasetoAuthenticator::class)
-            ->setConstructorArgs([
-                $this->identifiers,
-                [
-                    'purpose' => PasetoAuthenticator::LOCAL,
-                    'version' => 'v4',
-                ],
-            ])
-            ->onlyMethods([
-                'getPayLoad',
-            ])
-            ->getMock();
-
-        $authenticator->expects($this->once())
-            ->method('getPayLoad')
-            ->willReturn(null);
+        $request = $request->withAddedHeader('Authorization', 'Bearer ');
+        $authenticator = new PasetoAuthenticator($this->identifiers, [
+            'secretKey' => self::LOCAL_SECRET_KEY,
+            'purpose' => PasetoAuthenticator::LOCAL,
+            'version' => 'v4',
+        ]);
 
         $result = $authenticator->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);
@@ -364,25 +342,13 @@ class PasetoAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/']
         );
-        $token = $this->buildLocalToken(new Version4());
+        $token = $this->buildLocalToken(new Version4(), null, '');
         $request = $request->withAddedHeader('Authorization', 'Bearer ' . $token->toString());
-
-        $authenticator = $this->getMockBuilder(PasetoAuthenticator::class)
-            ->setConstructorArgs([
-                $this->identifiers,
-                [
-                    'purpose' => PasetoAuthenticator::LOCAL,
-                    'version' => 'v4',
-                ],
-            ])
-            ->onlyMethods([
-                'getPayLoad',
-            ])
-            ->getMock();
-
-        $authenticator->expects($this->once())
-            ->method('getPayLoad')
-            ->willReturn((new JsonToken())->setSubject(''));
+        $authenticator = new PasetoAuthenticator($this->identifiers, [
+            'secretKey' => self::LOCAL_SECRET_KEY,
+            'purpose' => PasetoAuthenticator::LOCAL,
+            'version' => 'v4',
+        ]);
 
         $result = $authenticator->authenticate($request);
         $this->assertInstanceOf(Result::class, $result);

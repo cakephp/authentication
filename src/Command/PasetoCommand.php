@@ -39,12 +39,10 @@ class PasetoCommand extends Command
             ->setDescription('Generate keys for PASETO')
             ->addArgument('version', [
                 'help' => 'The PASETO version',
-                'required' => true,
                 'choices' => ['v3', 'v4'],
             ])
             ->addArgument('purpose', [
                 'help' => 'The PASETO purpose',
-                'required' => true,
                 'choices' => [PasetoAuthenticator::LOCAL, PasetoAuthenticator::PUBLIC],
             ])
             ->setEpilog('Example: <info>bin/cake paseto gen v4 local</info>');
@@ -61,9 +59,10 @@ class PasetoCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $version = strtolower((string)$args->getArgument('version'));
+        $version = strtolower($args->getArgument('version') ?? 'v4');
         $version = trim($version);
-        switch (strtolower((string)$args->getArgument('purpose'))) {
+        $purpose = strtolower($args->getArgument('purpose') ?? PasetoAuthenticator::LOCAL);
+        switch ($purpose) {
             case PasetoAuthenticator::LOCAL:
                 $io->info('Generating base64 ' . $version . ' local secret...');
                 $key = SymmetricKey::generate($this->versionFromString($version));
@@ -79,18 +78,19 @@ class PasetoCommand extends Command
     }
 
     /**
-     * Return an instance of ProtocolInterface (Version) from a string.
+     * Return an instance of ProtocolInterface (Version) from a string, defaults to Version4
      *
      * @param string $version Version string (e.g. "v4")
-     * @return \ParagonIE\Paseto\ProtocolInterface|null
+     * @return \ParagonIE\Paseto\ProtocolInterface
      */
-    private function versionFromString(string $version): ?ProtocolInterface
+    private function versionFromString(string $version): ProtocolInterface
     {
-        $versions = [
-            'v3' => new Version3(),
-            'v4' => new Version4(),
-        ];
-
-        return $versions[$version] ?? null;
+        switch ($version) {
+            case 'v3':
+                return new Version3();
+            case 'v4':
+            default:
+                return new Version4();
+        }
     }
 }

@@ -52,8 +52,8 @@ class PasetoAuthenticator extends TokenAuthenticator
         'queryParam' => 'token',
         'tokenPrefix' => 'bearer',
         'returnPayload' => true,
-        'version' => null,
-        'purpose' => null,
+        'version' => 'v4',
+        'purpose' => 'local',
         'secretKey' => null,
     ];
 
