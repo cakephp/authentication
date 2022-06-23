@@ -20,7 +20,6 @@ use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use TestApp\Authentication\Identifier\InvalidIdentifier;
 
 class IdentifierCollectionTest extends TestCase
 {
@@ -64,14 +63,6 @@ class IdentifierCollectionTest extends TestCase
         $this->expectExceptionMessage('Identifier class `Does-not-exist` was not found.');
         $collection = new IdentifierCollection();
         $collection->load('Does-not-exist');
-    }
-
-    public function testLoadExceptionInterfaceNotImplemented()
-    {
-        $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Identifier must implement `Authentication\Identifier\IdentifierInterface`');
-        $collection = new IdentifierCollection();
-        $collection->load(InvalidIdentifier::class);
     }
 
     /**
