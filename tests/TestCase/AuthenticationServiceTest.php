@@ -35,7 +35,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
-use TestApp\Authentication\Authenticator\InvalidAuthenticator;
 
 class AuthenticationServiceTest extends TestCase
 {
@@ -143,17 +142,6 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException('RuntimeException');
         $service = new AuthenticationService();
         $service->loadAuthenticator('does-not-exist');
-    }
-
-    /**
-     * testLoadInvalidAuthenticatorObject
-     */
-    public function testLoadInvalidAuthenticatorObject()
-    {
-        $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Authenticator must implement `Authentication\Authenticator\AuthenticatorInterface`');
-        $service = new AuthenticationService();
-        $service->loadAuthenticator(InvalidAuthenticator::class);
     }
 
     /**

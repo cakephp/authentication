@@ -21,7 +21,6 @@ use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\TestSuite\TestCase;
-use TestApp\Authentication\Identifier\InvalidIdentifier;
 
 class AuthenticatorCollectionTest extends TestCase
 {
@@ -75,15 +74,6 @@ class AuthenticatorCollectionTest extends TestCase
         $identifiers = $this->createMock(IdentifierCollection::class);
         $collection = new AuthenticatorCollection($identifiers);
         $collection->load('Does-not-exist');
-    }
-
-    public function testLoadExceptionInterfaceNotImplemented()
-    {
-        $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Authenticator must implement `Authentication\Authenticator\AuthenticatorInterface`');
-        $identifiers = $this->createMock(IdentifierCollection::class);
-        $collection = new AuthenticatorCollection($identifiers);
-        $collection->load(InvalidIdentifier::class);
     }
 
     /**
