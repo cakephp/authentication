@@ -18,13 +18,14 @@ namespace Authentication\Authenticator;
 use ArrayAccess;
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
+use Cake\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Session Authenticator
  */
-class SessionAuthenticator extends AbstractAuthenticator implements PersistenceInterface
+class SessionAuthenticator extends AbstractAuthenticator implements PersistenceInterface, ImpersonationInterface
 {
     /**
      * Default config for this object.
@@ -39,6 +40,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             IdentifierInterface::CREDENTIAL_USERNAME => 'username',
         ],
         'sessionKey' => 'Auth',
+        'impersonateSessionKey' => 'AuthImpersonate',
         'identify' => false,
         'identityAttribute' => 'identity',
     ];
@@ -114,5 +116,81 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
             'response' => $response,
         ];
+    }
+
+    /**
+     * Impersonates a user
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @param \ArrayAccess $impersonator User who impersonates
+     * @param \ArrayAccess $impersonated User impersonated
+     * @return array
+     */
+    public function impersonate(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        \ArrayAccess $impersonator,
+        \ArrayAccess $impersonated
+    ): array {
+        $sessionKey = $this->getConfig('sessionKey');
+        $impersonateSessionKey = $this->getConfig('impersonateSessionKey');
+        /** @var \Cake\Http\Session $session */
+        $session = $request->getAttribute('session');
+        if ($session->check($impersonateSessionKey)) {
+            throw new UnauthorizedException(
+                'You are impersonating a user already. ' .
+                'Stop the current impersonation before impersonating another user.'
+            );
+        }
+        $session->write($impersonateSessionKey, $impersonator);
+        $session->write($sessionKey, $impersonated);
+        $this->setConfig('identify', true);
+
+        return [
+            'request' => $request,
+            'response' => $response,
+        ];
+    }
+
+    /**
+     * Stops impersonation
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @return array
+     */
+    public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
+    {
+        $sessionKey = $this->getConfig('sessionKey');
+        $impersonateSessionKey = $this->getConfig('impersonateSessionKey');
+        /** @var \Cake\Http\Session $session */
+        $session = $request->getAttribute('session');
+        if ($session->check($impersonateSessionKey)) {
+            $identity = $session->read($impersonateSessionKey);
+            $session->delete($impersonateSessionKey);
+            $session->write($sessionKey, $identity);
+            $this->setConfig('identify', true);
+        }
+
+        return [
+            'request' => $request,
+            'response' => $response,
+        ];
+    }
+
+    /**
+     * Returns true if impersonation is being done
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return bool
+     */
+    public function isImpersonating(ServerRequestInterface $request): bool
+    {
+        $impersonateSessionKey = $this->getConfig('impersonateSessionKey');
+        /** @var \Cake\Http\Session $session */
+        $session = $request->getAttribute('session');
+
+        return $session->check($impersonateSessionKey);
     }
 }

@@ -18,6 +18,7 @@ namespace Authentication;
 
 use Authentication\Authenticator\AuthenticatorCollection;
 use Authentication\Authenticator\AuthenticatorInterface;
+use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -31,7 +32,7 @@ use RuntimeException;
 /**
  * Authentication Service
  */
-class AuthenticationService implements AuthenticationServiceInterface
+class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface
 {
     use InstanceConfigTrait;
 
@@ -215,9 +216,13 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
+                if ($authenticator instanceof ImpersonationInterface && $authenticator->isImpersonating($request)) {
+                    /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $stopImpersonationResult */
+                    $stopImpersonationResult = $authenticator->stopImpersonating($request, $response);
+                    ['request' => $request, 'response' => $response] = $stopImpersonationResult;
+                }
                 $result = $authenticator->clearIdentity($request, $response);
-                $request = $result['request'];
-                $response = $result['response'];
+                ['request' => $request, 'response' => $response] = $result;
             }
         }
         $this->_successfulAuthenticator = null;
@@ -427,5 +432,72 @@ class AuthenticationService implements AuthenticationServiceInterface
         }
 
         return $parsed['path'] . $parsed['query'];
+    }
+
+    /**
+     * Impersonates a user
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @param \ArrayAccess $impersonator User who impersonates
+     * @param \ArrayAccess $impersonated User impersonated
+     * @return array
+     */
+    public function impersonate(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        \ArrayAccess $impersonator,
+        \ArrayAccess $impersonated
+    ): array {
+        $provider = $this->getImpersonationProvider();
+
+        return $provider->impersonate($request, $response, $impersonator, $impersonated);
+    }
+
+    /**
+     * Stops impersonation
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @param \Psr\Http\Message\ResponseInterface $response The response
+     * @return array
+     */
+    public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
+    {
+        $provider = $this->getImpersonationProvider();
+
+        return $provider->stopImpersonating($request, $response);
+    }
+
+    /**
+     * Returns true if impersonation is being done
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request
+     * @return bool
+     */
+    public function isImpersonating(ServerRequestInterface $request): bool
+    {
+        $provider = $this->getImpersonationProvider();
+
+        return $provider->isImpersonating($request);
+    }
+
+    /**
+     * Get impersonation provider
+     *
+     * @return \Authentication\Authenticator\ImpersonationInterface
+     * @throws \InvalidArgumentException
+     */
+    protected function getImpersonationProvider(): ImpersonationInterface
+    {
+        /** @var \Authentication\Authenticator\ImpersonationInterface $provider */
+        $provider = $this->getAuthenticationProvider();
+        if (!($provider instanceof ImpersonationInterface)) {
+            $className = get_class($provider);
+            throw new \InvalidArgumentException(
+                "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
+            );
+        }
+
+        return $provider;
     }
 }
