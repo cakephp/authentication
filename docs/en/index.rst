@@ -245,7 +245,8 @@ Further Reading
 * :doc:`/password-hashers`
 * :doc:`/identity-object`
 * :doc:`/authentication-component`
-* :doc:`/migration-from-the-authcomponent`
+* :doc:`/impersonation`
 * :doc:`/url-checkers`
 * :doc:`/testing`
 * :doc:`/view-helper`
+* :doc:`/migration-from-the-authcomponent`
