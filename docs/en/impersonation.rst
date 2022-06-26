@@ -4,7 +4,7 @@ User Impersonation
 .. versionadded:: 3.0.0
    User impersonation was added.
 
-After getting your application deployed you may occasionally need to
+After deploying your application, you may occasionally need to
 'impersonate' another user in order to debug problems that your customers report
 or to see the application in the state that your customers are seeing it.
 
@@ -44,7 +44,7 @@ Once you have started to impersonate a user, all subsequent requests will have
 Ending Impersonation
 ====================
 
-Once you are done impersonating a user you can then end impersonation and revert
+Once you are done impersonating a user, you can then end impersonation and revert
 back to your previous identity using ``AuthenticationComponent``::
 
     // In a controller
