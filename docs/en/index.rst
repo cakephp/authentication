@@ -58,7 +58,7 @@ Then update your application's ``middleware()`` method to look like::
             // after routing and body parser.
             ->add(new AuthenticationMiddleware($this));
 
-        return $middlewareQueue();
+        return $middlewareQueue;
     }
 
 .. warning::
