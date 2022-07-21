@@ -91,13 +91,13 @@ identity のログアウト
 自動Identityチェックを構成する
 ---------------------------------
 
-デフォルトでは ``認証コンポーネント`` は、 ``Controller.initialize``
+デフォルトでは ``認証コンポーネント`` は、 ``Controller.startup``
 イベントの間に存在するIDを自動的に強制します。
-このチェックは ``Controller.startup`` イベント中に適用することもできます::
+このチェックは ``Controller.initialize`` イベント中に適用することもできます::
 
     // コントローラの initialize() メソッドの中です。
     $this->loadComponent('Authentication.Authentication', [
-        'identityCheckEvent' => 'Controller.startup',
+        'identityCheckEvent' => 'Controller.initialize',
     ]);
 
 また、 ``requireIdentity`` オプションを使って ID チェックを完全に無効にすることもできます。
