@@ -99,12 +99,12 @@ Configurer les Vérifications d'Identité Automatiques
 ----------------------------------------------------
 
 Par défaut, ``AuthenticationComponent`` imposera qu'une identité soit présente
-pendant l'événement ``Controller.initialize``. Vous pouvez faire appliquer cette
-vérification plutôt dans l'événement ``Controller.startup``::
+pendant l'événement ``Controller.startup``. Vous pouvez faire appliquer cette
+vérification plutôt dans l'événement ``Controller.initialize``::
 
     // Dans la méthode initialize() de votre contrôleur.
     $this->loadComponent('Authentication.Authentication', [
-        'identityCheckEvent' => 'Controller.startup',
+        'identityCheckEvent' => 'Controller.initialize',
     ]);
 
 Vous pouvez aussi désactiver entièrement ces vérifications d'identité avec
