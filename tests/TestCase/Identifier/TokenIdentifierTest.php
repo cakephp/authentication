@@ -71,4 +71,33 @@ class TokenIdentifierTest extends TestCase
         $result = $identifier->identify(['user' => 'larry']);
         $this->assertNull($result);
     }
+
+    /**
+     * testIdentifyHashed
+     *
+     * @return void
+     */
+    public function testIdentifyHashed()
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+
+        $identifier = new TokenIdentifier([
+            'hashAlgorithm' => 'sha256',
+        ]);
+        $identifier->setResolver($resolver);
+
+        $user = new ArrayObject([
+            'username' => 'larry',
+        ]);
+
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with([
+                'token' => hash('sha256', 'SomeSecretToken'),
+            ])
+            ->willReturn($user);
+
+        $result = $identifier->identify(['token' => 'SomeSecretToken']);
+        $this->assertSame($user, $result);
+    }
 }
