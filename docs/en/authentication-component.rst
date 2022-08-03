@@ -94,12 +94,12 @@ Configure Automatic Identity Checks
 -----------------------------------
 
 By default ``AuthenticationComponent`` will automatically enforce an identity to
-be present during the ``Controller.initialize`` event. You can have this check
-applied during the ``Controller.startup`` event instead::
+be present during the ``Controller.startup`` event. You can have this check
+applied during the ``Controller.initialize`` event instead::
 
     // In your controller's initialize() method.
     $this->loadComponent('Authentication.Authentication', [
-        'identityCheckEvent' => 'Controller.startup',
+        'identityCheckEvent' => 'Controller.initialize',
     ]);
 
 You can also disable identity checks entirely with the ``requireIdentity``
