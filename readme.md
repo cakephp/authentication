@@ -43,4 +43,4 @@ Documentation for this plugin can be found in the [CakePHP Cookbook](https://boo
 
 ## IDE compatibility improvements
 
-For `FormatHelper::icon()` you an find a IdeHelper task in [IdeHelperExtra plugin](https://github.com/dereuromark/cakephp-ide-helper-extra/).
+For `AuthenticationService::loadIdentifier()` you an find an IdeHelper task in [IdeHelperExtra plugin](https://github.com/dereuromark/cakephp-ide-helper-extra/).
