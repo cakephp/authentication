@@ -40,3 +40,7 @@ public function bootstrap(): void
 ## Documentation
 
 Documentation for this plugin can be found in the [CakePHP Cookbook](https://book.cakephp.org/authentication/2/en/).
+
+## IDE compatibility improvements
+
+For `FormatHelper::icon()` you an find a IdeHelper task in [IdeHelperExtra plugin](https://github.com/dereuromark/cakephp-ide-helper-extra/).
