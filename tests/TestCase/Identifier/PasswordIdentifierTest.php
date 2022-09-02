@@ -63,6 +63,37 @@ class PasswordIdentifierTest extends TestCase
         $this->assertSame($user, $result);
     }
 
+    public function testIdentifyLowercase(): void
+    {
+        $resolver = $this->createMock(ResolverInterface::class);
+        $hasher = $this->createMock(PasswordHasherInterface::class);
+
+        $user = new ArrayObject([
+            'username' => 'mariano',
+            'password' => 'h45hedpa55w0rd',
+        ]);
+
+        $resolver->expects($this->once())
+            ->method('find')
+            ->with(['username' => 'mariano'])
+            ->willReturn($user);
+
+        $hasher->expects($this->once())
+            ->method('check')
+            ->with('password', 'h45hedpa55w0rd')
+            ->willReturn(true);
+
+        $identifier = new PasswordIdentifier(['forceLowercase' => true]);
+        $identifier->setResolver($resolver)->setPasswordHasher($hasher);
+
+        $result = $identifier->identify([
+            'username' => 'Mariano',
+            'password' => 'password',
+        ]);
+
+        $this->assertSame($user, $result);
+    }
+
     /**
      * testIdentifyNeedsRehash
      *

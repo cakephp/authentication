@@ -51,6 +51,8 @@ class PasswordIdentifier extends AbstractIdentifier
      * - `fields` The fields to use to identify a user by:
      *   - `username`: one or many username fields.
      *   - `password`: password field.
+     * - `forceLowercase` Forces identifier to lowercase when comparing to
+     *   `username` fields. Allows for case-insensitive comparison.
      * - `resolver` The resolver implementation to use.
      * - `passwordHasher` Password hasher class. Can be a string specifying class name
      *    or an array containing `className` key, any other keys will be passed as
@@ -63,6 +65,7 @@ class PasswordIdentifier extends AbstractIdentifier
             self::CREDENTIAL_USERNAME => 'username',
             self::CREDENTIAL_PASSWORD => 'password',
         ],
+        'forceLowercase' => false,
         'resolver' => 'Authentication.Orm',
         'passwordHasher' => null,
     ];
@@ -148,6 +151,9 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     protected function _findIdentity(string $identifier)
     {
+        if ($this->getConfig('forceLowercase')) {
+            $identifier = strtolower($identifier);
+        }
         $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
         $conditions = [];
         foreach ((array)$fields as $field) {
