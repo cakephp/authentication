@@ -95,8 +95,10 @@ Configuration options:
    ``\Authentication\Identifier\Ldap\ExtensionAdapter``. You can pass a
    custom object/classname here if it implements the
    ``AdapterInterface``.
--  **options**: Additional LDAP options, like
-   ``LDAP_OPT_PROTOCOL_VERSION`` or ``LDAP_OPT_NETWORK_TIMEOUT``. See
+-  **options**: Array of additional LDAP options, including
+    ``tls``: Boolean. If ``true``, tries to start TLS on the connection. 
+    Also LDAP config options such as
+    ``LDAP_OPT_PROTOCOL_VERSION`` or ``LDAP_OPT_NETWORK_TIMEOUT``. See
    `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__
    for more valid options.
 

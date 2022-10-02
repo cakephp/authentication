@@ -98,6 +98,13 @@ class ExtensionAdapter implements AdapterInterface
         if ($resource === false) {
             throw new RuntimeException('Unable to connect to LDAP server.');
         }
+        if (isset($options['tls']) && $options['tls']) {
+            //convert the connection to TLS
+            if (!ldap_start_tls($resource)) {
+                throw new RuntimeException('Starting TLS failed on connection to LDAP server.');
+            }
+        }
+        unset($options['tls']); //don't pass through to PHP LDAP functions
         $this->_connection = $resource;
         $this->_unsetErrorHandler();
 
