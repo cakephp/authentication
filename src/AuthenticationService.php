@@ -150,6 +150,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
      * @return \Authentication\Authenticator\AuthenticatorInterface
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function loadAuthenticator(string $name, array $config = []): AuthenticatorInterface
     {
@@ -162,6 +163,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param string $name Name or class name.
      * @param array $config Identifier configuration.
      * @return \Authentication\Identifier\IdentifierInterface Identifier instance
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function loadIdentifier(string $name, array $config = []): IdentifierInterface
     {

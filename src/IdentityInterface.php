@@ -20,6 +20,8 @@ use ArrayAccess;
 
 /**
  * Identity interface
+ *
+ * @extends \ArrayAccess<string, mixed>
  */
 interface IdentityInterface extends ArrayAccess
 {

@@ -111,6 +111,10 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $authenticator = $service->getAuthenticationProvider();
 
             if ($authenticator !== null && !$authenticator instanceof StatelessInterface) {
+                /**
+                 * @psalm-suppress PossiblyNullArgument
+                 * @phpstan-ignore-next-line
+                 */
                 $return = $service->persistIdentity($request, $response, $result->getData());
                 $response = $return['response'];
             }

@@ -192,6 +192,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         $usernameField = $this->getConfig('fields.username');
 
+        /** @var string */
         return json_encode([$identity[$usernameField], $hash]);
     }
 

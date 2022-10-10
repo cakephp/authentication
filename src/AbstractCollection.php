@@ -19,6 +19,10 @@ namespace Authentication;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\ObjectRegistry;
 
+/**
+ * @template TObject of object
+ * @extends \Cake\Core\ObjectRegistry<TObject>
+ */
 abstract class AbstractCollection extends ObjectRegistry
 {
     use InstanceConfigTrait;

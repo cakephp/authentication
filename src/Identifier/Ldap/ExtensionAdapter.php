@@ -77,7 +77,7 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function getConnection(): Connection
     {
-        if (empty($this->_connection)) {
+        if ($this->_connection === null) {
             throw new RuntimeException('You are not connected to a LDAP server.');
         }
 
@@ -153,7 +153,15 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function unbind(): void
     {
+        if ($this->_connection === null) {
+            return;
+        }
+
         $this->_setErrorHandler();
+        /**
+         * @psalm-suppress InvalidArgument
+         * @phpstan-ignore-next-line
+         */
         ldap_unbind($this->_connection);
         $this->_unsetErrorHandler();
 

@@ -22,7 +22,7 @@ use Cake\Core\App;
 use RuntimeException;
 
 /**
- * @method \Authentication\Identifier\IdentifierInterface|null get(string $name)
+ * @extends \Authentication\AbstractCollection<\Authentication\Identifier\IdentifierInterface>
  */
 class IdentifierCollection extends AbstractCollection implements IdentifierInterface
 {
@@ -72,6 +72,7 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @param array $config Config array.
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
     protected function _create(object|string $class, string $alias, array $config): IdentifierInterface
     {
@@ -96,14 +97,12 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * Resolves identifier class name.
      *
      * @param string $class Class name to be resolved.
-     * @return string|null
-     * @psalm-return class-string|null
+     * @return class-string<\Authentication\Identifier\IdentifierInterface>|null
      */
     protected function _resolveClassName(string $class): ?string
     {
-        $className = App::className($class, 'Identifier', 'Identifier');
-
-        return is_string($className) ? $className : null;
+        /** @var class-string<\Authentication\Identifier\IdentifierInterface>|null */
+        return App::className($class, 'Identifier', 'Identifier');
     }
 
     /**
