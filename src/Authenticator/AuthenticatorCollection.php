@@ -22,7 +22,7 @@ use Cake\Core\App;
 use RuntimeException;
 
 /**
- * @method \Authentication\Authenticator\AuthenticatorInterface|null get(string $name)
+ * @extends \Authentication\AbstractCollection<\Authentication\Authenticator\AuthenticatorInterface>
  */
 class AuthenticatorCollection extends AbstractCollection
 {
@@ -54,28 +54,27 @@ class AuthenticatorCollection extends AbstractCollection
      * @param array $config Config array.
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
     protected function _create(object|string $class, string $alias, array $config): AuthenticatorInterface
     {
-        if (is_object($class)) {
-            return $class;
+        if (is_string($class)) {
+            return new $class($this->_identifiers, $config);
         }
 
-        return new $class($this->_identifiers, $config);
+        return $class;
     }
 
     /**
      * Resolves authenticator class name.
      *
      * @param string $class Class name to be resolved.
-     * @return string|null
-     * @psalm-return class-string|null
+     * @return class-string<\Authentication\Authenticator\AuthenticatorInterface>|null
      */
     protected function _resolveClassName(string $class): ?string
     {
-        $className = App::className($class, 'Authenticator', 'Authenticator');
-
-        return is_string($className) ? $className : null;
+        /** @var class-string<\Authentication\Authenticator\AuthenticatorInterface>|null */
+        return App::className($class, 'Authenticator', 'Authenticator');
     }
 
     /**

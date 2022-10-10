@@ -82,11 +82,11 @@ class DefaultUrlChecker implements UrlCheckerInterface
      * Gets the checker function name or a callback
      *
      * @param array $options Array of options
-     * @return callable|string
+     * @return callable
      */
-    protected function _getChecker(array $options = []): string|callable
+    protected function _getChecker(array $options): callable
     {
-        if (isset($options['useRegex']) && $options['useRegex']) {
+        if (!empty($options['useRegex'])) {
             return 'preg_match';
         }
 
@@ -105,6 +105,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
     protected function _getUrlFromRequest(UriInterface $uri, bool $getFullUrl = false): string
     {
         if (property_exists($uri, 'base')) {
+            /** @psalm-suppress NoInterfaceProperties  */
             $uri = $uri->withPath($uri->base . $uri->getPath());
         }
 

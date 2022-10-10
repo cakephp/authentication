@@ -91,6 +91,7 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
+        /** @phpstan-ignore-next-line */
         $result = json_decode(json_encode($result), true);
 
         $subjectKey = $this->getConfig('subjectKey');
