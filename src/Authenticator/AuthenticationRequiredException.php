@@ -27,7 +27,7 @@ use Cake\Http\Exception\HttpException;
 class AuthenticationRequiredException extends HttpException
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $headers = [];
 
@@ -53,7 +53,7 @@ class AuthenticationRequiredException extends HttpException
     /**
      * Get the headers.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getHeaders(): array
     {

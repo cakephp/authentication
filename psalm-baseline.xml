@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@">
+<files psalm-version="5.x-dev@">
+  <file src="src/AbstractCollection.php">
+    <MissingTemplateParam occurrences="1">
+      <code>AbstractCollection</code>
+    </MissingTemplateParam>
+  </file>
+  <file src="src/AuthenticationService.php">
+    <LessSpecificReturnStatement occurrences="2">
+      <code>$this-&gt;authenticators()-&gt;load($name, $config)</code>
+      <code>$this-&gt;identifiers()-&gt;load($name, $config)</code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType occurrences="2">
+      <code>\Authentication\Authenticator\AuthenticatorInterface</code>
+      <code>\Authentication\Identifier\IdentifierInterface</code>
+    </MoreSpecificReturnType>
+  </file>
   <file src="src/Authenticator/AuthenticatorCollection.php">
+    <ImplementedReturnTypeMismatch occurrences="1">
+      <code>\Authentication\Authenticator\AuthenticatorInterface|null</code>
+    </ImplementedReturnTypeMismatch>
     <MoreSpecificImplementedParamType occurrences="1">
       <code>$class</code>
     </MoreSpecificImplementedParamType>
   </file>
   <file src="src/Identifier/IdentifierCollection.php">
+    <ImplementedReturnTypeMismatch occurrences="1">
+      <code>\Authentication\Identifier\IdentifierInterface|null</code>
+    </ImplementedReturnTypeMismatch>
     <MoreSpecificImplementedParamType occurrences="1">
       <code>$class</code>
     </MoreSpecificImplementedParamType>
@@ -14,9 +35,11 @@
     <InvalidArgument occurrences="1">
       <code>$this-&gt;_connection</code>
     </InvalidArgument>
-    <UndefinedConstant occurrences="1">
-      <code>LDAP_OPT_DIAGNOSTIC_MESSAGE</code>
-    </UndefinedConstant>
+  </file>
+  <file src="src/IdentityInterface.php">
+    <MissingTemplateParam occurrences="1">
+      <code>ArrayAccess</code>
+    </MissingTemplateParam>
   </file>
   <file src="src/Middleware/AuthenticationMiddleware.php">
     <PossiblyNullArgument occurrences="1">
