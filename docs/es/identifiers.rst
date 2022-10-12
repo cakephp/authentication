@@ -94,13 +94,13 @@ Opciones de configuración:
    ``AdapterInterface``.
 -  **options**: Opciones adicionales del LDAP, como
    ``LDAP_OPT_PROTOCOL_VERSION`` o ``LDAP_OPT_NETWORK_TIMEOUT``. Ver
-   `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__
+   `php.net <https://php.net/manual/en/function.ldap-set-option.php>`__
    para mas opciones válidas.
 
 Callback
 ========
 
-Le permite usar un callback para la identificación. Esto es útil para 
+Le permite usar un callback para la identificación. Esto es útil para
 identificadores simples o creación rápida de prototipos.
 
 Opciones de configuración:

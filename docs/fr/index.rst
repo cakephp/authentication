@@ -26,7 +26,7 @@ Pour commencer
 ==============
 
 Le plugin d'authentification s'intègre dans votre application comme un
-`middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. Il
+`middleware <https://book.cakephp.org/4/en/controllers/middleware.html>`_. Il
 peut aussi être utilisé comme un composant pour faciliter l'accès sans
 authentification. Tout d'abord, mettons en place le middleware. Dans votre
 **src/Application.php**, ajoutez ce qui suit aux imports de la classe::
@@ -63,7 +63,7 @@ Puis modifier votre méthode ``middleware()`` pour la faire ressembler à ceci::
 
         return $middlewareQueue();
     }
- 
+
 .. warning::
     L'ordre des middlewares est important. Assurez-vous d'avoir
     ``AuthenticationMiddleware`` après les middlewares routing et body parser.
@@ -132,7 +132,7 @@ identifiants que l'utilisateur nous donnera en une
 
 Si l'un des authentificateurs configurés a été en mesure de valider les
 identifiants utilisateur, le middleware ajoutera le service d'authentification à
-l'objet requête en tant qu'\ `attribut <http://www.php-fig.org/psr/psr-7/>`_.
+l'objet requête en tant qu'\ `attribut <https://www.php-fig.org/psr/psr-7/>`_.
 
 Ensuite, chargez le :doc:`/authentication-component` dans votre
 ``AppController``::
