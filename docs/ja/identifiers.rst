@@ -73,7 +73,7 @@ LDAP サーバーに対して渡された資格情報をチェックします。
 -  **ldap**: 延長アダプターです。 デフォルトは ``\Authentication\Identifier\Ldap\ExtensionAdapter``。
    もしそれが ``AdapterInterface`` を実装しているならば、そのobject/classnameをここに渡すことができます。
 -  **options**: 付加的な LDAP オプション, like ``LDAP_OPT_PROTOCOL_VERSION`` または ``LDAP_OPT_NETWORK_TIMEOUT`` のようなものです。
-   `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__ をみてより多くのオプションを参照してください。
+   `php.net <https://php.net/manual/en/function.ldap-set-option.php>`__ をみてより多くのオプションを参照してください。
 
 コールバック
 ============
