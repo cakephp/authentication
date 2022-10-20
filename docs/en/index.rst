@@ -24,7 +24,7 @@ Getting Started
 ===============
 
 Add the authentication middleware to the middleware queue. See the CakePHP `documentation
-<http://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
+<https://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
 middleware if you are not familiar with it.
 
 Example of configuring the authentication middleware using the ``getAuthenticationService()``
@@ -95,7 +95,7 @@ hook within ``Application``::
 
 If one of the configured authenticators was able to validate the credentials,
 the middleware will add the authentication service to the request object as an
-`attribute <http://www.php-fig.org/psr/psr-7/>`_.
+`attribute <https://www.php-fig.org/psr/psr-7/>`_.
 
 Next, in your ``AppController`` load the :doc:`/authentication-component`::
 
