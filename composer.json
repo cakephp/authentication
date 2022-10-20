@@ -18,7 +18,7 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "5.x-dev",
+        "cakephp/cakephp": "^5.0",
         "cakephp/cakephp-codesniffer": "5.x-dev",
         "firebase/php-jwt": "^6.2",
         "phpunit/phpunit": "^9.5"
