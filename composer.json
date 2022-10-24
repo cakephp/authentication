@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "cakephp/cakephp": "^4.4",
-        "cakephp/cakephp-codesniffer": "^4.0",
+        "cakephp/cakephp-codesniffer": "^5.0",
         "firebase/php-jwt": "^5.5",
         "phpunit/phpunit": "^8.5 || ^9.3"
     },
