@@ -24,7 +24,7 @@ Configuration
 =============
 
 Add the authentication to the middleware. See the CakePHP `documentation
-<http://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
+<https://book.cakephp.org/3.0/en/controllers/middleware.html>`_ on how to use
 middleware if you don't know what it is or how to work with it.
 
 Example of configuring the authentication middleware using ``authentication`` application hook::
@@ -84,7 +84,7 @@ Example of configuring the authentication middleware using ``authentication`` ap
 If one of the configured authenticators was able to validate the credentials,
 the middleware will add the authentication service to the request object as an
 attribute. If you're not yet familiar with request attributes `check the PSR7
-documentation <http://www.php-fig.org/psr/psr-7/>`_.
+documentation <https://www.php-fig.org/psr/psr-7/>`_.
 
 Using Stateless Authenticators with other Authenticators
 ========================================================
