@@ -22,7 +22,7 @@ Plugin::load('Authentication');
 
 ## Configuration
 
-Add the authentication to the middleware. See the CakePHP [documentation](http://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use middleware if you don't know what it is or how to work with it.
+Add the authentication to the middleware. See the CakePHP [documentation](https://book.cakephp.org/3.0/en/controllers/middleware.html#) on how to use middleware if you don't know what it is or how to work with it.
 
 Example of configuring the authentication middleware using `authentication` application hook.
 
@@ -83,7 +83,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 If one of the configured authenticators was able to validate the credentials,
 the middleware will add the authentication service to the request object as an
 attribute. If you're not yet familiar with request attributes [check the PSR7
-documentation](http://www.php-fig.org/psr/psr-7/).
+documentation](https://www.php-fig.org/psr/psr-7/).
 
 ## Using Stateless Authenticators with other Authenticators
 

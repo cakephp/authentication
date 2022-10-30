@@ -4,9 +4,9 @@
 
 This is using the php constant `PASSWORD_DEFAULT` for the encryption method. The default hash type is `bcrypt`.
 
-See [the php documentation](http://php.net/manual/en/function.password-hash.php) for further information on bcrypt and PHP's password hashing.
+See [the php documentation](https://php.net/manual/en/function.password-hash.php) for further information on bcrypt and PHP's password hashing.
 
-The config options for this adapter are: 
+The config options for this adapter are:
 
  * **hashType**: Hashing algorithm to use. Valid values are those supported by `$algo` argument of `password_hash()`. Defaults to `PASSWORD_DEFAULT`
  * **hashOptions**: Associative array of options. Check the PHP manual for supported options for each hash type. Defaults to empty array.
