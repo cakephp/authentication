@@ -67,7 +67,7 @@ Checks the passed credentials against a LDAP server. This identifier requires th
 * **ldap**: The extension adapter. Defaults to `\Authentication\Identifier\Ldap\ExtensionAdapter`.
   You can pass a custom object/classname here if it implements the `AdapterInterface`.
 * **options**: Additional LDAP options, like `LDAP_OPT_PROTOCOL_VERSION` or `LDAP_OPT_NETWORK_TIMEOUT`.
-  See [php.net](http://php.net/manual/en/function.ldap-set-option.php) for more valid options.
+  See [php.net](https://php.net/manual/en/function.ldap-set-option.php) for more valid options.
 
 ## Callback
 
