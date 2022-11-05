@@ -96,10 +96,10 @@ Configuration options:
    custom object/classname here if it implements the
    ``AdapterInterface``.
 -  **options**: Array of additional LDAP options, including
-    ``tls``: Boolean. If ``true``, tries to start TLS on the connection. 
+    ``tls``: Boolean. If ``true``, tries to start TLS on the connection.
     Also LDAP config options such as
     ``LDAP_OPT_PROTOCOL_VERSION`` or ``LDAP_OPT_NETWORK_TIMEOUT``. See
-   `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__
+   `php.net <https://php.net/manual/en/function.ldap-set-option.php>`__
    for more valid options.
 
 Callback

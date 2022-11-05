@@ -8,7 +8,7 @@ Usando la constante php ``PASSWORD_DEFAULT`` para el método de encriptación.
 El tipo de hash por defecto es ``bcrypt``.
 
 Ver `la documentación
-php <http://php.net/manual/en/function.password-hash.php>`__
+php <https://php.net/manual/en/function.password-hash.php>`__
 para obtener más información sobre bcrypt y el hash de contraseñas de PHP.
 
 Las opciones de configuración de este adaptador son:
@@ -38,7 +38,7 @@ Actualización de algoritmos hash
 CakePHP proporciona una forma limpia de migrar las contraseñas de sus
 usuarios de un algoritmo a otro, esto se logra a través de la clase
 ``FallbackPasswordHasher``. Suponiendo que desea migrar de una contraseña
-Legacy a el hasher bcrypt predeterminado, puede configurar el hasher fallback 
+Legacy a el hasher bcrypt predeterminado, puede configurar el hasher fallback
 de la siguiente manera::
 
    $service->loadIdentifier('Authentication.Password', [

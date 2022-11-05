@@ -97,7 +97,7 @@ Options de configuration:
    l'\ ``AdapterInterface``.
 -  **options**: Options supplémentaires LDAP, telles que
    ``LDAP_OPT_PROTOCOL_VERSION`` ou ``LDAP_OPT_NETWORK_TIMEOUT``. Cf.
-   `php.net <http://php.net/manual/en/function.ldap-set-option.php>`__
+   `php.net <https://php.net/manual/en/function.ldap-set-option.php>`__
    pour en savoir plus sur les options valides.
 
 Callback

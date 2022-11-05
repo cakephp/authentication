@@ -21,7 +21,7 @@ Carge el plugin agregando la siguiente declaración en ``src/Application.php``::
 Empezando
 =========
 
-El  plugin authentication se integra con su aplicación como un `middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. También, se 
+El  plugin authentication se integra con su aplicación como un `middleware <https://book.cakephp.org/4/en/controllers/middleware.html>`_. También, se
 puede utilizar como un componente para simplificar el acceso no autenticado. Primero
 aplique el middleware. En **src/Application.php**, agregue las siguientes importaciones
 de clase::
@@ -102,12 +102,12 @@ A continuación, adjuntamos la ``Session`` y el ``Form`` :doc:`/authenticators` 
 mecanismos que utilizará nuestra aplicación para autenticar usuarios. ``Session`` nos permite identificar a los
 usuarios en función de los datos de la sesión, mientras que ``Form`` nos permite gestionar un
 formulario de inicio de sesión en el ``loginUrl``. Finalmente adjuntamos un :doc:`identifier
-</identifiers>` para convertir las credenciales que los usuarios nos darán en un 
+</identifiers>` para convertir las credenciales que los usuarios nos darán en un
 :doc:`identity </identity-object>` que representa nuestro usuario registrado.
 
 Si uno de los autenticadores configurados pudo validar las credenciales,
 el middleware agregará el servicio de autenticación al objeto request como un
-`attribute <http://www.php-fig.org/psr/psr-7/>`_.
+`attribute <https://www.php-fig.org/psr/psr-7/>`_.
 
 A continuación, en su ``AppController`` cargue el :doc:`/authentication-component`::
 
@@ -130,7 +130,7 @@ Puede deshabilitar este comportamiento en controladores específicos usando
 Creación de una acción Login
 ============================
 
-Una vez que haya aplicado el middleware a su aplicación, necesitará una forma para que los 
+Una vez que haya aplicado el middleware a su aplicación, necesitará una forma para que los
 usuarios inicien sesión. Primero genere un modelo y un controlador de usuarios con ``bake``:
 
 .. code-block:: shell
@@ -138,7 +138,7 @@ usuarios inicien sesión. Primero genere un modelo y un controlador de usuarios 
     bin/cake bake model Users
     bin/cake bake controller Users
 
-Luego, agregue una acción login a su ``UsersController``. Debería verse 
+Luego, agregue una acción login a su ``UsersController``. Debería verse
 así::
 
     // in src/Controller/UsersController.php
@@ -155,7 +155,7 @@ así::
         }
     }
 
-Asegúrese de permitir el acceso a la acción ``login`` en su contralador en 
+Asegúrese de permitir el acceso a la acción ``login`` en su contralador en
 ``beforeFilter()`` callback como se menciona en la sección anterior, así
 los usuarios no autenticados puedan acceder a ella::
 
