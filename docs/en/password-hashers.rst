@@ -8,7 +8,7 @@ This is using the php constant ``PASSWORD_DEFAULT`` for the encryption
 method. The default hash type is ``bcrypt``.
 
 See `the php
-documentation <http://php.net/manual/en/function.password-hash.php>`__
+documentation <https://php.net/manual/en/function.password-hash.php>`__
 for further information on bcrypt and PHP’s password hashing.
 
 The config options for this adapter are:
