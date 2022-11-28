@@ -30,7 +30,9 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      * Default config for this object.
      * - `fields` The fields to use to verify a user by.
      * - `sessionKey` Session key.
-     * - `identify` Whether or not to identify user data stored in a session.
+     * - `identify` Whether or not to identify user data stored in a session. This is
+     *   useful if you want to remotely end sessions that have a different password stored,
+     *   or if your identification logic needs additional conditions before a user can login.
      *
      * @var array
      */
