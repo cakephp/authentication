@@ -33,7 +33,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      * - `loginUrl` Login URL or an array of URLs.
      * - `urlChecker` Url checker config.
      * - `fields` array of required fields to get from the environment
-     * - `optional_fields` array of optional fields to get from the environment
+     * - `optionalFields` array of optional fields to get from the environment
      *
      * @var array
      */
@@ -41,7 +41,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
         'loginUrl' => null,
         'urlChecker' => 'Authentication.Default',
         'fields' => [],
-        'optional_fields' => [],
+        'optionalFields' => [],
     ];
 
     /**
@@ -73,14 +73,14 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Get values from the environment variables configured by `optional_fields`.
+     * Get values from the environment variables configured by `optionalFields`.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array server params defined by optional_fields.
+     * @return array server params defined by optionalFields.
      */
     protected function _getOptionalData(ServerRequestInterface $request): array
     {
-        $fields = $this->_config['optional_fields'];
+        $fields = $this->_config['optionalFields'];
         $params = $request->getServerParams();
 
         $data = [];

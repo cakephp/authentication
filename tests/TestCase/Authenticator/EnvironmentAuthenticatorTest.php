@@ -211,7 +211,7 @@ class EnvironmentAuthenticatorTest extends TestCase
                 'USER_ID',
                 'SOME_ATTRIBUTE',
             ],
-            'optional_fields' => [
+            'optionalFields' => [
                 'OPTIONAL_FIELD',
             ],
         ]);
