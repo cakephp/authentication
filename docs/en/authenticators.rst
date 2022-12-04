@@ -356,6 +356,34 @@ After logging in, if the checkbox was checked you should see a ``CookieAuth``
 cookie in your browser dev tools. The cookie stores the username field and
 a hashed token that is used to reauthenticate later.
 
+Environment Variables
+=====================
+
+The ``EnvironmentAuthenticator`` can authenticate users based on mapped
+environment variables exposed by the webserver. This enables authentication via
+`Shibboleth <https://shibboleth.atlassian.net/wiki/spaces/CONCEPT/overview>`_
+and similar SAML 1.1 implementations. An example configuration is::
+
+    // Configure a token identifier that maps `USER_ID` to the
+    // username column
+    $service->loadIdentifier('Authentication.Token', [
+        'tokenField' => 'username',
+        'dataField' => 'USER_NAME',
+    ]);
+
+    $service->loadAuthenticator('Authentication.Environment', [
+        'loginUrl' => '/sso',
+        'fields' => [
+            // Choose which environment variables exposed by your
+            // authentication provider are used to authenticate
+            // in your application.
+            'USER_NAME',
+        ],
+    ]);
+
+.. versionadded:: 2.10.0
+    ``EnvironmentAuthenticator`` was added.
+
 Events
 ======
 
