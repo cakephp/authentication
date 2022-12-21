@@ -28,10 +28,10 @@ use Authentication\Identity;
 use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
-use Cake\Http\Uri;
 use Cake\I18n\DateTime;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
@@ -821,11 +821,10 @@ class AuthenticationServiceTest extends TestCase
 
     public function testGetUnauthenticatedRedirectUrlWithBasePath()
     {
+        Configure::write('App.base', '/base');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/secrets']
         );
-        $uri = $request->getUri();
-        $request = $request->withUri(new Uri($uri, '/base', $uri->webroot));
 
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',

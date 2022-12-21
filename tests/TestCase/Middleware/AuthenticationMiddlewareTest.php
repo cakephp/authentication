@@ -24,9 +24,9 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
-use Cake\Http\Uri;
 use Firebase\JWT\JWT;
 use TestApp\Application;
 use TestApp\Http\TestRequestHandler;
@@ -572,14 +572,12 @@ class AuthenticationMiddlewareTest extends TestCase
      */
     public function testUnauthenticatedRedirectWithBase()
     {
+        Configure::write('App.base', '/base');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $uri = $request->getUri();
-        $uri = new Uri($uri, '/base', $uri->webroot);
-        $request = $request->withUri($uri);
         $handler = new TestRequestHandler(function ($request) {
             throw new UnauthenticatedException();
         });

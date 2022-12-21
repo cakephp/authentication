@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\UrlChecker;
 
+use Cake\Core\Configure;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -104,9 +105,9 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     protected function _getUrlFromRequest(UriInterface $uri, bool $getFullUrl = false): string
     {
-        if (property_exists($uri, 'base')) {
-            /** @psalm-suppress NoInterfaceProperties  */
-            $uri = $uri->withPath($uri->base . $uri->getPath());
+        $appBase = Configure::read('App.base');
+        if ($appBase) {
+            $uri = $uri->withPath($appBase . $uri->getPath());
         }
 
         if ($getFullUrl) {
