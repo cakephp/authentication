@@ -821,10 +821,10 @@ class AuthenticationServiceTest extends TestCase
 
     public function testGetUnauthenticatedRedirectUrlWithBasePath()
     {
-        Configure::write('App.base', '/base');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/secrets']
         );
+        $request = $request->withAttribute('base', '/base');
 
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',

@@ -20,7 +20,6 @@ use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Core\Configure;
 use Cake\Http\ServerRequestFactory;
 use RuntimeException;
 
@@ -182,7 +181,6 @@ class FormAuthenticatorTest extends TestCase
             'Authentication.Password',
         ]);
 
-        Configure::write('App.base', '/base');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
             [],
@@ -271,7 +269,6 @@ class FormAuthenticatorTest extends TestCase
             'Authentication.Password',
         ]);
 
-        Configure::write('App.base', '/base');
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
             [],

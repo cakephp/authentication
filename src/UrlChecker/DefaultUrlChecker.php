@@ -18,7 +18,6 @@ namespace Authentication\UrlChecker;
 
 use Cake\Core\Configure;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * Checks if a request object contains a valid URL
@@ -53,7 +52,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
 
         $checker = $this->_getChecker($options);
 
-        $url = $this->_getUrlFromRequest($request->getUri(), $options['checkFullUrl']);
+        $url = $this->_getUrlFromRequest($request, $options['checkFullUrl']);
 
         foreach ($urls as $validUrl) {
             if ($checker($validUrl, $url)) {
@@ -99,14 +98,19 @@ class DefaultUrlChecker implements UrlCheckerInterface
     /**
      * Returns current url.
      *
-     * @param \Psr\Http\Message\UriInterface $uri Server Request
+     * @param \Psr\Http\Message\ServerRequestInterface $request Server Request
      * @param bool $getFullUrl Get the full URL or just the path
      * @return string
      */
-    protected function _getUrlFromRequest(UriInterface $uri, bool $getFullUrl = false): string
+    protected function _getUrlFromRequest(ServerRequestInterface $request, bool $getFullUrl = false): string
     {
+        $uri = $request->getUri();
+
+        $requestBase = $request->getAttribute('base');
         $appBase = Configure::read('App.base');
-        if ($appBase) {
+        if ($requestBase) {
+            $uri = $uri->withPath($requestBase . $uri->getPath());
+        } elseif ($appBase) {
             $uri = $uri->withPath($appBase . $uri->getPath());
         }
 
