@@ -21,7 +21,6 @@ use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
-use Cake\Http\Uri;
 use RuntimeException;
 
 class FormAuthenticatorTest extends TestCase
@@ -187,10 +186,7 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $uri = $request->getUri();
-        $uri = new Uri($uri, '/base', $uri->webroot);
-        $request = $request->withUri($uri);
-        $request = $request->withAttribute('base', $uri->base);
+        $request = $request->withAttribute('base', '/base');
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/users/login',
@@ -278,9 +274,7 @@ class FormAuthenticatorTest extends TestCase
             [],
             ['username' => 'mariano', 'password' => 'password']
         );
-        $uri = new Uri($request->getUri(), '/base', '/');
-        $request = $request->withUri($uri);
-        $request = $request->withAttribute('base', $uri->base);
+        $request = $request->withAttribute('base', '/base');
 
         $form = new FormAuthenticator($identifiers, [
             'loginUrl' => '/base/users/login',

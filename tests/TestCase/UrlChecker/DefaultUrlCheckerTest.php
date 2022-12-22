@@ -19,7 +19,6 @@ namespace Authentication\Test\TestCase\UrlChecker;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Authentication\UrlChecker\DefaultUrlChecker;
 use Cake\Http\ServerRequestFactory;
-use Cake\Http\Uri;
 
 /**
  * DefaultUrlCheckerTest
@@ -130,8 +129,7 @@ class DefaultUrlCheckerTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login']
         );
-        $uri = new Uri($request->getUri(), '/base', '/base/');
-        $request = $request->withUri($uri);
+        $request = $request->withAttribute('base', '/base');
 
         $result = $checker->check($request, 'http://localhost/base/users/login', [
             'checkFullUrl' => true,

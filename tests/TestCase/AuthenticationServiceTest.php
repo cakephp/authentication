@@ -31,7 +31,6 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
-use Cake\Http\Uri;
 use Cake\I18n\DateTime;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
@@ -824,8 +823,7 @@ class AuthenticationServiceTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/secrets']
         );
-        $uri = $request->getUri();
-        $request = $request->withUri(new Uri($uri, '/base', $uri->webroot));
+        $request = $request->withAttribute('base', '/base');
 
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',

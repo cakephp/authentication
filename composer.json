@@ -74,6 +74,7 @@
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-clover=clover.xml"
     },
+    "minimum-stability": "dev",
     "config": {
         "sort-packages": true,
         "allow-plugins": {
