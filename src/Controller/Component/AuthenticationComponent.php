@@ -30,7 +30,9 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
+use InvalidArgumentException;
 use RuntimeException;
+use UnexpectedValueException;
 
 /**
  * Controller Component for interacting with Authentication.
@@ -378,7 +380,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         );
 
         if (!$service->isImpersonating($controller->getRequest())) {
-            throw new \UnexpectedValueException('An error has occurred impersonating user.');
+            throw new UnexpectedValueException('An error has occurred impersonating user.');
         }
 
         $controller->setRequest($result['request']);
@@ -406,7 +408,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         );
 
         if ($service->isImpersonating($controller->getRequest())) {
-            throw new \UnexpectedValueException('An error has occurred stopping impersonation.');
+            throw new UnexpectedValueException('An error has occurred stopping impersonation.');
         }
 
         $controller->setRequest($result['request']);
@@ -442,7 +444,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $service = $this->getAuthenticationService();
         if (!($service instanceof ImpersonationInterface)) {
             $className = get_class($service);
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "The {$className} must implement ImpersonationInterface in order to use impersonation."
             );
         }

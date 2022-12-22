@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use ArrayAccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -33,8 +34,8 @@ interface ImpersonationInterface extends PersistenceInterface
     public function impersonate(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        \ArrayAccess $impersonator,
-        \ArrayAccess $impersonated
+        ArrayAccess $impersonator,
+        ArrayAccess $impersonated
     ): array;
 
     /**

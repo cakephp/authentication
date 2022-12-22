@@ -26,6 +26,7 @@ use Authentication\Authenticator\StatelessInterface;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -452,8 +453,8 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     public function impersonate(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        \ArrayAccess $impersonator,
-        \ArrayAccess $impersonated
+        ArrayAccess $impersonator,
+        ArrayAccess $impersonated
     ): array {
         $provider = $this->getImpersonationProvider();
 
@@ -499,7 +500,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         $provider = $this->getAuthenticationProvider();
         if (!($provider instanceof ImpersonationInterface)) {
             $className = get_class($provider);
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "The {$className} Provider must implement ImpersonationInterface in order to use impersonation."
             );
         }

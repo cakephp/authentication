@@ -31,7 +31,9 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequestFactory;
 use Cake\ORM\Entity;
+use InvalidArgumentException;
 use TestApp\Authentication\InvalidAuthenticationService;
+use UnexpectedValueException;
 
 /**
  * Authentication component test.
@@ -608,7 +610,7 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('An error has occurred impersonating user.');
         $component->impersonate($impersonated);
     }
@@ -659,7 +661,7 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('An error has occurred stopping impersonation.');
         $component->stopImpersonating();
     }
@@ -700,7 +702,7 @@ class AuthenticationComponentTest extends TestCase
             ->method('getAuthenticationService')
             ->willReturn($service);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $classname = get_class($service);
         $this->expectExceptionMessage("The $classname must implement ImpersonationInterface in order to use impersonation.");
         $component->isImpersonating();

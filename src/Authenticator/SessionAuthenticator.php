@@ -132,8 +132,8 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     public function impersonate(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        \ArrayAccess $impersonator,
-        \ArrayAccess $impersonated
+        ArrayAccess $impersonator,
+        ArrayAccess $impersonated
     ): array {
         $sessionKey = $this->getConfig('sessionKey');
         $impersonateSessionKey = $this->getConfig('impersonateSessionKey');

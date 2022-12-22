@@ -33,6 +33,7 @@ use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
 use Cake\Http\Uri;
 use Cake\I18n\DateTime;
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -966,7 +967,7 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         $service->authenticate($request);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
         $service->impersonate($request, $response, $impersonator, $impersonated);
     }
@@ -1029,7 +1030,7 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         $service->authenticate($request);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
         $service->stopImpersonating($request, $response);
     }
@@ -1111,7 +1112,7 @@ class AuthenticationServiceTest extends TestCase
         ]);
 
         $service->authenticate($request);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
         $service->isImpersonating($request);
     }
