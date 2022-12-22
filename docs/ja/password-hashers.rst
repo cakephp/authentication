@@ -8,7 +8,7 @@ Default
 デフォルトのハッシュ型は ``bcrypt`` です。
 
 
-こちらをご覧ください `PHPのドキュメント <http://php.net/manual/en/function.password-hash.php>`__
+こちらをご覧ください `PHPのドキュメント <https://php.net/manual/en/function.password-hash.php>`__
 bcryptとPHPのパスワードハッシュについての詳細情報が書かれています。
 
 このアダプタの設定オプションは次のとおりです:

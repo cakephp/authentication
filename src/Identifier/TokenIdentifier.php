@@ -18,6 +18,7 @@ namespace Authentication\Identifier;
 
 use ArrayAccess;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
+use Cake\Utility\Security;
 
 /**
  * Token Identifier
@@ -35,6 +36,7 @@ class TokenIdentifier extends AbstractIdentifier
         'tokenField' => 'token',
         'dataField' => self::CREDENTIAL_TOKEN,
         'resolver' => 'Authentication.Orm',
+        'hashAlgorithm' => null,
     ];
 
     /**
@@ -45,6 +47,13 @@ class TokenIdentifier extends AbstractIdentifier
         $dataField = $this->getConfig('dataField');
         if (!isset($credentials[$dataField])) {
             return null;
+        }
+
+        if ($this->getConfig('hashAlgorithm') !== null) {
+            $credentials[$dataField] = Security::hash(
+                $credentials[$dataField],
+                $this->getConfig('hashAlgorithm')
+            );
         }
 
         $conditions = [

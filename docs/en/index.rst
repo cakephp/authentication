@@ -23,7 +23,7 @@ Load the plugin by adding the following statement in your project's ``src/Applic
 Getting Started
 ===============
 
-The authentication plugin integrates with your application as a `middleware <http://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
+The authentication plugin integrates with your application as a `middleware <https://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
 be used as a component to make unauthenticated access simpler. First, let's
 apply the middleware. In **src/Application.php**, add the following to the class
 imports::
@@ -58,7 +58,7 @@ Then update your application's ``middleware()`` method to look like::
             // after routing and body parser.
             ->add(new AuthenticationMiddleware($this));
 
-        return $middlewareQueue();
+        return $middlewareQueue;
     }
 
 .. warning::
@@ -125,7 +125,7 @@ to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifie
 
 If one of the configured authenticators was able to validate the credentials,
 the middleware will add the authentication service to the request object as an
-`attribute <http://www.php-fig.org/psr/psr-7/>`_.
+`attribute <https://www.php-fig.org/psr/psr-7/>`_.
 
 Next, in your ``AppController`` load the :doc:`/authentication-component`::
 
@@ -245,7 +245,8 @@ Further Reading
 * :doc:`/password-hashers`
 * :doc:`/identity-object`
 * :doc:`/authentication-component`
-* :doc:`/migration-from-the-authcomponent`
+* :doc:`/impersonation`
 * :doc:`/url-checkers`
 * :doc:`/testing`
 * :doc:`/view-helper`
+* :doc:`/migration-from-the-authcomponent`

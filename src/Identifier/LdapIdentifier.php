@@ -58,6 +58,9 @@ class LdapIdentifier extends AbstractIdentifier
             self::CREDENTIAL_PASSWORD => 'password',
         ],
         'port' => 389,
+        'options' => [
+            'tls' => false,
+        ],
     ];
 
     /**

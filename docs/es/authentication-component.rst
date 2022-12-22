@@ -94,13 +94,13 @@ Configurar comprobaciones de identidad automáticas
 --------------------------------------------------
 
 De forma predeterminada, ``AuthenticationComponent`` automáticamente forzará que una entidad
-esté presente durante el evento ``Controller.initialize``. Puede hacer que esta verificación se
-aplique durante el evento ``Controller.startup`` en su lugar::
+esté presente durante el evento ``Controller.startup``. Puede hacer que esta verificación se
+aplique durante el evento ``Controller.initialize`` en su lugar::
 
     // In your controller's initialize() method.
     $this->loadComponent('Authentication.Authentication', [
-        'identityCheckEvent' => 'Controller.startup',
+        'identityCheckEvent' => 'Controller.initialize',
     ]);
 
-También puede deshabilitar las verificaciones de identidad por completo con la 
+También puede deshabilitar las verificaciones de identidad por completo con la
 opción ``requireIdentity``
