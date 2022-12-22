@@ -21,7 +21,6 @@ use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
-use Cake\Http\Uri;
 use RuntimeException;
 
 class EnvironmentAuthenticatorTest extends TestCase
@@ -360,9 +359,7 @@ class EnvironmentAuthenticatorTest extends TestCase
             'USER_ID' => 'mariano',
             'ATTRIBUTE' => 'anything',
         ]);
-        $uri = new Uri($request->getUri(), '/base', '/');
-        $request = $request->withUri($uri);
-        $request = $request->withAttribute('base', $uri->getBase());
+        $request = $request->withAttribute('base', '/base');
 
         $result = $envAuth->authenticate($request);
 
