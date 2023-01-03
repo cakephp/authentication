@@ -149,7 +149,7 @@ Building a Login Action
 =======================
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. First generate a Users model and controller with bake:
+users to login. Please ensure your database has been created with the Users table structure used in :doc:`tutorial </tutorials-and-examples/cms/database>`. First generate a Users model and controller with bake:
 
 .. code-block:: shell
 
