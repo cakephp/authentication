@@ -3,6 +3,7 @@
 /composer.lock
 /phpunit.xml
 /tmp
+/tools
 /vendor
 .phpunit.result.cache
 
