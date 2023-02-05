@@ -244,6 +244,7 @@ Further Reading
 * :doc:`/identifiers`
 * :doc:`/password-hashers`
 * :doc:`/identity-object`
+* :doc:`/middleware`
 * :doc:`/authentication-component`
 * :doc:`/impersonation`
 * :doc:`/url-checkers`
