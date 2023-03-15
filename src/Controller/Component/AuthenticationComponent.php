@@ -368,12 +368,16 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         if (!$identity) {
             throw new UnauthenticatedException('You must be logged in before impersonating a user.');
         }
+        $impersonator = $identity->getOriginalData();
+        if (!($impersonator instanceof ArrayAccess)) {
+            $impersonator = new ArrayAccess($impersonator);
+        }
         $controller = $this->getController();
         /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
         $result = $service->impersonate(
             $controller->getRequest(),
             $controller->getResponse(),
-            $identity->getOriginalData(),
+            $impersonator,
             $impersonated
         );
 
