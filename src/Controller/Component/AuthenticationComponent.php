@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Controller\Component;
 
 use ArrayAccess;
+use ArrayObject;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
@@ -370,7 +371,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         }
         $impersonator = $identity->getOriginalData();
         if (!($impersonator instanceof ArrayAccess)) {
-            $impersonator = new ArrayAccess($impersonator);
+            $impersonator = new ArrayObject($impersonator);
         }
         $controller = $this->getController();
         /** @psalm-var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
