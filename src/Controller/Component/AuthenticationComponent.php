@@ -373,7 +373,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $result = $service->impersonate(
             $controller->getRequest(),
             $controller->getResponse(),
-            $identity,
+            $identity->getOriginalData(),
             $impersonated
         );
 

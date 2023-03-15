@@ -565,11 +565,16 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
+
         $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
         $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
+
         $component->impersonate($impersonated);
         $this->assertEquals($impersonated, $controller->getRequest()->getSession()->read('Auth'));
-        $this->assertEquals($identity, $controller->getRequest()->getSession()->read('AuthImpersonate'));
+        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('AuthImpersonate'));
+
+        $component->stopImpersonating();
+        $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
     }
 
     /**
