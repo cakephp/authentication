@@ -56,7 +56,7 @@ class OrmResolver implements ResolverInterface
     {
         $table = $this->getTableLocator()->get($this->_config['userModel']);
 
-        $query = $table->query();
+        $query = $table->selectQuery();
         $finders = (array)$this->_config['finder'];
         foreach ($finders as $finder => $options) {
             if (is_string($options)) {

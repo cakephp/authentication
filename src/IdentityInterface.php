@@ -20,6 +20,8 @@ use ArrayAccess;
 
 /**
  * Identity interface
+ *
+ * @template-extends \ArrayAccess<int, \Authentication\IdentityInterface>
  */
 interface IdentityInterface extends ArrayAccess
 {

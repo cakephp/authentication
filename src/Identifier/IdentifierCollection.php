@@ -21,7 +21,7 @@ use Cake\Core\App;
 use RuntimeException;
 
 /**
- * @method \Authentication\Identifier\IdentifierInterface|null get(string $name)
+ * @extends \Authentication\AbstractCollection<\Authentication\Identifier\IdentifierInterface>
  */
 class IdentifierCollection extends AbstractCollection implements IdentifierInterface
 {

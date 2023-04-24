@@ -4,6 +4,7 @@
 /phpunit.xml
 /tmp
 /vendor
+/tools
 .phpunit.result.cache
 
 # OS generated files #
