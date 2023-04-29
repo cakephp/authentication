@@ -36,7 +36,6 @@ class FallbackPasswordHasherTest extends TestCase
         $legacy = new LegacyPasswordHasher();
         $this->assertSame($legacy->hash('foo'), $hasher->hash('foo'));
 
-        $simple = new DefaultPasswordHasher();
         $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Legacy', 'Authentication.Default']]);
         $this->assertSame($legacy->hash('foo'), $hasher->hash('foo'));
     }

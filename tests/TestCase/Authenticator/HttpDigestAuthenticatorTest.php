@@ -301,7 +301,7 @@ DIGEST;
     {
         $this->auth->setConfig('scope.username', 'nate');
 
-        $nonce = $this->generateNonce();
+        $this->generateNonce();
         $digest = <<<DIGEST
 Digest username="mariano",
 realm="localhost",
