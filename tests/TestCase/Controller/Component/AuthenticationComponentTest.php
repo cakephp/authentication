@@ -561,11 +561,47 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
+
         $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
         $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
+
         $component->impersonate($impersonated);
         $this->assertEquals($impersonated, $controller->getRequest()->getSession()->read('Auth'));
-        $this->assertEquals($identity, $controller->getRequest()->getSession()->read('AuthImpersonate'));
+        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('AuthImpersonate'));
+
+        $component->stopImpersonating();
+        $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
+    }
+
+    /**
+     * test that impersonate() can handle identities with array data within them.
+     *
+     * @return void
+     */
+    public function testImpersonateDecoratorIgnored()
+    {
+        $impersonator = ['username' => 'mariano'];
+        $impersonated = new ArrayObject(['username' => 'larry']);
+
+        $this->request->getSession()->write('Auth', $impersonator);
+        $this->service->authenticate($this->request);
+        $identity = new Identity($impersonator);
+        $request = $this->request
+            ->withAttribute('identity', $identity)
+            ->withAttribute('authentication', $this->service);
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
+
+        $component->impersonate($impersonated);
+        $this->assertEquals($impersonated, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertEquals(new ArrayObject($impersonator), $controller->getRequest()->getSession()->read('AuthImpersonate'));
+
+        $component->stopImpersonating();
+        $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
     }
 
     /**
