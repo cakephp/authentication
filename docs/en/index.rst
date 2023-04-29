@@ -6,7 +6,7 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 .. code-block:: bash
 
-    php composer.phar require "cakephp/authentication:^2.0"
+    php composer.phar require cakephp/authentication
 
 Version 2 of the Authentication Plugin is compatible with CakePHP 4.
 
@@ -149,7 +149,7 @@ Building a Login Action
 =======================
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. First generate a Users model and controller with bake:
+users to login. Please ensure your database has been created with the Users table structure used in :doc:`tutorial </tutorials-and-examples/cms/database>`. First generate a Users model and controller with bake:
 
 .. code-block:: shell
 
@@ -244,6 +244,7 @@ Further Reading
 * :doc:`/identifiers`
 * :doc:`/password-hashers`
 * :doc:`/identity-object`
+* :doc:`/middleware`
 * :doc:`/authentication-component`
 * :doc:`/impersonation`
 * :doc:`/url-checkers`
