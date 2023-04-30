@@ -16,13 +16,11 @@ declare(strict_types=1);
  */
 namespace Authentication\Middleware;
 
-use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
-use Cake\Core\InstanceConfigTrait;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Diactoros\Stream;
@@ -30,31 +28,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use RuntimeException;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Authentication Middleware
  */
 class AuthenticationMiddleware implements MiddlewareInterface
 {
-    use InstanceConfigTrait;
-
-    /**
-     * Configuration options
-     *
-     * The following keys are deprecated and should instead be set on the AuthenticationService
-     *
-     * - `identityAttribute` - The request attribute to store the identity in.
-     * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
-     *    AuthenticationComponent::allowUnauthenticated()
-     * - `queryParam` - The name of the query string parameter containing the previously blocked
-     *   URL in case of unauthenticated redirect, or null to disable appending the denied URL.
-     *
-     * @var array
-     */
-    protected array $_defaultConfig = [];
-
     /**
      * Authentication service or application instance.
      *
@@ -66,15 +45,12 @@ class AuthenticationMiddleware implements MiddlewareInterface
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface $subject Authentication service or application instance.
-     * @param array $config Array of configuration settings.
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
     public function __construct(
-        AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject,
-        array $config = []
+        AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject
     ) {
         $this->subject = $subject;
-        $this->setConfig($config);
     }
 
     /**
@@ -143,26 +119,6 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
         if ($subject instanceof AuthenticationServiceProviderInterface) {
             $subject = $subject->getAuthenticationService($request);
-        }
-
-        $forwardKeys = ['identityAttribute', 'unauthenticatedRedirect', 'queryParam'];
-        foreach ($forwardKeys as $key) {
-            $value = $this->getConfig($key);
-            if ($value) {
-                deprecationWarning(
-                    '2.x',
-                    "The `{$key}` configuration key on AuthenticationMiddleware is deprecated. " .
-                    "Instead set the `{$key}` on your AuthenticationService instance."
-                );
-                if ($subject instanceof AuthenticationService) {
-                    $subject->setConfig($key, $value);
-                } else {
-                    throw new RuntimeException(
-                        'Could not forward configuration to authentication service as ' .
-                        'it does not implement `getConfig()`'
-                    );
-                }
-            }
         }
 
         return $subject;
