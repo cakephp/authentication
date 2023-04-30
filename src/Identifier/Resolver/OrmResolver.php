@@ -63,7 +63,7 @@ class OrmResolver implements ResolverInterface
             if (is_string($options)) {
                 $query->find($options);
             } else {
-                $query->find($finder, $options);
+                $query->find($finder, ...$options);
             }
         }
 

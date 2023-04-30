@@ -40,7 +40,7 @@ class OrmResolverTest extends AuthenticationTestCase
             'userModel' => 'AuthUsers',
             'finder' => [
                 'all',
-                'auth' => ['return_created' => true],
+                'auth' => ['returnCreated' => true],
             ],
         ]);
 
