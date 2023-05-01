@@ -112,7 +112,7 @@ class IdentifierCollectionTest extends TestCase
         $this->assertInstanceOf('\ArrayAccess', $result);
         $this->assertInstanceOf(PasswordIdentifier::class, $collection->getIdentificationProvider());
 
-        $result = $collection->identify([
+        $collection->identify([
             'username' => 'mariano',
             'password' => 'invalid password',
         ]);

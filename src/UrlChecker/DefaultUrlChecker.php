@@ -74,7 +74,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     protected function _mergeDefaultOptions(array $options): array
     {
-        return $options += $this->_defaultOptions;
+        return $options + $this->_defaultOptions;
     }
 
     /**

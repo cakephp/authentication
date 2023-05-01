@@ -235,23 +235,10 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $name = $options['name'];
         unset($options['name']);
 
-        if (array_key_exists('expire', $options)) {
-            deprecationWarning('2.x', 'Config key `expire` is deprecated, use `expires` instead.');
-            $options['expires'] = $options['expire'];
-            unset($options['expire']);
-        }
-        if (array_key_exists('httpOnly', $options)) {
-            deprecationWarning('2.x', 'Config key `httpOnly` is deprecated, use `httponly` instead.');
-            $options['httponly'] = $options['httpOnly'];
-            unset($options['httpOnly']);
-        }
-
-        $cookie = Cookie::create(
+        return Cookie::create(
             $name,
             $value,
             $options
         );
-
-        return $cookie;
     }
 }

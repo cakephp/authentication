@@ -27,6 +27,7 @@ use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use PHPUnit\Framework\Constraint\RegularExpression;
+use function Cake\Core\env;
 
 /**
  * Test case for HttpDigestAuthentication
@@ -300,7 +301,7 @@ DIGEST;
     {
         $this->auth->setConfig('scope.username', 'nate');
 
-        $nonce = $this->generateNonce();
+        $this->generateNonce();
         $digest = <<<DIGEST
 Digest username="mariano",
 realm="localhost",

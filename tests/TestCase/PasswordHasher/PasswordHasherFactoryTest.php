@@ -54,7 +54,7 @@ class PasswordHasherFactoryTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Password hasher class `FooBar` was not found.');
-        $hasher = PasswordHasherFactory::build('FooBar');
+        PasswordHasherFactory::build('FooBar');
     }
 
     /**
@@ -66,6 +66,6 @@ class PasswordHasherFactoryTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Password hasher must implement PasswordHasherInterface.');
-        $hasher = PasswordHasherFactory::build('Invalid');
+        PasswordHasherFactory::build('Invalid');
     }
 }

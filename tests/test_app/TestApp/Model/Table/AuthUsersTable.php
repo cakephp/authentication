@@ -13,7 +13,6 @@ declare(strict_types=1);
  */
 namespace TestApp\Model\Table;
 
-use Cake\Core\Exception\Exception;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 
@@ -26,13 +25,13 @@ class AuthUsersTable extends Table
      * Custom finder
      *
      * @param \Cake\ORM\Query\SelectQuery $query The query to find with
-     * @param array $options The options to find with
-     * @return \Cake\ORM\Query The query builder
+     * @param bool $returnCreated Whether to return 'created' field.
+     * @return \Cake\ORM\Query\SelectQuery The query builder
      */
-    public function findAuth(SelectQuery $query, array $options)
+    public function findAuth(SelectQuery $query, bool $returnCreated = false): SelectQuery
     {
         $query->select(['id', 'username', 'password']);
-        if (!empty($options['return_created'])) {
+        if ($returnCreated) {
             $query->select(['created']);
         }
 
@@ -43,19 +42,13 @@ class AuthUsersTable extends Table
      * Custom finder
      *
      * @param \Cake\ORM\Query\SelectQuery $query The query to find with
-     * @param array $options The options to find with
-     * @return \Cake\ORM\Query The query builder
+     * @param string $username String username
+     * @return \Cake\ORM\Query\SelectQuery The query builder
      */
-    public function findUsername(SelectQuery $query, array $options)
+    public function findUsername(SelectQuery $query, string $username): SelectQuery
     {
-        if (empty($options['username'])) {
-            throw new Exception('Username not defined');
-        }
-
-        $query = $this->find()
-            ->where(['username' => $options['username']])
+        return $this->find()
+            ->where(['username' => $username])
             ->select(['id', 'username', 'password']);
-
-        return $query;
     }
 }

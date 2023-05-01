@@ -1,7 +1,7 @@
 User Impersonation
 ##################
 
-.. versionadded:: 3.0.0
+.. versionadded:: 2.10.0
    User impersonation was added.
 
 After deploying your application, you may occasionally need to
@@ -15,7 +15,7 @@ To impersonate another user you can use the ``impersonate()`` method on the
 ``AuthenticationComponent``. To impersonate a user you first need to load that
 user from your application's database::
 
-    // In a controller 
+    // In a controller
     public function impersonate()
     {
         $this->request->allowMethod(['POST']);

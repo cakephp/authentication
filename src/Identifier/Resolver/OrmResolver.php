@@ -53,7 +53,7 @@ class OrmResolver implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function find(array $conditions, $type = self::TYPE_AND): ArrayAccess|array|null
+    public function find(array $conditions, string $type = self::TYPE_AND): ArrayAccess|array|null
     {
         $table = $this->getTableLocator()->get($this->_config['userModel']);
 
@@ -63,7 +63,7 @@ class OrmResolver implements ResolverInterface
             if (is_string($options)) {
                 $query->find($options);
             } else {
-                $query->find($finder, $options);
+                $query->find($finder, ...$options);
             }
         }
 
