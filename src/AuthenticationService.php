@@ -422,11 +422,9 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             return null;
         }
         $parsed += ['path' => '/', 'query' => ''];
-        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
             $parsed['path'] = "/{$parsed['path']}";
         }
-        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if ($parsed['query']) {
             $parsed['query'] = "?{$parsed['query']}";
         }
