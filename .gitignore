@@ -5,7 +5,7 @@
 /tmp
 /tools
 /vendor
-.phpunit.result.cache
+.phpunit.cache
 
 # OS generated files #
 ######################

@@ -183,7 +183,7 @@ class JwtAuthenticatorTest extends TestCase
             ->setConstructorArgs([
                 $this->identifiers,
             ])
-            ->setMethods([
+            ->onlyMethods([
                 'getPayLoad',
             ])
             ->getMock();
@@ -214,7 +214,7 @@ class JwtAuthenticatorTest extends TestCase
             ->setConstructorArgs([
                 $this->identifiers,
             ])
-            ->setMethods([
+            ->onlyMethods([
                 'getPayLoad',
             ])
             ->getMock();

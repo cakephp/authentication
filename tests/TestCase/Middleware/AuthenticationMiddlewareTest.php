@@ -117,7 +117,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getAuthenticationService', 'middleware'])
+            ->onlyMethods(['getAuthenticationService', 'middleware'])
             ->getMock();
 
         $application->expects($this->once())

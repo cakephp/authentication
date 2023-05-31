@@ -62,9 +62,9 @@ trait UrlCheckerTrait
             throw new RuntimeException(sprintf('URL checker class `%s` was not found.', $options['className']));
         }
 
-        $checker = new $className();
+        $interfaces = class_implements($className);
 
-        if (!($checker instanceof UrlCheckerInterface)) {
+        if (!isset($interfaces[UrlCheckerInterface::class])) {
             throw new RuntimeException(sprintf(
                 'The provided URL checker class `%s` does not implement the `%s` interface.',
                 $options['className'],
@@ -72,6 +72,9 @@ trait UrlCheckerTrait
             ));
         }
 
-        return $checker;
+        /** @var \Authentication\UrlChecker\UrlCheckerInterface $obj */
+        $obj = new $className();
+
+        return $obj;
     }
 }
