@@ -26,7 +26,6 @@ use Cake\Http\ServerRequestFactory;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use PHPUnit\Framework\Constraint\RegularExpression;
 use function Cake\Core\env;
 
 /**
@@ -516,20 +515,5 @@ DIGEST;
         $nonceValue = $expiryTime . ':' . $signatureValue;
 
         return base64_encode($nonceValue);
-    }
-
-    /**
-     * Asserts that a string matches a given regular expression.
-     *
-     * @param string $pattern Regex pattern
-     * @param string $string String to test
-     * @param string $message Message
-     * @return void
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @codeCoverageIgnore
-     */
-    public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
-    {
-        static::assertThat($string, new RegularExpression($pattern), $message);
     }
 }

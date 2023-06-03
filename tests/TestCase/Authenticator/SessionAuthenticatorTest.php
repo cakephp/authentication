@@ -57,7 +57,7 @@ class SessionAuthenticatorTest extends TestCase
         }
         $this->sessionMock = $this->getMockBuilder($class)
             ->disableOriginalConstructor()
-            ->setMethods(['read', 'write', 'delete', 'renew', 'check'])
+            ->onlyMethods(['read', 'write', 'delete', 'renew', 'check'])
             ->getMock();
     }
 
@@ -183,7 +183,9 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock
             ->expects($this->exactly(2))
             ->method('check')
-            ->withConsecutive(['Auth'], ['Auth'])
+            ->with(
+                ...self::withConsecutive(['Auth'], ['Auth'])
+            )
             ->willReturnOnConsecutiveCalls(false, true);
 
         $this->sessionMock
@@ -261,7 +263,9 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock
             ->expects($this->exactly(2))
             ->method('write')
-            ->withConsecutive(['AuthImpersonate', $impersonator], ['Auth', $impersonated]);
+            ->with(
+                ...self::withConsecutive(['AuthImpersonate', $impersonator], ['Auth', $impersonated])
+            );
 
         $result = $authenticator->impersonate($request, $response, $impersonator, $impersonated);
 
