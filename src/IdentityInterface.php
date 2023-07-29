@@ -28,9 +28,9 @@ interface IdentityInterface extends ArrayAccess
     /**
      * Get the primary key/id field for the identity.
      *
-     * @return string|int|array|null
+     * @return array|string|int|null
      */
-    public function getIdentifier(): string|int|null;
+    public function getIdentifier(): array|string|int|null;
 
     /**
      * Gets the original data object.
