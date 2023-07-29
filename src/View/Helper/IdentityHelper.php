@@ -71,9 +71,9 @@ class IdentityHelper extends Helper
     /**
      * Gets the id of the current logged in identity
      *
-     * @return string|int|null
+     * @return string|int|array|null
      */
-    public function getId(): int|string|null
+    public function getId(): string|int|array|null
     {
         if ($this->_identity === null) {
             return null;
