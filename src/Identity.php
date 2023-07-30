@@ -63,7 +63,7 @@ class Identity implements IdentityInterface
     /**
      * @inheritDoc
      */
-    public function getIdentifier(): string|int|null
+    public function getIdentifier(): array|string|int|null
     {
         return $this->get('id');
     }
