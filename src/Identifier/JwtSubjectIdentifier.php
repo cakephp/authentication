@@ -24,6 +24,8 @@ namespace Authentication\Identifier;
  */
 class JwtSubjectIdentifier extends TokenIdentifier
 {
+    public const CREDENTIAL_JWT_SUBJECT = 'sub';
+
     /**
      * Default configuration
      *

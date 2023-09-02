@@ -27,6 +27,8 @@ class TokenIdentifier extends AbstractIdentifier
 {
     use ResolverAwareTrait;
 
+    public const CREDENTIAL_TOKEN = 'token';
+
     /**
      * Default configuration.
      *

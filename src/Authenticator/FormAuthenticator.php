@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\AbstractIdentifier;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -41,8 +41,8 @@ class FormAuthenticator extends AbstractAuthenticator
         'loginUrl' => null,
         'urlChecker' => 'Authentication.Default',
         'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
     ];
 
