@@ -18,6 +18,7 @@ namespace Authentication\Authenticator;
 
 use ArrayObject;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\JwtSubjectIdentifier;
 use Cake\Utility\Security;
 use Exception;
 use Firebase\JWT\JWK;
@@ -39,7 +40,7 @@ class JwtAuthenticator extends TokenAuthenticator
         'algorithm' => 'HS256',
         'returnPayload' => true,
         'secretKey' => null,
-        'subjectKey' => IdentifierInterface::CREDENTIAL_JWT_SUBJECT,
+        'subjectKey' => JwtSubjectIdentifier::CREDENTIAL_JWT_SUBJECT,
         'jwks' => null,
     ];
 

@@ -17,8 +17,8 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use ArrayAccess;
+use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Identifier\IdentifierInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Http\Cookie\Cookie;
@@ -47,8 +47,8 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         'urlChecker' => 'Authentication.Default',
         'rememberMeField' => 'remember_me',
         'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
         'cookie' => [
             'name' => 'CookieAuth',

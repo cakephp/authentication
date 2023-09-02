@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,8 +33,8 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     protected array $_defaultConfig = [
         'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
     ];
 

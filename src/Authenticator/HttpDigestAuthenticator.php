@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Utility\Security;
 use InvalidArgumentException;
@@ -94,7 +95,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         }
 
         $user = $this->_identifier->identify([
-            IdentifierInterface::CREDENTIAL_USERNAME => $digest['username'],
+            AbstractIdentifier::CREDENTIAL_USERNAME => $digest['username'],
         ]);
 
         if (empty($user)) {
@@ -105,7 +106,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
-        $field = $this->_config['fields'][IdentifierInterface::CREDENTIAL_PASSWORD];
+        $field = $this->_config['fields'][AbstractIdentifier::CREDENTIAL_PASSWORD];
         $password = $user[$field];
 
         $server = $request->getServerParams();

@@ -15,7 +15,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\AbstractIdentifier;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -35,8 +35,8 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     protected array $_defaultConfig = [
         'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'username',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
         'skipChallenge' => false,
     ];
@@ -59,8 +59,8 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
         }
 
         $user = $this->_identifier->identify([
-            IdentifierInterface::CREDENTIAL_USERNAME => $username,
-            IdentifierInterface::CREDENTIAL_PASSWORD => $password,
+            AbstractIdentifier::CREDENTIAL_USERNAME => $username,
+            AbstractIdentifier::CREDENTIAL_PASSWORD => $password,
         ]);
 
         if ($user === null) {
