@@ -72,7 +72,6 @@ class IdentifierCollection extends AbstractCollection implements IdentifierInter
      * @param array $config Config array.
      * @return \Authentication\Identifier\IdentifierInterface
      * @throws \RuntimeException
-     * @psalm-suppress MoreSpecificImplementedParamType
      */
     protected function _create(object|string $class, string $alias, array $config): IdentifierInterface
     {

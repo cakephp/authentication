@@ -54,7 +54,6 @@ class AuthenticatorCollection extends AbstractCollection
      * @param array $config Config array.
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
-     * @psalm-suppress MoreSpecificImplementedParamType
      */
     protected function _create(object|string $class, string $alias, array $config): AuthenticatorInterface
     {

@@ -165,10 +165,7 @@ class ExtensionAdapter implements AdapterInterface
         }
 
         $this->_setErrorHandler();
-        /**
-         * @psalm-suppress InvalidArgument
-         * @phpstan-ignore-next-line
-         */
+        /** @phpstan-ignore-next-line */
         ldap_unbind($this->_connection);
         $this->_unsetErrorHandler();
 
