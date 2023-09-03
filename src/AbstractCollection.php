@@ -20,7 +20,7 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Core\ObjectRegistry;
 
 /**
- * @template TObject of object
+ * @template TObject of \Authentication\Identifier\IdentifierInterface|\Authentication\Authenticator\AuthenticatorInterface
  * @extends \Cake\Core\ObjectRegistry<TObject>
  */
 abstract class AbstractCollection extends ObjectRegistry
