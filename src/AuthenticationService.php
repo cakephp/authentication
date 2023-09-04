@@ -152,7 +152,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      * @param string $name Name or class name.
      * @param array $config Authenticator configuration.
      * @return \Authentication\Authenticator\AuthenticatorInterface
-     * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function loadAuthenticator(string $name, array $config = []): AuthenticatorInterface
     {
@@ -165,7 +164,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      * @param string $name Name or class name.
      * @param array $config Identifier configuration.
      * @return \Authentication\Identifier\IdentifierInterface Identifier instance
-     * @psalm-suppress MoreSpecificImplementedParamType
      */
     public function loadIdentifier(string $name, array $config = []): IdentifierInterface
     {
@@ -429,11 +427,9 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             return null;
         }
         $parsed += ['path' => '/', 'query' => ''];
-        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
             $parsed['path'] = "/{$parsed['path']}";
         }
-        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         if ($parsed['query']) {
             $parsed['query'] = "?{$parsed['query']}";
         }

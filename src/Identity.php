@@ -127,7 +127,7 @@ class Identity implements IdentityInterface
      *
      * @link https://php.net/manual/en/arrayaccess.offsetget.php
      * @param mixed $offset Offset
-     * @return mixed
+     * @return \Authentication\IdentityInterface|null
      */
     public function offsetGet(mixed $offset): mixed
     {

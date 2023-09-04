@@ -3,8 +3,9 @@
 /composer.lock
 /phpunit.xml
 /tmp
-/tools
 /vendor
+/tools
+.phpunit.result.cache
 .phpunit.cache
 
 # OS generated files #
