@@ -10,7 +10,7 @@
     "type": "cakephp-plugin",
     "homepage": "https://cakephp.org",
     "require": {
-        "cakephp/http": "5.x-dev",
+        "cakephp/http": "^5.0",
         "laminas/laminas-diactoros": "^3.0",
         "psr/http-client": "^1.0",
         "psr/http-message": "^2.0",
@@ -18,7 +18,7 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "5.x-dev",
+        "cakephp/cakephp": "^5.0",
         "cakephp/cakephp-codesniffer": "^5.0",
         "firebase/php-jwt": "^6.2",
         "phpunit/phpunit": "^10.1.0"
@@ -82,6 +82,5 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
-    "minimum-stability": "dev",
     "prefer-stable": true
 }
