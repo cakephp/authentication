@@ -11,7 +11,7 @@ RUN cd /data/docs-builder && \
 # Build a small nginx container with just the static site in it.
 FROM markstory/cakephp-docs-builder:runtime as runtime
 
-# Configure search index script
+# Configure search index script.
 ENV LANGS="en es fr ja"
 ENV SEARCH_SOURCE="/usr/share/nginx/html"
 ENV SEARCH_URL_PREFIX="/authentication/3"
