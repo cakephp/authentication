@@ -328,8 +328,8 @@ authentication cookie is **also destroyed**. An example configuration would be::
 
     // Reuse fields in multiple authenticators.
     $fields = [
-        IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-        IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+        AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
     ];
 
     // Put form authentication first so that users can re-login via
