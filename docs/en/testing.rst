@@ -60,3 +60,23 @@ With token based authentication you need to simulate the
        $this->get('/api/bookmarks');
        $this->assertResponseOk();
    }
+
+
+Basic/Digest based authentication
+=================================
+
+When testing Basic or Digest Authentication, you can add the environment
+variables that `PHP creates <https://php.net/manual/en/features.http-auth.php>`_
+automatically.::
+
+   public function testGet()
+   {
+        $this->configRequest([
+            'environment' => [
+                'PHP_AUTH_USER' => 'username',
+                'PHP_AUTH_PW' => 'password',
+            ]
+        ]);
+       $this->get('/api/bookmarks');
+       $this->assertResponseOk();
+   }
