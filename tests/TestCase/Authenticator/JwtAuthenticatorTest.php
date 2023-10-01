@@ -60,6 +60,11 @@ class JwtAuthenticatorTest extends TestCase
     public $identifiers;
 
     /**
+     * @var \Cake\Http\ServerRequest
+     */
+    protected $request;
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void
