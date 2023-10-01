@@ -34,6 +34,16 @@ use TestApp\Http\TestRequestHandler;
 class AuthenticationMiddlewareTest extends TestCase
 {
     /**
+     * @var \Authentication\AuthenticationService
+     */
+    protected $service;
+
+    /**
+     * @var \TestApp\Application
+     */
+    protected $application;
+
+    /**
      * Fixtures
      */
     public $fixtures = [
