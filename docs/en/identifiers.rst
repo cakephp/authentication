@@ -61,7 +61,7 @@ Configuration options:
    ``Authentication.Orm`` which uses CakePHP ORM.
 -  **hashAlgorithm**: The algorithm used to hash the incoming token
    with before compairing it to the ``tokenField``. Recommended value is
-   ``sha256```. Default is ``null``.
+   ``sha256``. Default is ``null``.
 
 JWT Subject
 ===========
