@@ -22,6 +22,7 @@ use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
+use Cake\Core\ContainerApplicationInterface;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Laminas\Diactoros\Response;
@@ -100,6 +101,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $service = $this->getAuthenticationService($request);
+
+        if ($this->subject instanceof ContainerApplicationInterface) {
+            $container = $this->subject->getContainer();
+            $container->add(AuthenticationService::class, $service);
+        }
 
         try {
             $result = $service->authenticate($request);
