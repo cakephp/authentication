@@ -17,13 +17,12 @@ declare(strict_types=1);
 namespace Authentication\Test\TestCase\Middleware;
 
 use Authentication\AuthenticationService;
-use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
-use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Core\TestSuite\ContainerStubTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Http\Uri;
@@ -33,6 +32,8 @@ use TestApp\Http\TestRequestHandler;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
+    use ContainerStubTrait;
+
     /**
      * Fixtures
      */
@@ -103,31 +104,6 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $this->assertTrue($service->identifiers()->has('Password'));
         $this->assertTrue($service->authenticators()->has('Form'));
-    }
-
-    public function testApplicationAuthenticationRequestResponse()
-    {
-        $request = ServerRequestFactory::fromGlobals();
-        $handler = new TestRequestHandler();
-
-        $service = $this->createMock(AuthenticationServiceInterface::class);
-
-        $service->method('authenticate')
-            ->willReturn($this->createMock(ResultInterface::class));
-        $service->method('getIdentityAttribute')->willReturn('identity');
-
-        $application = $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getAuthenticationService', 'middleware'])
-            ->getMock();
-
-        $application->expects($this->once())
-            ->method('getAuthenticationService')
-            ->with($request)
-            ->willReturn($service);
-
-        $middleware = new AuthenticationMiddleware($application);
-        $middleware->process($request, $handler);
     }
 
     public function testInvalidSubject()
@@ -769,5 +745,21 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertSame('user', $service->getConfig('identityAttribute'));
         $this->assertSame('redirect', $service->getConfig('queryParam'));
         $this->assertSame('/login', $service->getConfig('unauthenticatedRedirect'));
+    }
+
+    public function testMiddlewareInjectsServiceIntoDIC(): void
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $handler = new TestRequestHandler();
+
+        $middleware = new AuthenticationMiddleware($this->application);
+        $middleware->process($request, $handler);
+
+        $container = $this->application->getContainer();
+        $this->assertInstanceOf(AuthenticationService::class, $container->get(AuthenticationService::class));
     }
 }
