@@ -1,14 +1,28 @@
 {
     "name": "cakephp/authentication",
     "description": "Authentication plugin for CakePHP",
+    "license": "MIT",
+    "type": "cakephp-plugin",
     "keywords": [
         "auth",
         "authentication",
         "cakephp",
         "middleware"
     ],
-    "type": "cakephp-plugin",
+    "authors": [
+        {
+            "name": "CakePHP Community",
+            "homepage": "https://github.com/cakephp/authentication/graphs/contributors"
+        }
+    ],
     "homepage": "https://cakephp.org",
+    "support": {
+        "issues": "https://github.com/cakephp/authentication/issues",
+        "forum": "https://stackoverflow.com/tags/cakephp",
+        "irc": "irc://irc.freenode.org/cakephp",
+        "source": "https://github.com/cakephp/authentication",
+        "docs": "https://book.cakephp.org/authentication/2/en/"
+    },
     "require": {
         "cakephp/http": "^5.0",
         "laminas/laminas-diactoros": "^3.0",
@@ -24,13 +38,12 @@
         "phpunit/phpunit": "^10.1.0"
     },
     "suggest": {
-        "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
-        "cakephp/cakephp": "Install full core to use \"CookieAuthenticator\".",
-        "firebase/php-jwt": "If you want to use the JWT adapter add this dependency",
         "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP adapter for \"LdapIdentifier\".",
-        "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher."
+        "cakephp/cakephp": "Install full core to use \"CookieAuthenticator\".",
+        "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
+        "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher.",
+        "firebase/php-jwt": "If you want to use the JWT adapter add this dependency"
     },
-    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Authentication\\": "src/"
@@ -44,18 +57,11 @@
             "TestPlugin\\": "tests/test_app/Plugin/TestPlugin/src/"
         }
     },
-    "authors": [
-        {
-            "name": "CakePHP Community",
-            "homepage": "https://github.com/cakephp/authentication/graphs/contributors"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/cakephp/authentication/issues",
-        "forum": "https://stackoverflow.com/tags/cakephp",
-        "irc": "irc://irc.freenode.org/cakephp",
-        "source": "https://github.com/cakephp/authentication",
-        "docs": "https://book.cakephp.org/authentication/2/en/"
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
     },
     "scripts": {
         "check": [
@@ -66,20 +72,14 @@
         "cs-fix": "phpcbf --colors -p src/ tests/",
         "phpstan": "tools/phpstan analyse",
         "psalm": "tools/psalm --show-info=false",
+        "psalm-baseline": "tools/psalm  --set-baseline=psalm-baseline.xml",
         "stan": [
             "@phpstan",
             "@psalm"
         ],
         "stan-baseline": "tools/phpstan --generate-baseline",
-        "psalm-baseline": "tools/psalm  --set-baseline=psalm-baseline.xml",
         "stan-setup": "phive install",
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-clover=clover.xml"
-    },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
     }
 }
