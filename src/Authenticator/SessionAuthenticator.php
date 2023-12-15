@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Session Authenticator
  */
-class SessionAuthenticator extends AbstractAuthenticator implements PersistenceInterface, ImpersonationInterface
+class SessionAuthenticator extends AbstractAuthenticator implements ImpersonationInterface
 {
     /**
      * Default config for this object.
