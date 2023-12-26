@@ -276,8 +276,8 @@ se desconecta explícitamente vía ``AuthenticationComponent::logout()``, la coo
 
     // Reuse fields in multiple authenticators.
     $fields = [
-        IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-        IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+        AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
     ];
 
     // Put form authentication first so that users can re-login via
@@ -285,8 +285,8 @@ se desconecta explícitamente vía ``AuthenticationComponent::logout()``, la coo
     $service->loadAuthenticator('Authentication.Form', [
         'loginUrl' => '/users/login',
         'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
     ]);
     // Then use sessions if they are active.

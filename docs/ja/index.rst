@@ -32,7 +32,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
     use Authentication\AuthenticationService;
     use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
-    use Authentication\Identifier\IdentifierInterface;
+    use Authentication\Identifier\AbstractIdentifier;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
     use Psr\Http\Message\ServerRequestInterface;
@@ -69,8 +69,8 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
         ]);
 
         $fields = [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
         ];
 
         // 認証者を読み込みます。セッションを優先してください。

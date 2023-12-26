@@ -34,7 +34,7 @@ authentification. Tout d'abord, mettons en place le middleware. Dans votre
     use Authentication\AuthenticationService;
     use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
-    use Authentication\Identifier\IdentifierInterface;
+    use Authentication\Identifier\AbstractIdentifier;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
     use Cake\Routing\Router;
@@ -98,8 +98,8 @@ utiliser. Ajoutez la méthode suivante à votre **src/Application.php**::
         ]);
 
         $fields = [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
         ];
         // Chargez les authentificateurs. Session est censé figurer en premier.
         $service->loadAuthenticator('Authentication.Session');
