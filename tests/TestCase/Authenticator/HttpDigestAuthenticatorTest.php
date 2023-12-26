@@ -44,6 +44,16 @@ class HttpDigestAuthenticatorTest extends TestCase
     ];
 
     /**
+     * @var \Authentication\IdentifierCollection
+     */
+    protected $identifiers;
+
+    /**
+     * @var \Autnentication\Authenticator\HttpDigestAuthenticator
+     */
+    protected $auth;
+
+    /**
      * setup
      *
      * @return void

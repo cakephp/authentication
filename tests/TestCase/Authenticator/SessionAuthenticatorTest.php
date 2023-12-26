@@ -41,6 +41,13 @@ class SessionAuthenticatorTest extends TestCase
     ];
 
     /**
+     * @var \Authentication\IdentifierCollection
+     */
+    protected $identifiers;
+
+    protected $sessionMock;
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void

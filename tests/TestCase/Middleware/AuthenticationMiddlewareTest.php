@@ -24,6 +24,7 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Core\TestSuite\ContainerStubTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
@@ -32,6 +33,18 @@ use TestApp\Http\TestRequestHandler;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
+    use ContainerStubTrait;
+
+    /**
+     * @var \Authentication\AuthenticationService
+     */
+    protected $service;
+
+    /**
+     * @var \TestApp\Application
+     */
+    protected $application;
+
     /**
      * Fixtures
      */
@@ -117,7 +130,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getAuthenticationService', 'middleware'])
+            ->setMethods(['getAuthenticationService', 'middleware'])
             ->getMock();
 
         $application->expects($this->once())
@@ -637,5 +650,21 @@ class AuthenticationMiddlewareTest extends TestCase
         $response = $middleware->process($request, $handler);
 
         $this->assertStringContainsString('CookieAuth=%5B%22mariano%22', $response->getHeaderLine('Set-Cookie'));
+    }
+
+    public function testMiddlewareInjectsServiceIntoDIC(): void
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $handler = new TestRequestHandler();
+
+        $middleware = new AuthenticationMiddleware($this->application);
+        $middleware->process($request, $handler);
+
+        $container = $this->application->getContainer();
+        $this->assertInstanceOf(AuthenticationService::class, $container->get(AuthenticationService::class));
     }
 }
