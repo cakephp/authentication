@@ -35,6 +35,16 @@ class TokenAuthenticatorTest extends TestCase
     ];
 
     /**
+     * @var \Authentication\IdentifierCollection
+     */
+    protected $identifiers;
+
+    /**
+     * @var \Cake\Http\ServerRequest
+     */
+    protected $request;
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void

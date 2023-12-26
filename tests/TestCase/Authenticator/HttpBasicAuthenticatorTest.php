@@ -38,6 +38,16 @@ class HttpBasicAuthenticatorTest extends TestCase
     ];
 
     /**
+     * @var \Authentication\IdentifierCollection
+     */
+    protected $identifiers;
+
+    /**
+     * @var \Autnentication\Authenticator\HttpBasicAuthenticator
+     */
+    protected $auth;
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void
