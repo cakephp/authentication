@@ -35,6 +35,16 @@ class AuthenticationMiddlewareTest extends TestCase
     use ContainerStubTrait;
 
     /**
+     * @var \Authentication\AuthenticationService
+     */
+    protected $service;
+
+    /**
+     * @var \TestApp\Application
+     */
+    protected $application;
+
+    /**
      * Fixtures
      */
     public $fixtures = [
