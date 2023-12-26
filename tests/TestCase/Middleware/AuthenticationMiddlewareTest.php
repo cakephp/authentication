@@ -129,8 +129,8 @@ class AuthenticationMiddlewareTest extends TestCase
         $service->method('getIdentityAttribute')->willReturn('identity');
 
         $application = $this->getMockBuilder(Application::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getAuthenticationService', 'middleware'])
+            ->setConstructorArgs(['config'])
+            ->onlyMethods(['getAuthenticationService', 'middleware'])
             ->getMock();
 
         $application->expects($this->once())
