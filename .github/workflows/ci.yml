@@ -8,6 +8,7 @@ on:
   pull_request:
     branches:
       - '*'
+  workflow_dispatch:
 
 jobs:
   testsuite:
@@ -15,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.4', '8.0', '8.1']
+        php-version: ['7.4', '8.0', '8.1', '8.2']
         db-type: [sqlite]
         prefer-lowest: ['']
         include:
@@ -24,7 +25,7 @@ jobs:
             prefer-lowest: 'prefer-lowest'
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -50,9 +51,7 @@ jobs:
 
     - name: Composer install
       run: |
-        if [[ ${{ matrix.php-version }} == '8.1' ]]; then
-          composer update --ignore-platform-reqs
-        elif ${{ matrix.prefer-lowest == 'prefer-lowest' }}; then
+        if ${{ matrix.prefer-lowest == 'prefer-lowest' }}; then
           composer update --prefer-lowest --prefer-stable
         else
           composer update
