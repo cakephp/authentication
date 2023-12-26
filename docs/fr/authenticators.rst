@@ -349,8 +349,8 @@ détruit**. Un exemple de configuration serait::
 
     // Réutiliser les champs dans plusieurs authentificateurs.
     $fields = [
-        IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-        IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+        AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+        AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
     ];
 
     // Placer l'authentification par formulaire en premier de façon à ce que les
@@ -358,8 +358,8 @@ détruit**. Un exemple de configuration serait::
     $service->loadAuthenticator('Authentication.Form', [
         'loginUrl' => '/users/login',
         'fields' => [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password',
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
     ]);
     // Ensuite utiliser les sessions si elles sont actives.
