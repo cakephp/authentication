@@ -17,3 +17,4 @@ Contents
     /url-checkers
     /view-helper
     /migration-from-the-authcomponent
+    /upgrade-2-to-3
