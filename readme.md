@@ -17,6 +17,14 @@ identification. Authorization is a [separate
 concern](https://en.wikipedia.org/wiki/Separation_of_concerns) that has been
 packaged into a separate [authorization plugin](https://github.com/cakephp/authorization).
 
+## Version map
+
+| Authentication plugin | branch | CakePHP core | PHP min |
+|-----------------------|--------|--------------|---------|
+| 1.x                   | 1.x    | 3.x          | PHP 5.6 |
+| 2.x                   | 2.x    | 4.x          | PHP 7.2 |
+| 3.x                   | 3.x    | 5.x          | PHP 8.1 |
+
 ## Installation
 
 You can install this plugin into your CakePHP application using
