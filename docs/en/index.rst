@@ -36,6 +36,7 @@ imports::
     use Cake\Http\MiddlewareQueue;
     use Cake\Routing\Router;
     use Psr\Http\Message\ServerRequestInterface;
+    use Authentication\Identifier\AbstractIdentifier;
 
 
 Next, add ``AuthenticationServiceProviderInterface`` to the implemented interfaces
@@ -94,8 +95,8 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
         ]);
 
         $fields = [
-            IdentifierInterface::CREDENTIAL_USERNAME => 'email',
-            IdentifierInterface::CREDENTIAL_PASSWORD => 'password'
+            AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
         ];
         // Load the authenticators. Session should be first.
         $service->loadAuthenticator('Authentication.Session');
