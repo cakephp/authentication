@@ -23,6 +23,7 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Core\ContainerApplicationInterface;
+use Cake\Core\ContainerInterface;
 use Cake\Core\InstanceConfigTrait;
 use InvalidArgumentException;
 use Laminas\Diactoros\Response;
@@ -64,14 +65,25 @@ class AuthenticationMiddleware implements MiddlewareInterface
     protected $subject;
 
     /**
+     * The container instance from the application
+     *
+     * @var \Cake\Core\ContainerInterface|null
+     */
+    protected $container;
+
+    /**
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface $subject Authentication service or application instance.
      * @param array $config Array of configuration settings.
+     * @param \Cake\Core\ContainerInterface|null $container The container instance from the application
      * @throws \InvalidArgumentException When invalid subject has been passed.
      */
-    public function __construct($subject, $config = [])
-    {
+    public function __construct(
+        $subject,
+        $config = [],
+        ?ContainerInterface $container = null
+    ) {
         $this->setConfig($config);
 
         if (
@@ -89,6 +101,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         $this->subject = $subject;
+        $this->container = $container;
     }
 
     /**
@@ -105,6 +118,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
         if ($this->subject instanceof ContainerApplicationInterface) {
             $container = $this->subject->getContainer();
             $container->add(AuthenticationService::class, $service);
+        } elseif ($this->container) {
+            $this->container->add(AuthenticationService::class, $service);
         }
 
         try {
