@@ -24,6 +24,7 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Core\Container;
 use Cake\Core\TestSuite\ContainerStubTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -665,6 +666,27 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware->process($request, $handler);
 
         $container = $this->application->getContainer();
+        $this->assertInstanceOf(AuthenticationService::class, $container->get(AuthenticationService::class));
+    }
+
+    public function testMiddlewareInjectsServiceIntoDICCustomContainerInstance(): void
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password']
+        );
+        $handler = new TestRequestHandler();
+
+        $provider = $this->createMock(AuthenticationServiceProviderInterface::class);
+        $provider
+            ->method('getAuthenticationService')
+            ->willReturn($this->service);
+        $container = new Container();
+
+        $middleware = new AuthenticationMiddleware($provider, $container);
+        $middleware->process($request, $handler);
+
         $this->assertInstanceOf(AuthenticationService::class, $container->get(AuthenticationService::class));
     }
 }
