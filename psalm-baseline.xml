@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.20.0@3f284e96c9d9be6fe6b15c79416e1d1903dcfef4">
+  <file src="src/AuthenticationService.php">
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[empty($parsed['host'])]]></code>
+      <code><![CDATA[empty($parsed['scheme'])]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/CookieAuthenticator.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($identity)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/EnvironmentAuthenticator.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($data)</code>
+      <code>empty($user)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/FormAuthenticator.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($user)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/HttpDigestAuthenticator.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($digest)</code>
+      <code>empty($user)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/JwtAuthenticator.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($user)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/Result.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($data)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/SessionAuthenticator.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($user)</code>
+      <code>empty($user)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Authenticator/TokenAuthenticator.php">
+    <RiskyTruthyFalsyComparison>
+      <code>empty($headerLine)</code>
+      <code>empty($queryParam)</code>
+      <code>empty($user)</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Identifier/IdentifierCollection.php">
+    <RiskyTruthyFalsyComparison>
+      <code>$result</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Middleware/AuthenticationMiddleware.php">
+    <RiskyTruthyFalsyComparison>
+      <code>$url</code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+</files>
