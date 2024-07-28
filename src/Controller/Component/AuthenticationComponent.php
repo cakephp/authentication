@@ -241,6 +241,16 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
+     * Get the identifier (primary key) of the identity.
+     *
+     * @return array|string|int|null
+     */
+    public function getIdentifier(): array|string|int|null
+    {
+        return $this->getIdentity()?->getIdentifier();
+    }
+
+    /**
      * Returns the identity used in the authentication attempt.
      *
      * @return \Authentication\IdentityInterface|null

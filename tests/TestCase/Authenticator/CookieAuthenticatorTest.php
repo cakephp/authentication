@@ -301,8 +301,12 @@ class CookieAuthenticatorTest extends TestCase
         $this->assertArrayHasKey('response', $result);
         $this->assertInstanceOf(RequestInterface::class, $result['request']);
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+        $hashCost = '10';
+        if (PHP_VERSION_ID >= 80400) {
+            $hashCost = '12';
+        }
         $this->assertStringContainsString(
-            'CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24', // `CookieAuth=["mariano","$2y$10$`
+            'CookieAuth=%5B%22mariano%22%2C%22%242y%24' . $hashCost . '%24', // `CookieAuth=["mariano","$2y$10$`
             $result['response']->getHeaderLine('Set-Cookie')
         );
         $this->assertStringContainsString(
@@ -333,7 +337,7 @@ class CookieAuthenticatorTest extends TestCase
         ]);
         $result = $authenticator->persistIdentity($request, $response, $identity);
         $this->assertStringContainsString(
-            'CookieAuth=%5B%22mariano%22%2C%22%242y%2410%24',
+            'CookieAuth=%5B%22mariano%22%2C%22%242y%24' . $hashCost . '%24',
             $result['response']->getHeaderLine('Set-Cookie')
         );
     }

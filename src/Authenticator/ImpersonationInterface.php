@@ -20,7 +20,7 @@ use ArrayAccess;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface ImpersonationInterface extends PersistenceInterface
+interface ImpersonationInterface
 {
     /**
      * Impersonates a user
