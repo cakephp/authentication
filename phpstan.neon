@@ -3,7 +3,8 @@ includes:
 
 parameters:
 	level: 8
-	checkMissingIterableValueType: false
-	checkGenericClassInNonGenericObjectType: false
 	paths:
 		- src/
+	ignoreErrors:
+			- identifier: missingType.generics
+			- identifier: missingType.iterableValue
