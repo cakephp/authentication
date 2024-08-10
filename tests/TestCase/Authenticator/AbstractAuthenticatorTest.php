@@ -17,6 +17,8 @@ declare(strict_types=1);
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\AbstractAuthenticator;
+use Authentication\Authenticator\Result;
+use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 
@@ -30,7 +32,12 @@ class AbstractAuthenticatorTest extends TestCase
     public function testGetIdentifier()
     {
         $identifier = $this->createMock(IdentifierInterface::class);
-        $authenticator = $this->getMockForAbstractClass(AbstractAuthenticator::class, [$identifier]);
+        $authenticator = new class ($identifier) extends AbstractAuthenticator {
+            public function authenticate($request): Result
+            {
+                return new Result([], ResultInterface::SUCCESS);
+            }
+        };
 
         $this->assertSame($identifier, $authenticator->getIdentifier());
     }
@@ -42,11 +49,17 @@ class AbstractAuthenticatorTest extends TestCase
      */
     public function testSetIdentifier()
     {
-        $authenticator = $this->getMockForAbstractClass(AbstractAuthenticator::class, [], '', false);
-
         $identifier = $this->createMock(IdentifierInterface::class);
-        $authenticator->setIdentifier($identifier);
+        $authenticator = new class ($identifier) extends AbstractAuthenticator {
+            public function authenticate($request): Result
+            {
+                return new Result([], ResultInterface::SUCCESS);
+            }
+        };
 
-        $this->assertSame($identifier, $authenticator->getIdentifier());
+        $otherIdentifier = $this->createMock(IdentifierInterface::class);
+        $authenticator->setIdentifier($otherIdentifier);
+
+        $this->assertSame($otherIdentifier, $authenticator->getIdentifier());
     }
 }
