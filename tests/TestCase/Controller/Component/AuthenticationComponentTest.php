@@ -731,13 +731,17 @@ class AuthenticationComponentTest extends TestCase
         $this->request->getSession()->write('AuthImpersonate', $impersonator);
         $this->service->authenticate($this->request);
         $request = $this->request
-            ->withAttribute('authentication', $this->service);
+            ->withAttribute('authentication', $this->service)
+            ->withAttribute('identity', new Identity($impersonated));
         $controller = new Controller($request, $this->response);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
         $result = $component->isImpersonating();
         $this->assertTrue($result);
+
+        $component->logout();
+        $this->assertFalse($component->isImpersonating());
     }
 
     /**
@@ -749,10 +753,13 @@ class AuthenticationComponentTest extends TestCase
     {
         $service = $this->getMockBuilder(AuthenticationServiceInterface::class)->getMock();
 
-        $component = $this->createPartialMock(AuthenticationComponent::class, ['getAuthenticationService']);
-        $component->expects($this->once())
-            ->method('getAuthenticationService')
-            ->willReturn($service);
+        $user = new ArrayObject(['username' => 'mariano']);
+        $request = $this->request
+            ->withAttribute('authentication', $service)
+            ->withAttribute('identity', new Identity($user));
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
 
         $this->expectException(InvalidArgumentException::class);
         $classname = get_class($service);
