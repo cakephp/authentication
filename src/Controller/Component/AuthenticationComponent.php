@@ -445,6 +445,10 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function isImpersonating(): bool
     {
+        if (!$this->getIdentity()) {
+            return false;
+        }
+
         $service = $this->getImpersonationAuthenticationService();
         $controller = $this->getController();
 
