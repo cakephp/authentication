@@ -62,7 +62,7 @@ Token
 
 The token authenticator can authenticate a request based on a token that
 comes along with the request in the headers or in the request
-parameters.
+parameters. This requires a token column in the Users table, so comparison can be made between the received token and stored token.
 
 Configuration options:
 

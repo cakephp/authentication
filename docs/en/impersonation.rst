@@ -35,7 +35,8 @@ user from your application's database::
 
         // Enable impersonation.
         $this->Authentication->impersonate($targetUser);
-        $this->redirect($this->referer());
+
+        return $this->redirect($this->referer());
     }
 
 Once you have started to impersonate a user, all subsequent requests will have
