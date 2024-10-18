@@ -25,13 +25,14 @@ class ResolverAwareTraitTest extends TestCase
 {
     public function testBuildResolverFromClassName()
     {
-        $object = $this->getMockBuilder(ResolverAwareTrait::class)
-            ->addMethods(['getConfig'])
-            ->getMockForTrait();
+        $object = new class {
+            use ResolverAwareTrait;
 
-        $object->expects($this->once())
-            ->method('getConfig')
-            ->willReturn('Test');
+            public function getConfig()
+            {
+                return 'Test';
+            }
+        };
 
         $resolver = $object->getResolver();
         $this->assertInstanceOf(TestResolver::class, $resolver);
@@ -39,15 +40,16 @@ class ResolverAwareTraitTest extends TestCase
 
     public function testBuildResolverFromArray()
     {
-        $object = $this->getMockBuilder(ResolverAwareTrait::class)
-            ->addMethods(['getConfig'])
-            ->getMockForTrait();
+        $object = new class {
+            use ResolverAwareTrait;
 
-        $object->expects($this->once())
-            ->method('getConfig')
-            ->willReturn([
-                'className' => 'Test',
-            ]);
+            public function getConfig()
+            {
+                return [
+                    'className' => 'Test',
+                ];
+            }
+        };
 
         $resolver = $object->getResolver();
         $this->assertInstanceOf(TestResolver::class, $resolver);
@@ -57,13 +59,14 @@ class ResolverAwareTraitTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Resolver must implement `Authentication\Identifier\Resolver\ResolverInterface`.');
-        $object = $this->getMockBuilder(ResolverAwareTrait::class)
-            ->addMethods(['getConfig'])
-            ->getMockForTrait();
+        $object = new class {
+            use ResolverAwareTrait;
 
-        $object->expects($this->once())
-            ->method('getConfig')
-            ->willReturn('Invalid');
+            public function getConfig()
+            {
+                return 'Invalid';
+            }
+        };
 
         $object->getResolver();
     }
@@ -72,13 +75,14 @@ class ResolverAwareTraitTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Resolver class `Missing` does not exist.');
-        $object = $this->getMockBuilder(ResolverAwareTrait::class)
-            ->addMethods(['getConfig'])
-            ->getMockForTrait();
+        $object = new class {
+            use ResolverAwareTrait;
 
-        $object->expects($this->once())
-            ->method('getConfig')
-            ->willReturn('Missing');
+            public function getConfig()
+            {
+                return 'Missing';
+            }
+        };
 
         $object->getResolver();
     }
@@ -87,13 +91,14 @@ class ResolverAwareTraitTest extends TestCase
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Option `className` is not present.');
-        $object = $this->getMockBuilder(ResolverAwareTrait::class)
-            ->addMethods(['getConfig'])
-            ->getMockForTrait();
+        $object = new class {
+            use ResolverAwareTrait;
 
-        $object->expects($this->once())
-            ->method('getConfig')
-            ->willReturn([]);
+            public function getConfig()
+            {
+                return [];
+            }
+        };
 
         $object->getResolver();
     }
@@ -102,22 +107,23 @@ class ResolverAwareTraitTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Resolver has not been set.');
-        $object = $this->getMockBuilder(ResolverAwareTrait::class)
-            ->addMethods(['getConfig'])
-            ->getMockForTrait();
+        $object = new class {
+            use ResolverAwareTrait;
 
-        $object->expects($this->once())
-            ->method('getConfig')
-            ->willReturn(null);
+            public function getConfig()
+            {
+                return null;
+            }
+        };
 
         $object->getResolver();
     }
 
     public function testSetResolver()
     {
-        $object = $this->getMockBuilder(ResolverAwareTrait::class)
-            ->addMethods(['getConfig'])
-            ->getMockForTrait();
+        $object = new class {
+            use ResolverAwareTrait;
+        };
 
         $resolver = $this->createMock(ResolverInterface::class);
 

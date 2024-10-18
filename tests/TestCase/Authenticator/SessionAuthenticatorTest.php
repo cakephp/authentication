@@ -80,10 +80,10 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
-            ->will($this->returnValue([
+            ->willReturn([
                 'username' => 'mariano',
                 'password' => 'password',
-            ]));
+            ]);
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
@@ -106,7 +106,7 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
@@ -129,10 +129,10 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
-            ->will($this->returnValue([
+            ->willReturn([
                 'username' => 'mariano',
                 'password' => 'h45h',
-            ]));
+            ]);
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
@@ -157,10 +157,10 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock->expects($this->once())
             ->method('read')
             ->with('Auth')
-            ->will($this->returnValue([
+            ->willReturn([
                 'username' => 'does-not',
                 'password' => 'exist',
-            ]));
+            ]);
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
