@@ -13,3 +13,7 @@ phpunit.xml export-ignore
 phpcs.xml export-ignore
 /.github export-ignore
 /tests export-ignore
+phpstan.neon export-ignore
+phpstan-baseline.neon export-ignore
+psalm.xml export-ignore
+psalm-baseline.xml export-ignore
