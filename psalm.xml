@@ -26,5 +26,7 @@
         <RedundantConditionGivenDocblockType errorLevel="info" />
 
         <InvalidStringClass errorLevel="info" />
+        <RiskyTruthyFalsyComparison errorLevel="info" />
+        <MissingClassConstType errorLevel="info" />
     </issueHandlers>
 </psalm>
