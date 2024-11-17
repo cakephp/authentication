@@ -487,7 +487,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     protected function getImpersonationProvider(): ImpersonationInterface
     {
-        /** @var \Authentication\Authenticator\ImpersonationInterface $provider */
         $provider = $this->getAuthenticationProvider();
         if (!($provider instanceof ImpersonationInterface)) {
             $className = get_class($provider);

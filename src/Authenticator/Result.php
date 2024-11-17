@@ -50,7 +50,7 @@ class Result implements ResultInterface
     /**
      * Sets the result status, identity, and failure messages
      *
-     * @param null|array|\ArrayAccess $data The identity data
+     * @param null|array|\ArrayAccess|mixed $data The identity data
      * @param string $status Status constant equivalent.
      * @param array $messages Messages.
      * @throws \InvalidArgumentException When invalid identity data is passed.

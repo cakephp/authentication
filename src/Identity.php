@@ -52,7 +52,7 @@ class Identity implements IdentityInterface
     /**
      * Constructor
      *
-     * @param array|\ArrayAccess $data Identity data
+     * @param array|\ArrayAccess|mixed $data Identity data
      * @param array $config Config options
      * @throws \InvalidArgumentException When invalid identity data is passed.
      */
