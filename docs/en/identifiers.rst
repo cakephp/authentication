@@ -40,7 +40,7 @@ Configuration options:
    ``['username' => 'username', 'password' => 'password']``. You can
    also set the field name to an array. For e.g. using
    ``['login' => ['username', 'email'], 'password' => 'password']``
-   will allow you to match value of either username or email columns based on your form posted `login` field content.
+   will allow you to match value of either ``username`` or ``email`` columns based on your form posted ``login`` field content.
 -  **resolver**: The identity resolver. Default is
    ``Authentication.Orm`` which uses CakePHP ORM.
 -  **passwordHasher**: Password hasher. Default is
