@@ -38,9 +38,9 @@ Configuration options:
 
 -  **fields**: The fields for the lookup. Default is
    ``['username' => 'username', 'password' => 'password']``. You can
-   also set the ``username`` to an array. For e.g. using
-   ``['username' => ['username', 'email'], 'password' => 'password']``
-   will allow you to match value of either username or email columns.
+   also set the field name to an array. For e.g. using
+   ``['login' => ['username', 'email'], 'password' => 'password']``
+   will allow you to match value of either username or email columns based on your form posted `login` field content.
 -  **resolver**: The identity resolver. Default is
    ``Authentication.Orm`` which uses CakePHP ORM.
 -  **passwordHasher**: Password hasher. Default is
