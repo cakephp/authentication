@@ -85,6 +85,13 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
         try {
             $result = $service->authenticate($request);
+            $authenticator = $service->getAuthenticationProvider();
+
+            if ($authenticator !== null && !$authenticator instanceof StatelessInterface) {
+                assert($result->getData() !== null);
+                $service->persistIdentity($request, new Response(), $result->getData());
+            }
+
         } catch (AuthenticationRequiredException $e) {
             $body = new Stream('php://memory', 'rw');
             $body->write($e->getBody());
@@ -104,16 +111,6 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
         try {
             $response = $handler->handle($request);
-            $authenticator = $service->getAuthenticationProvider();
-
-            if ($authenticator !== null && !$authenticator instanceof StatelessInterface) {
-                /**
-                 * @psalm-suppress PossiblyNullArgument
-                 * @phpstan-ignore-next-line
-                 */
-                $return = $service->persistIdentity($request, $response, $result->getData());
-                $response = $return['response'];
-            }
         } catch (UnauthenticatedException $e) {
             $url = $service->getUnauthenticatedRedirectUrl($request);
             if ($url) {
