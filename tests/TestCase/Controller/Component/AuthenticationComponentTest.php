@@ -33,6 +33,7 @@ use Cake\Http\ServerRequestFactory;
 use Cake\ORM\Entity;
 use InvalidArgumentException;
 use TestApp\Authentication\InvalidAuthenticationService;
+use TestApp\Controller\MyController;
 use UnexpectedValueException;
 
 /**
@@ -434,6 +435,24 @@ class AuthenticationComponentTest extends TestCase
             $controller->Authentication->getUnauthenticatedActions(),
             'Should contain unique set.',
         );
+    }
+
+    /**
+     * test unauthenticated actions methods
+     *
+     * @return void
+     */
+    public function testUnauthenticatedAll()
+    {
+        $request = $this->request
+            ->withParam('action', 'view')
+            ->withAttribute('authentication', $this->service);
+
+        $controller = new MyController($request);
+        $controller->loadComponent('Authentication.Authentication');
+
+        $controller->Authentication->allowUnauthenticatedAll();
+        $this->assertSame(['index', 'fooBar'], $controller->Authentication->getUnauthenticatedActions());
     }
 
     /**

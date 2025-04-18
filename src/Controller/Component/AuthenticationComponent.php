@@ -193,6 +193,23 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * Set the list of actions that don't require an authentication identity to be present.
      *
+     * @return $this
+     */
+    public function allowUnauthenticatedAll()
+    {
+        $controller = $this->getController();
+        $methods = get_class_methods($controller);
+        $baseMethods = get_class_methods(get_parent_class($controller));
+
+        $actions = array_diff($methods, $baseMethods);
+        $this->unauthenticatedActions = array_values($actions);
+
+        return $this;
+    }
+
+    /**
+     * Set the list of actions that don't require an authentication identity to be present.
+     *
      * Actions not in this list will require an identity to be present. Any
      * valid identity will pass this constraint.
      *
