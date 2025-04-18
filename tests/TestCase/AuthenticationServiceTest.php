@@ -388,6 +388,52 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
         $this->assertSame(
+            '{"username":"florian"}',
+            $result['request']->getAttribute('session')->read('Auth'),
+        );
+
+        $identity = $result['request']->getAttribute('identity');
+        $this->assertInstanceOf(IdentityInterface::class, $identity);
+        $this->assertEquals($data, $identity->getOriginalData());
+    }
+
+    /**
+     * testPersistIdentity
+     *
+     * @return void
+     */
+    public function testPersistIdentitySerializeFalse()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Session' => [
+                    'serialize' => false,
+                ],
+                'Authentication.Form',
+            ],
+        ]);
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/'],
+        );
+
+        $response = new Response();
+
+        $this->assertEmpty($request->getAttribute('identity'));
+
+        $data = new ArrayObject(['username' => 'florian']);
+        $result = $service->persistIdentity($request, $response, $data);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('request', $result);
+        $this->assertArrayHasKey('response', $result);
+        $this->assertInstanceOf(RequestInterface::class, $result['request']);
+        $this->assertInstanceOf(ResponseInterface::class, $result['response']);
+
+        $this->assertSame(
             'florian',
             $result['request']->getAttribute('session')->read('Auth.username'),
         );
@@ -434,8 +480,8 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
         $this->assertSame(
-            'florian',
-            $result['request']->getAttribute('session')->read('Auth.username'),
+            '{"username":"florian"}',
+            $result['request']->getAttribute('session')->read('Auth'),
         );
 
         $identity = $result['request']->getAttribute('customIdentity');
@@ -482,8 +528,8 @@ class AuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $result['response']);
 
         $this->assertSame(
-            'florian',
-            $result['request']->getAttribute('session')->read('Auth.username'),
+            '{"username":"florian"}',
+            $result['request']->getAttribute('session')->read('Auth'),
         );
 
         $identity = $result['request']->getAttribute('customIdentity');

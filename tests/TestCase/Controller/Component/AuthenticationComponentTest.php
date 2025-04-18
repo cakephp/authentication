@@ -20,6 +20,7 @@ use ArrayObject;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
+use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\Controller\Component\AuthenticationComponent;
 use Authentication\Identity;
@@ -255,8 +256,8 @@ class AuthenticationComponentTest extends TestCase
         $result = $component->getIdentity();
         $this->assertSame($this->identityData, $result->getOriginalData());
         $this->assertSame(
-            $this->identityData->username,
-            $request->getSession()->read('Auth.username'),
+            '{"username":"florian","profession":"developer"}',
+            $request->getSession()->read('Auth'),
             'Session should be updated.',
         );
 
@@ -267,8 +268,8 @@ class AuthenticationComponentTest extends TestCase
         $result = $component->getIdentity();
         $this->assertSame($newIdentity, $result->getOriginalData());
         $this->assertSame(
-            $newIdentity->username,
-            $request->getSession()->read('Auth.username'),
+            '{"username":"jessie"}',
+            $request->getSession()->read('Auth'),
             'Session should be updated.',
         );
     }
@@ -568,17 +569,17 @@ class AuthenticationComponentTest extends TestCase
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $impersonated = new ArrayObject(['username' => 'larry']);
-        $this->request->getSession()->write('Auth', $impersonator);
+        $this->request->getSession()->write('Auth', SessionAuthenticator::encode($impersonator));
         $this->service->authenticate($this->request);
         $identity = new Identity($impersonator);
         $request = $this->request
             ->withAttribute('identity', $identity)
             ->withAttribute('authentication', $this->service);
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
-        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertEquals(SessionAuthenticator::encode($impersonator), $controller->getRequest()->getSession()->read('Auth'));
         $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
 
         $component->impersonate($impersonated);
@@ -605,7 +606,7 @@ class AuthenticationComponentTest extends TestCase
         $request = $this->request
             ->withAttribute('identity', $identity)
             ->withAttribute('authentication', $this->service);
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -630,7 +631,7 @@ class AuthenticationComponentTest extends TestCase
         $impersonated = new ArrayObject(['username' => 'larry']);
         $request = $this->request
             ->withAttribute('authentication', $this->service);
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
         $this->expectException(UnauthenticatedException::class);
@@ -659,7 +660,7 @@ class AuthenticationComponentTest extends TestCase
         $request = $this->request
             ->withAttribute('identity', $identity)
             ->withAttribute('authentication', $service);
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
         $this->expectException(UnexpectedValueException::class);
@@ -676,18 +677,18 @@ class AuthenticationComponentTest extends TestCase
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $impersonated = new ArrayObject(['username' => 'larry']);
-        $this->request->getSession()->write('Auth', $impersonated);
-        $this->request->getSession()->write('AuthImpersonate', $impersonator);
+        $this->request->getSession()->write('Auth', SessionAuthenticator::encode($impersonated));
+        $this->request->getSession()->write('AuthImpersonate', SessionAuthenticator::encode($impersonator));
         $this->service->authenticate($this->request);
         $request = $this->request->withAttribute('authentication', $this->service);
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('AuthImpersonate'));
-        $this->assertEquals($impersonated, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertEquals(SessionAuthenticator::encode($impersonator), $controller->getRequest()->getSession()->read('AuthImpersonate'));
+        $this->assertEquals(SessionAuthenticator::encode($impersonated), $controller->getRequest()->getSession()->read('Auth'));
         $component->stopImpersonating();
         $this->assertNull($controller->getRequest()->getSession()->read('AuthImpersonate'));
-        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertEquals(SessionAuthenticator::encode($impersonator), $controller->getRequest()->getSession()->read('Auth'));
     }
 
     /**
@@ -710,7 +711,7 @@ class AuthenticationComponentTest extends TestCase
         $request = $this->request
             ->withAttribute('identity', $identity)
             ->withAttribute('authentication', $service);
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
         $this->expectException(UnexpectedValueException::class);
@@ -727,13 +728,13 @@ class AuthenticationComponentTest extends TestCase
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $impersonated = new ArrayObject(['username' => 'larry']);
-        $this->request->getSession()->write('Auth', $impersonated);
-        $this->request->getSession()->write('AuthImpersonate', $impersonator);
+        $this->request->getSession()->write('Auth', SessionAuthenticator::encode($impersonated));
+        $this->request->getSession()->write('AuthImpersonate', SessionAuthenticator::encode($impersonator));
         $this->service->authenticate($this->request);
         $request = $this->request
             ->withAttribute('authentication', $this->service)
             ->withAttribute('identity', new Identity($impersonated));
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -757,7 +758,7 @@ class AuthenticationComponentTest extends TestCase
         $request = $this->request
             ->withAttribute('authentication', $service)
             ->withAttribute('identity', new Identity($user));
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 
@@ -775,10 +776,10 @@ class AuthenticationComponentTest extends TestCase
     public function testIsImpersonatingNotImpersonating()
     {
         $user = new ArrayObject(['username' => 'mariano']);
-        $this->request->getSession()->write('Auth', $user);
+        $this->request->getSession()->write('Auth', SessionAuthenticator::encode($user));
         $this->service->authenticate($this->request);
         $request = $this->request->withAttribute('authentication', $this->service);
-        $controller = new Controller($request, $this->response);
+        $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
 

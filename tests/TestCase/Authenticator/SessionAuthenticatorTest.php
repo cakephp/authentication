@@ -202,7 +202,7 @@ class SessionAuthenticatorTest extends TestCase
         $this->sessionMock
             ->expects($this->once())
             ->method('write')
-            ->with('Auth', $data);
+            ->with('Auth', SessionAuthenticator::encode($data));
 
         $result = $authenticator->persistIdentity($request, $response, $data);
         $this->assertIsArray($result);

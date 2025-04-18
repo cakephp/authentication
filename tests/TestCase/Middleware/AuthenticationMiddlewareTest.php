@@ -20,6 +20,7 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\ResultInterface;
+use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
@@ -290,7 +291,8 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertTrue($this->service->getResult()->isValid());
 
         // After the middleware is done session should be populated
-        $this->assertSame('mariano', $request->getAttribute('session')->read('Auth.username'));
+        $user = SessionAuthenticator::decode($request->getAttribute('session')->read('Auth'));
+        $this->assertSame('mariano', $user['username']);
     }
 
     /**

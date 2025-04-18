@@ -15,7 +15,6 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use App\Model\Entity\User;
 use ArrayAccess;
 use ArrayObject;
 use Authentication\Identifier\AbstractIdentifier;
@@ -33,7 +32,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      * Default config for this object.
      * - `fields` The fields to use to verify a user by.
      * - `sessionKey` Session key.
-     * - `identify` Whether or not to identify user data stored in a session. This is
+     * - `identify` Whether to identify user data stored in a session. This is
      *   useful if you want to remotely end sessions that have a different password stored,
      *   or if your identification logic needs additional conditions before a user can login.
      *
@@ -47,6 +46,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         'impersonateSessionKey' => 'AuthImpersonate',
         'identify' => false,
         'identityAttribute' => 'identity',
+        'serialize' => true,
     ];
 
     /**
@@ -62,10 +62,18 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         $session = $request->getAttribute('session');
         $user = $session->read($sessionKey);
         if ($user) {
-            $userArray = json_decode($user, true);
-            $user = TableRegistry::getTableLocator()->get('Users')->newEntity($userArray, ['validate' => false]);
-            $user->id = $userArray['id'];
-            $user->setNew(false);
+            $userArray = $user;
+            if (is_string($userArray)) {
+                $userArray = static::decode($userArray);
+            }
+            if (!$userArray instanceof ArrayObject) {
+                /** @var \Cake\ORM\Entity $user */
+                $user = TableRegistry::getTableLocator()->get('Users')->newEntity($userArray, ['validate' => false]);
+                $user->id = $userArray['id'];
+                $user->setNew(false);
+            } else {
+                $user = $userArray;
+            }
         }
 
         if (empty($user)) {
@@ -102,8 +110,10 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 
         if (!$session->check($sessionKey)) {
             $session->renew();
-            $value = json_encode($identity, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
-            $session->write($sessionKey, $value);
+            if ($this->getConfig('serialize')) {
+                $identity = static::encode($identity);
+            }
+            $session->write($sessionKey, $identity);
         }
 
         return [
@@ -203,5 +213,24 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         $session = $request->getAttribute('session');
 
         return $session->check($impersonateSessionKey);
+    }
+
+    /**
+     * @param \ArrayAccess|array $user
+     * @return string
+     * @throws \JsonException
+     */
+    public static function encode(ArrayAccess|array $user): string
+    {
+        return json_encode($user, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @param string $user
+     * @return array
+     */
+    public static function decode(string $user): array
+    {
+        return json_decode($user, true);
     }
 }
