@@ -84,7 +84,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
         $this->identifiers = new IdentifierCollection([
             'Authentication.Token' => [
                 'tokenField' => 'id',
-                'dataField' => 'id',
+                'dataField' => 'key',
                 'resolver' => [
                     'className' => 'Authentication.Orm',
                     'userModel' => 'AuthUsers',
@@ -121,7 +121,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
         $this->identifiers = new IdentifierCollection([
             'Authentication.Token' => [
                 'tokenField' => 'id',
-                'dataField' => 'id',
+                'dataField' => 'key',
                 'resolver' => [
                     'className' => 'Authentication.Orm',
                     'userModel' => 'AuthUsers',

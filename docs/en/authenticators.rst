@@ -37,12 +37,22 @@ It also helps to avoid session invalidation.
 Session itself stores the entity object including nested objects like DateTime or enums.
 With only the ID stored, the invalidation due to objects being modified will also dissolve.
 
-Make sure to match this with a Token identifier with ``id`` keys:
+Make sure to match this with a Token identifier with ``key``/``id`` keys::
 
     $service->loadIdentifier('Authentication.Token', [
-        'tokenField' => 'id',
-        'dataField' => 'id',
+        'tokenField' => 'id', // lookup for DB table
+        'dataField' => 'key', // incoming data
         'resolver' => 'Authentication.Orm',
+    ]);
+
+    $service->loadAuthenticator('Authentication.PrimaryKeySession', [
+        'urlChecker' => 'Authentication.CakeRouter',
+        'loginUrl' => [
+            'prefix' => false,
+            'plugin' => false,
+            'controller' => 'Users',
+            'action' => 'login',
+        ],
     ]);
 
 Form
