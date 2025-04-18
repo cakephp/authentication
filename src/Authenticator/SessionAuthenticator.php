@@ -15,10 +15,12 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use App\Model\Entity\User;
 use ArrayAccess;
 use ArrayObject;
 use Authentication\Identifier\AbstractIdentifier;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\ORM\TableRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -59,6 +61,8 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         $user = $session->read($sessionKey);
+        $user = json_decode($user, true);
+        $user = TableRegistry::getTableLocator()->get('Users')->newEntity($user, ['validate' => false]);
 
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
@@ -94,7 +98,8 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 
         if (!$session->check($sessionKey)) {
             $session->renew();
-            $session->write($sessionKey, $identity);
+            $value = json_encode($identity);
+            $session->write($sessionKey, $value);
         }
 
         return [
