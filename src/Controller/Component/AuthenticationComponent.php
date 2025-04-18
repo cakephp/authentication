@@ -199,7 +199,9 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $controller = $this->getController();
         $methods = get_class_methods($controller);
-        $baseMethods = get_class_methods(get_parent_class($controller));
+        /** @var class-string<\Cake\Controller\Controller> $parentClass */
+        $parentClass = get_parent_class($controller);
+        $baseMethods = get_class_methods($parentClass);
 
         $actions = array_diff($methods, $baseMethods);
         $this->unauthenticatedActions = array_values($actions);
