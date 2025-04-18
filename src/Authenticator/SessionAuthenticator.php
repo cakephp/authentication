@@ -61,8 +61,12 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
         $user = $session->read($sessionKey);
-        $user = json_decode($user, true);
-        $user = TableRegistry::getTableLocator()->get('Users')->newEntity($user, ['validate' => false]);
+        if ($user) {
+            $userArray = json_decode($user, true);
+            $user = TableRegistry::getTableLocator()->get('Users')->newEntity($userArray, ['validate' => false]);
+            $user->id = $userArray['id'];
+            $user->setNew(false);
+        }
 
         if (empty($user)) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
@@ -98,7 +102,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 
         if (!$session->check($sessionKey)) {
             $session->renew();
-            $value = json_encode($identity);
+            $value = json_encode($identity, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
             $session->write($sessionKey, $value);
         }
 
