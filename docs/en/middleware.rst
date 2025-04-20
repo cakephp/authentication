@@ -42,18 +42,21 @@ inspecting the request object you can configure authentication appropriately::
         $service = new AuthenticationService();
         if (strpos($path, '/api') === 0) {
             // Accept API tokens only
-            $service->loadAuthenticator('Authentication.Token');
-            $service->loadIdentifier('Authentication.Token');
+            $service->loadAuthenticator('Authentication.Token', [
+                'identifier' => 'Authentication.Token',
+            ]);
 
             return $service;
         }
 
         // Web authentication
         // Support sessions and form login.
-        $service->loadAuthenticator('Authentication.Session');
-        $service->loadAuthenticator('Authentication.Form');
-
-        $service->loadIdentifier('Authentication.Password');
+        $service->loadAuthenticator('Authentication.Session', [
+            'identifier' => 'Authentication.Password',
+        ]);
+        $service->loadAuthenticator('Authentication.Form', [
+            'identifier' => 'Authentication.Password',
+        ]);
 
         return $service;
     }

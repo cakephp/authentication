@@ -41,20 +41,22 @@ algorithm to another, this is achieved through the
 Legacy password to the Default bcrypt hasher, you can configure the
 fallback hasher as follows::
 
-   $service->loadIdentifier('Authentication.Password', [
-       // Other config options
-       'passwordHasher' => [
-           'className' => 'Authentication.Fallback',
-           'hashers' => [
-               'Authentication.Default',
-               [
-                   'className' => 'Authentication.Legacy',
-                   'hashType' => 'md5',
-                   'salt' => false // turn off default usage of salt
-               ],
-           ]
-       ]
-   ]);
+    $passwordIdentifier = [
+        'Authentication.Password', [
+            // Other config options
+            'passwordHasher' => [
+                'className' => 'Authentication.Fallback',
+                'hashers' => [
+                    'Authentication.Default',
+                    [
+                        'className' => 'Authentication.Legacy',
+                        'hashType' => 'md5',
+                        'salt' => false, // turn off default usage of salt
+                    ],
+                ]
+            ]
+        ],
+    ];
 
 Then in your login action you can use the authentication service to
 access the ``Password`` identifier and check if the current user’s
@@ -72,7 +74,7 @@ password needs to be upgraded::
                // Rehash happens on save.
                $user = $this->Users->get($authentication->getIdentity()->getIdentifier());
                $user->password = $this->request->getData('password');
-               $this->Users->save($user);
+               $this->Users->saveOrFail($user);
            }
 
            // Redirect or display a template.

@@ -94,13 +94,23 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
             'queryParam' => 'redirect',
         ]);
 
+        // Define identifiers
         $fields = [
             AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
             AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
         ];
+        $passwordIdentifier = [
+            'Authentication.Password', [
+                'fields' => $fields,
+            ],
+        ];
+
         // Load the authenticators. Session should be first.
-        $service->loadAuthenticator('Authentication.Session');
+        $service->loadAuthenticator('Authentication.Session', [
+            'identifier' => $passwordIdentifier,
+        ]);
         $service->loadAuthenticator('Authentication.Form', [
+            'identifier' => $passwordIdentifier,
             'fields' => $fields,
             'loginUrl' => Router::url([
                 'prefix' => false,
@@ -109,9 +119,6 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
                 'action' => 'login',
             ]),
         ]);
-
-        // Load identifiers
-        $service->loadIdentifier('Authentication.Password', compact('fields'));
 
         return $service;
     }

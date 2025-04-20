@@ -84,11 +84,23 @@ class SessionAuthenticatorTest extends TestCase
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator($this->identifiers);
+        $authenticator = new SessionAuthenticator(new IdentifierCollection(), [
+            'identifier' => 'Authentication.Password',
+        ]);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * Test authentication
+     *
+     * @return void
+     */
+    public function testAuthenticateSuccessWithoutCollection()
+    {
+
     }
 
     /**

@@ -134,35 +134,43 @@ You’ll now have to configure it this way::
    // Instantiate the service
    $service = new AuthenticationService();
 
-   // Load identifiers
-   $service->loadIdentifier('Authentication.Password', [
-       'fields' => [
-           'username' => 'email',
-           'password' => 'password',
-       ]
-   ]);
+   // Define identifier
+    $passwordIdentifier = [
+        'Authentication.Password', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
+            ]
+        ],
+    ];
 
-   // Load the authenticators
-   $service->loadAuthenticator('Authentication.Session');
-   $service->loadAuthenticator('Authentication.Form');
+    // Load the authenticators
+    $service->loadAuthenticator('Authentication.Session', [
+        'identifier' => $passwordIdentifier,
+    ]);
+    $service->loadAuthenticator('Authentication.Form', [
+        'identifier' => $passwordIdentifier,
+    ]);
 
 If you have customized the ``userModel`` you can use the following
 configuration::
 
-   // Instantiate the service
-   $service = new AuthenticationService();
+    // Instantiate the service
+    $service = new AuthenticationService();
 
-   // Load identifiers
-   $service->loadIdentifier('Authentication.Password', [
-       'resolver' => [
-           'className' => 'Authentication.Orm',
-           'userModel' => 'Employees',
-       ],
-       'fields' => [
-           'username' => 'email',
-           'password' => 'password',
-       ]
-   ]);
+    // Define identifier
+    $passwordIdentifier = [
+        'Authentication.Password', [
+             'resolver' => [
+                'className' => 'Authentication.Orm',
+                'userModel' => 'Employees',
+            ],
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
+            ]
+        ],
+    ];
 
 While there is a bit more code than before, you have more flexibility in
 how your authentication is handled.

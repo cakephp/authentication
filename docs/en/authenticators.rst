@@ -139,8 +139,8 @@ Add the following to your ``Application`` class::
     {
         $service = new AuthenticationService();
         // ...
-        $service->loadIdentifier('Authentication.JwtSubject');
         $service->loadAuthenticator('Authentication.Jwt', [
+            'identifier' => 'Authentication.JwtSubject',
             'secretKey' => file_get_contents(CONFIG . '/jwt.key'),
             'algorithm' => 'RS256',
             'returnPayload' => false
@@ -180,7 +180,6 @@ Using a JWKS fetched from an external JWKS endpoint is supported as well::
     {
         $service = new AuthenticationService();
         // ...
-        $service->loadIdentifier('Authentication.JwtSubject');
 
         $jwksUrl = 'https://appleid.apple.com/auth/keys';
 
@@ -193,6 +192,7 @@ Using a JWKS fetched from an external JWKS endpoint is supported as well::
         });
 
         $service->loadAuthenticator('Authentication.Jwt', [
+            'identifier' => 'Authentication.JwtSubject',
             'jwks' => $jsonWebKeySet,
             'returnPayload' => false
         ]);
@@ -335,14 +335,18 @@ authentication cookie is **also destroyed**. An example configuration would be::
     // Put form authentication first so that users can re-login via
     // the login form if necessary.
     $service->loadAuthenticator('Authentication.Form', [
+        'identifier' => 'Authentication.Password',
         'fields' => $fields,
         'loginUrl' => '/users/login',
     ]);
     // Then use sessions if they are active.
-    $service->loadAuthenticator('Authentication.Session');
+    $service->loadAuthenticator('Authentication.Session', [
+        'identifier' => 'Authentication.Password',
+    ]);
 
     // If the user is on the login page, check for a cookie as well.
     $service->loadAuthenticator('Authentication.Cookie', [
+        'identifier' => 'Authentication.Password',
         'fields' => $fields,
         'loginUrl' => '/users/login',
     ]);
@@ -366,12 +370,15 @@ and similar SAML 1.1 implementations. An example configuration is::
 
     // Configure a token identifier that maps `USER_ID` to the
     // username column
-    $service->loadIdentifier('Authentication.Token', [
-        'tokenField' => 'username',
-        'dataField' => 'USER_NAME',
-    ]);
+    $identifier = [
+        'Authentication.Token', [
+            'tokenField' => 'username',
+            'dataField' => 'USER_NAME',
+        ],
+    ];
 
     $service->loadAuthenticator('Authentication.Environment', [
+        'identifier' => $identifier,
         'loginUrl' => '/sso',
         'fields' => [
             // Choose which environment variables exposed by your
@@ -477,19 +484,26 @@ authenticators must send specific challenge headers in the response::
     // Instantiate the service
     $service = new AuthenticationService();
 
-    // Load identifiers
-    $service->loadIdentifier('Authentication.Password', [
-        'fields' => [
-            'username' => 'email',
-            'password' => 'password'
-        ]
-    ]);
-    $service->loadIdentifier('Authentication.Token');
+    // Define identifiers
+    $passwordIdentifier = [
+        'Authentication.Password', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password'
+            ]
+        ],
+    ];
 
     // Load the authenticators leaving Basic as the last one.
-    $service->loadAuthenticator('Authentication.Session');
-    $service->loadAuthenticator('Authentication.Form');
-    $service->loadAuthenticator('Authentication.HttpBasic');
+    $service->loadAuthenticator('Authentication.Session', [
+        'identifier' => $passwordIdentifier,
+    ]);
+    $service->loadAuthenticator('Authentication.Form', [
+        'identifier' => $passwordIdentifier,
+    ]);
+    $service->loadAuthenticator('Authentication.HttpBasic', [
+        'identifier' => 'Authentication.Token',
+    ]);
 
 If you want to combine ``HttpBasic`` or ``HttpDigest`` with other
 authenticators, be aware that these authenticators will abort the request and

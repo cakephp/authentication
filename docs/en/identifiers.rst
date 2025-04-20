@@ -6,27 +6,29 @@ that was extracted from the request by the authenticators. Identifiers
 can take options in the ``loadIdentifier`` method. A holistic example of
 using the Password Identifier looks like::
 
-   $service->loadIdentifier('Authentication.Password', [
-       'fields' => [
-           'username' => 'email',
-           'password' => 'passwd',
-       ],
-       'resolver' => [
-           'className' => 'Authentication.Orm',
-           'userModel' => 'Users',
-           'finder' => 'active', // default: 'all'
-       ],
-       'passwordHasher' => [
-           'className' => 'Authentication.Fallback',
-           'hashers' => [
-               'Authentication.Default',
-               [
-                   'className' => 'Authentication.Legacy',
-                   'hashType' => 'md5',
-               ],
+    $identifier = [
+        'Authentication.Password', [
+            'fields' => [
+               'username' => 'email',
+               'password' => 'passwd',
            ],
-       ],
-   ]);
+           'resolver' => [
+               'className' => 'Authentication.Orm',
+               'userModel' => 'Users',
+               'finder' => 'active', // default: 'all'
+           ],
+           'passwordHasher' => [
+               'className' => 'Authentication.Fallback',
+               'hashers' => [
+                    'Authentication.Default',
+                    [
+                        'className' => 'Authentication.Legacy',
+                        'hashType' => 'md5',
+                    ],
+                ],
+            ],
+        ],
+    ];
 
 Password
 ========
@@ -60,7 +62,7 @@ Configuration options:
 -  **resolver**: The identity resolver. Default is
    ``Authentication.Orm`` which uses CakePHP ORM.
 -  **hashAlgorithm**: The algorithm used to hash the incoming token
-   with before compairing it to the ``tokenField``. Recommended value is
+   with before comparing it to the ``tokenField``. Recommended value is
    ``sha256``. Default is ``null``.
 
 JWT Subject
@@ -119,36 +121,39 @@ or an ``Authentication\Authenticator\Result`` if you want to forward error
 messages::
 
     // A simple callback identifier
-    $authenticationService->loadIdentifier('Authentication.Callback', [
-        'callback' => function($data) {
-            // do identifier logic
+    $identifier = [
+        'Authentication.Callback' => [
+            'callback' => function($data) {
+                // do identifier logic
 
-            // Return an array of the identified user or null for failure.
-            if ($result) {
-                return $result;
-            }
+                // Return an array of the identified user or null for failure.
+                if ($result) {
+                    return $result;
+                }
 
-            return null;
-        },
-    ]);
+                return null;
+            },
+        ]
+    ];
 
     // Using a result object to return error messages.
-    $authenticationService->loadIdentifier('Authentication.Callback', [
-        'callback' => function($data) {
-            // do identifier logic
+    $identifier = [
+        'Authentication.Callback', [
+            'callback' => function($data) {
+                // do identifier logic
 
-            if ($result) {
-                return new Result($result, Result::SUCCESS);
-            }
+                if ($result) {
+                    return new Result($result, Result::SUCCESS);
+                }
 
-            return new Result(
-                null,
-                Result::FAILURE_OTHER,
-                ['message' => 'Removed user.']
-            );
-        },
-    ]);
-
+                return new Result(
+                    null,
+                    Result::FAILURE_OTHER,
+                    ['message' => 'Removed user.']
+                );
+            },
+        ];
+    ];
 
 Identity resolvers
 ==================
@@ -183,17 +188,29 @@ reside under ``App\Identifier\Resolver`` namespace.
 
 Resolver can be configured using ``resolver`` config option::
 
-   $service->loadIdentifier('Authentication.Password', [
-       'resolver' => [
-            // can be a full class name: \Some\Other\Custom\Resolver::class
-           'className' => 'MyResolver',
-           // Pass additional options to the resolver constructor.
-           'option' => 'value',
-       ],
-   ]);
+    $identifier = [
+        'Authentication.Password', [
+            'resolver' => [
+                // can be a full class name: \Some\Other\Custom\Resolver::class
+                'className' => 'MyResolver',
+                // Pass additional options to the resolver constructor.
+                'option' => 'value',
+            ],
+        ];
+    ];
 
 Or injected using a setter::
 
    $resolver = new \App\Identifier\Resolver\CustomResolver();
    $identifier = $service->loadIdentifier('Authentication.Password');
    $identifier->setResolver($resolver);
+
+3.3.0 Deprecated.
+
+Use object injection then:
+
+    $resolver = new \App\Identifier\Resolver\CustomResolver();
+    $identifier = [
+        'Authentication.Password', [
+            'resolver' => $resolver;
+    ];
