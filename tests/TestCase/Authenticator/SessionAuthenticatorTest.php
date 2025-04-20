@@ -153,6 +153,34 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
+    public function testAuthenticateSuccessWithDirectCollection()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+
+        $this->sessionMock->expects($this->once())
+            ->method('read')
+            ->with('Auth')
+            ->willReturn([
+                'username' => 'mariano',
+                'password' => 'password',
+            ]);
+
+        $request = $request->withAttribute('session', $this->sessionMock);
+
+        $authenticator = new SessionAuthenticator(new IdentifierCollection(), [
+            'identifier' => new IdentifierCollection(['Authentication.Password']),
+        ]);
+        $result = $authenticator->authenticate($request);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * Test authentication
+     *
+     * @return void
+     */
     public function testAuthenticateFailure()
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
