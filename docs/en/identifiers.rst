@@ -205,9 +205,7 @@ Or injected using a setter::
    $identifier = $service->loadIdentifier('Authentication.Password');
    $identifier->setResolver($resolver);
 
-3.3.0 Deprecated.
-
-Use object injection then:
+As of 3.3.0, you should pass the constructed resolver into the identifier::
 
     $resolver = new \App\Identifier\Resolver\CustomResolver();
     $identifier = [
