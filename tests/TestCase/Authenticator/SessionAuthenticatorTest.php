@@ -20,6 +20,7 @@ use ArrayObject;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
@@ -84,6 +85,32 @@ class SessionAuthenticatorTest extends TestCase
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
+        $authenticator = new SessionAuthenticator($this->identifiers);
+        $result = $authenticator->authenticate($request);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * Test authentication
+     *
+     * @return void
+     */
+    public function testAuthenticateSuccessWithoutCollection()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+
+        $this->sessionMock->expects($this->once())
+            ->method('read')
+            ->with('Auth')
+            ->willReturn([
+                'username' => 'mariano',
+                'password' => 'password',
+            ]);
+
+        $request = $request->withAttribute('session', $this->sessionMock);
+
         $authenticator = new SessionAuthenticator(new IdentifierCollection(), [
             'identifier' => 'Authentication.Password',
         ]);
@@ -98,9 +125,27 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateSuccessWithoutCollection()
+    public function testAuthenticateSuccessWithoutCollectionButObject()
     {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
+        $this->sessionMock->expects($this->once())
+            ->method('read')
+            ->with('Auth')
+            ->willReturn([
+                'username' => 'mariano',
+                'password' => 'password',
+            ]);
+
+        $request = $request->withAttribute('session', $this->sessionMock);
+
+        $authenticator = new SessionAuthenticator(new IdentifierCollection(), [
+            'identifier' => new PasswordIdentifier(),
+        ]);
+        $result = $authenticator->authenticate($request);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
     }
 
     /**
