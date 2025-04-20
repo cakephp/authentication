@@ -44,7 +44,10 @@ class AuthenticatorCollection extends AbstractCollection
     {
         $this->_identifiers = $identifiers;
         if ($identifiers->count() > 0) {
-            deprecationWarning('3.3.0', 'Directly pass Identifier to Authenticator.');
+            deprecationWarning(
+                '3.3.0',
+                'loadIdentifier() usage is deprecated. Directly pass Identifier to Authenticator.',
+            );
         }
 
         parent::__construct($config);
@@ -67,7 +70,7 @@ class AuthenticatorCollection extends AbstractCollection
             } else {
                 deprecationWarning(
                     '3.3.0',
-                    'IdentifierCollection is deprecated. Directly pass `\'identifier\'` config to Authenticator.',
+                    'loadIdentifier() usage is deprecated. Directly pass `\'identifier\'` config to Authenticator.',
                 );
             }
 

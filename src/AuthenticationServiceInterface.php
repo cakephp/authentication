@@ -39,6 +39,7 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * @param string $name Name or class name.
      * @param array $config Identifier configuration.
      * @return \Authentication\Identifier\IdentifierInterface
+     * @deprecated 3.3.0: loadIdentifier() usage is deprecated. Directly pass Identifier to Authenticator.
      */
     public function loadIdentifier(string $name, array $config = []): IdentifierInterface;
 
