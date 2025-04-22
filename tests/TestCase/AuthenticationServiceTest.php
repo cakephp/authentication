@@ -45,7 +45,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticate()
+    public function testAuthenticateDeprecated()
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -59,6 +59,38 @@ class AuthenticationServiceTest extends TestCase
             ],
             'authenticators' => [
                 'Authentication.Form',
+            ],
+        ]);
+
+        $result = $service->authenticate($request);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertTrue($result->isValid());
+
+        $result = $service->getAuthenticationProvider();
+        $this->assertInstanceOf(FormAuthenticator::class, $result);
+
+        $identifier = $service->getIdentificationProvider();
+        $this->assertInstanceOf(PasswordIdentifier::class, $identifier);
+    }
+
+    /**
+     * testAuthenticate
+     *
+     * @return void
+     */
+    public function testAuthenticate()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password'],
+        );
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Form' => [
+                    'identifier' => 'Authentication.Password',
+                ],
             ],
         ]);
 

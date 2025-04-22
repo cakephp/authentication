@@ -18,6 +18,7 @@ namespace Authentication\Authenticator;
 
 use Authentication\AbstractCollection;
 use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\App;
 use RuntimeException;
 use function Cake\Core\deprecationWarning;
@@ -54,6 +55,14 @@ class AuthenticatorCollection extends AbstractCollection
     }
 
     /**
+     * @return \Authentication\Identifier\IdentifierInterface|null
+     */
+    public function getIdentificationProvider(): ?IdentifierInterface
+    {
+        return $this->_identifiers->getIdentificationProvider();
+    }
+
+    /**
      * Creates authenticator instance.
      *
      * @param \Authentication\Authenticator\AuthenticatorInterface|class-string<\Authentication\Authenticator\AuthenticatorInterface> $class Authenticator class.
@@ -66,7 +75,7 @@ class AuthenticatorCollection extends AbstractCollection
     {
         if (is_string($class)) {
             if (!empty($config['identifier'])) {
-                $this->_identifiers = new IdentifierCollection($config['identifier']);
+                $this->_identifiers = new IdentifierCollection((array)$config['identifier']);
             } else {
                 deprecationWarning(
                     '3.3.0',

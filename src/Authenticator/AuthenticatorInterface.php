@@ -18,6 +18,9 @@ namespace Authentication\Authenticator;
 
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @method \Authentication\Identifier\IdentifierInterface getIdentifier()
+ */
 interface AuthenticatorInterface
 {
     /**

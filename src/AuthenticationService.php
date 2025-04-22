@@ -287,7 +287,16 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function getIdentificationProvider(): ?IdentifierInterface
     {
-        return $this->identifiers()->getIdentificationProvider();
+        if ($this->_successfulAuthenticator === null) {
+            return null;
+        }
+
+        $identifier = $this->_successfulAuthenticator->getIdentifier();
+        if ($identifier instanceof IdentifierCollection) {
+            return $identifier->getIdentificationProvider();
+        }
+
+        return $identifier;
     }
 
     /**
