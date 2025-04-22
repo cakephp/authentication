@@ -18,7 +18,6 @@ namespace Authentication\Authenticator;
 
 use Authentication\AbstractCollection;
 use Authentication\Identifier\IdentifierCollection;
-use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\App;
 use RuntimeException;
 use function Cake\Core\deprecationWarning;
@@ -52,14 +51,6 @@ class AuthenticatorCollection extends AbstractCollection
         }
 
         parent::__construct($config);
-    }
-
-    /**
-     * @return \Authentication\Identifier\IdentifierInterface|null
-     */
-    public function getIdentificationProvider(): ?IdentifierInterface
-    {
-        return $this->_identifiers->getIdentificationProvider();
     }
 
     /**
