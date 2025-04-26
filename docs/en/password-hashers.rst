@@ -47,8 +47,7 @@ fallback hasher as follows::
             'passwordHasher' => [
                 'className' => 'Authentication.Fallback',
                 'hashers' => [
-                    'Authentication.Default',
-                    [
+                    'Authentication.Default' => [
                         'className' => 'Authentication.Legacy',
                         'hashType' => 'md5',
                         'salt' => false, // turn off default usage of salt
