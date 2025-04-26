@@ -100,7 +100,7 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
             AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
         ];
         $passwordIdentifier = [
-            'Authentication.Password', [
+            'Authentication.Password' => [
                 'fields' => $fields,
             ],
         ];
