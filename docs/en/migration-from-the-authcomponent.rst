@@ -136,7 +136,7 @@ You’ll now have to configure it this way::
 
    // Define identifier
     $passwordIdentifier = [
-        'Authentication.Password', [
+        'Authentication.Password' => [
             'fields' => [
                 'username' => 'email',
                 'password' => 'password'
