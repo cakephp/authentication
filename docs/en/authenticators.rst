@@ -486,7 +486,7 @@ authenticators must send specific challenge headers in the response::
 
     // Define identifiers
     $passwordIdentifier = [
-        'Authentication.Password', [
+        'Authentication.Password' => [
             'fields' => [
                 'username' => 'email',
                 'password' => 'password'
