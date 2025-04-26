@@ -371,7 +371,7 @@ and similar SAML 1.1 implementations. An example configuration is::
     // Configure a token identifier that maps `USER_ID` to the
     // username column
     $identifier = [
-        'Authentication.Token', [
+        'Authentication.Token' => [
             'tokenField' => 'username',
             'dataField' => 'USER_NAME',
         ],
