@@ -42,7 +42,7 @@ Legacy password to the Default bcrypt hasher, you can configure the
 fallback hasher as follows::
 
     $passwordIdentifier = [
-        'Authentication.Password', [
+        'Authentication.Password' => [
             // Other config options
             'passwordHasher' => [
                 'className' => 'Authentication.Fallback',
