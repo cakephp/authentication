@@ -188,7 +188,7 @@ reside under ``App\Identifier\Resolver`` namespace.
 Resolver can be configured using ``resolver`` config option::
 
     $identifier = [
-        'Authentication.Password', [
+        'Authentication.Password' => [
             'resolver' => [
                 // can be a full class name: \Some\Other\Custom\Resolver::class
                 'className' => 'MyResolver',
