@@ -7,7 +7,7 @@ can take options in the ``loadIdentifier`` method. A holistic example of
 using the Password Identifier looks like::
 
     $identifier = [
-        'Authentication.Password', [
+        'Authentication.Password' => [
             'fields' => [
                'username' => 'email',
                'password' => 'passwd',
