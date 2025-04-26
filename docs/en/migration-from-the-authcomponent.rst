@@ -160,7 +160,7 @@ configuration::
 
     // Define identifier
     $passwordIdentifier = [
-        'Authentication.Password', [
+        'Authentication.Password' => [
              'resolver' => [
                 'className' => 'Authentication.Orm',
                 'userModel' => 'Employees',
