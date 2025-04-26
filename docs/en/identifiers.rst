@@ -208,6 +208,6 @@ As of 3.3.0, you should pass the constructed resolver into the identifier::
 
     $resolver = new \App\Identifier\Resolver\CustomResolver();
     $identifier = [
-        'Authentication.Password', [
+        'Authentication.Password' => [
             'resolver' => $resolver;
     ];
