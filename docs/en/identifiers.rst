@@ -137,7 +137,7 @@ messages::
 
     // Using a result object to return error messages.
     $identifier = [
-        'Authentication.Callback', [
+        'Authentication.Callback' => [
             'callback' => function($data) {
                 // do identifier logic
 
