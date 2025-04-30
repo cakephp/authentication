@@ -39,13 +39,14 @@ With only the ID stored, the invalidation due to objects being modified will als
 
 Make sure to match this with a Token identifier with ``key``/``id`` keys::
 
-    $service->loadIdentifier('Authentication.Token', [
-        'tokenField' => 'id', // lookup for DB table
-        'dataField' => 'key', // incoming data
-        'resolver' => 'Authentication.Orm',
-    ]);
-
     $service->loadAuthenticator('Authentication.PrimaryKeySession', [
+        'identifier' => [
+            'Authentication.Token' => [
+                'tokenField' => 'id', // lookup for resolver and DB table
+                'dataField' => 'key', // incoming data from authenticator
+                'resolver' => 'Authentication.Orm',
+            ],
+        ],
         'urlChecker' => 'Authentication.CakeRouter',
         'loginUrl' => [
             'prefix' => false,
