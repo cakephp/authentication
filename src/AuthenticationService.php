@@ -23,9 +23,12 @@ use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
+use Authentication\Event\AuthenticateEvent;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Event\EventDispatcherInterface;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -36,8 +39,9 @@ use function Cake\Core\deprecationWarning;
 /**
  * Authentication Service
  */
-class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface
+class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface, EventDispatcherInterface
 {
+    use EventDispatcherTrait;
     use InstanceConfigTrait;
 
     /**
@@ -190,7 +194,12 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         $result = null;
         /** @var \Authentication\Authenticator\AuthenticatorInterface $authenticator */
         foreach ($this->authenticators() as $authenticator) {
-            $result = $authenticator->authenticate($request);
+            $result = $this->dispatchAuthenticateEvent(
+                $request,
+                $authenticator,
+                $authenticator->authenticate($request),
+            );
+
             if ($result->isValid()) {
                 $this->_successfulAuthenticator = $authenticator;
 
@@ -211,6 +220,31 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         $this->_successfulAuthenticator = null;
 
         return $this->_result = $result;
+    }
+
+    /**
+     * Dispatches an authenticate event.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Authentication\Authenticator\AuthenticatorInterface $authenticator The authenticator instance.
+     * @param \Authentication\Authenticator\ResultInterface $result The authentication result.
+     * @return \Authentication\Authenticator\ResultInterface
+     */
+    protected function dispatchAuthenticateEvent(
+        ServerRequestInterface $request,
+        AuthenticatorInterface $authenticator,
+        ResultInterface $result,
+    ): ResultInterface {
+        /** @var \Authentication\Event\AuthenticateEvent $event */
+        $event = $this->getEventManager()->dispatch(new AuthenticateEvent(
+            AuthenticateEvent::NAME,
+            $this,
+            $request,
+            $authenticator,
+            $result,
+        ));
+
+        return $event->getResult();
     }
 
     /**

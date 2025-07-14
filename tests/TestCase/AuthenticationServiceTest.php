@@ -22,11 +22,13 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
+use Authentication\Event\AuthenticateEvent;
 use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -104,6 +106,69 @@ class AuthenticationServiceTest extends TestCase
 
         $identifier = $service->getIdentificationProvider();
         $this->assertInstanceOf(PasswordIdentifier::class, $identifier);
+    }
+
+    public function testAuthenticateSuccessEvent(): void
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password'],
+        );
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Form' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+            ],
+        ]);
+
+        EventManager::instance()->on(
+            'Authentication.authenticate',
+            function (AuthenticateEvent $event): void {
+                $event->setResult(new Result(
+                    ['user' => 'admad'],
+                    Result::SUCCESS,
+                ));
+            },
+        );
+
+        $result = $service->authenticate($request);
+        $this->assertTrue($result->isValid());
+        $this->assertSame(['user' => 'admad'], $result->getData());
+    }
+
+    public function testAuthenticateFailureEvent(): void
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => ''],
+        );
+
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Form' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+            ],
+        ]);
+
+        EventManager::instance()->on(
+            'Authentication.authenticate',
+            function (AuthenticateEvent $event): void {
+                $event->setResult(new Result(
+                    ['user' => 'admad'],
+                    Result::FAILURE_OTHER,
+                ));
+            },
+        );
+
+        $result = $service->authenticate($request);
+        $this->assertFalse($result->isValid());
+        $this->assertSame(Result::FAILURE_OTHER, $result->getStatus());
+        $this->assertSame(['user' => 'admad'], $result->getData());
     }
 
     /**
