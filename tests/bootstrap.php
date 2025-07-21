@@ -61,6 +61,12 @@ Cache::setConfig([
     ],
 ]);
 
+Cache::setConfig([
+    '_cake_core_' => [
+        'engine' => 'Array',
+    ],
+]);
+
 if (!getenv('DB_URL')) {
     putenv('DB_URL=sqlite:///:memory:');
 }
