@@ -55,7 +55,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
         if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
             $identifier = new IdentifierCollection(['Authentication.Password']);
         }
-        
+
         parent::__construct($identifier, $config);
     }
 

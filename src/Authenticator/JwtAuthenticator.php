@@ -61,7 +61,7 @@ class JwtAuthenticator extends TokenAuthenticator
         if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
             $identifier = new IdentifierCollection(['Authentication.JwtSubject']);
         }
-        
+
         // Call TokenAuthenticator's constructor but skip its default
         AbstractAuthenticator::__construct($identifier, $config);
 

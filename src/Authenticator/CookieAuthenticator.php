@@ -69,7 +69,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
             $identifier = new IdentifierCollection(['Authentication.Password']);
         }
-        
+
         parent::__construct($identifier, $config);
     }
 

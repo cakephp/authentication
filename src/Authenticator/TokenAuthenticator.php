@@ -49,7 +49,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
         if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
             $identifier = new IdentifierCollection(['Authentication.Token']);
         }
-        
+
         parent::__construct($identifier, $config);
     }
 
