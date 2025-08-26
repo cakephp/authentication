@@ -17,6 +17,8 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
@@ -46,6 +48,22 @@ class FormAuthenticator extends AbstractAuthenticator
             AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
     ];
+
+    /**
+     * Constructor
+     *
+     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
+     * @param array<string, mixed> $config Configuration settings.
+     */
+    public function __construct(IdentifierInterface $identifier, array $config = [])
+    {
+        // If no identifier is configured, set up a default Password identifier
+        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
+            $identifier = new IdentifierCollection(['Authentication.Password']);
+        }
+
+        parent::__construct($identifier, $config);
+    }
 
     /**
      * Checks the fields to ensure they are supplied.

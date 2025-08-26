@@ -1172,4 +1172,29 @@ class AuthenticationServiceTest extends TestCase
         $this->expectExceptionMessage('The Authentication\Authenticator\FormAuthenticator Provider must implement ImpersonationInterface in order to use impersonation.');
         $service->isImpersonating($request);
     }
+
+    /**
+     * Test that FormAuthenticator works with default Password identifier
+     *
+     * @return void
+     */
+    public function testFormAuthenticatorDefaultIdentifier()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password'],
+        );
+
+        // Test loading FormAuthenticator without specifying an identifier
+        $service = new AuthenticationService();
+        $service->loadAuthenticator('Authentication.Form');
+
+        $result = $service->authenticate($request);
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertTrue($result->isValid());
+
+        $authenticator = $service->getAuthenticationProvider();
+        $this->assertInstanceOf(FormAuthenticator::class, $authenticator);
+    }
 }

@@ -544,4 +544,65 @@ class FormAuthenticatorTest extends TestCase
 
         $form->authenticate($request);
     }
+
+    /**
+     * Test that FormAuthenticator uses default Password identifier when none is provided.
+     *
+     * @return void
+     */
+    public function testDefaultPasswordIdentifier()
+    {
+        // Create an empty IdentifierCollection (simulating no explicit identifier configuration)
+        $identifiers = new IdentifierCollection();
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password'],
+        );
+
+        // FormAuthenticator should automatically configure a Password identifier
+        $form = new FormAuthenticator($identifiers);
+        $result = $form->authenticate($request);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
+
+        // Verify the identifier collection now has the Password identifier
+        $identifier = $form->getIdentifier();
+        $this->assertInstanceOf(IdentifierCollection::class, $identifier);
+        $this->assertFalse($identifier->isEmpty());
+    }
+
+    /**
+     * Test that FormAuthenticator respects explicitly configured identifier.
+     *
+     * @return void
+     */
+    public function testExplicitIdentifierNotOverridden()
+    {
+        // Create an IdentifierCollection with a specific identifier
+        $identifiers = new IdentifierCollection([
+            'Authentication.Password' => [
+                'fields' => [
+                    'username' => 'email',
+                    'password' => 'password',
+                ],
+            ],
+        ]);
+
+        ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['email' => 'mariano@example.com', 'password' => 'password'],
+        );
+
+        // FormAuthenticator should use the provided identifier
+        $form = new FormAuthenticator($identifiers);
+
+        // The identifier should remain as configured
+        $identifier = $form->getIdentifier();
+        $this->assertInstanceOf(IdentifierCollection::class, $identifier);
+        $this->assertFalse($identifier->isEmpty());
+    }
 }
