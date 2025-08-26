@@ -18,6 +18,8 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Http\Cookie\Cookie;
@@ -54,6 +56,22 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         'passwordHasher' => 'Authentication.Default',
         'salt' => true,
     ];
+
+    /**
+     * Constructor
+     *
+     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
+     * @param array<string, mixed> $config Configuration settings.
+     */
+    public function __construct(IdentifierInterface $identifier, array $config = [])
+    {
+        // If no identifier is configured, set up a default Password identifier
+        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
+            $identifier = new IdentifierCollection(['Authentication.Password']);
+        }
+        
+        parent::__construct($identifier, $config);
+    }
 
     /**
      * @inheritDoc

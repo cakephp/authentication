@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\TokenIdentifier;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -34,6 +36,22 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
         'queryParam' => null,
         'tokenPrefix' => null,
     ];
+
+    /**
+     * Constructor
+     *
+     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
+     * @param array<string, mixed> $config Configuration settings.
+     */
+    public function __construct(IdentifierInterface $identifier, array $config = [])
+    {
+        // If no identifier is configured, set up a default Token identifier
+        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
+            $identifier = new IdentifierCollection(['Authentication.Token']);
+        }
+        
+        parent::__construct($identifier, $config);
+    }
 
     /**
      * Checks if the token is in the headers or a request parameter

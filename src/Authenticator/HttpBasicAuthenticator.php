@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -40,6 +42,22 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
         ],
         'skipChallenge' => false,
     ];
+
+    /**
+     * Constructor
+     *
+     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
+     * @param array<string, mixed> $config Configuration settings.
+     */
+    public function __construct(IdentifierInterface $identifier, array $config = [])
+    {
+        // If no identifier is configured, set up a default Password identifier
+        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
+            $identifier = new IdentifierCollection(['Authentication.Password']);
+        }
+        
+        parent::__construct($identifier, $config);
+    }
 
     /**
      * Authenticate a user using HTTP auth. Will use the configured User model and attempt a
