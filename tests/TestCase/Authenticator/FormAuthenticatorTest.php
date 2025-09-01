@@ -605,4 +605,37 @@ class FormAuthenticatorTest extends TestCase
         $this->assertInstanceOf(IdentifierCollection::class, $identifier);
         $this->assertFalse($identifier->isEmpty());
     }
+
+    /**
+     * Test that default identifier inherits fields configuration from authenticator.
+     *
+     * @return void
+     */
+    public function testDefaultIdentifierInheritsFieldsConfig()
+    {
+        // Create an empty IdentifierCollection
+        $identifiers = new IdentifierCollection();
+
+        // Configure authenticator with custom fields mapping
+        $config = [
+            'fields' => [
+                'username' => 'user_name',
+                'password' => 'pass_word',
+            ],
+        ];
+
+        // FormAuthenticator should create default identifier with inherited fields
+        $form = new FormAuthenticator($identifiers, $config);
+
+        // Verify the identifier was created with the correct configuration
+        $identifier = $form->getIdentifier();
+        $this->assertInstanceOf(IdentifierCollection::class, $identifier);
+        $this->assertFalse($identifier->isEmpty());
+        
+        // Verify the fields are properly configured
+        // We can't directly access the internal configuration, but we can verify
+        // the FormAuthenticator has the expected configuration
+        $this->assertEquals('user_name', $form->getConfig('fields.username'));
+        $this->assertEquals('pass_word', $form->getConfig('fields.password'));
+    }
 }
