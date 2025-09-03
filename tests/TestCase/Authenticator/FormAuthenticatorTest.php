@@ -631,7 +631,7 @@ class FormAuthenticatorTest extends TestCase
         $identifier = $form->getIdentifier();
         $this->assertInstanceOf(IdentifierCollection::class, $identifier);
         $this->assertFalse($identifier->isEmpty());
-        
+
         // Verify the fields are properly configured
         // We can't directly access the internal configuration, but we can verify
         // the FormAuthenticator has the expected configuration
