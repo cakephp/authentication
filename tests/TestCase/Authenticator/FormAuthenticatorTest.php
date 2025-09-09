@@ -583,7 +583,8 @@ class FormAuthenticatorTest extends TestCase
     {
         // Create an IdentifierCollection with a specific identifier
         $identifiers = new IdentifierCollection([
-            'Authentication.Password' => [
+            'Password' => [
+                'className' => 'Authentication.Password',
                 'fields' => [
                     'username' => 'email',
                     'password' => 'password',
@@ -604,6 +605,8 @@ class FormAuthenticatorTest extends TestCase
         $identifier = $form->getIdentifier();
         $this->assertInstanceOf(IdentifierCollection::class, $identifier);
         $this->assertFalse($identifier->isEmpty());
+        $this->assertSame($identifiers, $identifier, 'Identifier collection should be the same.');
+        $this->assertSame($identifiers->get('Password'), $identifier->get('Password'), 'Identifier should be the same.');
     }
 
     /**
