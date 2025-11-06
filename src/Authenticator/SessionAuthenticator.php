@@ -17,7 +17,7 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use ArrayObject;
-use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,7 +39,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      */
     protected array $_defaultConfig = [
         'fields' => [
-            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
+            PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
         ],
         'sessionKey' => 'Auth',
         'impersonateSessionKey' => 'AuthImpersonate',
@@ -69,6 +69,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             foreach ($this->getConfig('fields') as $key => $field) {
                 $credentials[$key] = $user[$field];
             }
+            assert($this->_identifier !== null);
             $user = $this->_identifier->identify($credentials);
 
             if (!$user) {

@@ -15,10 +15,10 @@ use Psr\Http\Message\ServerRequestInterface;
 class PrimaryKeySessionAuthenticator extends SessionAuthenticator
 {
     /**
-     * @param \Authentication\Identifier\IdentifierInterface $identifier
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier
      * @param array<string, mixed> $config
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         $config += [
             'identifierKey' => 'key',
@@ -45,6 +45,7 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
+        assert($this->_identifier !== null);
         $user = $this->_identifier->identify([$this->getConfig('identifierKey') => $userId]);
         if (!$user) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);

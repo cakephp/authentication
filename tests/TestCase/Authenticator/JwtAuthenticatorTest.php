@@ -20,7 +20,7 @@ use ArrayAccess;
 use ArrayObject;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Exception;
@@ -56,9 +56,9 @@ class JwtAuthenticatorTest extends TestCase
     /**
      * Identifier Collection
      *
-     * @var \Authentication\Identifier\IdentifierCollection;
+     * @var \Authentication\Identifier\IdentifierInterface;
      */
-    public $identifiers;
+    public $identifier;
 
     /**
      * @var \Cake\Http\ServerRequest
@@ -84,7 +84,7 @@ class JwtAuthenticatorTest extends TestCase
         $privKey1 = file_get_contents(__DIR__ . '/../../data/rsa1-private.pem');
         $this->tokenRS256 = JWT::encode($data, $privKey1, 'RS256', 'jwk1');
 
-        $this->identifiers = new IdentifierCollection([]);
+        $this->identifier = null;
     }
 
     /**
@@ -99,7 +99,7 @@ class JwtAuthenticatorTest extends TestCase
         );
         $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->tokenHS256);
 
-        $authenticator = new JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifier, [
             'secretKey' => 'secretKey',
             'subjectKey' => 'subjectId',
         ]);
@@ -122,7 +122,7 @@ class JwtAuthenticatorTest extends TestCase
             ['token' => $this->tokenHS256],
         );
 
-        $authenticator = new JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifier, [
             'secretKey' => 'secretKey',
             'subjectKey' => 'subjectId',
         ]);
@@ -145,8 +145,8 @@ class JwtAuthenticatorTest extends TestCase
             ['token' => $this->tokenHS256],
         );
 
-        $this->identifiers = $this->createMock(IdentifierCollection::class);
-        $this->identifiers->expects($this->once())
+        $this->identifier = $this->createMock(IdentifierInterface::class);
+        $this->identifier->expects($this->once())
             ->method('identify')
             ->with([
                 'subjectId' => 3,
@@ -158,7 +158,7 @@ class JwtAuthenticatorTest extends TestCase
                 'firstname' => 'larry',
             ]));
 
-        $authenticator = new JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifier, [
             'secretKey' => 'secretKey',
             'returnPayload' => false,
             'subjectKey' => 'subjectId',
@@ -186,7 +186,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
             ->setConstructorArgs([
-                $this->identifiers,
+                $this->identifier,
             ])
             ->onlyMethods([
                 'getPayLoad',
@@ -217,7 +217,7 @@ class JwtAuthenticatorTest extends TestCase
 
         $authenticator = $this->getMockBuilder(JwtAuthenticator::class)
             ->setConstructorArgs([
-                $this->identifiers,
+                $this->identifier,
             ])
             ->onlyMethods([
                 'getPayLoad',
@@ -241,7 +241,7 @@ class JwtAuthenticatorTest extends TestCase
             ['token' => 'should cause an exception'],
         );
 
-        $authenticator = new JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifier, [
             'secretKey' => 'secretKey',
         ]);
 
@@ -267,7 +267,7 @@ class JwtAuthenticatorTest extends TestCase
             ['token' => $this->tokenHS256],
         );
 
-        $authenticator = new JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifier, [
             'secretKey' => 'secretKey',
         ]);
 
@@ -299,7 +299,7 @@ class JwtAuthenticatorTest extends TestCase
             ['token' => $this->tokenRS256],
         );
 
-        $authenticator = new JwtAuthenticator($this->identifiers, [
+        $authenticator = new JwtAuthenticator($this->identifier, [
             'jwks' => json_decode(file_get_contents(__DIR__ . '/../../data/rsa-jwkset.json'), true),
         ]);
 

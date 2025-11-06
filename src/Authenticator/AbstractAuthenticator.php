@@ -16,8 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -33,25 +33,25 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     protected array $_defaultConfig = [
         'fields' => [
-            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
-            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
+            PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
+            PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
     ];
 
     /**
-     * Identifier or identifiers collection.
+     * Identifier instance.
      *
-     * @var \Authentication\Identifier\IdentifierInterface
+     * @var \Authentication\Identifier\IdentifierInterface|null
      */
-    protected IdentifierInterface $_identifier;
+    protected ?IdentifierInterface $_identifier = null;
 
     /**
      * Constructor
      *
-     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         $this->_identifier = $identifier;
         $this->setConfig($config);
@@ -60,9 +60,9 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Gets the identifier.
      *
-     * @return \Authentication\Identifier\IdentifierInterface
+     * @return \Authentication\Identifier\IdentifierInterface|null
      */
-    public function getIdentifier(): IdentifierInterface
+    public function getIdentifier(): ?IdentifierInterface
     {
         return $this->_identifier;
     }

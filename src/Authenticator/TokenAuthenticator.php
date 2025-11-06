@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\TokenIdentifier;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,14 +40,14 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     /**
      * Constructor
      *
-     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         // If no identifier is configured, set up a default Token identifier
-        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
-            $identifier = new IdentifierCollection(['Authentication.Token']);
+        if ($identifier === null) {
+            $identifier = IdentifierFactory::create('Authentication.Token');
         }
 
         parent::__construct($identifier, $config);
@@ -142,6 +142,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
+        assert($this->_identifier !== null);
         $user = $this->_identifier->identify([
             TokenIdentifier::CREDENTIAL_TOKEN => $token,
         ]);

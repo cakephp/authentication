@@ -47,6 +47,10 @@ class PasswordIdentifier extends AbstractIdentifier
     }
     use ResolverAwareTrait;
 
+    public const CREDENTIAL_USERNAME = 'username';
+
+    public const CREDENTIAL_PASSWORD = 'password';
+
     /**
      * Default configuration.
      * - `fields` The fields to use to identify a user by:

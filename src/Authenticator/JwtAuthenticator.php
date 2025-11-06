@@ -17,7 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use ArrayObject;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\JwtSubjectIdentifier;
 use Cake\Utility\Security;
@@ -55,14 +55,14 @@ class JwtAuthenticator extends TokenAuthenticator
     /**
      * @inheritDoc
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         // Override parent's default - JWT should use JwtSubject identifier
-        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
-            $identifier = new IdentifierCollection(['Authentication.JwtSubject']);
+        if ($identifier === null) {
+            $identifier = IdentifierFactory::create('Authentication.JwtSubject');
         }
 
-        // Call TokenAuthenticator's constructor but skip its default
+        // Call AbstractAuthenticator's constructor directly to skip parent's default
         AbstractAuthenticator::__construct($identifier, $config);
 
         if (empty($this->_config['secretKey'])) {
@@ -113,6 +113,7 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result($user, Result::SUCCESS);
         }
 
+        assert($this->_identifier !== null);
         $user = $this->_identifier->identify([
             $subjectKey => $result[$subjectKey],
         ]);

@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\UrlChecker;
 
 use Cake\Core\App;
+use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
@@ -33,9 +34,14 @@ trait UrlCheckerTrait
      */
     protected function _checkUrl(ServerRequestInterface $request): bool
     {
+        $loginUrl = $this->getConfig('loginUrl');
+        if ($loginUrl === null) {
+            return true;
+        }
+
         return $this->_getUrlChecker()->check(
             $request,
-            $this->getConfig('loginUrl'),
+            $loginUrl,
             (array)$this->getConfig('urlChecker'),
         );
     }
@@ -54,7 +60,12 @@ trait UrlCheckerTrait
             ];
         }
         if (!isset($options['className'])) {
-            $options['className'] = DefaultUrlChecker::class;
+            // Auto-detect CakePHP context
+            if (class_exists(Router::class)) {
+                $options['className'] = CakeRouterUrlChecker::class;
+            } else {
+                $options['className'] = DefaultUrlChecker::class;
+            }
         }
 
         $className = App::className($options['className'], 'UrlChecker', 'UrlChecker');

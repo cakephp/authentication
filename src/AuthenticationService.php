@@ -23,7 +23,6 @@ use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
-use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\IdentifierInterface;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Routing\Router;
@@ -31,7 +30,6 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Authentication Service
@@ -46,13 +44,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      * @var \Authentication\Authenticator\AuthenticatorCollection|null
      */
     protected ?AuthenticatorCollection $_authenticators = null;
-
-    /**
-     * Identifier collection
-     *
-     * @var \Authentication\Identifier\IdentifierCollection|null
-     */
-    protected ?IdentifierCollection $_identifiers = null;
 
     /**
      * Authenticator that successfully authenticated the identity.
@@ -73,10 +64,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *
      * - `authenticators` - An array of authentication objects to use for authenticating users.
      *   You can configure multiple adapters and they will be checked sequentially
-     *   when users are identified.
-     * - `identifiers` - An array of identifiers. The identifiers are constructed by the service
-     *   and then passed to the authenticators that will pass the credentials to them and get the
-     *   user data.
+     *   when users are identified. Each authenticator config can specify its own `identifier`.
      * - `identityClass` - The class name of identity or a callable identity builder.
      * - `identityAttribute` - The request attribute used to store the identity. Default to `identity`.
      * - `unauthenticatedRedirect` - The URL to redirect unauthenticated errors to. See
@@ -100,7 +88,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     protected array $_defaultConfig = [
         'authenticators' => [],
-        'identifiers' => [],
         'identityClass' => Identity::class,
         'identityAttribute' => 'identity',
         'queryParam' => null,
@@ -118,20 +105,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     }
 
     /**
-     * Access the identifier collection
-     *
-     * @return \Authentication\Identifier\IdentifierCollection
-     */
-    public function identifiers(): IdentifierCollection
-    {
-        if ($this->_identifiers === null) {
-            $this->_identifiers = new IdentifierCollection($this->getConfig('identifiers'));
-        }
-
-        return $this->_identifiers;
-    }
-
-    /**
      * Access the authenticator collection
      *
      * @return \Authentication\Authenticator\AuthenticatorCollection
@@ -139,9 +112,8 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     public function authenticators(): AuthenticatorCollection
     {
         if ($this->_authenticators === null) {
-            $identifiers = $this->identifiers();
             $authenticators = $this->getConfig('authenticators');
-            $this->_authenticators = new AuthenticatorCollection($identifiers, $authenticators);
+            $this->_authenticators = new AuthenticatorCollection($authenticators);
         }
 
         return $this->_authenticators;
@@ -157,24 +129,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     public function loadAuthenticator(string $name, array $config = []): AuthenticatorInterface
     {
         return $this->authenticators()->load($name, $config);
-    }
-
-    /**
-     * Loads an identifier.
-     *
-     * @param string $name Name or class name.
-     * @param array<string, mixed> $config Identifier configuration.
-     * @return \Authentication\Identifier\IdentifierInterface Identifier instance
-     * @deprecated 3.3.0: loadIdentifier() usage is deprecated. Directly pass Identifier to Authenticator.
-     */
-    public function loadIdentifier(string $name, array $config = []): IdentifierInterface
-    {
-        deprecationWarning(
-            '3.3.0',
-            'loadIdentifier() usage is deprecated. Directly pass `\'identifier\'` config to the Authenticator.',
-        );
-
-        return $this->identifiers()->load($name, $config);
     }
 
     /**
@@ -291,12 +245,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             return null;
         }
 
-        $identifier = $this->_successfulAuthenticator->getIdentifier();
-        if ($identifier instanceof IdentifierCollection) {
-            return $identifier->getIdentificationProvider();
-        }
-
-        return $identifier;
+        return $this->_successfulAuthenticator->getIdentifier();
     }
 
     /**

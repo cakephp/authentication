@@ -39,7 +39,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
     /**
      * @inheritDoc
      */
-    public function check(ServerRequestInterface $request, $loginUrls, array $options = []): bool
+    public function check(ServerRequestInterface $request, array|string $loginUrls, array $options = []): bool
     {
         $options = $this->_mergeDefaultOptions($options);
 

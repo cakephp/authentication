@@ -22,7 +22,6 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
@@ -34,7 +33,6 @@ use Cake\Http\ServerRequestFactory;
 use Cake\I18n\DateTime;
 use Cake\Routing\Router;
 use InvalidArgumentException;
-use PHPUnit\Runner\Version;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -224,37 +222,6 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException('RuntimeException');
         $service = new AuthenticationService();
         $service->loadAuthenticator('does-not-exist');
-    }
-
-    /**
-     * testLoadIdentifier
-     *
-     * @return void
-     */
-    public function testLoadIdentifier()
-    {
-        $this->skipIf(
-            version_compare(Version::id(), '11.0', '<'),
-            'For some reason PHPUnit doesn\'t pick up the deprecation on v10',
-        );
-
-        $this->deprecated(function () {
-            $service = new AuthenticationService();
-            $result = $service->loadIdentifier('Authentication.Password');
-            $this->assertInstanceOf(PasswordIdentifier::class, $result);
-        });
-    }
-
-    /**
-     * testIdentifiers
-     *
-     * @return void
-     */
-    public function testIdentifiers()
-    {
-        $service = new AuthenticationService();
-        $result = $service->identifiers();
-        $this->assertInstanceOf(IdentifierCollection::class, $result);
     }
 
     /**

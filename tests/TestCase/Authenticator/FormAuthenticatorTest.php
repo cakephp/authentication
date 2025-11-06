@@ -18,7 +18,8 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
@@ -43,9 +44,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testAuthenticate()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -53,7 +52,7 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers);
+        $form = new FormAuthenticator($identifier);
         $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -67,9 +66,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testCredentialsNotPresent()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/does-not-match'],
@@ -77,7 +74,7 @@ class FormAuthenticatorTest extends TestCase
             [],
         );
 
-        $form = new FormAuthenticator($identifiers);
+        $form = new FormAuthenticator($identifier);
 
         $result = $form->authenticate($request);
 
@@ -93,9 +90,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testCredentialsEmpty()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/does-not-match'],
@@ -103,7 +98,7 @@ class FormAuthenticatorTest extends TestCase
             ['username' => '', 'password' => ''],
         );
 
-        $form = new FormAuthenticator($identifiers);
+        $form = new FormAuthenticator($identifier);
 
         $result = $form->authenticate($request);
 
@@ -114,9 +109,7 @@ class FormAuthenticatorTest extends TestCase
 
     public function testIdentityNotFound()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/does-not-match'],
@@ -124,7 +117,7 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'non-existent', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers);
+        $form = new FormAuthenticator($identifier);
 
         $result = $form->authenticate($request);
 
@@ -140,9 +133,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testSingleLoginUrlMismatch()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/does-not-match'],
@@ -150,7 +141,7 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/users/login',
         ]);
 
@@ -168,9 +159,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testMultipleLoginUrlMismatch()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/does-not-match'],
@@ -181,7 +170,7 @@ class FormAuthenticatorTest extends TestCase
         Router::createRouteBuilder('/')
             ->connect('/{lang}/users/login', ['controller' => 'Users', 'action' => 'login']);
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'urlChecker' => 'Authentication.CakeRouter',
             'loginUrl' => [
                 ['lang' => 'en', 'controller' => 'Users', 'action' => 'login'],
@@ -203,9 +192,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testLoginUrlMismatchWithBase()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -214,7 +201,7 @@ class FormAuthenticatorTest extends TestCase
         );
         $request = $request->withAttribute('base', '/base');
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/users/login',
         ]);
 
@@ -232,9 +219,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testSingleLoginUrlSuccess()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/Users/login'],
@@ -242,7 +227,7 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/Users/login',
         ]);
 
@@ -260,9 +245,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testMultipleLoginUrlSuccess()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/de/users/login'],
@@ -270,7 +253,7 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => [
                 '/en/users/login',
                 '/de/users/login',
@@ -291,9 +274,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testLoginUrlSuccessWithBase()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -302,7 +283,7 @@ class FormAuthenticatorTest extends TestCase
         );
         $request = $request->withAttribute('base', '/base');
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/base/users/login',
         ]);
 
@@ -320,9 +301,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testRegexLoginUrlSuccess()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/de/users/login'],
@@ -330,9 +309,10 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '%^/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
+                'className' => 'Authentication.Default',
                 'useRegex' => true,
             ],
         ]);
@@ -351,9 +331,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testFullRegexLoginUrlFailure()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             [
@@ -363,9 +341,10 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
+                'className' => 'Authentication.Default',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],
@@ -385,9 +364,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testFullRegexLoginUrlSuccess()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             [
@@ -398,9 +375,10 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
+                'className' => 'Authentication.Default',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],
@@ -420,9 +398,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testFullLoginUrlFailureWithoutCheckFullUrlOption()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -430,7 +406,7 @@ class FormAuthenticatorTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => 'http://localhost/users/login',
         ]);
 
@@ -448,7 +424,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testAuthenticateCustomFields()
     {
-        $identifiers = $this->createMock(IdentifierCollection::class);
+        $identifier = $this->createMock(IdentifierInterface::class);
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -456,7 +432,7 @@ class FormAuthenticatorTest extends TestCase
             ['email' => 'mariano@cakephp.org', 'secret' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/users/login',
             'fields' => [
                 'username' => 'email',
@@ -464,7 +440,7 @@ class FormAuthenticatorTest extends TestCase
             ],
         ]);
 
-        $identifiers->expects($this->once())
+        $identifier->expects($this->once())
             ->method('identify')
             ->with([
                 'username' => 'mariano@cakephp.org',
@@ -485,7 +461,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testAuthenticateValidData()
     {
-        $identifiers = $this->createMock(IdentifierCollection::class);
+        $identifier = $this->createMock(IdentifierInterface::class);
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -493,11 +469,11 @@ class FormAuthenticatorTest extends TestCase
             ['id' => 1, 'username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/users/login',
         ]);
 
-        $identifiers->expects($this->once())
+        $identifier->expects($this->once())
             ->method('identify')
             ->with([
                 'username' => 'mariano',
@@ -518,7 +494,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testAuthenticateMissingChecker()
     {
-        $identifiers = $this->createMock(IdentifierCollection::class);
+        $identifier = $this->createMock(IdentifierInterface::class);
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -526,7 +502,7 @@ class FormAuthenticatorTest extends TestCase
             ['id' => 1, 'username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/users/login',
             'urlChecker' => 'Foo',
         ]);
@@ -544,7 +520,7 @@ class FormAuthenticatorTest extends TestCase
      */
     public function testAuthenticateInvalidChecker()
     {
-        $identifiers = $this->createMock(IdentifierCollection::class);
+        $identifier = $this->createMock(IdentifierInterface::class);
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -552,7 +528,7 @@ class FormAuthenticatorTest extends TestCase
             ['id' => 1, 'username' => 'mariano', 'password' => 'password'],
         );
 
-        $form = new FormAuthenticator($identifiers, [
+        $form = new FormAuthenticator($identifier, [
             'loginUrl' => '/users/login',
             'urlChecker' => self::class,
         ]);
@@ -564,102 +540,5 @@ class FormAuthenticatorTest extends TestCase
         );
 
         $form->authenticate($request);
-    }
-
-    /**
-     * Test that FormAuthenticator uses default Password identifier when none is provided.
-     *
-     * @return void
-     */
-    public function testDefaultPasswordIdentifier()
-    {
-        // Create an empty IdentifierCollection (simulating no explicit identifier configuration)
-        $identifiers = new IdentifierCollection();
-
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password'],
-        );
-
-        // FormAuthenticator should automatically configure a Password identifier
-        $form = new FormAuthenticator($identifiers);
-        $result = $form->authenticate($request);
-
-        $this->assertInstanceOf(Result::class, $result);
-        $this->assertSame(Result::SUCCESS, $result->getStatus());
-
-        // Verify the identifier collection now has the Password identifier
-        $identifier = $form->getIdentifier();
-        $this->assertInstanceOf(IdentifierCollection::class, $identifier);
-        $this->assertFalse($identifier->isEmpty());
-    }
-
-    /**
-     * Test that FormAuthenticator respects explicitly configured identifier.
-     *
-     * @return void
-     */
-    public function testExplicitIdentifierNotOverridden()
-    {
-        // Create an IdentifierCollection with a specific identifier
-        $identifiers = new IdentifierCollection([
-            'Password' => [
-                'className' => 'Authentication.Password',
-                'fields' => [
-                    'username' => 'email',
-                    'password' => 'password',
-                ],
-            ],
-        ]);
-
-        ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['email' => 'mariano@example.com', 'password' => 'password'],
-        );
-
-        // FormAuthenticator should use the provided identifier
-        $form = new FormAuthenticator($identifiers);
-
-        // The identifier should remain as configured
-        $identifier = $form->getIdentifier();
-        $this->assertInstanceOf(IdentifierCollection::class, $identifier);
-        $this->assertFalse($identifier->isEmpty());
-        $this->assertSame($identifiers, $identifier, 'Identifier collection should be the same.');
-        $this->assertSame($identifiers->get('Password'), $identifier->get('Password'), 'Identifier should be the same.');
-    }
-
-    /**
-     * Test that default identifier inherits fields configuration from authenticator.
-     *
-     * @return void
-     */
-    public function testDefaultIdentifierInheritsFieldsConfig()
-    {
-        // Create an empty IdentifierCollection
-        $identifiers = new IdentifierCollection();
-
-        // Configure authenticator with custom fields mapping
-        $config = [
-            'fields' => [
-                'username' => 'user_name',
-                'password' => 'pass_word',
-            ],
-        ];
-
-        // FormAuthenticator should create default identifier with inherited fields
-        $form = new FormAuthenticator($identifiers, $config);
-
-        // Verify the identifier was created with the correct configuration
-        $identifier = $form->getIdentifier();
-        $this->assertInstanceOf(IdentifierCollection::class, $identifier);
-        $this->assertFalse($identifier->isEmpty());
-
-        // Verify the fields are properly configured
-        // We can't directly access the internal configuration, but we can verify
-        // the FormAuthenticator has the expected configuration
-        $this->assertEquals('user_name', $form->getConfig('fields.username'));
-        $this->assertEquals('pass_word', $form->getConfig('fields.password'));
     }
 }

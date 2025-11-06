@@ -153,6 +153,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
 
         $data = array_merge($this->_getOptionalData($request), $data);
 
+        assert($this->_identifier !== null);
         $user = $this->_identifier->identify($data);
 
         if (!$user) {

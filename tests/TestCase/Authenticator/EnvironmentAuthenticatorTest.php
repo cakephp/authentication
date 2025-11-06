@@ -18,7 +18,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\EnvironmentAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
@@ -39,9 +39,9 @@ class EnvironmentAuthenticatorTest extends TestCase
     /**
      * Identifiers
      *
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierInterface
      */
-    public $identifiers;
+    public $identifier;
 
     /**
      * @inheritDoc
@@ -50,11 +50,9 @@ class EnvironmentAuthenticatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->identifiers = new IdentifierCollection([
-           'Authentication.Token' => [
-               'tokenField' => 'username',
-               'dataField' => 'USER_ID',
-           ],
+        $this->identifier = IdentifierFactory::create('Authentication.Token', [
+            'tokenField' => 'username',
+            'dataField' => 'USER_ID',
         ]);
     }
 
@@ -65,18 +63,16 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testAuthenticate()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Callback' => [
-                'callback' => function ($data) {
-                    if (isset($data['USER_ID']) && isset($data['ATTRIBUTE'])) {
-                        return new Result($data, RESULT::SUCCESS);
-                    }
+        $identifier = IdentifierFactory::create('Authentication.Callback', [
+            'callback' => function ($data) {
+                if (isset($data['USER_ID']) && isset($data['ATTRIBUTE'])) {
+                    return new Result($data, RESULT::SUCCESS);
+                }
 
-                       return null;
-                },
-            ],
+                return null;
+            },
         ]);
-        $envAuth = new EnvironmentAuthenticator($identifiers, [
+        $envAuth = new EnvironmentAuthenticator($identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'USER_ID',
@@ -102,7 +98,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testFailedAuthentication()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'USER_ID',
@@ -128,7 +124,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testWithoutFieldConfig()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers);
+        $envAuth = new EnvironmentAuthenticator($this->identifier);
 
         $result = $envAuth->authenticate(ServerRequestFactory::fromGlobals());
         $this->assertInstanceOf(Result::class, $result);
@@ -142,7 +138,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testWithIncorrectFieldConfig()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'INCORRECT_USER_ID',
@@ -168,7 +164,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testCredentialsEmpty()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'USER_ID',
@@ -194,18 +190,16 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testOptionalFields()
     {
-        $identifiers = new IdentifierCollection([
-           'Authentication.Callback' => [
-               'callback' => function ($data) {
+        $identifier = IdentifierFactory::create('Authentication.Callback', [
+            'callback' => function ($data) {
                 if (isset($data['USER_ID']) && isset($data['OPTIONAL_FIELD'])) {
                     return new Result($data, RESULT::SUCCESS);
                 }
 
-                       return null;
-               },
-           ],
+                return null;
+            },
         ]);
-        $envAuth = new EnvironmentAuthenticator($identifiers, [
+        $envAuth = new EnvironmentAuthenticator($identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'USER_ID',
@@ -235,7 +229,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testSingleLoginUrlMismatch()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'USER_ID',
@@ -265,7 +259,7 @@ class EnvironmentAuthenticatorTest extends TestCase
         Router::createRouteBuilder('/')
             ->connect('/{lang}/secure', ['controller' => 'Users', 'action' => 'login']);
 
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => [
                 ['lang' => 'en', 'controller' => 'Users', 'action' => 'login'],
                 ['lang' => 'de', 'controller' => 'Users', 'action' => 'login'],
@@ -295,7 +289,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testSingleLoginUrlSuccess()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/en/secure',
             'fields' => [
                 'USER_ID',
@@ -321,7 +315,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testMultipleLoginUrlSuccess()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => [
                 '/en/secure',
                 '/de/secure',
@@ -351,7 +345,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testLoginUrlSuccessWithBase()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/base/fr/secure',
             'fields' => [
                 'USER_ID',
@@ -379,9 +373,10 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testRegexLoginUrlSuccess()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '%^/[a-z]{2}/users/secure/?$%',
             'urlChecker' => [
+                'className' => 'Authentication.Default',
                 'useRegex' => true,
             ],
             'fields' => [
@@ -409,9 +404,10 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testFullRegexLoginUrlFailure()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/secure/?$%',
             'urlChecker' => [
+                'className' => 'Authentication.Default',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],
@@ -440,9 +436,10 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testFullRegexLoginUrlSuccess()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/secure/?$%',
             'urlChecker' => [
+                'className' => 'Authentication.Default',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],
@@ -472,7 +469,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testFullLoginUrlFailureWithoutCheckFullUrlOption()
     {
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => 'http://localhost/secure',
             'fields' => [
                 'USER_ID',
@@ -499,8 +496,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testAuthenticateMissingChecker()
     {
-        $this->createMock(IdentifierCollection::class);
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'USER_ID',
@@ -527,8 +523,7 @@ class EnvironmentAuthenticatorTest extends TestCase
      */
     public function testAuthenticateInvalidChecker()
     {
-        $this->createMock(IdentifierCollection::class);
-        $envAuth = new EnvironmentAuthenticator($this->identifiers, [
+        $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '/secure',
             'fields' => [
                 'USER_ID',

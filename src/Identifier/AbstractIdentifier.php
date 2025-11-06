@@ -22,10 +22,6 @@ abstract class AbstractIdentifier implements IdentifierInterface
 {
     use InstanceConfigTrait;
 
-    public const CREDENTIAL_USERNAME = 'username';
-
-    public const CREDENTIAL_PASSWORD = 'password';
-
     /**
      * Default configuration
      *

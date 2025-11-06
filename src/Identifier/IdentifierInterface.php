@@ -21,7 +21,7 @@ use ArrayAccess;
 interface IdentifierInterface
 {
     /**
-     * Identifies an user or service by the passed credentials
+     * Identifies a user or service by the passed credentials
      *
      * @param array $credentials Authentication credentials
      * @return \ArrayAccess|array|null
