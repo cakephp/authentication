@@ -46,9 +46,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         // If no identifier is configured, set up a default Token identifier
-        if ($identifier === null) {
-            $identifier = IdentifierFactory::create('Authentication.Token');
-        }
+        $identifier ??= IdentifierFactory::create('Authentication.Token');
 
         parent::__construct($identifier, $config);
     }
