@@ -56,30 +56,8 @@ class DefaultUrlCheckerTest extends TestCase
         $result = $checker->check($request, '/users/login');
         $this->assertTrue($result);
 
-        $result = $checker->check($request, [
-            '/users/login',
-            '/admin/login',
-        ]);
-        $this->assertTrue($result);
-    }
-
-    /**
-     * testCheckArray
-     *
-     * @return void
-     */
-    public function testCheckArray()
-    {
-        $checker = new DefaultUrlChecker();
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/users/login'],
-        );
-
-        $result = $checker->check($request, [
-            '/users/login',
-            '/admin/login',
-        ]);
-        $this->assertTrue($result);
+        $result = $checker->check($request, '/different/url');
+        $this->assertFalse($result);
     }
 
     /**

@@ -17,9 +17,10 @@ declare(strict_types=1);
 namespace Authentication\UrlChecker;
 
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
 /**
- * Checks if a request object contains a valid URL
+ * Checks if a request object contains a valid URL. Framework agnostic.
  */
 class DefaultUrlChecker implements UrlCheckerInterface
 {
@@ -29,7 +30,7 @@ class DefaultUrlChecker implements UrlCheckerInterface
      * - `urlChecker` Whether to use `loginUrl` as regular expression(s).
      * - `checkFullUrl` Whether to check the full request URI.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultOptions = [
         'useRegex' => false,
@@ -41,24 +42,18 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     public function check(ServerRequestInterface $request, array|string $loginUrls, array $options = []): bool
     {
-        $options = $this->_mergeDefaultOptions($options);
-
-        $urls = (array)$loginUrls;
-        if (!$urls) {
-            return true;
+        if (is_array($loginUrls)) {
+            throw new RuntimeException(
+                'Array-based login URLs require CakePHP Router and CakeUrlChecker. ' .
+                'Either install cakephp/cakephp or use string URLs instead.',
+            );
         }
 
+        $options = $this->_mergeDefaultOptions($options);
         $checker = $this->_getChecker($options);
-
         $url = $this->_getUrlFromRequest($request, $options['checkFullUrl']);
 
-        foreach ($urls as $validUrl) {
-            if ($checker($validUrl, $url)) {
-                return true;
-            }
-        }
-
-        return false;
+        return (bool)$checker($loginUrls, $url);
     }
 
     /**

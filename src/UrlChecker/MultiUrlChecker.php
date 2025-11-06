@@ -26,7 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * string URLs and array-based CakePHP routes.
  *
  * This checker automatically detects the URL type and uses the appropriate
- * checker (Default for strings, CakeRouter for arrays).
+ * checker (Default for strings, Cake for arrays).
  */
 class MultiUrlChecker implements UrlCheckerInterface
 {
@@ -49,7 +49,13 @@ class MultiUrlChecker implements UrlCheckerInterface
     public function check(ServerRequestInterface $request, array|string $loginUrls, array $options = []): bool
     {
         $options = $this->_mergeDefaultOptions($options);
-        $urls = (array)$loginUrls;
+
+        // For a single URL (string or array route), convert to array
+        if (is_string($loginUrls) || $this->_isSingleRoute($loginUrls)) {
+            $urls = [$loginUrls];
+        } else {
+            $urls = $loginUrls;
+        }
 
         if (!$urls) {
             return true;
@@ -65,6 +71,30 @@ class MultiUrlChecker implements UrlCheckerInterface
     }
 
     /**
+     * Check if the array is a single CakePHP route (not an array of routes)
+     *
+     * @param array|string $value The value to check
+     * @return bool
+     */
+    protected function _isSingleRoute(array|string $value): bool
+    {
+        if (!is_array($value)) {
+            return false;
+        }
+
+        if (!$value) {
+            return false;
+        }
+
+        // A single route has string keys like ['controller' => 'Users']
+        // An array of routes has numeric keys [0 => '/login', 1 => '/signin']
+        reset($value);
+        $firstKey = key($value);
+
+        return !is_int($firstKey);
+    }
+
+    /**
      * Check a single URL
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
@@ -74,14 +104,12 @@ class MultiUrlChecker implements UrlCheckerInterface
      */
     protected function _checkSingleUrl(ServerRequestInterface $request, array|string $url, array $options): bool
     {
-        // Use CakeRouterUrlChecker for array URLs
-        if (is_array($url) && class_exists(Router::class)) {
-            $checker = new CakeRouterUrlChecker();
+        if (class_exists(Router::class)) {
+            $checker = new CakeUrlChecker();
 
-            return $checker->check($request, [$url], $options);
+            return $checker->check($request, $url, $options);
         }
 
-        // Use DefaultUrlChecker for string URLs
         $checker = new DefaultUrlChecker();
 
         return $checker->check($request, $url, $options);

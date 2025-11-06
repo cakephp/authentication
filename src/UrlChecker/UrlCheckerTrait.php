@@ -54,15 +54,17 @@ trait UrlCheckerTrait
     protected function _getUrlChecker(): UrlCheckerInterface
     {
         $options = $this->getConfig('urlChecker');
+
         if (!is_array($options)) {
             $options = [
                 'className' => $options,
             ];
         }
-        if (!isset($options['className'])) {
-            // Auto-detect CakePHP context
+
+        // If no explicit className is set (or it's null/empty), auto-detect CakePHP context
+        if (empty($options['className'])) {
             if (class_exists(Router::class)) {
-                $options['className'] = CakeRouterUrlChecker::class;
+                $options['className'] = CakeUrlChecker::class;
             } else {
                 $options['className'] = DefaultUrlChecker::class;
             }

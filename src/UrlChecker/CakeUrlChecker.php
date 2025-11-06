@@ -17,20 +17,19 @@ declare(strict_types=1);
 namespace Authentication\UrlChecker;
 
 use Cake\Routing\Router;
-use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Checks if a request object contains a valid URL
+ * Checks if a request object contains a valid URL using CakePHP Router
  */
-class CakeRouterUrlChecker extends DefaultUrlChecker
+class CakeUrlChecker extends DefaultUrlChecker
 {
     /**
      * Default Options
      *
      * - `checkFullUrl` Whether to check the full request URI.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultOptions = [
         'checkFullUrl' => false,
@@ -44,23 +43,9 @@ class CakeRouterUrlChecker extends DefaultUrlChecker
         $options = $this->_mergeDefaultOptions($options);
         $url = $this->_getUrlFromRequest($request, $options['checkFullUrl']);
 
-        if (!is_array($loginUrls) || empty($loginUrls)) {
-            throw new InvalidArgumentException('The $loginUrls parameter is empty or not of type array.');
-        }
+        // Support both string URLs and array-based routes (like Router::url())
+        $validUrl = Router::url($loginUrls, $options['checkFullUrl']);
 
-        // If it's a single route array add to another
-        if (!is_numeric(key($loginUrls))) {
-            $loginUrls = [$loginUrls];
-        }
-
-        foreach ($loginUrls as $validUrl) {
-            $validUrl = Router::url($validUrl, $options['checkFullUrl']);
-
-            if ($validUrl === $url) {
-                return true;
-            }
-        }
-
-        return false;
+        return $validUrl === $url;
     }
 }

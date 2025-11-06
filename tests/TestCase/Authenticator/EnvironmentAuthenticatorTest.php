@@ -260,6 +260,7 @@ class EnvironmentAuthenticatorTest extends TestCase
             ->connect('/{lang}/secure', ['controller' => 'Users', 'action' => 'login']);
 
         $envAuth = new EnvironmentAuthenticator($this->identifier, [
+            'urlChecker' => 'Authentication.Multi',
             'loginUrl' => [
                 ['lang' => 'en', 'controller' => 'Users', 'action' => 'login'],
                 ['lang' => 'de', 'controller' => 'Users', 'action' => 'login'],
@@ -316,6 +317,7 @@ class EnvironmentAuthenticatorTest extends TestCase
     public function testMultipleLoginUrlSuccess()
     {
         $envAuth = new EnvironmentAuthenticator($this->identifier, [
+            'urlChecker' => 'Authentication.Multi',
             'loginUrl' => [
                 '/en/secure',
                 '/de/secure',

@@ -171,7 +171,7 @@ class FormAuthenticatorTest extends TestCase
             ->connect('/{lang}/users/login', ['controller' => 'Users', 'action' => 'login']);
 
         $form = new FormAuthenticator($identifier, [
-            'urlChecker' => 'Authentication.CakeRouter',
+            'urlChecker' => 'Authentication.Multi',
             'loginUrl' => [
                 ['lang' => 'en', 'controller' => 'Users', 'action' => 'login'],
                 ['lang' => 'de', 'controller' => 'Users', 'action' => 'login'],
@@ -258,6 +258,7 @@ class FormAuthenticatorTest extends TestCase
                 '/en/users/login',
                 '/de/users/login',
             ],
+            'urlChecker' => 'Authentication.Multi',
         ]);
 
         $result = $form->authenticate($request);
