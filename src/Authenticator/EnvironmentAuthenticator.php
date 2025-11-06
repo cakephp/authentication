@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
+use Authentication\Identifier\IdentifierFactory;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,6 +46,21 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
         'fields' => [],
         'optionalFields' => [],
     ];
+
+    /**
+     * Constructor
+     *
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
+     * @param array<string, mixed> $config Configuration settings.
+     */
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
+    {
+        if ($identifier === null) {
+            $identifier = IdentifierFactory::create('Authentication.Callback');
+        }
+
+        parent::__construct($identifier, $config);
+    }
 
     /**
      * Get values from the environment variables configured by `fields`.
@@ -153,7 +170,6 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
 
         $data = array_merge($this->_getOptionalData($request), $data);
 
-        assert($this->_identifier !== null);
         $user = $this->_identifier->identify($data);
 
         if (!$user) {

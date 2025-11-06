@@ -142,7 +142,6 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        assert($this->_identifier !== null);
         $user = $this->_identifier->identify([
             TokenIdentifier::CREDENTIAL_TOKEN => $token,
         ]);

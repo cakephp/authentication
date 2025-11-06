@@ -20,6 +20,7 @@ use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\PasswordIdentifier;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
 abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
@@ -41,18 +42,28 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Identifier instance.
      *
-     * @var \Authentication\Identifier\IdentifierInterface|null
+     * @var \Authentication\Identifier\IdentifierInterface
      */
-    protected ?IdentifierInterface $_identifier = null;
+    protected IdentifierInterface $_identifier;
 
     /**
      * Constructor
      *
      * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
+     * @throws \RuntimeException When identifier is null and the authenticator doesn't provide a default.
      */
     public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
+        if ($identifier === null) {
+            throw new RuntimeException(
+                sprintf(
+                    'Identifier is required for `%s`. Please provide an identifier instance.',
+                    static::class,
+                ),
+            );
+        }
+
         $this->_identifier = $identifier;
         $this->setConfig($config);
     }
@@ -60,9 +71,9 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Gets the identifier.
      *
-     * @return \Authentication\Identifier\IdentifierInterface|null
+     * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function getIdentifier(): ?IdentifierInterface
+    public function getIdentifier(): IdentifierInterface
     {
         return $this->_identifier;
     }

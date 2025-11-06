@@ -81,7 +81,6 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        assert($this->_identifier !== null);
         $user = $this->_identifier->identify([
             PasswordIdentifier::CREDENTIAL_USERNAME => $username,
             PasswordIdentifier::CREDENTIAL_PASSWORD => $password,

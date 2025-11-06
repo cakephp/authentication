@@ -105,7 +105,6 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         [$username, $tokenHash] = $token;
 
-        assert($this->_identifier !== null);
         $identity = $this->_identifier->identify(compact('username'));
 
         if (!$identity) {

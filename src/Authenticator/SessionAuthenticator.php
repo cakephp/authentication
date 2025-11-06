@@ -17,6 +17,8 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use ArrayObject;
+use Authentication\Identifier\IdentifierFactory;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\PasswordIdentifier;
 use Cake\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
@@ -48,6 +50,25 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     ];
 
     /**
+     * Constructor
+     *
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
+     * @param array<string, mixed> $config Configuration settings.
+     */
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
+    {
+        if ($identifier === null) {
+            $identifierConfig = [];
+            if (isset($config['fields'])) {
+                $identifierConfig['fields'] = $config['fields'];
+            }
+            $identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
+        }
+
+        parent::__construct($identifier, $config);
+    }
+
+    /**
      * Authenticate a user using session data.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to authenticate with.
@@ -69,7 +90,6 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             foreach ($this->getConfig('fields') as $key => $field) {
                 $credentials[$key] = $user[$field];
             }
-            assert($this->_identifier !== null);
             $user = $this->_identifier->identify($credentials);
 
             if (!$user) {

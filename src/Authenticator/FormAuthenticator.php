@@ -159,7 +159,6 @@ class FormAuthenticator extends AbstractAuthenticator
             ]);
         }
 
-        assert($this->_identifier !== null);
         $user = $this->_identifier->identify($data);
 
         if (!$user) {

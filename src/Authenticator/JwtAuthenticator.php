@@ -99,8 +99,7 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
-        /** @phpstan-ignore-next-line */
-        $result = json_decode(json_encode($result), true);
+        $result = json_decode((string)json_encode($result), true);
 
         $subjectKey = $this->getConfig('subjectKey');
         if (empty($result[$subjectKey])) {
@@ -113,7 +112,6 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result($user, Result::SUCCESS);
         }
 
-        assert($this->_identifier !== null);
         $user = $this->_identifier->identify([
             $subjectKey => $result[$subjectKey],
         ]);
