@@ -55,9 +55,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      */
     public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
-        if ($identifier === null) {
-            $identifier = IdentifierFactory::create('Authentication.Callback');
-        }
+        $identifier ??= IdentifierFactory::create('Authentication.Callback');
 
         parent::__construct($identifier, $config);
     }
