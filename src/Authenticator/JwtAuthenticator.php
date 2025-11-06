@@ -58,9 +58,7 @@ class JwtAuthenticator extends TokenAuthenticator
     public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         // Override parent's default - JWT should use JwtSubject identifier
-        if ($identifier === null) {
-            $identifier = IdentifierFactory::create('Authentication.JwtSubject');
-        }
+        $identifier ??= IdentifierFactory::create('Authentication.JwtSubject');
 
         // Call AbstractAuthenticator's constructor directly to skip parent's default
         AbstractAuthenticator::__construct($identifier, $config);
