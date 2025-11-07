@@ -313,7 +313,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifier, [
             'loginUrl' => '%^/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
-                'className' => 'Authentication.Default',
+                'className' => 'Authentication.Generic',
                 'useRegex' => true,
             ],
         ]);
@@ -345,7 +345,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
-                'className' => 'Authentication.Default',
+                'className' => 'Authentication.Generic',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],
@@ -379,7 +379,7 @@ class FormAuthenticatorTest extends TestCase
         $form = new FormAuthenticator($identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/login/?$%',
             'urlChecker' => [
-                'className' => 'Authentication.Default',
+                'className' => 'Authentication.Generic',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],
@@ -409,6 +409,9 @@ class FormAuthenticatorTest extends TestCase
 
         $form = new FormAuthenticator($identifier, [
             'loginUrl' => 'http://localhost/users/login',
+            'urlChecker' => [
+                'className' => 'Authentication.Generic',
+            ],
         ]);
 
         $result = $form->authenticate($request);

@@ -105,16 +105,20 @@ For LDAP authentication:
         LdapIdentifier::CREDENTIAL_PASSWORD => 'password',
     ];
 
-URL Checker Renamed
--------------------
+URL Checker Renamed and Restructured
+-------------------------------------
 
-``CakeRouterUrlChecker`` has been renamed to ``CakeUrlChecker`` and now accepts
-both string and array URLs (just like ``Router::url()``).
+URL checkers have been completely restructured:
+
+- ``CakeRouterUrlChecker`` has been renamed to ``DefaultUrlChecker``
+- The old ``DefaultUrlChecker`` (framework-agnostic) has been renamed to ``GenericUrlChecker``
+- Auto-detection has been removed - ``DefaultUrlChecker`` is now hardcoded
 
 **Before (3.x):**
 
 .. code-block:: php
 
+    // Using CakeRouterUrlChecker explicitly
     $service->loadAuthenticator('Authentication.Form', [
         'urlChecker' => 'Authentication.CakeRouter',
         'loginUrl' => [
@@ -123,11 +127,22 @@ both string and array URLs (just like ``Router::url()``).
         ],
     ]);
 
+    // Using DefaultUrlChecker explicitly (framework-agnostic)
+    $service->loadAuthenticator('Authentication.Form', [
+        'urlChecker' => 'Authentication.Default',
+        'loginUrl' => '/users/login',
+    ]);
+
+    // Auto-detection (picks CakeRouter if available, otherwise Default)
+    $service->loadAuthenticator('Authentication.Form', [
+        'loginUrl' => '/users/login',
+    ]);
+
 **After (4.x):**
 
 .. code-block:: php
 
-    // CakeUrlChecker is now the default when CakePHP is installed
+    // DefaultUrlChecker is now hardcoded (formerly CakeRouterUrlChecker)
     $service->loadAuthenticator('Authentication.Form', [
         'loginUrl' => [
             'controller' => 'Users',
@@ -135,13 +150,10 @@ both string and array URLs (just like ``Router::url()``).
         ],
     ]);
 
-    // Or explicitly:
+    // For framework-agnostic projects, explicitly use GenericUrlChecker
     $service->loadAuthenticator('Authentication.Form', [
-        'urlChecker' => 'Authentication.Cake',
-        'loginUrl' => [
-            'controller' => 'Users',
-            'action' => 'login',
-        ],
+        'urlChecker' => 'Authentication.Generic',
+        'loginUrl' => '/users/login',
     ]);
 
 Simplified URL Checker API
@@ -189,31 +201,38 @@ Single URLs work the same in both versions:
         'loginUrl' => ['controller' => 'Users', 'action' => 'login'],
     ]);
 
-Auto-Detection Changes
+Auto-Detection Removed
 ----------------------
 
 URL Checkers
 ^^^^^^^^^^^^
 
-- When CakePHP Router is available: defaults to ``CakeUrlChecker``
-- Without CakePHP: defaults to ``DefaultUrlChecker``
-- For multiple URLs: you **must** explicitly configure ``MultiUrlChecker``
+**Important:** Auto-detection has been removed. ``DefaultUrlChecker`` is now hardcoded
+and assumes CakePHP is available.
 
-DefaultUrlChecker Changes
-^^^^^^^^^^^^^^^^^^^^^^^^^
+- **4.x default:** Always uses ``DefaultUrlChecker`` (formerly ``CakeUrlChecker``)
+- **Framework-agnostic:** Must explicitly configure ``GenericUrlChecker``
+- **Multiple URLs:** Must explicitly configure ``MultiUrlChecker``
 
-``DefaultUrlChecker`` no longer accepts array-based URLs. It throws a
-``RuntimeException`` if an array URL is provided:
+DefaultUrlChecker is Now CakePHP-Based
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``DefaultUrlChecker`` is now the CakePHP checker (formerly ``CakeRouterUrlChecker``).
+It requires CakePHP Router and supports both string and array URLs.
+
+The 3.x framework-agnostic ``DefaultUrlChecker`` has been renamed to ``GenericUrlChecker``.
 
 .. code-block:: php
 
-    // This will throw an exception in 4.x
+    // DefaultUrlChecker now requires CakePHP Router
     $checker = new DefaultUrlChecker();
-    $checker->check($request, ['controller' => 'Users', 'action' => 'login']);
+    $checker->check($request, ['controller' => 'Users', 'action' => 'login']);  // Works
+    $checker->check($request, '/users/login');  // Also works
 
-    // Use CakeUrlChecker instead:
-    $checker = new CakeUrlChecker();
-    $checker->check($request, ['controller' => 'Users', 'action' => 'login']);
+    // For framework-agnostic usage:
+    $checker = new GenericUrlChecker();
+    $checker->check($request, '/users/login');  // Works
+    $checker->check($request, ['controller' => 'Users']);  // Throws exception
 
 New Features
 ============
@@ -264,20 +283,33 @@ Migration Tips
 
    - ``AbstractIdentifier::CREDENTIAL_`` → ``PasswordIdentifier::CREDENTIAL_``
    - ``IdentifierCollection`` → ``IdentifierFactory``
-   - ``'Authentication.CakeRouter'`` → ``'Authentication.Cake'``
-   - ``CakeRouterUrlChecker`` → ``CakeUrlChecker``
+   - ``'Authentication.CakeRouter'`` → Remove (no longer needed, default is now CakePHP-based)
+   - ``CakeRouterUrlChecker`` → ``DefaultUrlChecker``
+   - Old 3.x ``DefaultUrlChecker`` (framework-agnostic) → ``GenericUrlChecker``
 
-2. **Multiple Login URLs**:
+2. **Framework-Agnostic Projects**:
+
+   If you're using this library without CakePHP, you **must** explicitly configure
+   ``GenericUrlChecker``:
+
+   .. code-block:: php
+
+       $service->loadAuthenticator('Authentication.Form', [
+           'urlChecker' => 'Authentication.Generic',
+           'loginUrl' => '/users/login',
+       ]);
+
+3. **Multiple Login URLs**:
 
    If you have multiple login URLs, add ``'urlChecker' => 'Authentication.Multi'``
    to your authenticator configuration.
 
-3. **Custom Identifier Setup**:
+4. **Custom Identifier Setup**:
 
    If you were passing ``IdentifierCollection`` to authenticators, switch to
    either passing a single identifier or null (to use defaults).
 
-4. **Test Thoroughly**:
+5. **Test Thoroughly**:
 
    The changes to identifier management and URL checking are significant.
    Test all authentication flows after upgrading.

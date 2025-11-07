@@ -16,22 +16,24 @@ declare(strict_types=1);
  */
 namespace Authentication\UrlChecker;
 
-use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
 /**
- * Default URL checker for CakePHP applications. Uses CakePHP Router.
+ * Generic URL checker for framework-agnostic usage. Supports also regex.
  */
-class DefaultUrlChecker implements UrlCheckerInterface
+class GenericUrlChecker implements UrlCheckerInterface
 {
     /**
      * Default Options
      *
+     * - `urlChecker` Whether to use `loginUrl` as regular expression(s).
      * - `checkFullUrl` Whether to check the full request URI.
      *
      * @var array<string, mixed>
      */
     protected array $_defaultOptions = [
+        'useRegex' => false,
         'checkFullUrl' => false,
     ];
 
@@ -40,24 +42,50 @@ class DefaultUrlChecker implements UrlCheckerInterface
      */
     public function check(ServerRequestInterface $request, array|string $loginUrls, array $options = []): bool
     {
+        if (is_array($loginUrls)) {
+            throw new RuntimeException(
+                'Array-based login URLs require CakePHP Router and DefaultUrlChecker. ' .
+                'Use string URLs instead.',
+            );
+        }
+
         $options = $this->_mergeDefaultOptions($options);
+        $checker = $this->_getChecker($options);
         $url = $this->_getUrlFromRequest($request, $options['checkFullUrl']);
 
-        // Support both string URLs and array-based routes (like Router::url())
-        $validUrl = Router::url($loginUrls, $options['checkFullUrl']);
-
-        return $validUrl === $url;
+        return (bool)$checker($loginUrls, $url);
     }
 
     /**
      * Merges given options with the defaults.
      *
+     * The reason this method exists is that it makes it easy to override the
+     * method and inject additional options without the need to use the
+     * MergeVarsTrait.
+     *
      * @param array<string, mixed> $options Options to merge in
-     * @return array<string, mixed>
+     * @return array
      */
     protected function _mergeDefaultOptions(array $options): array
     {
         return $options + $this->_defaultOptions;
+    }
+
+    /**
+     * Gets the checker function name or a callback
+     *
+     * @param array<string, mixed> $options Array of options
+     * @return callable
+     */
+    protected function _getChecker(array $options): callable
+    {
+        if (!empty($options['useRegex'])) {
+            return 'preg_match';
+        }
+
+        return function ($validUrl, $url) {
+            return $validUrl === $url;
+        };
     }
 
     /**

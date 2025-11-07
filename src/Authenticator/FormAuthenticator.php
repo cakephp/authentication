@@ -42,7 +42,7 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     protected array $_defaultConfig = [
         'loginUrl' => null,
-        'urlChecker' => 'Authentication.Cake',
+        'urlChecker' => null,
         'fields' => [
             PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
             PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',

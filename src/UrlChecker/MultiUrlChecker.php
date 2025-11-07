@@ -16,17 +16,13 @@ declare(strict_types=1);
  */
 namespace Authentication\UrlChecker;
 
-use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Multi URL Checker
  *
- * Supports checking multiple login URLs, automatically handling both
+ * Supports checking multiple login URLs, handling both
  * string URLs and array-based CakePHP routes.
- *
- * This checker automatically detects the URL type and uses the appropriate
- * checker (Default for strings, Cake for arrays).
  */
 class MultiUrlChecker implements UrlCheckerInterface
 {
@@ -104,12 +100,6 @@ class MultiUrlChecker implements UrlCheckerInterface
      */
     protected function _checkSingleUrl(ServerRequestInterface $request, array|string $url, array $options): bool
     {
-        if (class_exists(Router::class)) {
-            $checker = new CakeUrlChecker();
-
-            return $checker->check($request, $url, $options);
-        }
-
         $checker = new DefaultUrlChecker();
 
         return $checker->check($request, $url, $options);

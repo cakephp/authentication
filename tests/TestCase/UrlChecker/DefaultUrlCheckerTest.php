@@ -19,27 +19,37 @@ namespace Authentication\Test\TestCase\UrlChecker;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Authentication\UrlChecker\DefaultUrlChecker;
 use Cake\Http\ServerRequestFactory;
+use Cake\Routing\Router;
 
 /**
- * DefaultUrlCheckerTest
+ * DefaultUrlChecker Test
  */
 class DefaultUrlCheckerTest extends TestCase
 {
     /**
-     * testCheckFailure
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function testCheckFailure()
+    public function setUp(): void
     {
-        $checker = new DefaultUrlChecker();
+        parent::setUp();
 
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/users/does-not-match'],
+        Router::fullBaseUrl('http://localhost');
+
+        $builder = Router::createRouteBuilder('/');
+        $builder->connect(
+            '/login',
+            ['controller' => 'Users', 'action' => 'login'],
+            ['_name' => 'login'],
         );
-
-        $result = $checker->check($request, '/users/login');
-        $this->assertFalse($result);
+        $builder->connect('/{controller}/{action}');
+        $builder->connect(
+            '/login',
+            ['controller' => 'Users', 'action' => 'login'],
+            [
+                '_host' => 'auth.localhost',
+                '_name' => 'secureLogin',
+            ],
+        );
     }
 
     /**
@@ -51,67 +61,113 @@ class DefaultUrlCheckerTest extends TestCase
     {
         $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/invalid'],
+        );
+        $result = $checker->check($request, [
+            'controller' => 'Users',
+            'action' => 'login',
+        ]);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * checkFullUrls
+     *
+     * @return void
+     */
+    public function testCheckFullUrls()
+    {
+        $url = [
+            'controller' => 'users',
+            'action' => 'login',
+        ];
+
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+        );
+        $result = $checker->check($request, $url, [
+            'checkFullUrl' => true,
+        ]);
+        $this->assertTrue($result);
+
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/invalid'],
+        );
+        $result = $checker->check($request, $url, [
+            'checkFullUrl' => true,
+        ]);
+        $this->assertFalse($result);
+
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/login'],
+        );
+        $result = $checker->check($request, ['_name' => 'secureLogin'], [
+            'checkFullUrl' => true,
+        ]);
+        $this->assertFalse($result);
+
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            [
+                'REQUEST_URI' => '/login',
+                'SERVER_NAME' => 'auth.localhost',
+            ],
+        );
+        $result = $checker->check($request, ['_name' => 'secureLogin'], [
+            'checkFullUrl' => true,
+        ]);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testStringUrl - CakeUrlChecker now accepts strings too
+     *
+     * @return void
+     */
+    public function testStringUrl()
+    {
+        $checker = new DefaultUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
         );
         $result = $checker->check($request, '/users/login');
         $this->assertTrue($result);
 
-        $result = $checker->check($request, '/different/url');
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/different/url'],
+        );
+        $result = $checker->check($request, '/users/login');
         $this->assertFalse($result);
     }
 
     /**
-     * testCheckRegexp
+     * testNamedRoute
      *
      * @return void
      */
-    public function testCheckRegexp()
+    public function testNamedRoute()
     {
         $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/en/users/login'],
+            ['REQUEST_URI' => '/login'],
         );
-
-        $result = $checker->check($request, '%^/[a-z]{2}/users/login/?$%', [
-            'useRegex' => true,
-        ]);
+        $result = $checker->check($request, ['_name' => 'login']);
         $this->assertTrue($result);
     }
 
     /**
-     * testCheckFull
-     *
-     * @return void
+     * testInvalidNamedRoute
      */
-    public function testCheckFull()
+    public function testInvalidNamedRoute()
     {
+        $this->expectException('Cake\Routing\Exception\MissingRouteException');
         $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/users/login'],
+            ['REQUEST_URI' => '/login'],
         );
-
-        $result = $checker->check($request, 'http://localhost/users/login', [
-            'checkFullUrl' => true,
-        ]);
-        $this->assertTrue($result);
-    }
-
-    /**
-     * testCheckBase
-     *
-     * @return void
-     */
-    public function testCheckBase()
-    {
-        $checker = new DefaultUrlChecker();
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/users/login'],
-        );
-        $request = $request->withAttribute('base', '/base');
-
-        $result = $checker->check($request, 'http://localhost/base/users/login', [
-            'checkFullUrl' => true,
-        ]);
-        $this->assertTrue($result);
+        $checker->check($request, ['_name' => 'login-does-not-exist']);
     }
 }

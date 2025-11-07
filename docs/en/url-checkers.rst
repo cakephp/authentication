@@ -11,11 +11,11 @@ For multiple login URLs, use ``MultiUrlChecker``.
 Included Checkers
 =================
 
-CakeUrlChecker
---------------
+DefaultUrlChecker
+-----------------
 
-The default checker when CakePHP is installed. Supports both string URLs and
-CakePHP's array-based routing notation. This checker also works with named routes.
+The default URL checker. Supports both string URLs and CakePHP's array-based
+routing notation. Uses CakePHP Router and works with named routes.
 
 Single URL (string):
 
@@ -41,18 +41,18 @@ Single URL (CakePHP route array):
 Options:
 
 -  **checkFullUrl**: To compare the full URL, including protocol, host
-   and port or not. Default is ``false``
+   and port or not. Default is ``false``.
 
-DefaultUrlChecker
------------------
+GenericUrlChecker
+------------------
 
 Framework-agnostic checker for string URLs. Supports regex matching.
-This is the default when CakePHP is not installed.
+Use this for non-CakePHP projects.
 
 .. code-block:: php
 
     $service->loadAuthenticator('Authentication.Form', [
-        'urlChecker' => 'Authentication.Default',
+        'urlChecker' => 'Authentication.Generic',
         'loginUrl' => '/users/login',
     ]);
 
@@ -62,7 +62,7 @@ Using regex:
 
     $service->loadAuthenticator('Authentication.Form', [
         'urlChecker' => [
-            'className' => 'Authentication.Default',
+            'className' => 'Authentication.Generic',
             'useRegex' => true,
         ],
         'loginUrl' => '%^/[a-z]{2}/users/login/?$%',
