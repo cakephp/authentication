@@ -948,6 +948,250 @@ class AuthenticationServiceTest extends TestCase
     }
 
     /**
+     * testGetLoginRedirectValidationDisabled
+     *
+     * @return void
+     */
+    public function testGetLoginRedirectValidationDisabled()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+            'redirectValidation' => [
+                'enabled' => false,
+            ],
+        ]);
+
+        // With validation disabled, even nested redirects should pass
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/login?redirect=/secrets'],
+        );
+        $this->assertSame(
+            '/login?redirect=/secrets',
+            $service->getLoginRedirect($request),
+        );
+    }
+
+    /**
+     * testGetLoginRedirectValidationNestedRedirects
+     *
+     * @return void
+     */
+    public function testGetLoginRedirectValidationNestedRedirects()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+            'redirectValidation' => [
+                'enabled' => true,
+            ],
+        ]);
+
+        // Valid single-level redirect
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/articles/view/1'],
+        );
+        $this->assertSame(
+            '/articles/view/1',
+            $service->getLoginRedirect($request),
+        );
+
+        // Nested redirect (should be blocked)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/login?redirect=/articles/view/1'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        // Deeply nested redirect (should be blocked)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/login?redirect=%2Flogin%3Fredirect%3D%252Farticles'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+    }
+
+    /**
+     * testGetLoginRedirectValidationEncodingLevels
+     *
+     * @return void
+     */
+    public function testGetLoginRedirectValidationEncodingLevels()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+            'redirectValidation' => [
+                'enabled' => true,
+            ],
+        ]);
+
+        // Normal single-encoded URL (should pass)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/articles%2Fview%2F1'],
+        );
+        $this->assertSame(
+            '/articles%2Fview%2F1',
+            $service->getLoginRedirect($request),
+        );
+
+        // Double-encoded URL (should be blocked)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/articles%252Fview%252F1'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+    }
+
+    /**
+     * testGetLoginRedirectValidationBlockedPatterns
+     *
+     * @return void
+     */
+    public function testGetLoginRedirectValidationBlockedPatterns()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+            'redirectValidation' => [
+                'enabled' => true,
+            ],
+        ]);
+
+        // Redirect to login page (should be blocked)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/users/login'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        // Redirect to logout page (should be blocked)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/users/logout'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        // Redirect to register page (should be blocked)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/users/register'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        // Valid redirect to non-auth page
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/articles/index'],
+        );
+        $this->assertSame(
+            '/articles/index',
+            $service->getLoginRedirect($request),
+        );
+    }
+
+    /**
+     * testGetLoginRedirectValidationMaxLength
+     *
+     * @return void
+     */
+    public function testGetLoginRedirectValidationMaxLength()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+            'redirectValidation' => [
+                'enabled' => true,
+                'maxLength' => 100,
+            ],
+        ]);
+
+        // Short URL (should pass)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/articles/view/1'],
+        );
+        $this->assertSame(
+            '/articles/view/1',
+            $service->getLoginRedirect($request),
+        );
+
+        // Excessively long URL (should be blocked)
+        $longUrl = '/articles/' . str_repeat('a', 150);
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => $longUrl],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+    }
+
+    /**
+     * testGetLoginRedirectValidationCustomPatterns
+     *
+     * @return void
+     */
+    public function testGetLoginRedirectValidationCustomPatterns()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+            'redirectValidation' => [
+                'enabled' => true,
+                'blockedPatterns' => [
+                    '#/admin#i',
+                    '#/secret#i',
+                ],
+            ],
+        ]);
+
+        // Redirect to admin area (should be blocked by custom pattern)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/articles'],
+            ['redirect' => '/admin/dashboard'],
+        );
+        $this->assertNull($service->getLoginRedirect($request));
+
+        // Redirect to normal page (should pass)
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/articles'],
+            ['redirect' => '/public/articles'],
+        );
+        $this->assertSame(
+            '/public/articles',
+            $service->getLoginRedirect($request),
+        );
+    }
+
+    /**
+     * testGetLoginRedirectValidationWithQueryParameters
+     *
+     * @return void
+     */
+    public function testGetLoginRedirectValidationWithQueryParameters()
+    {
+        $service = new AuthenticationService([
+            'unauthenticatedRedirect' => '/users/login',
+            'queryParam' => 'redirect',
+            'redirectValidation' => [
+                'enabled' => true,
+            ],
+        ]);
+
+        // Valid redirect with query parameters
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/secrets'],
+            ['redirect' => '/articles/index?sort=created&direction=desc'],
+        );
+        $this->assertSame(
+            '/articles/index?sort=created&direction=desc',
+            $service->getLoginRedirect($request),
+        );
+    }
+
+    /**
      * testImpersonate
      *
      * @return void
