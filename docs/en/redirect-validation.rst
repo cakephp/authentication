@@ -66,12 +66,6 @@ maxLength
     Maximum allowed length of the redirect URL in characters. This helps prevent DOS attacks
     via excessively long URLs.
 
-blockedPatterns
-    **Type:** ``array`` | **Default:** ``['#/login#i', '#/logout#i', '#/register#i']``
-
-    Array of regular expressions to match against redirect URLs. Matching URLs will be rejected.
-    This prevents redirects to authentication-related pages that could cause loops.
-
 Example Configuration
 =====================
 
@@ -88,12 +82,6 @@ Here's a complete example with custom configuration:
             'maxDepth' => 1,
             'maxEncodingLevels' => 1,
             'maxLength' => 2000,
-            'blockedPatterns' => [
-                '#/admin#i',       // Block admin areas
-                '#/login#i',       // Block login page
-                '#/logout#i',      // Block logout page
-                '#/register#i',    // Block registration page
-            ],
         ],
     ]);
 
@@ -118,7 +106,6 @@ The validation performs the following checks in order:
 1. **Redirect Depth**: Counts occurrences of ``redirect=`` in the decoded URL
 2. **Encoding Level**: Counts occurrences of ``%25`` (percent-encoded percent sign)
 3. **URL Length**: Checks total character count
-4. **Blocked Patterns**: Matches against configured regex patterns
 
 If any check fails, the URL is rejected.
 
@@ -126,7 +113,7 @@ Custom Validation
 =================
 
 You can extend ``AuthenticationService`` and override the ``validateRedirect()`` method
-to implement custom validation logic:
+to implement custom validation logic, such as blocking specific URL patterns:
 
 .. code-block:: php
 
@@ -146,8 +133,14 @@ to implement custom validation logic:
             }
 
             // Add your custom validation
-            if (str_contains($redirect, 'forbidden')) {
-                return null;  // Reject this URL
+            // Example: Block redirects to authentication pages
+            if (preg_match('#/(login|logout|register)#i', $redirect)) {
+                return null;
+            }
+
+            // Example: Block redirects to admin areas
+            if (str_contains($redirect, '/admin')) {
+                return null;
             }
 
             return $redirect;

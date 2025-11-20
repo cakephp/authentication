@@ -93,10 +93,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *     'maxDepth' => 1,                // Max nested "redirect=" parameters (default: 1)
      *     'maxEncodingLevels' => 1,       // Max percent-encoding levels (default: 1)
      *     'maxLength' => 2000,            // Max URL length in characters (default: 2000)
-     *     'blockedPatterns' => [          // Regex patterns to reject (default: auth pages)
-     *         '#/login#i',
-     *         '#/logout#i',
-     *     ],
      * ]
      * ```
      *
@@ -126,11 +122,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             'maxDepth' => 1,
             'maxEncodingLevels' => 1,
             'maxLength' => 2000,
-            'blockedPatterns' => [
-                '#/login#i',
-                '#/logout#i',
-                '#/register#i',
-            ],
         ],
     ];
 
@@ -524,13 +515,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         // Check URL length to prevent DOS attacks
         if (strlen($redirect) > $config['maxLength']) {
             return null;
-        }
-
-        // Check against blocked patterns
-        foreach ($config['blockedPatterns'] as $pattern) {
-            if (preg_match($pattern, $decodedUrl)) {
-                return null;
-            }
         }
 
         return $redirect;
