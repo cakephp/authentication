@@ -503,7 +503,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         $config = $this->getConfig('redirectValidation');
 
         // If validation is disabled, return the URL as-is (backward compatibility)
-        if (empty($config['enabled'])) {
+        if (!$config['enabled']) {
             return $redirect;
         }
 
@@ -511,13 +511,13 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
 
         // Check for nested redirect parameters
         $redirectCount = substr_count($decodedUrl, 'redirect=');
-        if ($redirectCount > $config['maxDepth']) {
+        if ($redirectCount >= $config['maxDepth']) {
             return null;
         }
 
         // Check for multiple encoding levels (e.g., %25 = percent-encoded %)
         $encodingCount = substr_count($redirect, '%25');
-        if ($encodingCount > $config['maxEncodingLevels']) {
+        if ($encodingCount >= $config['maxEncodingLevels']) {
             return null;
         }
 
