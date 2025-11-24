@@ -58,26 +58,23 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     ];
 
     /**
-     * Constructor
+     * Gets the identifier, loading a default Password identifier if none configured.
      *
-     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
-     * @param array<string, mixed> $config Configuration settings.
+     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     *
+     * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function getIdentifier(): IdentifierInterface
     {
-        // If no identifier is configured, set up a default Password identifier
-        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
-            // Pass the authenticator's fields configuration to the identifier
+        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
             $identifierConfig = [];
-            if (isset($config['fields'])) {
-                $identifierConfig['fields'] = $config['fields'];
+            if ($this->getConfig('fields')) {
+                $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $identifier = new IdentifierCollection([
-                'Authentication.Password' => $identifierConfig,
-            ]);
+            $this->_identifier->load('Authentication.Password', $identifierConfig);
         }
 
-        parent::__construct($identifier, $config);
+        return $this->_identifier;
     }
 
     /**
@@ -107,10 +104,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         [$username, $tokenHash] = $token;
 
-        $identity = $this->_identifier->identify(compact('username'));
+        $identifier = $this->getIdentifier();
+        $identity = $identifier->identify(compact('username'));
 
         if (!$identity) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $identifier->getErrors());
         }
 
         if (!$this->_checkToken($identity, $tokenHash)) {

@@ -44,26 +44,23 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
     ];
 
     /**
-     * Constructor
+     * Gets the identifier, loading a default Password identifier if none configured.
      *
-     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
-     * @param array<string, mixed> $config Configuration settings.
+     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     *
+     * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function getIdentifier(): IdentifierInterface
     {
-        // If no identifier is configured, set up a default Password identifier
-        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
-            // Pass the authenticator's fields configuration to the identifier
+        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
             $identifierConfig = [];
-            if (isset($config['fields'])) {
-                $identifierConfig['fields'] = $config['fields'];
+            if ($this->getConfig('fields')) {
+                $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $identifier = new IdentifierCollection([
-                'Authentication.Password' => $identifierConfig,
-            ]);
+            $this->_identifier->load('Authentication.Password', $identifierConfig);
         }
 
-        parent::__construct($identifier, $config);
+        return $this->_identifier;
     }
 
     /**
@@ -83,7 +80,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        $user = $this->_identifier->identify([
+        $user = $this->getIdentifier()->identify([
             AbstractIdentifier::CREDENTIAL_USERNAME => $username,
             AbstractIdentifier::CREDENTIAL_PASSWORD => $password,
         ]);

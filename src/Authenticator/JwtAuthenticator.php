@@ -57,13 +57,7 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     public function __construct(IdentifierInterface $identifier, array $config = [])
     {
-        // Override parent's default - JWT should use JwtSubject identifier
-        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
-            $identifier = new IdentifierCollection(['Authentication.JwtSubject']);
-        }
-
-        // Call TokenAuthenticator's constructor but skip its default
-        AbstractAuthenticator::__construct($identifier, $config);
+        parent::__construct($identifier, $config);
 
         if (empty($this->_config['secretKey'])) {
             if (!class_exists(Security::class)) {
@@ -71,6 +65,22 @@ class JwtAuthenticator extends TokenAuthenticator
             }
             $this->setConfig('secretKey', Security::getSalt());
         }
+    }
+
+    /**
+     * Gets the identifier, loading a default JwtSubject identifier if none configured.
+     *
+     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     *
+     * @return \Authentication\Identifier\IdentifierInterface
+     */
+    public function getIdentifier(): IdentifierInterface
+    {
+        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
+            $this->_identifier->load('Authentication.JwtSubject');
+        }
+
+        return $this->_identifier;
     }
 
     /**
@@ -113,12 +123,13 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result($user, Result::SUCCESS);
         }
 
-        $user = $this->_identifier->identify([
+        $identifier = $this->getIdentifier();
+        $user = $identifier->identify([
             $subjectKey => $result[$subjectKey],
         ]);
 
         if (!$user) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $identifier->getErrors());
         }
 
         return new Result($user, Result::SUCCESS);

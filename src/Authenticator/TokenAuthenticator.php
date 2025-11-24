@@ -38,19 +38,19 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     ];
 
     /**
-     * Constructor
+     * Gets the identifier, loading a default Token identifier if none configured.
      *
-     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
-     * @param array<string, mixed> $config Configuration settings.
+     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     *
+     * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function getIdentifier(): IdentifierInterface
     {
-        // If no identifier is configured, set up a default Token identifier
-        if ($identifier instanceof IdentifierCollection && $identifier->isEmpty()) {
-            $identifier = new IdentifierCollection(['Authentication.Token']);
+        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
+            $this->_identifier->load('Authentication.Token');
         }
 
-        parent::__construct($identifier, $config);
+        return $this->_identifier;
     }
 
     /**
@@ -142,12 +142,13 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        $user = $this->_identifier->identify([
+        $identifier = $this->getIdentifier();
+        $user = $identifier->identify([
             TokenIdentifier::CREDENTIAL_TOKEN => $token,
         ]);
 
         if (!$user) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $identifier->getErrors());
         }
 
         return new Result($user, Result::SUCCESS);

@@ -641,25 +641,36 @@ class FormAuthenticatorTest extends TestCase
         $identifiers = new IdentifierCollection();
 
         // Configure authenticator with custom fields mapping
+        // Also set a loginUrl that won't match, so authenticate() returns early
+        // without actually trying to identify (which would require database access)
         $config = [
             'fields' => [
                 'username' => 'user_name',
                 'password' => 'pass_word',
             ],
+            'loginUrl' => '/login',
         ];
 
         // FormAuthenticator should create default identifier with inherited fields
+        // The default identifier is loaded lazily when authenticate() is called
         $form = new FormAuthenticator($identifiers, $config);
+
+        // Trigger the lazy loading by calling authenticate on a non-matching URL
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['user_name' => 'mariano', 'pass_word' => 'password'],
+        );
+        $form->authenticate($request);
 
         // Verify the identifier was created with the correct configuration
         $identifier = $form->getIdentifier();
         $this->assertInstanceOf(IdentifierCollection::class, $identifier);
         $this->assertFalse($identifier->isEmpty());
 
-        // Verify the fields are properly configured
-        // We can't directly access the internal configuration, but we can verify
-        // the FormAuthenticator has the expected configuration
-        $this->assertEquals('user_name', $form->getConfig('fields.username'));
-        $this->assertEquals('pass_word', $form->getConfig('fields.password'));
+        // Verify the fields are properly configured on the identifier
+        $passwordIdentifier = $identifier->get('Password');
+        $this->assertEquals('user_name', $passwordIdentifier->getConfig('fields.username'));
+        $this->assertEquals('pass_word', $passwordIdentifier->getConfig('fields.password'));
     }
 }
