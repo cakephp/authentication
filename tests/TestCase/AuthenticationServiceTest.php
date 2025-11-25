@@ -1382,7 +1382,6 @@ class AuthenticationServiceTest extends TestCase
      * create its own default identifier collection and ignore the later loadIdentifier call.
      *
      * @deprecated Note that this test will be removed in 4.x as this is only to keep BC in 3.x.
-     *
      * @return void
      */
     public function testLoadIdentifierAfterLoadAuthenticator()
