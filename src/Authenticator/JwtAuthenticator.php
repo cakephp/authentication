@@ -76,11 +76,7 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier === null) {
-            $this->_identifier = IdentifierFactory::create('Authentication.JwtSubject');
-        }
-
-        return $this->_identifier;
+        return $this->_identifier ??= IdentifierFactory::create('Authentication.JwtSubject');
     }
 
     /**

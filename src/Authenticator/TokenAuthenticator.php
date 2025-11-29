@@ -45,12 +45,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * @return \Authentication\Identifier\IdentifierInterface
      */
     public function getIdentifier(): IdentifierInterface
-    {
-        if ($this->_identifier === null) {
-            $this->_identifier = IdentifierFactory::create('Authentication.Token');
-        }
-
-        return $this->_identifier;
+        return $this->_identifier ??= IdentifierFactory::create('Authentication.Token');
     }
 
     /**
