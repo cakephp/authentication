@@ -256,6 +256,7 @@ Further Reading
 * :doc:`/authentication-component`
 * :doc:`/impersonation`
 * :doc:`/url-checkers`
+* :doc:`/redirect-validation`
 * :doc:`/testing`
 * :doc:`/view-helper`
 * :doc:`/migration-from-the-authcomponent`

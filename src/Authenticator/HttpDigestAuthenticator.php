@@ -94,7 +94,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        $user = $this->_identifier->identify([
+        $user = $this->getIdentifier()->identify([
             PasswordIdentifier::CREDENTIAL_USERNAME => $digest['username'],
         ]);
 

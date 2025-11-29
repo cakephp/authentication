@@ -50,24 +50,23 @@ class FormAuthenticator extends AbstractAuthenticator
     ];
 
     /**
-     * Constructor
+     * Gets the identifier, loading a default Password identifier if none configured.
      *
-     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
-     * @param array<string, mixed> $config Configuration settings.
+     * This is done lazily to allow configuration to be fully set before creating the identifier.
+     *
+     * @return \Authentication\Identifier\IdentifierInterface
      */
-    public function __construct(?IdentifierInterface $identifier, array $config = [])
+    public function getIdentifier(): IdentifierInterface
     {
-        // If no identifier is configured, set up a default Password identifier
-        if ($identifier === null) {
-            // Pass the authenticator's fields configuration to the identifier
+        if ($this->_identifier === null) {
             $identifierConfig = [];
-            if (isset($config['fields'])) {
-                $identifierConfig['fields'] = $config['fields'];
+            if ($this->getConfig('fields')) {
+                $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
+            $this->_identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
         }
 
-        parent::__construct($identifier, $config);
+        return $this->_identifier;
     }
 
     /**
@@ -139,9 +138,12 @@ class FormAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Authenticates the identity contained in a request. Will use the `config.userModel`, and `config.fields`
-     * to find POST data that is used to find a matching record in the `config.userModel`. Will return false if
-     * there is no post data, either username or password is missing, or if the scope conditions have not been met.
+     * Authenticates the identity contained in a request.
+     *
+     * Will use the `config.userModel`, and `config.fields` to find POST data
+     * that is used to find a matching record in the `config.userModel`.
+     * Will return false if there is no post data, either username or password is missing,
+     * or if the scope conditions have not been met.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return \Authentication\Authenticator\ResultInterface
@@ -159,10 +161,11 @@ class FormAuthenticator extends AbstractAuthenticator
             ]);
         }
 
-        $user = $this->_identifier->identify($data);
+        $identifier = $this->getIdentifier();
+        $user = $identifier->identify($data);
 
         if (!$user) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $identifier->getErrors());
         }
 
         return new Result($user, Result::SUCCESS);

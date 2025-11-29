@@ -263,7 +263,8 @@ this exception into a redirect using the ``unauthenticatedRedirect``
 when configuring the ``AuthenticationService``.
 
 You can also pass the current request target URI as a query parameter
-using the ``queryParam`` option::
+using the ``queryParam`` option. Note that the redirect parameter is only
+appended for GET requests to prevent redirecting to non-GET actions after login::
 
    // In the getAuthenticationService() method of your src/Application.php
 
@@ -308,8 +309,9 @@ leveraging the ``AuthenticationService``::
        if ($result->isValid()) {
            $authService = $this->Authentication->getAuthenticationService();
 
-           // Assuming you are using the `Password` identifier.
-           if ($authService->identifiers()->get('Password')->needsPasswordRehash()) {
+           // Get the identifier that was used for authentication.
+           $identifier = $authService->getIdentificationProvider();
+           if ($identifier !== null && $identifier->needsPasswordRehash()) {
                // Rehash happens on save.
                $user = $this->Users->get($this->Authentication->getIdentityData('id'));
                $user->password = $this->request->getData('password');

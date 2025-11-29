@@ -57,11 +57,7 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
-        // Override parent's default - JWT should use JwtSubject identifier
-        $identifier ??= IdentifierFactory::create('Authentication.JwtSubject');
-
-        // Call AbstractAuthenticator's constructor directly to skip parent's default
-        AbstractAuthenticator::__construct($identifier, $config);
+        parent::__construct($identifier, $config);
 
         if (empty($this->_config['secretKey'])) {
             if (!class_exists(Security::class)) {
@@ -69,6 +65,22 @@ class JwtAuthenticator extends TokenAuthenticator
             }
             $this->setConfig('secretKey', Security::getSalt());
         }
+    }
+
+    /**
+     * Gets the identifier, loading a default JwtSubject identifier if none configured.
+     *
+     * This is done lazily to allow configuration to be fully set before creating the identifier.
+     *
+     * @return \Authentication\Identifier\IdentifierInterface
+     */
+    public function getIdentifier(): IdentifierInterface
+    {
+        if ($this->_identifier === null) {
+            $this->_identifier = IdentifierFactory::create('Authentication.JwtSubject');
+        }
+
+        return $this->_identifier;
     }
 
     /**
@@ -110,12 +122,13 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result($user, Result::SUCCESS);
         }
 
-        $user = $this->_identifier->identify([
+        $identifier = $this->getIdentifier();
+        $user = $identifier->identify([
             $subjectKey => $result[$subjectKey],
         ]);
 
         if (!$user) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $identifier->getErrors());
         }
 
         return new Result($user, Result::SUCCESS);

@@ -257,7 +257,9 @@ pouvez convertir cette exception en redirection en utilisant
 l'\ ``AuthenticationService``.
 
 Vous pouvez aussi passer l'URI ciblée par la requête en cours en tant que
-paramètre dans la query string de la redirection avec l'option ``queryParam``::
+paramètre dans la query string de la redirection avec l'option ``queryParam``.
+Notez que le paramètre de redirection n'est ajouté que pour les requêtes GET afin
+d'éviter de rediriger vers des actions non-GET après la connexion::
 
    // Dans la méthode getAuthenticationService() de votre src/Application.php
 
@@ -303,8 +305,9 @@ parti de l'\ ``AuthenticationService``::
        if ($result->isValid()) {
            $authService = $this->Authentication->getAuthenticationService();
 
-           // En supposant que vous utilisez l'identificateur `Password`.
-           if ($authService->identifiers()->get('Password')->needsPasswordRehash()) {
+           // Obtenir l'identificateur qui a été utilisé pour l'authentification.
+           $identifier = $authService->getIdentificationProvider();
+           if ($identifier !== null && $identifier->needsPasswordRehash()) {
                // Le re-hachage se produit lors de la sauvegarde.
                $user = $this->Users->get($this->Authentication->getIdentityData('id'));
                $user->password = $this->request->getData('password');

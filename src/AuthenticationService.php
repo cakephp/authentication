@@ -71,6 +71,18 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *    AuthenticationComponent::allowUnauthenticated()
      * - `queryParam` - The name of the query string parameter containing the previously blocked URL
      *   in case of unauthenticated redirect, or null to disable appending the denied URL.
+     * - `redirectValidation` - Configuration for validating redirect URLs to prevent loops. See below.
+     *
+     * ### Redirect Validation Configuration:
+     *
+     * ```
+     * 'redirectValidation' => [
+     *     'enabled' => true,              // Enable validation (default: false for BC)
+     *     'maxDepth' => 1,                // Max nested "redirect=" parameters (default: 1)
+     *     'maxEncodingLevels' => 1,       // Max percent-encoding levels (default: 1)
+     *     'maxLength' => 2000,            // Max URL length in characters (default: 2000)
+     * ]
+     * ```
      *
      * ### Example:
      *
@@ -92,6 +104,12 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         'identityAttribute' => 'identity',
         'queryParam' => null,
         'unauthenticatedRedirect' => null,
+        'redirectValidation' => [
+            'enabled' => false, // Disabled by default for backward compatibility
+            'maxDepth' => 1,
+            'maxEncodingLevels' => 1,
+            'maxLength' => 2000,
+        ],
     ];
 
     /**
@@ -406,7 +424,49 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             $parsed['query'] = "?{$parsed['query']}";
         }
 
-        return $parsed['path'] . $parsed['query'];
+        $redirect = $parsed['path'] . $parsed['query'];
+
+        // Validate redirect to prevent loops if enabled
+        return $this->validateRedirect($redirect);
+    }
+
+    /**
+     * Validates a redirect URL to prevent loops and malicious patterns
+     *
+     * This method can be overridden in subclasses to implement custom validation logic.
+     *
+     * @param string $redirect The redirect URL to validate
+     * @return string|null The validated URL or null if invalid
+     */
+    protected function validateRedirect(string $redirect): ?string
+    {
+        $config = $this->getConfig('redirectValidation');
+
+        // If validation is disabled, return the URL as-is (backward compatibility)
+        if (!$config['enabled']) {
+            return $redirect;
+        }
+
+        $decodedUrl = urldecode($redirect);
+
+        // Check for nested redirect parameters
+        $redirectCount = substr_count($decodedUrl, 'redirect=');
+        if ($redirectCount >= $config['maxDepth']) {
+            return null;
+        }
+
+        // Check for multiple encoding levels (e.g., %25 = percent-encoded %)
+        $encodingCount = substr_count($redirect, '%25');
+        if ($encodingCount >= $config['maxEncodingLevels']) {
+            return null;
+        }
+
+        // Check URL length to prevent DOS attacks
+        if (strlen($redirect) > $config['maxLength']) {
+            return null;
+        }
+
+        return $redirect;
     }
 
     /**

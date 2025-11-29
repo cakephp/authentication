@@ -15,11 +15,31 @@ declare(strict_types=1);
  */
 namespace Authentication;
 
+use Cake\Core\BasePlugin;
+
 /**
- * Backwards-compatible alias for AuthenticationPlugin.
- *
- * @deprecated 4.0.0 Use AuthenticationPlugin instead.
+ * Plugin class for CakePHP.
  */
-class Plugin extends AuthenticationPlugin
+class AuthenticationPlugin extends BasePlugin
 {
+    /**
+     * Do bootstrapping or not
+     *
+     * @var bool
+     */
+    protected bool $bootstrapEnabled = false;
+
+    /**
+     * Load routes or not
+     *
+     * @var bool
+     */
+    protected bool $routesEnabled = false;
+
+    /**
+     * Console middleware
+     *
+     * @var bool
+     */
+    protected bool $consoleEnabled = false;
 }

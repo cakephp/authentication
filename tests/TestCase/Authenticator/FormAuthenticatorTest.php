@@ -545,4 +545,90 @@ class FormAuthenticatorTest extends TestCase
 
         $form->authenticate($request);
     }
+
+    /**
+     * Test that FormAuthenticator uses default Password identifier when none is provided.
+     *
+     * @return void
+     */
+    public function testDefaultPasswordIdentifier()
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password'],
+        );
+
+        // FormAuthenticator should automatically configure a Password identifier when null is passed
+        $form = new FormAuthenticator(null);
+        $result = $form->authenticate($request);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
+
+        // Verify the identifier was lazily created
+        $identifier = $form->getIdentifier();
+        $this->assertInstanceOf(IdentifierInterface::class, $identifier);
+    }
+
+    /**
+     * Test that FormAuthenticator respects explicitly configured identifier.
+     *
+     * @return void
+     */
+    public function testExplicitIdentifierNotOverridden()
+    {
+        // Create an identifier explicitly
+        $identifier = IdentifierFactory::create('Authentication.Password', [
+            'fields' => [
+                'username' => 'email',
+                'password' => 'password',
+            ],
+        ]);
+
+        // FormAuthenticator should use the provided identifier
+        $form = new FormAuthenticator($identifier);
+
+        // The identifier should remain as configured
+        $this->assertSame($identifier, $form->getIdentifier(), 'Identifier should be the same.');
+    }
+
+    /**
+     * Test that default identifier inherits fields configuration from authenticator.
+     *
+     * @return void
+     */
+    public function testDefaultIdentifierInheritsFieldsConfig()
+    {
+        // Configure authenticator with custom fields mapping
+        // Also set a loginUrl that won't match, so authenticate() returns early
+        // without actually trying to identify (which would require database access)
+        $config = [
+            'fields' => [
+                'username' => 'user_name',
+                'password' => 'pass_word',
+            ],
+            'loginUrl' => '/login',
+        ];
+
+        // FormAuthenticator should create default identifier with inherited fields
+        // The default identifier is loaded lazily when authenticate() or getIdentifier() is called
+        $form = new FormAuthenticator(null, $config);
+
+        // Trigger the lazy loading by calling authenticate on a non-matching URL
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['user_name' => 'mariano', 'pass_word' => 'password'],
+        );
+        $form->authenticate($request);
+
+        // Verify the identifier was created with the correct configuration
+        $identifier = $form->getIdentifier();
+        $this->assertInstanceOf(IdentifierInterface::class, $identifier);
+
+        // Verify the fields are properly configured on the identifier
+        $this->assertEquals('user_name', $identifier->getConfig('fields.username'));
+        $this->assertEquals('pass_word', $identifier->getConfig('fields.password'));
+    }
 }

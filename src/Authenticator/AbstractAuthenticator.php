@@ -42,20 +42,34 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Identifier instance.
      *
-     * @var \Authentication\Identifier\IdentifierInterface
+     * @var \Authentication\Identifier\IdentifierInterface|null
      */
-    protected IdentifierInterface $_identifier;
+    protected ?IdentifierInterface $_identifier = null;
 
     /**
      * Constructor
      *
      * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
-     * @throws \RuntimeException When identifier is null and the authenticator doesn't provide a default.
      */
     public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
-        if ($identifier === null) {
+        $this->_identifier = $identifier;
+        $this->setConfig($config);
+    }
+
+    /**
+     * Gets the identifier.
+     *
+     * Subclasses can override this method to provide a default identifier
+     * when none was configured, enabling lazy initialization.
+     *
+     * @return \Authentication\Identifier\IdentifierInterface
+     * @throws \RuntimeException When identifier is null.
+     */
+    public function getIdentifier(): IdentifierInterface
+    {
+        if ($this->_identifier === null) {
             throw new RuntimeException(
                 sprintf(
                     'Identifier is required for `%s`. Please provide an identifier instance.',
@@ -64,17 +78,6 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
             );
         }
 
-        $this->_identifier = $identifier;
-        $this->setConfig($config);
-    }
-
-    /**
-     * Gets the identifier.
-     *
-     * @return \Authentication\Identifier\IdentifierInterface
-     */
-    public function getIdentifier(): IdentifierInterface
-    {
         return $this->_identifier;
     }
 
