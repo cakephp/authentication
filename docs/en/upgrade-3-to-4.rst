@@ -111,7 +111,7 @@ URL Checker Renamed and Restructured
 URL checkers have been completely restructured:
 
 - ``CakeRouterUrlChecker`` has been renamed to ``DefaultUrlChecker``
-- The old ``DefaultUrlChecker`` (framework-agnostic) has been renamed to ``GenericUrlChecker``
+- The old ``DefaultUrlChecker`` has been renamed to ``StringUrlChecker``
 - Auto-detection has been removed - ``DefaultUrlChecker`` is now hardcoded
 
 **Before (3.x):**
@@ -127,7 +127,7 @@ URL checkers have been completely restructured:
         ],
     ]);
 
-    // Using DefaultUrlChecker explicitly (framework-agnostic)
+    // Using DefaultUrlChecker explicitly
     $service->loadAuthenticator('Authentication.Form', [
         'urlChecker' => 'Authentication.Default',
         'loginUrl' => '/users/login',
@@ -150,9 +150,9 @@ URL checkers have been completely restructured:
         ],
     ]);
 
-    // For framework-agnostic projects, explicitly use GenericUrlChecker
+    // For string-only URL checking, explicitly use StringUrlChecker
     $service->loadAuthenticator('Authentication.Form', [
-        'urlChecker' => 'Authentication.Generic',
+        'urlChecker' => 'Authentication.String',
         'loginUrl' => '/users/login',
     ]);
 
@@ -207,11 +207,10 @@ Auto-Detection Removed
 URL Checkers
 ^^^^^^^^^^^^
 
-**Important:** Auto-detection has been removed. ``DefaultUrlChecker`` is now hardcoded
-and assumes CakePHP is available.
+**Important:** Auto-detection has been removed. ``DefaultUrlChecker`` is now hardcoded.
 
 - **4.x default:** Always uses ``DefaultUrlChecker`` (formerly ``CakeUrlChecker``)
-- **Framework-agnostic:** Must explicitly configure ``GenericUrlChecker``
+- **String URLs only:** Must explicitly configure ``StringUrlChecker``
 - **Multiple URLs:** Must explicitly configure ``MultiUrlChecker``
 
 DefaultUrlChecker is Now CakePHP-Based
@@ -220,7 +219,7 @@ DefaultUrlChecker is Now CakePHP-Based
 ``DefaultUrlChecker`` is now the CakePHP checker (formerly ``CakeRouterUrlChecker``).
 It requires CakePHP Router and supports both string and array URLs.
 
-The 3.x framework-agnostic ``DefaultUrlChecker`` has been renamed to ``GenericUrlChecker``.
+The 3.x ``DefaultUrlChecker`` has been renamed to ``StringUrlChecker``.
 
 .. code-block:: php
 
@@ -229,8 +228,8 @@ The 3.x framework-agnostic ``DefaultUrlChecker`` has been renamed to ``GenericUr
     $checker->check($request, ['controller' => 'Users', 'action' => 'login']);  // Works
     $checker->check($request, '/users/login');  // Also works
 
-    // For framework-agnostic usage:
-    $checker = new GenericUrlChecker();
+    // For string URL only usage:
+    $checker = new StringUrlChecker();
     $checker->check($request, '/users/login');  // Works
     $checker->check($request, ['controller' => 'Users']);  // Throws exception
 
@@ -285,17 +284,17 @@ Migration Tips
    - ``IdentifierCollection`` → ``IdentifierFactory``
    - ``'Authentication.CakeRouter'`` → Remove (no longer needed, default is now CakePHP-based)
    - ``CakeRouterUrlChecker`` → ``DefaultUrlChecker``
-   - Old 3.x ``DefaultUrlChecker`` (framework-agnostic) → ``GenericUrlChecker``
+   - Old 3.x ``DefaultUrlChecker`` → ``StringUrlChecker``
 
-2. **Framework-Agnostic Projects**:
+2. **String URL Checking**:
 
-   If you're using this library without CakePHP, you **must** explicitly configure
-   ``GenericUrlChecker``:
+   If you want to use string-only URL checking, explicitly configure
+   ``StringUrlChecker``:
 
    .. code-block:: php
 
        $service->loadAuthenticator('Authentication.Form', [
-           'urlChecker' => 'Authentication.Generic',
+           'urlChecker' => 'Authentication.String',
            'loginUrl' => '/users/login',
        ]);
 
