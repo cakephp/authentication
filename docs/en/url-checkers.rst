@@ -1,9 +1,8 @@
 URL Checkers
 ############
 
-To provide an abstract and framework agnostic solution there are URL
-checkers implemented that allow you to customize the comparison of the
-current URL if needed. For example to another frameworks routing.
+There are URL checkers implemented that allow you to customize the comparison
+of the current URL if needed.
 
 All checkers support single URLs in either string or array format (like ``Router::url()``).
 For multiple login URLs, use ``MultiUrlChecker``.
@@ -43,16 +42,15 @@ Options:
 -  **checkFullUrl**: To compare the full URL, including protocol, host
    and port or not. Default is ``false``.
 
-GenericUrlChecker
-------------------
+StringUrlChecker
+-----------------
 
-Framework-agnostic checker for string URLs. Supports regex matching.
-Use this for non-CakePHP projects.
+Checker for string URLs. Supports regex matching.
 
 .. code-block:: php
 
     $service->loadAuthenticator('Authentication.Form', [
-        'urlChecker' => 'Authentication.Generic',
+        'urlChecker' => 'Authentication.String',
         'loginUrl' => '/users/login',
     ]);
 
@@ -62,7 +60,7 @@ Using regex:
 
     $service->loadAuthenticator('Authentication.Form', [
         'urlChecker' => [
-            'className' => 'Authentication.Generic',
+            'className' => 'Authentication.String',
             'useRegex' => true,
         ],
         'loginUrl' => '%^/[a-z]{2}/users/login/?$%',

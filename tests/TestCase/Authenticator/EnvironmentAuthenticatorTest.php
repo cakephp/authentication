@@ -378,7 +378,7 @@ class EnvironmentAuthenticatorTest extends TestCase
         $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '%^/[a-z]{2}/users/secure/?$%',
             'urlChecker' => [
-                'className' => 'Authentication.Generic',
+                'className' => 'Authentication.String',
                 'useRegex' => true,
             ],
             'fields' => [
@@ -409,7 +409,7 @@ class EnvironmentAuthenticatorTest extends TestCase
         $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/secure/?$%',
             'urlChecker' => [
-                'className' => 'Authentication.Generic',
+                'className' => 'Authentication.String',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],
@@ -441,7 +441,7 @@ class EnvironmentAuthenticatorTest extends TestCase
         $envAuth = new EnvironmentAuthenticator($this->identifier, [
             'loginUrl' => '%auth\.localhost/[a-z]{2}/users/secure/?$%',
             'urlChecker' => [
-                'className' => 'Authentication.Generic',
+                'className' => 'Authentication.String',
                 'useRegex' => true,
                 'checkFullUrl' => true,
             ],

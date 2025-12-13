@@ -20,9 +20,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
 /**
- * Generic URL checker for framework-agnostic usage. Supports also regex.
+ * URL checker for string URLs. Supports also regex.
  */
-class GenericUrlChecker implements UrlCheckerInterface
+class StringUrlChecker implements UrlCheckerInterface
 {
     /**
      * Default Options
@@ -44,8 +44,7 @@ class GenericUrlChecker implements UrlCheckerInterface
     {
         if (is_array($loginUrls)) {
             throw new RuntimeException(
-                'Array-based login URLs require CakePHP Router and DefaultUrlChecker. ' .
-                'Use string URLs instead.',
+                'Array-based login URLs require CakePHP Router and DefaultUrlChecker.',
             );
         }
 

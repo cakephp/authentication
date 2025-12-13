@@ -17,13 +17,13 @@ declare(strict_types=1);
 namespace Authentication\Test\TestCase\UrlChecker;
 
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Authentication\UrlChecker\GenericUrlChecker;
+use Authentication\UrlChecker\StringUrlChecker;
 use Cake\Http\ServerRequestFactory;
 
 /**
- * GenericUrlCheckerTest
+ * StringUrlCheckerTest
  */
-class GenericUrlCheckerTest extends TestCase
+class StringUrlCheckerTest extends TestCase
 {
     /**
      * testCheckFailure
@@ -32,7 +32,7 @@ class GenericUrlCheckerTest extends TestCase
      */
     public function testCheckFailure()
     {
-        $checker = new GenericUrlChecker();
+        $checker = new StringUrlChecker();
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/does-not-match'],
@@ -49,7 +49,7 @@ class GenericUrlCheckerTest extends TestCase
      */
     public function testCheckSimple()
     {
-        $checker = new GenericUrlChecker();
+        $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
         );
@@ -67,7 +67,7 @@ class GenericUrlCheckerTest extends TestCase
      */
     public function testCheckRegexp()
     {
-        $checker = new GenericUrlChecker();
+        $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/en/users/login'],
         );
@@ -85,7 +85,7 @@ class GenericUrlCheckerTest extends TestCase
      */
     public function testCheckFull()
     {
-        $checker = new GenericUrlChecker();
+        $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
         );
@@ -103,7 +103,7 @@ class GenericUrlCheckerTest extends TestCase
      */
     public function testCheckBase()
     {
-        $checker = new GenericUrlChecker();
+        $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
         );
