@@ -1,0 +1,117 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link https://cakephp.org CakePHP(tm) Project
+ * @since 1.0.0
+ * @license https://opensource.org/licenses/mit-license.php MIT License
+ */
+namespace Authentication\Test\TestCase\UrlChecker;
+
+use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use Authentication\UrlChecker\StringUrlChecker;
+use Cake\Http\ServerRequestFactory;
+
+/**
+ * StringUrlCheckerTest
+ */
+class StringUrlCheckerTest extends TestCase
+{
+    /**
+     * testCheckFailure
+     *
+     * @return void
+     */
+    public function testCheckFailure()
+    {
+        $checker = new StringUrlChecker();
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/does-not-match'],
+        );
+
+        $result = $checker->check($request, '/users/login');
+        $this->assertFalse($result);
+    }
+
+    /**
+     * testCheckSimple
+     *
+     * @return void
+     */
+    public function testCheckSimple()
+    {
+        $checker = new StringUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+        );
+        $result = $checker->check($request, '/users/login');
+        $this->assertTrue($result);
+
+        $result = $checker->check($request, '/different/url');
+        $this->assertFalse($result);
+    }
+
+    /**
+     * testCheckRegexp
+     *
+     * @return void
+     */
+    public function testCheckRegexp()
+    {
+        $checker = new StringUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/en/users/login'],
+        );
+
+        $result = $checker->check($request, '%^/[a-z]{2}/users/login/?$%', [
+            'useRegex' => true,
+        ]);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testCheckFull
+     *
+     * @return void
+     */
+    public function testCheckFull()
+    {
+        $checker = new StringUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+        );
+
+        $result = $checker->check($request, 'http://localhost/users/login', [
+            'checkFullUrl' => true,
+        ]);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * testCheckBase
+     *
+     * @return void
+     */
+    public function testCheckBase()
+    {
+        $checker = new StringUrlChecker();
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/users/login'],
+        );
+        $request = $request->withAttribute('base', '/base');
+
+        $result = $checker->check($request, 'http://localhost/base/users/login', [
+            'checkFullUrl' => true,
+        ]);
+        $this->assertTrue($result);
+    }
+}

@@ -22,7 +22,6 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Identifier\IdentifierCollection;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
@@ -34,7 +33,6 @@ use Cake\Http\ServerRequestFactory;
 use Cake\I18n\DateTime;
 use Cake\Routing\Router;
 use InvalidArgumentException;
-use PHPUnit\Runner\Version;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -224,37 +222,6 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException('RuntimeException');
         $service = new AuthenticationService();
         $service->loadAuthenticator('does-not-exist');
-    }
-
-    /**
-     * testLoadIdentifier
-     *
-     * @return void
-     */
-    public function testLoadIdentifier()
-    {
-        $this->skipIf(
-            version_compare(Version::id(), '11.0', '<'),
-            'For some reason PHPUnit doesn\'t pick up the deprecation on v10',
-        );
-
-        $this->deprecated(function () {
-            $service = new AuthenticationService();
-            $result = $service->loadIdentifier('Authentication.Password');
-            $this->assertInstanceOf(PasswordIdentifier::class, $result);
-        });
-    }
-
-    /**
-     * testIdentifiers
-     *
-     * @return void
-     */
-    public function testIdentifiers()
-    {
-        $service = new AuthenticationService();
-        $result = $service->identifiers();
-        $this->assertInstanceOf(IdentifierCollection::class, $result);
     }
 
     /**
@@ -1372,63 +1339,5 @@ class AuthenticationServiceTest extends TestCase
 
         $authenticator = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $authenticator);
-    }
-
-    /**
-     * Test that loadIdentifier called after loadAuthenticator still works.
-     *
-     * This is a regression test for https://github.com/cakephp/authentication/issues/754
-     * When loadAuthenticator was called before loadIdentifier, the authenticator would
-     * create its own default identifier collection and ignore the later loadIdentifier call.
-     *
-     * @deprecated Note that this test will be removed in 4.x as this is only to keep BC in 3.x.
-     * @return void
-     */
-    public function testLoadIdentifierAfterLoadAuthenticator()
-    {
-        $this->skipIf(
-            version_compare(Version::id(), '11.0', '<'),
-            'For some reason PHPUnit doesn\'t pick up the deprecation on v10',
-        );
-
-        $request = ServerRequestFactory::fromGlobals(
-            ['REQUEST_URI' => '/testpath'],
-            [],
-            ['username' => 'mariano', 'password' => 'password'],
-        );
-
-        $service = new AuthenticationService();
-
-        // Load authenticator FIRST
-        $service->loadAuthenticator('Authentication.Form');
-
-        // Then load identifier with custom resolver config
-        $this->deprecated(function () use ($service) {
-            $service->loadIdentifier('Authentication.Password', [
-                'resolver' => [
-                    'className' => 'Authentication.Orm',
-                    'userModel' => 'AuthUsers',
-                    'finder' => 'auth',
-                ],
-            ]);
-        });
-
-        // The authenticator should use the identifier we loaded, not its default
-        $formAuth = $service->authenticators()->get('Form');
-        $identifierCollection = $formAuth->getIdentifier();
-        $this->assertInstanceOf(IdentifierCollection::class, $identifierCollection);
-
-        $passwordIdentifier = $identifierCollection->get('Password');
-        $this->assertInstanceOf(PasswordIdentifier::class, $passwordIdentifier);
-
-        // Verify the resolver config was applied
-        $resolverConfig = $passwordIdentifier->getConfig('resolver');
-        $this->assertIsArray($resolverConfig);
-        $this->assertSame('AuthUsers', $resolverConfig['userModel']);
-        $this->assertSame('auth', $resolverConfig['finder']);
-
-        // Verify authentication actually works with the custom config
-        $result = $service->authenticate($request);
-        $this->assertTrue($result->isValid());
     }
 }

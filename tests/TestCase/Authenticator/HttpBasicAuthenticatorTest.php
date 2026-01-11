@@ -19,7 +19,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\HttpBasicAuthenticator;
 use Authentication\Authenticator\ResultInterface;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\DateTime;
@@ -38,9 +38,9 @@ class HttpBasicAuthenticatorTest extends TestCase
     ];
 
     /**
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierInterface
      */
-    protected $identifiers;
+    protected $identifier;
 
     /**
      * @var \Authentication\Authenticator\HttpBasicAuthenticator
@@ -54,11 +54,9 @@ class HttpBasicAuthenticatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $this->identifier = IdentifierFactory::create('Authentication.Password');
 
-        $this->auth = new HttpBasicAuthenticator($this->identifiers);
+        $this->auth = new HttpBasicAuthenticator($this->identifier);
     }
 
     /**
@@ -68,7 +66,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      */
     public function testConstructor()
     {
-        $object = new HttpBasicAuthenticator($this->identifiers, [
+        $object = new HttpBasicAuthenticator($this->identifier, [
             'userModel' => 'AuthUser',
             'fields' => [
                 'username' => 'user',

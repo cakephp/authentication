@@ -16,7 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\TokenIdentifier;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,17 +40,13 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     /**
      * Gets the identifier, loading a default Token identifier if none configured.
      *
-     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     * This is done lazily to allow configuration to be fully set before creating the identifier.
      *
      * @return \Authentication\Identifier\IdentifierInterface
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
-            $this->_identifier->load('Authentication.Token');
-        }
-
-        return $this->_identifier;
+        return $this->_identifier ??= IdentifierFactory::create('Authentication.Token');
     }
 
     /**

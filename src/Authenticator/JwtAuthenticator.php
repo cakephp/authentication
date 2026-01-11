@@ -17,7 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use ArrayObject;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\JwtSubjectIdentifier;
 use Cake\Utility\Security;
@@ -55,7 +55,7 @@ class JwtAuthenticator extends TokenAuthenticator
     /**
      * @inheritDoc
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         parent::__construct($identifier, $config);
 
@@ -70,17 +70,13 @@ class JwtAuthenticator extends TokenAuthenticator
     /**
      * Gets the identifier, loading a default JwtSubject identifier if none configured.
      *
-     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     * This is done lazily to allow configuration to be fully set before creating the identifier.
      *
      * @return \Authentication\Identifier\IdentifierInterface
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
-            $this->_identifier->load('Authentication.JwtSubject');
-        }
-
-        return $this->_identifier;
+        return $this->_identifier ??= IdentifierFactory::create('Authentication.JwtSubject');
     }
 
     /**
@@ -109,8 +105,7 @@ class JwtAuthenticator extends TokenAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
-        /** @phpstan-ignore-next-line */
-        $result = json_decode(json_encode($result), true);
+        $result = json_decode((string)json_encode($result), true);
 
         $subjectKey = $this->getConfig('subjectKey');
         if (empty($result[$subjectKey])) {

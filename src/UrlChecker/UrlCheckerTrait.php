@@ -33,9 +33,14 @@ trait UrlCheckerTrait
      */
     protected function _checkUrl(ServerRequestInterface $request): bool
     {
+        $loginUrl = $this->getConfig('loginUrl');
+        if ($loginUrl === null) {
+            return true;
+        }
+
         return $this->_getUrlChecker()->check(
             $request,
-            $this->getConfig('loginUrl'),
+            $loginUrl,
             (array)$this->getConfig('urlChecker'),
         );
     }
@@ -48,12 +53,15 @@ trait UrlCheckerTrait
     protected function _getUrlChecker(): UrlCheckerInterface
     {
         $options = $this->getConfig('urlChecker');
+
         if (!is_array($options)) {
             $options = [
                 'className' => $options,
             ];
         }
-        if (!isset($options['className'])) {
+
+        // If no explicit className is set (or it's null/empty), use DefaultUrlChecker
+        if (empty($options['className'])) {
             $options['className'] = DefaultUrlChecker::class;
         }
 

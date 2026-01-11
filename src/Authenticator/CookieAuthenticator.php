@@ -17,9 +17,9 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use ArrayAccess;
-use Authentication\Identifier\AbstractIdentifier;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Authentication\UrlChecker\UrlCheckerTrait;
 use Cake\Http\Cookie\Cookie;
@@ -47,8 +47,8 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         'urlChecker' => 'Authentication.Default',
         'rememberMeField' => 'remember_me',
         'fields' => [
-            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
-            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
+            PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
+            PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
         'cookie' => [
             'name' => 'CookieAuth',
@@ -60,18 +60,18 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * Gets the identifier, loading a default Password identifier if none configured.
      *
-     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     * This is done lazily to allow configuration to be fully set before creating the identifier.
      *
      * @return \Authentication\Identifier\IdentifierInterface
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
+        if ($this->_identifier === null) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $this->_identifier->load('Authentication.Password', $identifierConfig);
+            $this->_identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
         }
 
         return $this->_identifier;

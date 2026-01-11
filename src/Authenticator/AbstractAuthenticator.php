@@ -16,10 +16,11 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
 abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
@@ -33,25 +34,25 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     protected array $_defaultConfig = [
         'fields' => [
-            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
-            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
+            PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
+            PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
     ];
 
     /**
-     * Identifier or identifiers collection.
+     * Identifier instance.
      *
-     * @var \Authentication\Identifier\IdentifierInterface
+     * @var \Authentication\Identifier\IdentifierInterface|null
      */
-    protected IdentifierInterface $_identifier;
+    protected ?IdentifierInterface $_identifier = null;
 
     /**
      * Constructor
      *
-     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier or identifiers collection.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         $this->_identifier = $identifier;
         $this->setConfig($config);
@@ -60,10 +61,23 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Gets the identifier.
      *
+     * Subclasses can override this method to provide a default identifier
+     * when none was configured, enabling lazy initialization.
+     *
      * @return \Authentication\Identifier\IdentifierInterface
+     * @throws \RuntimeException When identifier is null.
      */
     public function getIdentifier(): IdentifierInterface
     {
+        if ($this->_identifier === null) {
+            throw new RuntimeException(
+                sprintf(
+                    'Identifier is required for `%s`. Please provide an identifier instance.',
+                    static::class,
+                ),
+            );
+        }
+
         return $this->_identifier;
     }
 

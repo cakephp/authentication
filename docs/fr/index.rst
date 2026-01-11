@@ -9,7 +9,7 @@ répertoire ROOT de votre projet CakePHP (là où se trouve le fichier
 
     php composer.phar require cakephp/authentication
 
-La version 3 du Plugin Authentication est compatible avec CakePHP 5.
+La version 4 du Plugin Authentication est compatible avec CakePHP 5.
 
 Chargez le plugin en ajoutant l'instruction suivante dans le fichier
 ``src/Application.php`` de votre projet::

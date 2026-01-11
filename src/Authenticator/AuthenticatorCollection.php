@@ -17,42 +17,15 @@ declare(strict_types=1);
 namespace Authentication\Authenticator;
 
 use Authentication\AbstractCollection;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Cake\Core\App;
 use RuntimeException;
-use function Cake\Core\deprecationWarning;
 
 /**
  * @extends \Authentication\AbstractCollection<\Authentication\Authenticator\AuthenticatorInterface>
  */
 class AuthenticatorCollection extends AbstractCollection
 {
-    /**
-     * Identifier collection.
-     *
-     * @var \Authentication\Identifier\IdentifierCollection
-     */
-    protected IdentifierCollection $_identifiers;
-
-    /**
-     * Constructor.
-     *
-     * @param \Authentication\Identifier\IdentifierCollection $identifiers Identifiers collection.
-     * @param array<string, mixed> $config Config array.
-     */
-    public function __construct(IdentifierCollection $identifiers, array $config = [])
-    {
-        $this->_identifiers = $identifiers;
-        if ($identifiers->count() > 0) {
-            deprecationWarning(
-                '3.3.0',
-                'loadIdentifier() usage is deprecated. Directly pass `\'identifier\'` config to the Authenticator.',
-            );
-        }
-
-        parent::__construct($config);
-    }
-
     /**
      * Creates authenticator instance.
      *
@@ -65,11 +38,12 @@ class AuthenticatorCollection extends AbstractCollection
     protected function _create(object|string $class, string $alias, array $config): AuthenticatorInterface
     {
         if (is_string($class)) {
+            $identifier = null;
             if (!empty($config['identifier'])) {
-                $this->_identifiers = new IdentifierCollection((array)$config['identifier']);
+                $identifier = IdentifierFactory::create($config['identifier']);
             }
 
-            return new $class($this->_identifiers, $config);
+            return new $class($identifier, $config);
         }
 
         return $class;

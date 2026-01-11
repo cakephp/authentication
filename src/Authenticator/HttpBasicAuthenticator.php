@@ -15,9 +15,9 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\AbstractIdentifier;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -37,8 +37,8 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     protected array $_defaultConfig = [
         'fields' => [
-            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
-            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
+            PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
+            PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
         ],
         'skipChallenge' => false,
     ];
@@ -46,18 +46,18 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
     /**
      * Gets the identifier, loading a default Password identifier if none configured.
      *
-     * This is done lazily to allow loadIdentifier() to be called after loadAuthenticator().
+     * This is done lazily to allow configuration to be fully set before creating the identifier.
      *
      * @return \Authentication\Identifier\IdentifierInterface
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier instanceof IdentifierCollection && $this->_identifier->isEmpty()) {
+        if ($this->_identifier === null) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $this->_identifier->load('Authentication.Password', $identifierConfig);
+            $this->_identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
         }
 
         return $this->_identifier;
@@ -81,8 +81,8 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
         }
 
         $user = $this->getIdentifier()->identify([
-            AbstractIdentifier::CREDENTIAL_USERNAME => $username,
-            AbstractIdentifier::CREDENTIAL_PASSWORD => $password,
+            PasswordIdentifier::CREDENTIAL_USERNAME => $username,
+            PasswordIdentifier::CREDENTIAL_PASSWORD => $password,
         ]);
 
         if ($user === null) {

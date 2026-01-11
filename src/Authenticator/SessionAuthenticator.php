@@ -17,7 +17,9 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use ArrayObject;
-use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\IdentifierFactory;
+use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,13 +41,32 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      */
     protected array $_defaultConfig = [
         'fields' => [
-            AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
+            PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
         ],
         'sessionKey' => 'Auth',
         'impersonateSessionKey' => 'AuthImpersonate',
         'identify' => false,
         'identityAttribute' => 'identity',
     ];
+
+    /**
+     * Constructor
+     *
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
+     * @param array<string, mixed> $config Configuration settings.
+     */
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
+    {
+        if ($identifier === null) {
+            $identifierConfig = [];
+            if (isset($config['fields'])) {
+                $identifierConfig['fields'] = $config['fields'];
+            }
+            $identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
+        }
+
+        parent::__construct($identifier, $config);
+    }
 
     /**
      * Authenticate a user using session data.
@@ -69,7 +90,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             foreach ($this->getConfig('fields') as $key => $field) {
                 $credentials[$key] = $user[$field];
             }
-            $user = $this->_identifier->identify($credentials);
+            $user = $this->getIdentifier()->identify($credentials);
 
             if (!$user) {
                 return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);

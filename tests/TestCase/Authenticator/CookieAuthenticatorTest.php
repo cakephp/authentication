@@ -18,7 +18,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 use ArrayObject;
 use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Authenticator\Result;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Cake\Core\Configure;
 use Cake\Http\Cookie\Cookie;
 use Cake\Http\Response;
@@ -59,9 +59,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testAuthenticateInvalidTokenMissingUsername()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -72,7 +70,7 @@ class CookieAuthenticatorTest extends TestCase
             ],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        $authenticator = new CookieAuthenticator($identifier);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -86,9 +84,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testAuthenticateSuccess()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -100,7 +96,7 @@ class CookieAuthenticatorTest extends TestCase
             ],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        $authenticator = new CookieAuthenticator($identifier);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -114,9 +110,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testAuthenticateExpandedCookie()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -127,7 +121,7 @@ class CookieAuthenticatorTest extends TestCase
             ],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        $authenticator = new CookieAuthenticator($identifier);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -143,9 +137,7 @@ class CookieAuthenticatorTest extends TestCase
     {
         Configure::delete('Security.salt');
 
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -157,7 +149,7 @@ class CookieAuthenticatorTest extends TestCase
             ],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers, ['salt' => false]);
+        $authenticator = new CookieAuthenticator($identifier, ['salt' => false]);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -171,9 +163,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testAuthenticateInvalidSalt()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -184,7 +174,7 @@ class CookieAuthenticatorTest extends TestCase
             ],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers, ['salt' => '']);
+        $authenticator = new CookieAuthenticator($identifier, ['salt' => '']);
 
         $this->expectException(InvalidArgumentException::class);
         $authenticator->authenticate($request);
@@ -197,9 +187,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testAuthenticateUnknownUser()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -210,7 +198,7 @@ class CookieAuthenticatorTest extends TestCase
             ],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        $authenticator = new CookieAuthenticator($identifier);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -224,15 +212,13 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testCredentialsNotPresent()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        $authenticator = new CookieAuthenticator($identifier);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -246,9 +232,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testAuthenticateInvalidToken()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -259,7 +243,7 @@ class CookieAuthenticatorTest extends TestCase
             ],
         );
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        $authenticator = new CookieAuthenticator($identifier);
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -273,9 +257,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testPersistIdentity()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -286,7 +268,7 @@ class CookieAuthenticatorTest extends TestCase
         $response = new Response();
 
         Cookie::setDefaults(['samesite' => 'None']);
-        $authenticator = new CookieAuthenticator($identifiers, [
+        $authenticator = new CookieAuthenticator($identifier, [
             'cookie' => ['expires' => '2030-01-01 00:00:00'],
         ]);
 
@@ -332,7 +314,7 @@ class CookieAuthenticatorTest extends TestCase
         $request = $request->withParsedBody([
             'other_field' => 1,
         ]);
-        $authenticator = new CookieAuthenticator($identifiers, [
+        $authenticator = new CookieAuthenticator($identifier, [
             'rememberMeField' => 'other_field',
         ]);
         $result = $authenticator->persistIdentity($request, $response, $identity);
@@ -349,9 +331,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testPersistIdentityLoginUrlMismatch()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -361,7 +341,7 @@ class CookieAuthenticatorTest extends TestCase
         ]);
         $response = new Response();
 
-        $authenticator = new CookieAuthenticator($identifiers, [
+        $authenticator = new CookieAuthenticator($identifier, [
             'loginUrl' => '/users/login',
         ]);
 
@@ -387,9 +367,7 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testPersistIdentityInvalidConfig()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/users/login'],
@@ -399,7 +377,7 @@ class CookieAuthenticatorTest extends TestCase
         ]);
         $response = new Response();
 
-        $authenticator = new CookieAuthenticator($identifiers, [
+        $authenticator = new CookieAuthenticator($identifier, [
             'loginUrl' => '/users/login',
         ]);
 
@@ -420,16 +398,14 @@ class CookieAuthenticatorTest extends TestCase
      */
     public function testClearIdentity()
     {
-        $identifiers = new IdentifierCollection([
-            'Authentication.Password',
-        ]);
+        $identifier = IdentifierFactory::create('Authentication.Password');
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
         );
         $response = new Response();
 
-        $authenticator = new CookieAuthenticator($identifiers);
+        $authenticator = new CookieAuthenticator($identifier);
 
         $result = $authenticator->clearIdentity($request, $response);
         $this->assertIsArray($result);

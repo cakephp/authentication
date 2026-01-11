@@ -21,7 +21,7 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\StatelessInterface;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Cake\Http\ServerRequestFactory;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
@@ -44,9 +44,9 @@ class HttpDigestAuthenticatorTest extends TestCase
     ];
 
     /**
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\IdentifierInterface
      */
-    protected $identifiers;
+    protected $identifier;
 
     /**
      * @var \Authentication\Authenticator\HttpDigestAuthenticator
@@ -62,11 +62,9 @@ class HttpDigestAuthenticatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->identifiers = new IdentifierCollection([
-           'Authentication.Password',
-        ]);
+        $this->identifier = IdentifierFactory::create('Authentication.Password');
 
-        $this->auth = new HttpDigestAuthenticator($this->identifiers, [
+        $this->auth = new HttpDigestAuthenticator($this->identifier, [
             'realm' => 'localhost',
             'nonce' => 123,
             'opaque' => '123abc',
@@ -85,7 +83,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      */
     public function testConstructor()
     {
-        $object = new HttpDigestAuthenticator($this->identifiers, [
+        $object = new HttpDigestAuthenticator($this->identifier, [
             'userModel' => 'AuthUser',
             'fields' => ['username' => 'user', 'password' => 'pass'],
             'nonce' => 123456,

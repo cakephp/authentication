@@ -18,7 +18,7 @@ namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\TokenAuthenticator;
-use Authentication\Identifier\IdentifierCollection;
+use Authentication\Identifier\IdentifierFactory;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 
@@ -35,9 +35,9 @@ class TokenAuthenticatorTest extends TestCase
     ];
 
     /**
-     * @var \Authentication\Identifier\IdentifierCollection
+     * @var \Authentication\Identifier\TokenIdentifier
      */
-    protected $identifiers;
+    protected $identifier;
 
     /**
      * @var \Cake\Http\ServerRequest
@@ -51,10 +51,8 @@ class TokenAuthenticatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->identifiers = new IdentifierCollection([
-           'Authentication.Token' => [
-               'tokenField' => 'username',
-           ],
+        $this->identifier = IdentifierFactory::create('Authentication.Token', [
+            'tokenField' => 'username',
         ]);
 
         $this->request = ServerRequestFactory::fromGlobals(
@@ -72,7 +70,7 @@ class TokenAuthenticatorTest extends TestCase
     public function testAuthenticateViaHeaderToken()
     {
         // Test without token
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'queryParam' => 'token',
         ]);
         $result = $tokenAuth->authenticate($this->request);
@@ -81,7 +79,7 @@ class TokenAuthenticatorTest extends TestCase
 
         // Test header token
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'mariano');
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'header' => 'Token',
         ]);
         $result = $tokenAuth->authenticate($requestWithHeaders);
@@ -98,7 +96,7 @@ class TokenAuthenticatorTest extends TestCase
     {
         // Test with query param token
         $requestWithParams = $this->request->withQueryParams(['token' => 'mariano']);
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'queryParam' => 'token',
         ]);
         $result = $tokenAuth->authenticate($requestWithParams);
@@ -107,7 +105,7 @@ class TokenAuthenticatorTest extends TestCase
 
         // Test with valid query param but invalid token
         $requestWithParams = $this->request->withQueryParams(['token' => 'does-not-exist']);
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'queryParam' => 'token',
         ]);
         $result = $tokenAuth->authenticate($requestWithParams);
@@ -124,7 +122,7 @@ class TokenAuthenticatorTest extends TestCase
     {
         //valid prefix
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'identity mariano');
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'header' => 'Token',
             'tokenPrefix' => 'identity',
         ]);
@@ -133,7 +131,7 @@ class TokenAuthenticatorTest extends TestCase
         $this->assertSame(Result::SUCCESS, $result->getStatus());
 
         $requestWithHeaders = $this->request->withAddedHeader('X-Dipper-Auth', 'dipper_mariano');
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'header' => 'X-Dipper-Auth',
             'tokenPrefix' => 'dipper_',
         ]);
@@ -143,7 +141,7 @@ class TokenAuthenticatorTest extends TestCase
 
         //invalid prefix
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'bearer mariano');
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'header' => 'Token',
             'tokenPrefix' => 'identity',
         ]);
@@ -153,7 +151,7 @@ class TokenAuthenticatorTest extends TestCase
 
         // should not remove prefix from token
         $requestWithHeaders = $this->request->withAddedHeader('X-Dipper-Auth', 'mari mariano');
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'header' => 'X-Dipper-Auth',
             'tokenPrefix' => 'mari',
         ]);
@@ -169,7 +167,7 @@ class TokenAuthenticatorTest extends TestCase
      */
     public function testWithoutQueryParamConfig()
     {
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'header' => 'Token',
         ]);
 
@@ -185,7 +183,7 @@ class TokenAuthenticatorTest extends TestCase
      */
     public function testWithoutHeaderConfig()
     {
-        $tokenAuth = new TokenAuthenticator($this->identifiers, [
+        $tokenAuth = new TokenAuthenticator($this->identifier, [
             'queryParam' => 'token',
         ]);
 
@@ -201,7 +199,7 @@ class TokenAuthenticatorTest extends TestCase
      */
     public function testWithoutAnyConfig()
     {
-        $tokenAuth = new TokenAuthenticator($this->identifiers);
+        $tokenAuth = new TokenAuthenticator($this->identifier);
 
         $result = $tokenAuth->authenticate(ServerRequestFactory::fromGlobals());
         $this->assertInstanceOf(Result::class, $result);

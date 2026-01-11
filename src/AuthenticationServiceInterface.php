@@ -19,7 +19,6 @@ namespace Authentication;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
-use Authentication\Identifier\IdentifierInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface AuthenticationServiceInterface extends PersistenceInterface
@@ -32,16 +31,6 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * @return \Authentication\Authenticator\AuthenticatorInterface
      */
     public function loadAuthenticator(string $name, array $config = []): AuthenticatorInterface;
-
-    /**
-     * Loads an identifier.
-     *
-     * @param string $name Name or class name.
-     * @param array<string, mixed> $config Identifier configuration.
-     * @return \Authentication\Identifier\IdentifierInterface
-     * @deprecated 3.3.0: loadIdentifier() usage is deprecated. Directly pass Identifier to Authenticator.
-     */
-    public function loadIdentifier(string $name, array $config = []): IdentifierInterface;
 
     /**
      * Authenticate the request against the configured authentication adapters.

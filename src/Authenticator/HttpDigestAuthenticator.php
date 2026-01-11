@@ -15,8 +15,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Authenticator;
 
-use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\IdentifierInterface;
+use Authentication\Identifier\PasswordIdentifier;
 use Cake\Utility\Security;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -55,10 +55,10 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * - `opaque` A string that must be returned unchanged by clients.
      *    Defaults to `md5($config['realm'])`
      *
-     * @param \Authentication\Identifier\IdentifierInterface $identifier Identifier instance.
+     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
      */
-    public function __construct(IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier, array $config = [])
     {
         $secret = '';
         if (class_exists(Security::class)) {
@@ -94,8 +94,8 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING);
         }
 
-        $user = $this->_identifier->identify([
-            AbstractIdentifier::CREDENTIAL_USERNAME => $digest['username'],
+        $user = $this->getIdentifier()->identify([
+            PasswordIdentifier::CREDENTIAL_USERNAME => $digest['username'],
         ]);
 
         if (!$user) {
@@ -106,7 +106,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
-        $field = $this->_config['fields'][AbstractIdentifier::CREDENTIAL_PASSWORD];
+        $field = $this->_config['fields'][PasswordIdentifier::CREDENTIAL_PASSWORD];
         $password = $user[$field];
 
         $server = $request->getServerParams();

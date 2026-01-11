@@ -16,7 +16,9 @@ declare(strict_types=1);
 namespace Authentication;
 
 /**
- * @deprecated 3.3.4 Use AuthenticationPlugin instead
+ * Backwards-compatible alias for AuthenticationPlugin.
+ *
+ * @deprecated 4.0.0 Use AuthenticationPlugin instead.
  */
 class Plugin extends AuthenticationPlugin
 {
