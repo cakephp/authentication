@@ -39,4 +39,3 @@ Documentation for this plugin can be found in the [CakePHP Cookbook](https://boo
 
 There are IdeHelper tasks in [IdeHelperExtra plugin](https://github.com/dereuromark/cakephp-ide-helper-extra/) to provide auto-complete:
 - `AuthenticationService::loadAuthenticator()`
-- `IdentifierCollection::load()`
