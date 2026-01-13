@@ -79,7 +79,7 @@ class JwtAuthenticatorTest extends TestCase
             'firstname' => 'larry',
         ];
 
-        $this->tokenHS256 = JWT::encode($data, 'secretKey', 'HS256');
+        $this->tokenHS256 = JWT::encode($data, 'secretKey0123456789secretKey0123456789', 'HS256');
 
         $privKey1 = file_get_contents(__DIR__ . '/../../data/rsa1-private.pem');
         $this->tokenRS256 = JWT::encode($data, $privKey1, 'RS256', 'jwk1');
@@ -100,7 +100,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->request = $this->request->withAddedHeader('Authorization', 'Bearer ' . $this->tokenHS256);
 
         $authenticator = new JwtAuthenticator($this->identifier, [
-            'secretKey' => 'secretKey',
+            'secretKey' => 'secretKey0123456789secretKey0123456789',
             'subjectKey' => 'subjectId',
         ]);
 
@@ -123,7 +123,7 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new JwtAuthenticator($this->identifier, [
-            'secretKey' => 'secretKey',
+            'secretKey' => 'secretKey0123456789secretKey0123456789',
             'subjectKey' => 'subjectId',
         ]);
 
@@ -159,7 +159,7 @@ class JwtAuthenticatorTest extends TestCase
             ]));
 
         $authenticator = new JwtAuthenticator($this->identifier, [
-            'secretKey' => 'secretKey',
+            'secretKey' => 'secretKey0123456789secretKey0123456789',
             'returnPayload' => false,
             'subjectKey' => 'subjectId',
         ]);
@@ -242,7 +242,7 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new JwtAuthenticator($this->identifier, [
-            'secretKey' => 'secretKey',
+            'secretKey' => 'secretKey0123456789secretKey0123456789',
         ]);
 
         $result = $authenticator->authenticate($this->request);
@@ -268,7 +268,7 @@ class JwtAuthenticatorTest extends TestCase
         );
 
         $authenticator = new JwtAuthenticator($this->identifier, [
-            'secretKey' => 'secretKey',
+            'secretKey' => 'secretKey0123456789secretKey0123456789',
         ]);
 
         $result = $authenticator->getPayload();
