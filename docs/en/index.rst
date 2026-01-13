@@ -10,20 +10,16 @@ Project's ROOT directory (where the **composer.json** file is located)
 
 Version 4 of the Authentication Plugin is compatible with CakePHP 5.
 
-Load the plugin by adding the following statement in your project's ``src/Application.php``::
+Load the plugin using the following command::
 
-    public function bootstrap(): void
-    {
-        parent::bootstrap();
+.. code-block:: shell
 
-        $this->addPlugin('Authentication');
-    }
-
+    bin/cake plugin load Authentication
 
 Getting Started
 ===============
 
-The authentication plugin integrates with your application as a `middleware <https://book.cakephp.org/4/en/controllers/middleware.html>`_. It can also
+The authentication plugin integrates with your application as a `middleware <https://book.cakephp.org/5/en/controllers/middleware.html>`_. It can also
 be used as a component to make unauthenticated access simpler. First, let's
 apply the middleware. In **src/Application.php**, add the following to the class
 imports::

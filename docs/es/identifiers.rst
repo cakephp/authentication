@@ -163,7 +163,7 @@ Opciones de configuración:
 -  **userModel**: El modelo donde están localizadas las indentidades. Por defecto es
    ``Users``.
 -  **finder**: El finder a usar con el modelo. Por defecto es ``all``.
-   Puede leer mas sobre los finders de los modelos `aquí <https://book.cakephp.org/4/en/orm/retrieving-data-and-resultsets.html#custom-finder-methods>`__.
+   Puede leer mas sobre los finders de los modelos `aquí <https://book.cakephp.org/5/en/orm/retrieving-data-and-resultsets.html#custom-finder-methods>`__.
 
 Para usar el resolver ORM se requiere tener ``cakephp/orm`` en su archivo
 ``composer.json`` (si no estás usando el framework CakePHP completo).

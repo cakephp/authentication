@@ -22,7 +22,7 @@ CakePHPから `composer <https://getcomposer.org/>`_ でプラグインをイン
 はじめに
 ===============
 
-認証プラグインは、ミドルウェアとしてアプリケーションと統合します。 `middleware <https://book.cakephp.org/4/en/controllers/middleware.html>`_
+認証プラグインは、ミドルウェアとしてアプリケーションと統合します。 `middleware <https://book.cakephp.org/5/en/controllers/middleware.html>`_
 また、認証されていないアクセスをより簡単にするためのコンポーネントとして使用することもできます。  まずはミドルウェアを適用してみましょう。
 
 **src/Application.php** に以下のクラスを追加します。

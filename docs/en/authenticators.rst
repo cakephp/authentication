@@ -143,7 +143,7 @@ example.
    If provided will be used instead of the secret key.
 
 You need to add the lib `firebase/php-jwt <https://github.com/firebase/php-jwt>`_
-v6.2 or above to your app to use the ``JwtAuthenticator``.
+v7.0 or above to your app to use the ``JwtAuthenticator``.
 
 By default the ``JwtAuthenticator`` uses ``HS256`` symmetric key algorithm and uses
 the value of ``Cake\Utility\Security::salt()`` as encryption key.
@@ -430,7 +430,7 @@ There is only one event that is fired by authentication:
 ``Authentication.afterIdentify``.
 
 If you don’t know what events are and how to use them `check the
-documentation <https://book.cakephp.org/4/en/core-libraries/events.html>`__.
+documentation <https://book.cakephp.org/5/en/core-libraries/events.html>`__.
 
 The ``Authentication.afterIdentify`` event is fired by the
 ``AuthenticationComponent`` after an identity was successfully
