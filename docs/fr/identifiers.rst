@@ -169,7 +169,7 @@ Options de configuration:
    Par défaut ``Users``.
 -  **finder**: Le finder à utiliser avec le modèle. Par défaut ``all``.
    Pour en savoir plus sur les finders de modèle, consultez
-   `cette documentation <https://book.cakephp.org/4/en/orm/retrieving-data-and-resultsets.html#custom-finder-methods>`__.
+   `cette documentation <https://book.cakephp.org/5/en/orm/retrieving-data-and-resultsets.html#custom-finder-methods>`__.
 
 Afin d'utiliser le résolveur ORM, vous devez requérir ``cakephp/orm`` dans votre
 fichier ``composer.json`` (si vous n'utilisez pas déjà le framework CakePHP

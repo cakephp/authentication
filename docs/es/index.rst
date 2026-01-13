@@ -21,7 +21,7 @@ Carge el plugin agregando la siguiente declaración en ``src/Application.php``::
 Empezando
 =========
 
-El  plugin authentication se integra con su aplicación como un `middleware <https://book.cakephp.org/4/en/controllers/middleware.html>`_. También, se
+El  plugin authentication se integra con su aplicación como un `middleware <https://book.cakephp.org/5/en/controllers/middleware.html>`_. También, se
 puede utilizar como un componente para simplificar el acceso no autenticado. Primero
 aplique el middleware. En **src/Application.php**, agregue las siguientes importaciones
 de clase::
