@@ -34,12 +34,14 @@ use Cake\Http\ServerRequestFactory;
 use Cake\ORM\Entity;
 use Cake\Routing\Router;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use TestApp\Authentication\InvalidAuthenticationService;
 use UnexpectedValueException;
 
 /**
  * Authentication component test.
  */
+#[AllowMockObjectsWithoutExpectations]
 class AuthenticationComponentTest extends TestCase
 {
     /**

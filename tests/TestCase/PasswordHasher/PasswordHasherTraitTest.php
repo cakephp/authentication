@@ -19,10 +19,12 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 /**
  * Test case for PasswordHasherTrait
  */
+#[AllowMockObjectsWithoutExpectations]
 class PasswordHasherTraitTest extends TestCase
 {
     /**

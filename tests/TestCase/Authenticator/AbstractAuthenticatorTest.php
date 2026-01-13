@@ -21,7 +21,9 @@ use Authentication\Authenticator\Result;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class AbstractAuthenticatorTest extends TestCase
 {
     /**

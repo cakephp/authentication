@@ -23,8 +23,10 @@ use Authentication\Identifier\IdentifierInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use RuntimeException;
 
+#[AllowMockObjectsWithoutExpectations]
 class FormAuthenticatorTest extends TestCase
 {
     /**

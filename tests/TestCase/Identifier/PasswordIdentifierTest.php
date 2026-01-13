@@ -23,7 +23,9 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\LegacyPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherInterface;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class PasswordIdentifierTest extends TestCase
 {
     /**

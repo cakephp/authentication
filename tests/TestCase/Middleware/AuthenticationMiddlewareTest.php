@@ -29,9 +29,11 @@ use Cake\Core\TestSuite\ContainerStubTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Firebase\JWT\JWT;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use TestApp\Application;
 use TestApp\Http\TestRequestHandler;
 
+#[AllowMockObjectsWithoutExpectations]
 class AuthenticationMiddlewareTest extends TestCase
 {
     use ContainerStubTrait;

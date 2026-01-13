@@ -19,8 +19,10 @@ namespace Authentication\Test\TestCase\Identifier\Resolver;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use TestApp\Identifier\Resolver\TestResolver;
 
+#[AllowMockObjectsWithoutExpectations]
 class ResolverAwareTraitTest extends TestCase
 {
     public function testBuildResolverFromClassName()

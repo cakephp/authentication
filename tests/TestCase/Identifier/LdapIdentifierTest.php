@@ -22,8 +22,10 @@ use Authentication\Identifier\Ldap\ExtensionAdapter;
 use Authentication\Identifier\LdapIdentifier;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use ErrorException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use stdClass;
 
+#[AllowMockObjectsWithoutExpectations]
 class LdapIdentifierTest extends TestCase
 {
     /**

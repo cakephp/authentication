@@ -33,11 +33,13 @@ use Cake\Http\ServerRequestFactory;
 use Cake\I18n\DateTime;
 use Cake\Routing\Router;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use stdClass;
 
+#[AllowMockObjectsWithoutExpectations]
 class AuthenticationServiceTest extends TestCase
 {
     /**
