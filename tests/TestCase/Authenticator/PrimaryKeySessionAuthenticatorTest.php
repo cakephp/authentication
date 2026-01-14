@@ -67,7 +67,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
     }
 
     /**
-     * Test authentication
+     * Test authentication with explicit identifier
      *
      * @return void
      */
@@ -87,6 +87,63 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
 
         $this->assertInstanceOf(Result::class, $result);
         $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * Test authentication works with default identifier (no explicit configuration)
+     *
+     * @return void
+     */
+    public function testAuthenticateSuccessWithDefaultIdentifier()
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+
+        $this->sessionMock->expects($this->once())
+            ->method('read')
+            ->with('Auth')
+            ->willReturn(1);
+
+        $request = $request->withAttribute('session', $this->sessionMock);
+
+        // No identifier passed - should use the default TokenIdentifier
+        $authenticator = new PrimaryKeySessionAuthenticator(null);
+        $result = $authenticator->authenticate($request);
+
+        $this->assertInstanceOf(Result::class, $result);
+        $this->assertSame(Result::SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * Test getIdentifier returns default TokenIdentifier when none configured
+     *
+     * @return void
+     */
+    public function testGetIdentifierReturnsDefaultWhenNotConfigured()
+    {
+        $authenticator = new PrimaryKeySessionAuthenticator(null);
+        $identifier = $authenticator->getIdentifier();
+
+        $this->assertInstanceOf(\Authentication\Identifier\TokenIdentifier::class, $identifier);
+        $this->assertSame('id', $identifier->getConfig('tokenField'));
+        $this->assertSame('key', $identifier->getConfig('dataField'));
+    }
+
+    /**
+     * Test custom idField/identifierKey config propagates to default identifier
+     *
+     * @return void
+     */
+    public function testGetIdentifierUsesCustomConfig()
+    {
+        $authenticator = new PrimaryKeySessionAuthenticator(null, [
+            'idField' => 'uuid',
+            'identifierKey' => 'token',
+        ]);
+        $identifier = $authenticator->getIdentifier();
+
+        $this->assertInstanceOf(\Authentication\Identifier\TokenIdentifier::class, $identifier);
+        $this->assertSame('uuid', $identifier->getConfig('tokenField'));
+        $this->assertSame('token', $identifier->getConfig('dataField'));
     }
 
     /**
