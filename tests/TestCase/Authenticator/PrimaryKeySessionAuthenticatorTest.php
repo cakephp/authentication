@@ -20,6 +20,7 @@ use ArrayObject;
 use Authentication\Authenticator\PrimaryKeySessionAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierFactory;
+use Authentication\Identifier\TokenIdentifier;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -123,7 +124,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
         $authenticator = new PrimaryKeySessionAuthenticator(null);
         $identifier = $authenticator->getIdentifier();
 
-        $this->assertInstanceOf(\Authentication\Identifier\TokenIdentifier::class, $identifier);
+        $this->assertInstanceOf(TokenIdentifier::class, $identifier);
         $this->assertSame('id', $identifier->getConfig('tokenField'));
         $this->assertSame('key', $identifier->getConfig('dataField'));
     }
@@ -141,7 +142,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
         ]);
         $identifier = $authenticator->getIdentifier();
 
-        $this->assertInstanceOf(\Authentication\Identifier\TokenIdentifier::class, $identifier);
+        $this->assertInstanceOf(TokenIdentifier::class, $identifier);
         $this->assertSame('uuid', $identifier->getConfig('tokenField'));
         $this->assertSame('token', $identifier->getConfig('dataField'));
     }
