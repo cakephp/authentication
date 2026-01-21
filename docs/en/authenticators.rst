@@ -37,22 +37,33 @@ It also helps to avoid session invalidation.
 Session itself stores the entity object including nested objects like DateTime or enums.
 With only the ID stored, the invalidation due to objects being modified will also dissolve.
 
-Make sure to match this with a Token identifier with ``key``/``id`` keys::
+A default ``TokenIdentifier`` is provided that looks up users by their ``id`` field,
+so minimal configuration is required::
+
+    $service->loadAuthenticator('Authentication.PrimaryKeySession');
+
+Configuration options:
+
+-  **idField**: The field in the database table to look up. Default is ``id``.
+-  **identifierKey**: The key used to store/retrieve the primary key from session data.
+   Default is ``key``.
+
+For custom lookup fields, the ``idField`` and ``identifierKey`` options propagate
+to the default identifier automatically::
+
+    $service->loadAuthenticator('Authentication.PrimaryKeySession', [
+        'idField' => 'uuid',
+    ]);
+
+You can also provide a fully custom identifier configuration if needed::
 
     $service->loadAuthenticator('Authentication.PrimaryKeySession', [
         'identifier' => [
             'Authentication.Token' => [
-                'tokenField' => 'id', // lookup for resolver and DB table
-                'dataField' => 'key', // incoming data from authenticator
+                'tokenField' => 'id',
+                'dataField' => 'key',
                 'resolver' => 'Authentication.Orm',
             ],
-        ],
-        'urlChecker' => 'Authentication.CakeRouter',
-        'loginUrl' => [
-            'prefix' => false,
-            'plugin' => false,
-            'controller' => 'Users',
-            'action' => 'login',
         ],
     ]);
 
