@@ -19,6 +19,7 @@ namespace Authentication;
 use ArrayAccess;
 use BadMethodCallException;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Utility\Hash;
 
 /**
  * Identity object
@@ -92,21 +93,21 @@ class Identity implements IdentityInterface
     /**
      * Get data from the identity
      *
-     * @param string $field Field in the user data.
+     * @param string|null $field Field in the user data.
      * @return mixed
      */
-    public function get(string $field): mixed
+    public function get(?string $field = null): mixed
     {
+        if ($field === null) {
+            return $this->data;
+        }
+
         $map = $this->_config['fieldMap'];
         if (isset($map[$field])) {
             $field = $map[$field];
         }
 
-        if (isset($this->data[$field])) {
-            return $this->data[$field];
-        }
-
-        return null;
+        return Hash::get($this->data, $field);
     }
 
     /**
