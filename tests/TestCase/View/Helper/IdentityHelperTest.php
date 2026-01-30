@@ -90,6 +90,8 @@ class IdentityHelperTest extends TestCase
         $this->assertNull($helper->getId());
 
         $this->assertFalse($helper->is(1));
+
+        $this->assertNull($helper->getIdentity());
     }
 
     public function testGetIdentity()
