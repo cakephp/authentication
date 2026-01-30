@@ -120,4 +120,16 @@ class IdentityHelper extends Helper
 
         return Hash::get($this->_identity, $key);
     }
+
+    /**
+     * Returns the identity instance.
+     *
+     * @return \Authentication\IdentityInterface|null
+     */
+    public function getIdentity(): ?IdentityInterface
+    {
+        return $this->_View
+            ->getRequest()
+            ->getAttribute($this->getConfig('identityAttribute'));
+    }
 }
