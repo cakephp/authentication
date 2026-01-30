@@ -91,7 +91,11 @@ class Identity implements IdentityInterface
     }
 
     /**
-     * Get data from the identity
+     * Get data from the identity.
+     *
+     * You can use dot notation to fetch nested data.
+     * Calling the method without any argument will return
+     * the entire data array/object (same as `getOriginalData()`).
      *
      * @param string|null $field Field in the user data.
      * @return mixed
