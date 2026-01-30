@@ -112,7 +112,7 @@ class Identity implements IdentityInterface
         } else {
             // Check if the first segment of a dot-separated path has a mapping
             $parts = explode('.', $field, 2);
-            if (count($parts) > 1 && isset($map[$parts[0]])) {
+            if (isset($parts[1]) && isset($map[$parts[0]])) {
                 $field = $map[$parts[0]] . '.' . $parts[1];
             }
         }

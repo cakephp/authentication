@@ -81,6 +81,10 @@ class IdentityTest extends TestCase
             ],
         ]);
 
+        // Test that mapped fields can be accessed directly
+        $this->assertInstanceOf(Entity::class, $identity->get('account'));
+        $this->assertSame(['email' => 'test@example.com', 'preferences' => ['theme' => 'dark']], $identity->get('profile'));
+
         // Test that fieldMap works with dot notation for nested access
         $this->assertSame('admin', $identity->get('account.role'));
         $this->assertSame('test@example.com', $identity->get('profile.email'));
