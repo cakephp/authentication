@@ -132,8 +132,6 @@ class IdentityHelper extends Helper
      */
     public function getIdentity(): ?IdentityInterface
     {
-        return $this->_View
-            ->getRequest()
-            ->getAttribute($this->getConfig('identityAttribute'));
+        return $this->_identity;
     }
 }
