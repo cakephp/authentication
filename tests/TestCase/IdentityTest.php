@@ -62,6 +62,39 @@ class IdentityTest extends TestCase
     }
 
     /**
+     * Test field mapping with dot notation
+     *
+     * @return void
+     */
+    public function testFieldMappingWithDotNotation(): void
+    {
+        $data = [
+            'id' => 1,
+            'user_account' => new Entity(['id' => 2, 'role' => 'admin']),
+            'profile_data' => ['email' => 'test@example.com', 'preferences' => ['theme' => 'dark']],
+        ];
+
+        $identity = new Identity($data, [
+            'fieldMap' => [
+                'account' => 'user_account',
+                'profile' => 'profile_data',
+            ],
+        ]);
+
+        // Test that fieldMap works with dot notation for nested access
+        $this->assertSame('admin', $identity->get('account.role'));
+        $this->assertSame('test@example.com', $identity->get('profile.email'));
+        $this->assertSame('dark', $identity->get('profile.preferences.theme'));
+
+        // Test that original field names still work with dot notation
+        $this->assertSame('admin', $identity->get('user_account.role'));
+        $this->assertSame('test@example.com', $identity->get('profile_data.email'));
+
+        // Test that non-mapped fields with dot notation still work
+        $this->assertNull($identity->get('missing.field'));
+    }
+
+    /**
      * Test mapping fields
      *
      * @return void
