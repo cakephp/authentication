@@ -90,5 +90,19 @@ class IdentityHelperTest extends TestCase
         $this->assertNull($helper->getId());
 
         $this->assertFalse($helper->is(1));
+
+        $this->assertNull($helper->getIdentity());
+    }
+
+    public function testGetIdentity()
+    {
+        $identity = new Identity([
+            'id' => 1,
+        ]);
+        $request = (new ServerRequest())->withAttribute('identity', $identity);
+        $view = new View($request);
+
+        $helper = new IdentityHelper($view);
+        $this->assertSame($identity, $helper->getIdentity());
     }
 }

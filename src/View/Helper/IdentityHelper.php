@@ -103,7 +103,11 @@ class IdentityHelper extends Helper
     }
 
     /**
-     * Gets user data
+     * Get data from the identity.
+     *
+     * You can use dot notation to fetch nested data.
+     * Calling the method without any argument will return
+     * the entire data array/object (same as `IdentityInterface::getOriginalData()`).
      *
      * @param string|null $key Key of something you want to get from the identity data
      * @return mixed
@@ -119,5 +123,15 @@ class IdentityHelper extends Helper
         }
 
         return Hash::get($this->_identity, $key);
+    }
+
+    /**
+     * Returns the identity instance.
+     *
+     * @return \Authentication\IdentityInterface|null
+     */
+    public function getIdentity(): ?IdentityInterface
+    {
+        return $this->_identity;
     }
 }
