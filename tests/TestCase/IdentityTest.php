@@ -19,6 +19,7 @@ namespace Authentication\Test\TestCase;
 use ArrayObject;
 use Authentication\Identity;
 use BadMethodCallException;
+use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 
 class IdentityTest extends TestCase
@@ -41,6 +42,23 @@ class IdentityTest extends TestCase
         $this->assertSame(1, $result);
 
         $this->assertSame('florian', $identity->username);
+    }
+
+    public function testGet(): void
+    {
+        $data = new Entity([
+            'id' => 1,
+            'username' => 'florian',
+            'account' => new Entity(['id' => 2, 'role' => 'admin']),
+        ]);
+
+        $identity = new Identity($data);
+
+        $this->assertSame(1, $identity->get('id'));
+        $this->assertSame('florian', $identity->get('username'));
+        $this->assertSame('admin', $identity->get('account.role'));
+        $this->assertNull($identity->get('missing'));
+        $this->assertSame($data, $identity->get());
     }
 
     /**
