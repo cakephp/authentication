@@ -74,7 +74,7 @@ class SessionAuthenticatorTest extends TestCase
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -97,7 +97,7 @@ class SessionAuthenticatorTest extends TestCase
 
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -114,7 +114,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
         $response = new Response();
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
 
         $data = new ArrayObject(['username' => 'florian']);
 
@@ -157,7 +157,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
         $response = new Response();
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
 
         $this->sessionMock->expects($this->once())
             ->method('delete')
@@ -186,7 +186,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
         $response = new Response();
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
         $AuthUsers = TableRegistry::getTableLocator()->get('AuthUsers');
         $impersonator = $AuthUsers->newEntity([
             'username' => 'mariano',
@@ -225,7 +225,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
         $response = new Response();
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
         $impersonator = new ArrayObject([
             'username' => 'mariano',
             'password' => 'password',
@@ -259,7 +259,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
         $response = new Response();
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
 
         $impersonator = new ArrayObject([
             'username' => 'mariano',
@@ -306,7 +306,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
         $response = new Response();
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
 
         $this->sessionMock->expects($this->once())
             ->method('check')
@@ -343,7 +343,7 @@ class SessionAuthenticatorTest extends TestCase
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
 
-        $authenticator = new SessionAuthenticator(null);
+        $authenticator = new SessionAuthenticator();
 
         $this->sessionMock->expects($this->once())
             ->method('check')

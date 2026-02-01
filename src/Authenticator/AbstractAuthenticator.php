@@ -52,7 +52,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
      */
-    public function __construct(?IdentifierInterface $identifier, array $config = [])
+    public function __construct(?IdentifierInterface $identifier = null, array $config = [])
     {
         $this->_identifier = $identifier;
         $this->setConfig($config);
