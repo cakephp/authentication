@@ -53,7 +53,6 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
         'fields' => [],
         'sessionKey' => 'Auth',
         'impersonateSessionKey' => 'AuthImpersonate',
-        'identify' => false,
         'identityAttribute' => 'identity',
         'identifierKey' => 'key',
         'idField' => 'id',
@@ -167,7 +166,6 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
         }
         $session->write($impersonateSessionKey, $impersonator[$this->getConfig('idField')]);
         $session->write($sessionKey, $impersonated[$this->getConfig('idField')]);
-        $this->setConfig('identify', true);
 
         return [
             'request' => $request,

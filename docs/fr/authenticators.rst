@@ -19,16 +19,9 @@ Les options de configuration:
 
 -  **sessionKey**: La clé de session pour les données de l'utilisateur, par
    défaut ``Auth``.
--  **identify**: Définissez cette clé avec la valeur booléenne ``true`` pour
-   activer la confrontation des identifiants utilisateur contenus dans la
-   session avec les identificateurs (*identifiers*). Lorsque que la valeur est
-   ``true``, les :doc:`/identifiers` configurés sont utilisés à chaque requête
-   pour identifier l'utilisateur à partir des informations stockées en session.
-   La valeur par défaut est ``false``.
 -  **fields**: Vous permet de mapper le champ ``username`` à l'identifiant
    unique dans votre système de stockage des utilisateurs. Vaut ``username`` par
-   défaut. Cette option est utilisée quand l'option ``identify`` est définie à
-   *true*.
+   défaut.
 
 Form
 ====

@@ -18,13 +18,8 @@ Opciones de configuración:
 
 -  **sessionKey**: Key para los datos de usuario, por defecto es
    ``Auth``
--  **identify**: Establezca esta key con un valor ``true`` para permitir la verificación de las
-   credenciales de sesión con los identificadores. Cuando es ``true``, los
-   :doc:`/identifiers` configurados se utilizan para identificar al usuario utilizando los datos
-   almacenados en la sesión en cada request. El valor predeterminado es ``false``.
 -  **fields**: Permite mapear el campo ``username`` al identificador único
-   en su almacenamiento de usuario. Por defecto es ``username``. Esta opción se utiliza cuando
-   la opción ``identify`` se establece en verdadero.
+   en su almacenamiento de usuario. Por defecto es ``username``.
 
 Form
 ====

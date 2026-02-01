@@ -198,62 +198,6 @@ class SessionAuthenticatorTest extends TestCase
     }
 
     /**
-     * Test successful session data verification by database lookup
-     *
-     * @return void
-     */
-    public function testVerifyByDatabaseSuccess()
-    {
-        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
-
-        $this->sessionMock->expects($this->once())
-            ->method('read')
-            ->with('Auth')
-            ->willReturn([
-                'username' => 'mariano',
-                'password' => 'h45h',
-            ]);
-
-        $request = $request->withAttribute('session', $this->sessionMock);
-
-        $authenticator = new SessionAuthenticator($this->identifier, [
-            'identify' => true,
-        ]);
-        $result = $authenticator->authenticate($request);
-
-        $this->assertInstanceOf(Result::class, $result);
-        $this->assertSame(Result::SUCCESS, $result->getStatus());
-    }
-
-    /**
-     * Test session data verification by database lookup failure
-     *
-     * @return void
-     */
-    public function testVerifyByDatabaseFailure()
-    {
-        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
-
-        $this->sessionMock->expects($this->once())
-            ->method('read')
-            ->with('Auth')
-            ->willReturn([
-                'username' => 'does-not',
-                'password' => 'exist',
-            ]);
-
-        $request = $request->withAttribute('session', $this->sessionMock);
-
-        $authenticator = new SessionAuthenticator($this->identifier, [
-            'identify' => true,
-        ]);
-        $result = $authenticator->authenticate($request);
-
-        $this->assertInstanceOf(Result::class, $result);
-        $this->assertSame(Result::FAILURE_CREDENTIALS_INVALID, $result->getStatus());
-    }
-
-    /**
      * testPersistIdentity
      *
      * @return void

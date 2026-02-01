@@ -30,7 +30,6 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
-use Cake\I18n\DateTime;
 use Cake\Routing\Router;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -164,56 +163,6 @@ class AuthenticationServiceTest extends TestCase
 
         $result = $service->authenticate($request);
         $this->assertFalse($result->isValid());
-    }
-
-    /**
-     * Integration test for session auth + identify always getting a fresh user record.
-     *
-     * @return void
-     */
-    public function testAuthenticationWithSessionIdentify()
-    {
-        $users = $this->fetchTable('Users');
-        $user = $users->get(1);
-
-        $request = ServerRequestFactory::fromGlobals([
-            'SERVER_NAME' => 'example.com',
-            'REQUEST_URI' => '/testpath',
-        ]);
-        $request->getSession()->write('Auth', [
-            'username' => $user->username,
-            'password' => $user->password,
-        ]);
-
-        $factory = function () {
-            return new AuthenticationService([
-                'authenticators' => [
-                    'Authentication.Session' => [
-                        'identify' => true,
-                        'identifier' => 'Authentication.Password',
-                    ],
-                ],
-            ]);
-        };
-        $service = $factory();
-        $result = $service->authenticate($request);
-        $this->assertTrue($result->isValid());
-
-        $dateValue = new DateTime('2022-01-01 10:11:12');
-        $identity = $result->getData();
-        $this->assertEquals($identity->username, $user->username);
-        $this->assertNotEquals($identity->created, $dateValue);
-
-        // Update the user so that we can ensure session is reading from the db.
-        $user->created = $dateValue;
-        $users->saveOrFail($user);
-
-        $service = $factory();
-        $result = $service->authenticate($request);
-        $this->assertTrue($result->isValid());
-        $identity = $result->getData();
-        $this->assertEquals($identity->username, $user->username);
-        $this->assertEquals($identity->created, $dateValue);
     }
 
     /**

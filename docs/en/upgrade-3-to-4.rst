@@ -105,6 +105,28 @@ For LDAP authentication:
         LdapIdentifier::CREDENTIAL_PASSWORD => 'password',
     ];
 
+SessionAuthenticator ``identify`` Option Removed
+-------------------------------------------------
+
+The deprecated ``identify`` option has been removed from ``SessionAuthenticator``.
+Use ``PrimaryKeySessionAuthenticator`` instead if you need to fetch fresh user
+data from the database on each request.
+
+**Before (3.x):**
+
+.. code-block:: php
+
+    $service->loadAuthenticator('Authentication.Session', [
+        'identify' => true,
+        'identifier' => 'Authentication.Password',
+    ]);
+
+**After (4.x):**
+
+.. code-block:: php
+
+    $service->loadAuthenticator('Authentication.PrimaryKeySession');
+
 URL Checker Renamed and Restructured
 -------------------------------------
 
@@ -278,7 +300,12 @@ New dedicated checker for multiple login URLs:
 Migration Tips
 ==============
 
-1. **Search and Replace**:
+1. **Session Identify**:
+
+   If you used ``'identify' => true`` on ``SessionAuthenticator``, switch to
+   ``PrimaryKeySessionAuthenticator`` which always fetches fresh data.
+
+2. **Search and Replace**:
 
    - ``AbstractIdentifier::CREDENTIAL_`` → ``PasswordIdentifier::CREDENTIAL_``
    - ``IdentifierCollection`` → ``IdentifierFactory``
@@ -286,7 +313,7 @@ Migration Tips
    - ``CakeRouterUrlChecker`` → ``DefaultUrlChecker``
    - Old 3.x ``DefaultUrlChecker`` → ``StringUrlChecker``
 
-2. **String URL Checking**:
+3. **String URL Checking**:
 
    If you want to use string-only URL checking, explicitly configure
    ``StringUrlChecker``:
@@ -298,17 +325,17 @@ Migration Tips
            'loginUrl' => '/users/login',
        ]);
 
-3. **Multiple Login URLs**:
+4. **Multiple Login URLs**:
 
    If you have multiple login URLs, add ``'urlChecker' => 'Authentication.Multi'``
    to your authenticator configuration.
 
-4. **Custom Identifier Setup**:
+5. **Custom Identifier Setup**:
 
    If you were passing ``IdentifierCollection`` to authenticators, switch to
    either passing a single identifier or null (to use defaults).
 
-5. **Test Thoroughly**:
+6. **Test Thoroughly**:
 
    The changes to identifier management and URL checking are significant.
    Test all authentication flows after upgrading.

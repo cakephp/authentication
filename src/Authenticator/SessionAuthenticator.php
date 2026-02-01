@@ -33,9 +33,6 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      * Default config for this object.
      * - `fields` The fields to use to verify a user by.
      * - `sessionKey` Session key.
-     * - `identify` Whether to identify user data stored in a session. This is
-     *   useful if you want to remotely end sessions that have a different password stored,
-     *   or if your identification logic needs additional conditions before a user can login.
      *
      * @var array
      */
@@ -45,7 +42,6 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         ],
         'sessionKey' => 'Auth',
         'impersonateSessionKey' => 'AuthImpersonate',
-        'identify' => false,
         'identityAttribute' => 'identity',
     ];
 
@@ -83,18 +79,6 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 
         if (!$user) {
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
-        }
-
-        if ($this->getConfig('identify') === true) {
-            $credentials = [];
-            foreach ($this->getConfig('fields') as $key => $field) {
-                $credentials[$key] = $user[$field];
-            }
-            $user = $this->getIdentifier()->identify($credentials);
-
-            if (!$user) {
-                return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
-            }
         }
 
         if (!($user instanceof ArrayAccess)) {
@@ -168,7 +152,6 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
         }
         $session->write($impersonateSessionKey, $impersonator);
         $session->write($sessionKey, $impersonated);
-        $this->setConfig('identify', true);
 
         return [
             'request' => $request,
@@ -193,7 +176,6 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
             $identity = $session->read($impersonateSessionKey);
             $session->delete($impersonateSessionKey);
             $session->write($sessionKey, $identity);
-            $this->setConfig('identify', true);
         }
 
         return [
