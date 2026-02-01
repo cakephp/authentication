@@ -18,8 +18,6 @@ Configuration options:
 
 -  **sessionKey**: The session key for the user data, default is
    ``Auth``
--  **fields**: Allows you to map the ``username`` field to the unique
-   identifier in your user storage. Defaults to ``username``.
 
 PrimaryKeySession
 =================

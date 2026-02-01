@@ -17,9 +17,6 @@ namespace Authentication\Authenticator;
 
 use ArrayAccess;
 use ArrayObject;
-use Authentication\Identifier\IdentifierFactory;
-use Authentication\Identifier\IdentifierInterface;
-use Authentication\Identifier\PasswordIdentifier;
 use Cake\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,38 +28,18 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
 {
     /**
      * Default config for this object.
-     * - `fields` The fields to use to verify a user by.
      * - `sessionKey` Session key.
+     * - `impersonateSessionKey` Session key for impersonation.
+     * - `identityAttribute` Request attribute for the identity.
      *
      * @var array
      */
     protected array $_defaultConfig = [
-        'fields' => [
-            PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
-        ],
+        'fields' => [],
         'sessionKey' => 'Auth',
         'impersonateSessionKey' => 'AuthImpersonate',
         'identityAttribute' => 'identity',
     ];
-
-    /**
-     * Constructor
-     *
-     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
-     * @param array<string, mixed> $config Configuration settings.
-     */
-    public function __construct(?IdentifierInterface $identifier, array $config = [])
-    {
-        if ($identifier === null) {
-            $identifierConfig = [];
-            if (isset($config['fields'])) {
-                $identifierConfig['fields'] = $config['fields'];
-            }
-            $identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
-        }
-
-        parent::__construct($identifier, $config);
-    }
 
     /**
      * Authenticate a user using session data.

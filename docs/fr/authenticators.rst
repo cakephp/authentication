@@ -19,9 +19,6 @@ Les options de configuration:
 
 -  **sessionKey**: La clé de session pour les données de l'utilisateur, par
    défaut ``Auth``.
--  **fields**: Vous permet de mapper le champ ``username`` à l'identifiant
-   unique dans votre système de stockage des utilisateurs. Vaut ``username`` par
-   défaut.
 
 Form
 ====

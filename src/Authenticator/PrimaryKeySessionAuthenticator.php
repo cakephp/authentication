@@ -59,21 +59,6 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
     ];
 
     /**
-     * Constructor
-     *
-     * Bypasses SessionAuthenticator's default PasswordIdentifier creation
-     * to allow lazy initialization of the TokenIdentifier in getIdentifier().
-     *
-     * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
-     * @param array<string, mixed> $config Configuration settings.
-     */
-    public function __construct(?IdentifierInterface $identifier, array $config = [])
-    {
-        $this->_identifier = $identifier;
-        $this->setConfig($config);
-    }
-
-    /**
      * Gets the identifier.
      *
      * If no identifier was explicitly configured, creates a default TokenIdentifier

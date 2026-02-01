@@ -18,8 +18,6 @@ Opciones de configuración:
 
 -  **sessionKey**: Key para los datos de usuario, por defecto es
    ``Auth``
--  **fields**: Permite mapear el campo ``username`` al identificador único
-   en su almacenamiento de usuario. Por defecto es ``username``.
 
 Form
 ====
