@@ -28,7 +28,6 @@ imports::
     use Authentication\AuthenticationServiceInterface;
     use Authentication\AuthenticationServiceProviderInterface;
     use Authentication\Identifier\AbstractIdentifier;
-    use Authentication\Identifier\IdentifierInterface;
     use Authentication\Middleware\AuthenticationMiddleware;
     use Cake\Http\MiddlewareQueue;
     use Cake\Routing\Router;
@@ -90,23 +89,20 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
             'queryParam' => 'redirect',
         ]);
 
-        // Define identifiers
         $fields = [
             AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
-            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
-        ];
-        $passwordIdentifier = [
-            'Authentication.Password' => [
-                'fields' => $fields,
-            ],
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ];
 
         // Load the authenticators. Session should be first.
-        $service->loadAuthenticator('Authentication.Session', [
-            'identifier' => $passwordIdentifier,
-        ]);
+        // Session just uses session data directly as identity, no identifier needed.
+        $service->loadAuthenticator('Authentication.Session');
         $service->loadAuthenticator('Authentication.Form', [
-            'identifier' => $passwordIdentifier,
+            'identifier' => [
+                'Authentication.Password' => [
+                    'fields' => $fields,
+                ],
+            ],
             'fields' => $fields,
             'loginUrl' => Router::url([
                 'prefix' => false,
@@ -122,9 +118,9 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
 First, we configure what to do with users when they are not authenticated.
 Next, we attach the ``Session`` and ``Form`` :doc:`/authenticators` which define the
 mechanisms that our application will use to authenticate users. ``Session`` enables us to identify
-users based on data in the session while ``Form`` enables us
-to handle a login form at the ``loginUrl``. Finally we attach an :doc:`identifier
-</identifiers>` to convert the credentials users will give us into an
+users based on data in the session - it uses the session data directly as identity without any
+database lookup. ``Form`` enables us to handle a login form at the ``loginUrl`` and uses an
+:doc:`identifier </identifiers>` to convert the credentials users will give us into an
 :doc:`identity </identity-object>` which represents our logged in user.
 
 If one of the configured authenticators was able to validate the credentials,
