@@ -116,6 +116,27 @@ define the ``AuthenticationService`` it wants to use. Add the following method t
             ]),
         ]);
 
+
+        // For Authentication version: * 4.0.0
+        $fields = [
+            'username' => 'email',
+            'password' => 'password',
+        ];
+
+        $service->loadAuthenticator('Authentication.Form', [
+            'identifier' => [
+                'className' => 'Authentication.Password',
+                'fields' => $fields,
+            ],
+            'loginUrl' => Router::url([
+                'prefix' => false,
+                'plugin' => null,
+                'controller' => 'Users',
+                'action' => 'login',
+            ]),
+        ]);
+
+
         return $service;
     }
 
