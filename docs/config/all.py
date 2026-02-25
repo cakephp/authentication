@@ -10,10 +10,10 @@ from cakephpsphinx.config.all import *
 #
 
 # The full version, including alpha/beta/rc tags.
-release = '3.x'
+release = '4.x'
 
 # The search index version
-search_version = 'authentication-3'
+search_version = 'authentication-4'
 
 # The marketing display name for the book.
 version_name = ''
@@ -25,7 +25,8 @@ project = 'CakePHP Authentication'
 version_list = [
     {'name': '1.x', 'number': '/authentication/1', 'title': '1.x'},
     {'name': '2.x', 'number': '/authentication/2', 'title': '2.x'},
-    {'name': '3.x', 'number': '/authentication/3', 'title': '3.x', 'current': True},
+    {'name': '3.x', 'number': '/authentication/3', 'title': '3.x'},
+    {'name': '4.x', 'number': '/authentication/4', 'title': '4.x', 'current': True},
 ]
 
 # Languages available.
@@ -33,10 +34,10 @@ languages = ['en', 'es', 'fr', 'ja']
 
 # The GitHub branch name for this version of the docs
 # for edit links to point at.
-branch = '3.x'
+branch = '4.x'
 
 # Current version being built
-version = '3.x'
+version = '4.x'
 
 show_root_link = True
 
