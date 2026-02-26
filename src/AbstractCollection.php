@@ -41,7 +41,7 @@ abstract class AbstractCollection extends ObjectRegistry
      */
     public function __construct(array $config = [])
     {
-        $configOptions = array_filter($config, fn ($key) => is_string($key), ARRAY_FILTER_USE_KEY);
+        $configOptions = array_filter($config, fn($key) => is_string($key), ARRAY_FILTER_USE_KEY);
         $this->setConfig($configOptions);
 
         foreach ($config as $key => $value) {

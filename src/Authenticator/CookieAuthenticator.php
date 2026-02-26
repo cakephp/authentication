@@ -121,13 +121,13 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     }
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
-     * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
+     * @inheritDoc
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
-    {
+    public function persistIdentity(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        ArrayAccess|array $identity,
+    ): array {
         $field = $this->getConfig('rememberMeField');
         $bodyData = $request->getParsedBody();
 

@@ -66,13 +66,13 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
-     * @param \Psr\Http\Message\ResponseInterface $response The response object.
-     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data to persist.
-     * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
+     * @inheritDoc
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
-    {
+    public function persistIdentity(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        ArrayAccess|array $identity,
+    ): array {
         $sessionKey = $this->getConfig('sessionKey');
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
@@ -106,13 +106,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * Impersonates a user
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @param \ArrayAccess<string, mixed> $impersonator User who impersonates
-     * @param \ArrayAccess<string, mixed> $impersonated User impersonated
-     * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
+     * @inheritDoc
      */
     public function impersonate(
         ServerRequestInterface $request,
@@ -140,11 +134,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * Stops impersonation
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
+     * @inheritDoc
      */
     public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
     {
