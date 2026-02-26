@@ -21,7 +21,7 @@ use ArrayAccess;
 /**
  * Identity interface
  *
- * @template-extends \ArrayAccess<array-key, \Authentication\IdentityInterface>
+ * @template-extends \ArrayAccess<string, mixed>
  */
 interface IdentityInterface extends ArrayAccess
 {
@@ -35,7 +35,7 @@ interface IdentityInterface extends ArrayAccess
     /**
      * Gets the original data object.
      *
-     * @return \ArrayAccess|array
+     * @return \ArrayAccess<string, mixed>|array<string, mixed>
      */
     public function getOriginalData(): ArrayAccess|array;
 }
