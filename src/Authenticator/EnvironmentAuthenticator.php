@@ -38,7 +38,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      * - `fields` array of required fields to get from the environment
      * - `optionalFields` array of optional fields to get from the environment
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'loginUrl' => null,
@@ -64,7 +64,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      * Get values from the environment variables configured by `fields`.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array|null server params defined by `fields` or null if a field is missing.
+     * @return array<string, mixed>|null server params defined by `fields` or null if a field is missing.
      */
     protected function _getData(ServerRequestInterface $request): ?array
     {
@@ -92,7 +92,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      * Get values from the environment variables configured by `optionalFields`.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array server params defined by optionalFields.
+     * @return array<string, mixed> server params defined by optionalFields.
      */
     protected function _getOptionalData(ServerRequestInterface $request): array
     {

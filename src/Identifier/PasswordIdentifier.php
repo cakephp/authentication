@@ -61,7 +61,7 @@ class PasswordIdentifier extends AbstractIdentifier
      *    or an array containing `className` key, any other keys will be passed as
      *    config to the class. Defaults to 'Default'.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'fields' => [

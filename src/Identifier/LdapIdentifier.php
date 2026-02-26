@@ -53,7 +53,7 @@ class LdapIdentifier extends AbstractIdentifier
     /**
      * Default configuration
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'ldap' => ExtensionAdapter::class,
@@ -70,7 +70,7 @@ class LdapIdentifier extends AbstractIdentifier
     /**
      * List of errors
      *
-     * @var array
+     * @var array<string>
      */
     protected array $_errors = [];
 

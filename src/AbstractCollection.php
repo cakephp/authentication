@@ -30,18 +30,19 @@ abstract class AbstractCollection extends ObjectRegistry
     /**
      * Config array.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [];
 
     /**
      * Constructor
      *
-     * @param array $config Configuration
+     * @param array<int|string, mixed> $config Configuration
      */
     public function __construct(array $config = [])
     {
-        $this->setConfig($config);
+        $configOptions = array_filter($config, fn ($key) => is_string($key), ARRAY_FILTER_USE_KEY);
+        $this->setConfig($configOptions);
 
         foreach ($config as $key => $value) {
             if (is_int($key)) {

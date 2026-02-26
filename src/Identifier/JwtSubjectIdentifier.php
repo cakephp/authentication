@@ -29,7 +29,7 @@ class JwtSubjectIdentifier extends TokenIdentifier
     /**
      * Default configuration
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'tokenField' => 'id',

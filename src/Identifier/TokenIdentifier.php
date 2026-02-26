@@ -32,7 +32,7 @@ class TokenIdentifier extends AbstractIdentifier
     /**
      * Default configuration.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'tokenField' => 'token',

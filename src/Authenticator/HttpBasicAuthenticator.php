@@ -33,7 +33,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * - `skipChallenge` If set to `true` then challenge exception will not be
      *   generated in case of authentication failure. Defaults to `false`.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'fields' => [
@@ -112,7 +112,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      * Generate the login headers
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request object.
-     * @return array Headers for logging in.
+     * @return array<non-empty-string, string> Headers for logging in.
      */
     protected function loginHeaders(ServerRequestInterface $request): array
     {
