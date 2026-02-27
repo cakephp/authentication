@@ -123,8 +123,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * @inheritDoc
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
-    {
+    public function persistIdentity(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        ArrayAccess|array $identity,
+    ): array {
         $field = $this->getConfig('rememberMeField');
         $bodyData = $request->getParsedBody();
 
@@ -149,7 +152,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * Returns concatenated username, password hash, and HMAC signature.
      *
-     * @param \ArrayAccess|array $identity Identity data.
+     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
      * @return string
      */
     protected function _createPlainToken(ArrayAccess|array $identity): string
@@ -186,7 +189,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * Cookie token consists of a username and hashed username + password hash.
      *
-     * @param \ArrayAccess|array $identity Identity data.
+     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
      * @return string
      * @throws \JsonException
      */
@@ -203,7 +206,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * Checks whether a token hash matches the identity data.
      *
-     * @param \ArrayAccess|array $identity Identity data.
+     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
      * @param string $tokenHash Hashed part of a cookie token.
      * @return bool
      */

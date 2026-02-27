@@ -96,7 +96,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      * ]);
      * ```
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'authenticators' => [],
@@ -218,7 +218,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param \ArrayAccess|array $identity Identity data.
+     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
      * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
     public function persistIdentity(
@@ -308,7 +308,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     /**
      * Builds the identity object
      *
-     * @param \ArrayAccess|array $identityData Identity data
+     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identityData Identity data
      * @return \Authentication\IdentityInterface
      */
     public function buildIdentity(ArrayAccess|array $identityData): IdentityInterface
@@ -375,7 +375,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         }
         $query = urlencode($param) . '=' . urlencode($redirect);
 
-        /** @var array $url */
+        /** @var array<string, mixed> $url */
         $url = parse_url($target);
         if (isset($url['query']) && strlen($url['query'])) {
             $url['query'] .= '&' . $query;
@@ -470,13 +470,13 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     }
 
     /**
-     * Impersonates a user
+     * Impersonate a user
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @param \ArrayAccess $impersonator User who impersonates
-     * @param \ArrayAccess $impersonated User impersonated
-     * @return array
+     * @param \ArrayAccess<string, mixed> $impersonator User who impersonates
+     * @param \ArrayAccess<string, mixed> $impersonated User impersonated
+     * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
     public function impersonate(
         ServerRequestInterface $request,
@@ -494,7 +494,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @return array
+     * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
     public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
     {

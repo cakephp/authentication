@@ -38,7 +38,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * - `loginUrl` Login URL or an array of URLs.
      * - `urlChecker` Url checker config.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'loginUrl' => null,
@@ -73,12 +73,12 @@ class FormAuthenticator extends AbstractAuthenticator
      * Checks the fields to ensure they are supplied.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array|null Username and password retrieved from a request body.
+     * @return array<string, mixed>|null Username and password retrieved from a request body.
      */
     protected function _getData(ServerRequestInterface $request): ?array
     {
         $fields = $this->_config['fields'];
-        /** @var array $body */
+        /** @var array<string, mixed> $body */
         $body = $request->getParsedBody();
 
         $data = [];

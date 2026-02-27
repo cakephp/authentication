@@ -23,15 +23,15 @@ interface IdentifierInterface
     /**
      * Identifies a user or service by the passed credentials
      *
-     * @param array $credentials Authentication credentials
-     * @return \ArrayAccess|array|null
+     * @param array<string, mixed> $credentials Authentication credentials
+     * @return \ArrayAccess<string, mixed>|array<string, mixed>|null
      */
     public function identify(array $credentials): ArrayAccess|array|null;
 
     /**
      * Gets a list of errors happened in the identification process
      *
-     * @return array
+     * @return array<string>
      */
     public function getErrors(): array;
 }

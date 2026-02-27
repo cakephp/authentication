@@ -206,7 +206,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * Generate the login headers
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
-     * @return array Headers for logging in.
+     * @return array<string, string> Headers for logging in.
      */
     protected function loginHeaders(ServerRequestInterface $request): array
     {
@@ -262,6 +262,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     protected function validNonce(string $nonce): bool
     {
         $value = base64_decode($nonce);
+        /** @phpstan-ignore identical.alwaysFalse */
         if ($value === false) {
             return false;
         }

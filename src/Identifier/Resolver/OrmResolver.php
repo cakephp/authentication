@@ -33,7 +33,7 @@ class OrmResolver implements ResolverInterface
      *   is an array passed to `Table::find()` options.
      *   E.g. ['finderName' => ['some_finder_option' => 'some_value']]
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'userModel' => 'Users',

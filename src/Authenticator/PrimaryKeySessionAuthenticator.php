@@ -125,13 +125,7 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
     }
 
     /**
-     * Impersonates a user
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @param \ArrayAccess $impersonator User who impersonates
-     * @param \ArrayAccess $impersonated User impersonated
-     * @return array
+     * @inheritDoc
      */
     public function impersonate(
         ServerRequestInterface $request,

@@ -44,14 +44,14 @@ class Identity implements IdentityInterface
     /**
      * Identity data
      *
-     * @var \ArrayAccess|array
+     * @var \ArrayAccess<string, mixed>|array<string, mixed>
      */
     protected ArrayAccess|array $data;
 
     /**
      * Constructor
      *
-     * @param \ArrayAccess|array $data Identity data
+     * @param \ArrayAccess<string, mixed>|array<string, mixed> $data Identity data
      * @param array<string, mixed> $config Config options
      */
     public function __construct(ArrayAccess|array $data, array $config = [])

@@ -23,12 +23,12 @@ use Psr\Http\Message\ServerRequestInterface;
 interface ImpersonationInterface
 {
     /**
-     * Impersonates a user
+     * Impersonate a user
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @param \ArrayAccess $impersonator User who impersonates
-     * @param \ArrayAccess $impersonated User impersonated
+     * @param \ArrayAccess<string, mixed> $impersonator User who impersonates
+     * @param \ArrayAccess<string, mixed> $impersonated User impersonated
      * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
     public function impersonate(

@@ -32,7 +32,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      * - `impersonateSessionKey` Session key for impersonation.
      * - `identityAttribute` Request attribute for the identity.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'fields' => [],
@@ -68,8 +68,11 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     /**
      * @inheritDoc
      */
-    public function persistIdentity(ServerRequestInterface $request, ResponseInterface $response, $identity): array
-    {
+    public function persistIdentity(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        ArrayAccess|array $identity,
+    ): array {
         $sessionKey = $this->getConfig('sessionKey');
         /** @var \Cake\Http\Session $session */
         $session = $request->getAttribute('session');
@@ -103,13 +106,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * Impersonates a user
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @param \ArrayAccess $impersonator User who impersonates
-     * @param \ArrayAccess $impersonated User impersonated
-     * @return array
+     * @inheritDoc
      */
     public function impersonate(
         ServerRequestInterface $request,
@@ -137,11 +134,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
     }
 
     /**
-     * Stops impersonation
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @param \Psr\Http\Message\ResponseInterface $response The response
-     * @return array
+     * @inheritDoc
      */
     public function stopImpersonating(ServerRequestInterface $request, ResponseInterface $response): array
     {

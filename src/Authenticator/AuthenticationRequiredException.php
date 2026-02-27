@@ -40,7 +40,7 @@ class AuthenticationRequiredException extends HttpException
     /**
      * Constructor
      *
-     * @param array $headers The headers that should be sent in the unauthorized challenge response.
+     * @param array<non-empty-string, array<string>|string> $headers The headers that should be sent in the unauthorized challenge response.
      * @param string $body The response body that should be sent in the challenge response.
      * @param int $code The exception code that will be used as a HTTP status code
      */

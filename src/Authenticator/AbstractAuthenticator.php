@@ -30,7 +30,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      * Default config for this object.
      * - `fields` The fields to use to identify a user by.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $_defaultConfig = [
         'fields' => [

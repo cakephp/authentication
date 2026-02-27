@@ -26,9 +26,9 @@ interface ResolverInterface
     /**
      * Returns identity with given conditions.
      *
-     * @param array $conditions Find conditions.
+     * @param array<string, mixed> $conditions Find conditions.
      * @param string $type Condition type. Can be `AND` or `OR`.
-     * @return \ArrayAccess|array|null
+     * @return \ArrayAccess<string, mixed>|array<string, mixed>|null
      */
     public function find(array $conditions, string $type = self::TYPE_AND): ArrayAccess|array|null;
 }
