@@ -8,7 +8,7 @@
 
 [PSR7](https://www.php-fig.org/psr/psr-7/) Middleware authentication stack for the CakePHP framework.
 
-Don't know what middleware is? [Check the CakePHP documentation](https://book.cakephp.org/4/en/controllers/middleware.html) and additionally [read this.](https://philsturgeon.uk/php/2016/05/31/why-care-about-php-middleware/)
+Don't know what middleware is? [Check the CakePHP documentation](https://book.cakephp.org/5/en/controllers/middleware.html) and additionally [read this.](https://philsturgeon.uk/php/2016/05/31/why-care-about-php-middleware/)
 
 ## Authentication, not Authorization
 
@@ -33,7 +33,7 @@ bin/cake plugin load Authentication
 
 ## Documentation
 
-Documentation for this plugin can be found in the [CakePHP Cookbook](https://book.cakephp.org/authentication/3/en/).
+Documentation for this plugin can be found in the [CakePHP Cookbook](https://book.cakephp.org/authentication/4/en/).
 
 ## IDE compatibility improvements
 
