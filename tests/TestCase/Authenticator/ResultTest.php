@@ -27,7 +27,7 @@ class ResultTest extends TestCase
      *
      * @return void
      */
-    public function testConstructorEmptyData()
+    public function testConstructorEmptyData(): void
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Identity data can not be empty with status success.');
@@ -39,7 +39,7 @@ class ResultTest extends TestCase
      *
      * @return void
      */
-    public function testIsValid()
+    public function testIsValid(): void
     {
         $result = new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         $this->assertFalse($result->isValid());
@@ -63,7 +63,7 @@ class ResultTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentity()
+    public function testGetIdentity(): void
     {
         $entity = new Entity(['user' => 'florian']);
         $result = new Result($entity, Result::SUCCESS);
@@ -75,7 +75,7 @@ class ResultTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentityArray()
+    public function testGetIdentityArray(): void
     {
         $data = ['user' => 'florian'];
         $result = new Result($data, Result::SUCCESS);
@@ -87,7 +87,7 @@ class ResultTest extends TestCase
      *
      * @return void
      */
-    public function testGetCode()
+    public function testGetCode(): void
     {
         $result = new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND);
         $this->assertSame(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getStatus());
@@ -102,7 +102,7 @@ class ResultTest extends TestCase
      *
      * @return void
      */
-    public function testGetErrors()
+    public function testGetErrors(): void
     {
         $messages = [
             'Out of coffee!',

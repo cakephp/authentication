@@ -46,7 +46,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateDeprecated()
+    public function testAuthenticateDeprecated(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -78,7 +78,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticate()
+    public function testAuthenticate(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -110,7 +110,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateWithChallenge()
+    public function testAuthenticateWithChallenge(): void
     {
         $request = ServerRequestFactory::fromGlobals([
             'SERVER_NAME' => 'example.com',
@@ -143,7 +143,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateWithChallengeDisabled()
+    public function testAuthenticateWithChallengeDisabled(): void
     {
         $request = ServerRequestFactory::fromGlobals([
             'SERVER_NAME' => 'example.com',
@@ -168,7 +168,7 @@ class AuthenticationServiceTest extends TestCase
     /**
      * testLoadAuthenticatorException
      */
-    public function testLoadAuthenticatorException()
+    public function testLoadAuthenticatorException(): void
     {
         $this->expectException('RuntimeException');
         $service = new AuthenticationService();
@@ -180,7 +180,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testClearIdentity()
+    public function testClearIdentity(): void
     {
         $service = new AuthenticationService([
             'authenticators' => [
@@ -209,7 +209,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testClearIdentityWithCustomIdentityAttribute()
+    public function testClearIdentityWithCustomIdentityAttribute(): void
     {
         $service = new AuthenticationService([
             'authenticators' => [
@@ -239,7 +239,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testClearIdentityWithCustomIdentityAttributeShouldPreserveDefault()
+    public function testClearIdentityWithCustomIdentityAttributeShouldPreserveDefault(): void
     {
         $service = new AuthenticationService([
             'authenticators' => [
@@ -274,7 +274,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testClearIdentityWithImpersonation()
+    public function testClearIdentityWithImpersonation(): void
     {
         $service = new AuthenticationService([
             'authenticators' => [
@@ -307,7 +307,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentity()
+    public function testPersistIdentity(): void
     {
         $service = new AuthenticationService([
             'authenticators' => [
@@ -352,7 +352,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentityWithCustomIdentityAttribute()
+    public function testPersistIdentityWithCustomIdentityAttribute(): void
     {
         $service = new AuthenticationService([
             'authenticators' => [
@@ -400,7 +400,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentityWithCustomIdentityAttributeShouldPreserveDefault()
+    public function testPersistIdentityWithCustomIdentityAttributeShouldPreserveDefault(): void
     {
         $service = new AuthenticationService([
             'authenticators' => [
@@ -451,7 +451,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentityInterface()
+    public function testPersistIdentityInterface(): void
     {
         $request = new ServerRequest();
         $response = new Response();
@@ -469,7 +469,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentityArray()
+    public function testPersistIdentityArray(): void
     {
         $request = new ServerRequest();
         $response = new Response();
@@ -492,7 +492,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentityInstance()
+    public function testPersistIdentityInstance(): void
     {
         $request = new ServerRequest();
         $response = new Response();
@@ -510,7 +510,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetResult()
+    public function testGetResult(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -542,7 +542,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testNoAuthenticatorsLoadedException()
+    public function testNoAuthenticatorsLoadedException(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('No authenticators loaded. You need to load at least one authenticator.');
@@ -562,7 +562,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testBuildIdentity()
+    public function testBuildIdentity(): void
     {
         $service = new AuthenticationService([
             'identifiers' => [
@@ -578,7 +578,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testBuildIdentityWithInstance()
+    public function testBuildIdentityWithInstance(): void
     {
         $service = new AuthenticationService([
             'identifiers' => [
@@ -597,7 +597,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testBuildIdentityRuntimeException()
+    public function testBuildIdentityRuntimeException(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Object `stdClass` does not implement `Authentication\IdentityInterface`');
@@ -616,7 +616,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testCallableIdentityProvider()
+    public function testCallableIdentityProvider(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -624,7 +624,7 @@ class AuthenticationServiceTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $callable = function () {
+        $callable = function (): Identity {
             return new Identity(new ArrayObject([
                 'id' => 'by-callable',
             ]));
@@ -650,7 +650,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentity()
+    public function testGetIdentity(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -681,7 +681,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentityInterface()
+    public function testGetIdentityInterface(): void
     {
         $request = new ServerRequest();
 
@@ -705,7 +705,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentityNull()
+    public function testGetIdentityNull(): void
     {
         $request = new ServerRequest();
 
@@ -723,13 +723,13 @@ class AuthenticationServiceTest extends TestCase
         $this->assertNull($service->getIdentity());
     }
 
-    public function testGetIdentityAttribute()
+    public function testGetIdentityAttribute(): void
     {
         $service = new AuthenticationService(['identityAttribute' => 'user']);
         $this->assertSame('user', $service->getIdentityAttribute());
     }
 
-    public function testGetUnauthenticatedRedirectUrlNoValues()
+    public function testGetUnauthenticatedRedirectUrlNoValues(): void
     {
         $service = new AuthenticationService();
         $request = new ServerRequest();
@@ -737,7 +737,7 @@ class AuthenticationServiceTest extends TestCase
         $this->assertNull($service->getUnauthenticatedRedirectUrl($request));
     }
 
-    public function testGetUnauthenticatedRedirectUrl()
+    public function testGetUnauthenticatedRedirectUrl(): void
     {
         $service = new AuthenticationService();
         $request = ServerRequestFactory::fromGlobals(
@@ -765,7 +765,7 @@ class AuthenticationServiceTest extends TestCase
         );
     }
 
-    public function testGetUnauthenticatedRedirectUrlForPost()
+    public function testGetUnauthenticatedRedirectUrlForPost(): void
     {
         $service = new AuthenticationService();
         $service->setConfig('unauthenticatedRedirect', '/users/login');
@@ -781,7 +781,7 @@ class AuthenticationServiceTest extends TestCase
         );
     }
 
-    public function testGetUnauthenticatedRedirectUrlAsArray()
+    public function testGetUnauthenticatedRedirectUrlAsArray(): void
     {
         Router::fullBaseUrl('http://localhost');
 
@@ -805,7 +805,7 @@ class AuthenticationServiceTest extends TestCase
         $this->assertSame('/login', $service->getUnauthenticatedRedirectUrl($request));
     }
 
-    public function testGetUnauthenticatedRedirectUrlWithBasePath()
+    public function testGetUnauthenticatedRedirectUrlWithBasePath(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/secrets'],
@@ -822,7 +822,7 @@ class AuthenticationServiceTest extends TestCase
         );
     }
 
-    public function testGetLoginRedirect()
+    public function testGetLoginRedirect(): void
     {
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',
@@ -870,7 +870,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetLoginRedirectValidationDisabled()
+    public function testGetLoginRedirectValidationDisabled(): void
     {
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',
@@ -896,7 +896,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetLoginRedirectValidationNestedRedirects()
+    public function testGetLoginRedirectValidationNestedRedirects(): void
     {
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',
@@ -936,7 +936,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetLoginRedirectValidationEncodingLevels()
+    public function testGetLoginRedirectValidationEncodingLevels(): void
     {
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',
@@ -969,7 +969,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetLoginRedirectValidationMaxLength()
+    public function testGetLoginRedirectValidationMaxLength(): void
     {
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',
@@ -1004,7 +1004,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testGetLoginRedirectValidationWithQueryParameters()
+    public function testGetLoginRedirectValidationWithQueryParameters(): void
     {
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',
@@ -1030,7 +1030,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonate()
+    public function testImpersonate(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -1050,6 +1050,7 @@ class AuthenticationServiceTest extends TestCase
             ],
         ]);
         $service->authenticate($request);
+
         $result = $service->impersonate($request, $response, $impersonator, $impersonated);
         $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
@@ -1065,7 +1066,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonateAlreadyImpersonating()
+    public function testImpersonateAlreadyImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -1096,7 +1097,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonateWrongProvider()
+    public function testImpersonateWrongProvider(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -1125,7 +1126,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonating()
+    public function testStopImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -1146,6 +1147,7 @@ class AuthenticationServiceTest extends TestCase
             ],
         ]);
         $service->authenticate($request);
+
         $result = $service->stopImpersonating($request, $response);
         $this->assertIsArray($result);
         $this->assertArrayHasKey('request', $result);
@@ -1161,7 +1163,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonatingWrongProvider()
+    public function testStopImpersonatingWrongProvider(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -1189,7 +1191,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testIsImpersonatingImpersonating()
+    public function testIsImpersonatingImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -1218,7 +1220,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testIsImpersonatingNotImpersonating()
+    public function testIsImpersonatingNotImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -1236,6 +1238,7 @@ class AuthenticationServiceTest extends TestCase
             ],
         ]);
         $service->authenticate($request);
+
         $result = $service->isImpersonating($request);
         $this->assertFalse($result);
     }
@@ -1245,7 +1248,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testIsImpersonatingWrongProvider()
+    public function testIsImpersonatingWrongProvider(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -1272,7 +1275,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * @return void
      */
-    public function testFormAuthenticatorDefaultIdentifier()
+    public function testFormAuthenticatorDefaultIdentifier(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],

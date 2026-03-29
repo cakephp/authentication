@@ -31,7 +31,7 @@ class AbstractAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentifier()
+    public function testGetIdentifier(): void
     {
         $identifier = $this->createMock(IdentifierInterface::class);
         $authenticator = new class ($identifier) extends AbstractAuthenticator {
@@ -49,7 +49,7 @@ class AbstractAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testSetIdentifier()
+    public function testSetIdentifier(): void
     {
         $identifier = $this->createMock(IdentifierInterface::class);
         $authenticator = new class ($identifier) extends AbstractAuthenticator {

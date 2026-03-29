@@ -20,6 +20,7 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\AuthenticationRequiredException;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Core\ContainerApplicationInterface;
@@ -39,15 +40,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
 {
     /**
      * Authentication service or application instance.
-     *
-     * @var \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface
      */
     protected AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject;
 
     /**
      * The container instance from the application
-     *
-     * @var \Cake\Core\ContainerInterface|null
      */
     protected ?ContainerInterface $container;
 
@@ -106,7 +103,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $response = $handler->handle($request);
             $authenticator = $service->getAuthenticationProvider();
 
-            if ($authenticator !== null && !$authenticator instanceof StatelessInterface && $result->getData()) {
+            if ($authenticator instanceof AuthenticatorInterface && !$authenticator instanceof StatelessInterface && $result->getData()) {
                 $return = $service->persistIdentity($request, $response, $result->getData());
                 $response = $return['response'];
             }
@@ -133,7 +130,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $subject = $this->subject;
 
         if ($subject instanceof AuthenticationServiceProviderInterface) {
-            $subject = $subject->getAuthenticationService($request);
+            return $subject->getAuthenticationService($request);
         }
 
         return $subject;

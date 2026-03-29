@@ -33,7 +33,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyValid()
+    public function testIdentifyValid(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -70,7 +70,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyNeedsRehash()
+    public function testIdentifyNeedsRehash(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -108,7 +108,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyInvalidUser()
+    public function testIdentifyInvalidUser(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -139,7 +139,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyInvalidPassword()
+    public function testIdentifyInvalidPassword(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -175,7 +175,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyPasswordAgainstNullValue()
+    public function testIdentifyPasswordAgainstNullValue(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -209,7 +209,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyEmptyPassword()
+    public function testIdentifyEmptyPassword(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -245,7 +245,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyNoPassword()
+    public function testIdentifyNoPassword(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -278,7 +278,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyMissingCredentials()
+    public function testIdentifyMissingCredentials(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -302,7 +302,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyMultiField()
+    public function testIdentifyMultiField(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
         $hasher = $this->createMock(PasswordHasherInterface::class);
@@ -349,7 +349,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testDefaultPasswordHasher()
+    public function testDefaultPasswordHasher(): void
     {
         $identifier = new PasswordIdentifier();
         $hasher = $identifier->getPasswordHasher();
@@ -361,7 +361,7 @@ class PasswordIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testCustomPasswordHasher()
+    public function testCustomPasswordHasher(): void
     {
         $identifier = new PasswordIdentifier([
             'passwordHasher' => 'Authentication.Legacy',

@@ -52,7 +52,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier === null) {
+        if (!$this->_identifier instanceof IdentifierInterface) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');

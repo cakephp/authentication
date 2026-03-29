@@ -29,7 +29,7 @@ class DefaultPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testNeedsRehash()
+    public function testNeedsRehash(): void
     {
         $hasher = new DefaultPasswordHasher();
         $this->assertTrue($hasher->needsRehash(md5('foo')));
@@ -43,7 +43,7 @@ class DefaultPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testNeedsRehashWithDifferentOptions()
+    public function testNeedsRehashWithDifferentOptions(): void
     {
         $defaultHasher = new DefaultPasswordHasher(['hashType' => PASSWORD_BCRYPT, 'hashOptions' => ['cost' => 10]]);
         $updatedHasher = new DefaultPasswordHasher(['hashType' => PASSWORD_BCRYPT, 'hashOptions' => ['cost' => 12]]);

@@ -35,8 +35,6 @@ class HttpDigestAuthenticatorTest extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
@@ -58,7 +56,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -81,7 +79,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $object = new HttpDigestAuthenticator($this->identifier, [
             'userModel' => 'AuthUser',
@@ -102,7 +100,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateNoData()
+    public function testAuthenticateNoData(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/posts/index'],
@@ -118,7 +116,7 @@ class HttpDigestAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateWrongUsername()
+    public function testAuthenticateWrongUsername(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/posts/index'],
@@ -148,7 +146,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testAuthenticateSuccess()
+    public function testAuthenticateSuccess(): void
     {
         $data = [
             'username' => 'mariano',
@@ -191,7 +189,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testAuthenticateFailsOnBadNonce()
+    public function testAuthenticateFailsOnBadNonce(): void
     {
         $data = [
             'username' => 'mariano',
@@ -222,7 +220,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testAuthenticateFailsNonceWithTooManyParts()
+    public function testAuthenticateFailsNonceWithTooManyParts(): void
     {
         $data = [
             'username' => 'mariano',
@@ -253,7 +251,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testAuthenticateFailsOnStaleNonce()
+    public function testAuthenticateFailsOnStaleNonce(): void
     {
         $request = ServerRequestFactory::fromGlobals([
             'REQUEST_URI' => '/posts/index',
@@ -280,7 +278,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testUnauthorizedChallenge()
+    public function testUnauthorizedChallenge(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/posts/index', 'REQUEST_METHOD' => 'GET'],
@@ -304,7 +302,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testUnauthorizedFailReChallenge()
+    public function testUnauthorizedFailReChallenge(): void
     {
         $this->auth->setConfig('scope.username', 'nate');
 
@@ -347,7 +345,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testUnauthorizedChallengeIncludesStaleAttributeOnStaleNonce()
+    public function testUnauthorizedChallengeIncludesStaleAttributeOnStaleNonce(): void
     {
         $request = ServerRequestFactory::fromGlobals([
             'REQUEST_URI' => '/posts/index',
@@ -378,7 +376,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testParseAuthData()
+    public function testParseAuthData(): void
     {
         $digest = <<<DIGEST
             Digest username="Mufasa",
@@ -414,7 +412,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testParseAuthDataFullUri()
+    public function testParseAuthDataFullUri(): void
     {
         $digest = <<<DIGEST
             Digest username="admin",
@@ -438,7 +436,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testParseAuthEmailAddress()
+    public function testParseAuthEmailAddress(): void
     {
         $digest = <<<DIGEST
             Digest username="mark@example.com",
@@ -471,7 +469,7 @@ DIGEST;
      *
      * @return void
      */
-    public function testPassword()
+    public function testPassword(): void
     {
         $result = HttpDigestAuthenticator::password('mark', 'password', 'localhost');
         $expected = md5('mark:localhost:password');
@@ -484,14 +482,15 @@ DIGEST;
      * @param string[] $data the data to convert into a header.
      * @return string
      */
-    protected function digestHeader(array $data)
+    protected function digestHeader(array $data): string
     {
         $data += [
             'username' => 'mariano',
             'realm' => 'localhost',
             'opaque' => '123abc',
         ];
-        $digest = <<<DIGEST
+
+        return <<<DIGEST
 Digest username="{$data['username']}",
 realm="{$data['realm']}",
 nonce="{$data['nonce']}",
@@ -502,8 +501,6 @@ cnonce="{$data['cnonce']}",
 response="{$data['response']}",
 opaque="{$data['opaque']}"
 DIGEST;
-
-        return $digest;
     }
 
     /**
@@ -514,7 +511,7 @@ DIGEST;
      * @param int|null $time The current time.
      * @return string
      */
-    protected function generateNonce($secret = null, $expires = 300, $time = null)
+    protected function generateNonce($secret = null, $expires = 300, $time = null): string
     {
         $secret = $secret ?: 'foo.bar';
         $time = $time ?: microtime(true);

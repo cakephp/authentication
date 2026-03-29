@@ -19,6 +19,7 @@ namespace Authentication\Test\TestCase\UrlChecker;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Authentication\UrlChecker\DefaultUrlChecker;
 use Cake\Http\ServerRequestFactory;
+use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 
 /**
@@ -29,7 +30,7 @@ class DefaultUrlCheckerTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -57,7 +58,7 @@ class DefaultUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testCheckSimple()
+    public function testCheckSimple(): void
     {
         $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
@@ -75,7 +76,7 @@ class DefaultUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testCheckFullUrls()
+    public function testCheckFullUrls(): void
     {
         $url = [
             'controller' => 'users',
@@ -127,7 +128,7 @@ class DefaultUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testStringUrl()
+    public function testStringUrl(): void
     {
         $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
@@ -148,7 +149,7 @@ class DefaultUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testNamedRoute()
+    public function testNamedRoute(): void
     {
         $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
@@ -161,9 +162,9 @@ class DefaultUrlCheckerTest extends TestCase
     /**
      * testInvalidNamedRoute
      */
-    public function testInvalidNamedRoute()
+    public function testInvalidNamedRoute(): void
     {
-        $this->expectException('Cake\Routing\Exception\MissingRouteException');
+        $this->expectException(MissingRouteException::class);
         $checker = new DefaultUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/login'],

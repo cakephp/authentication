@@ -120,15 +120,11 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
         $uri = $request->getUri();
         $base = $request->getAttribute('base');
         if ($base !== null) {
-            $uri = $uri->withPath((string)$base . $uri->getPath());
+            $uri = $uri->withPath($base . $uri->getPath());
         }
 
         $checkFullUrl = $this->getConfig('urlChecker.checkFullUrl', false);
-        if ($checkFullUrl) {
-            $uri = (string)$uri;
-        } else {
-            $uri = $uri->getPath();
-        }
+        $uri = $checkFullUrl ? (string)$uri : $uri->getPath();
 
         $loginUrls = (array)$this->getConfig('loginUrl');
         foreach ($loginUrls as $key => $loginUrl) {

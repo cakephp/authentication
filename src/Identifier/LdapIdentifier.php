@@ -76,8 +76,6 @@ class LdapIdentifier extends AbstractIdentifier
 
     /**
      * LDAP connection object
-     *
-     * @var \Authentication\Identifier\Ldap\AdapterInterface
      */
     protected AdapterInterface $_ldap;
 
@@ -202,7 +200,7 @@ class LdapIdentifier extends AbstractIdentifier
         $config = $this->getConfig();
         try {
             $ldapBind = $this->_ldap->bind($config['bindDN']($username), $password);
-            if ($ldapBind === true) {
+            if ($ldapBind) {
                 $this->_ldap->unbind();
 
                 return new ArrayObject([

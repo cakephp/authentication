@@ -27,7 +27,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         return $middleware;
     }
 
-    public function authentication(AuthenticationServiceInterface $service)
+    public function authentication(AuthenticationServiceInterface $service): AuthenticationServiceInterface
     {
         $service->loadAuthenticator('Authentication.Form', [
             'identifier' => 'Authentication.Password',
@@ -36,7 +36,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
         return $service;
     }
 
-    public function authenticationApi(AuthenticationServiceInterface $service)
+    public function authenticationApi(AuthenticationServiceInterface $service): AuthenticationServiceInterface
     {
         $service->loadAuthenticator('Authentication.Token', [
             'identifier' => 'Authentication.Token',

@@ -25,14 +25,13 @@ use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
 use Cake\Http\ServerRequestFactory;
 use Exception;
 use Firebase\JWT\JWT;
+use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
 
 class JwtAuthenticatorTest extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
@@ -58,7 +57,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @var \Authentication\Identifier\IdentifierInterface;
      */
-    public $identifier;
+    public ?MockObject $identifier;
 
     /**
      * @var \Cake\Http\ServerRequest
@@ -68,7 +67,7 @@ class JwtAuthenticatorTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -92,7 +91,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateViaHeaderToken()
+    public function testAuthenticateViaHeaderToken(): void
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -115,7 +114,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateViaQueryParamToken()
+    public function testAuthenticateViaQueryParamToken(): void
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -138,7 +137,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticationViaIdentifierAndSubject()
+    public function testAuthenticationViaIdentifierAndSubject(): void
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -177,7 +176,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateInvalidPayloadNotAnObject()
+    public function testAuthenticateInvalidPayloadNotAnObject(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -208,7 +207,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateInvalidPayloadEmpty()
+    public function testAuthenticateInvalidPayloadEmpty(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -234,7 +233,7 @@ class JwtAuthenticatorTest extends TestCase
         $this->assertNUll($result->getData());
     }
 
-    public function testInvalidToken()
+    public function testInvalidToken(): void
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -260,7 +259,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testGetPayloadHS256()
+    public function testGetPayloadHS256(): void
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],
@@ -292,7 +291,7 @@ class JwtAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testGetPayloadRS256()
+    public function testGetPayloadRS256(): void
     {
         $this->request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/'],

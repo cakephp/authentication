@@ -22,7 +22,7 @@ use Cake\Datasource\EntityInterface;
 
 class OrmResolverTest extends AuthenticationTestCase
 {
-    public function testFindDefault()
+    public function testFindDefault(): void
     {
         $resolver = new OrmResolver();
 
@@ -34,7 +34,7 @@ class OrmResolverTest extends AuthenticationTestCase
         $this->assertSame('mariano', $user['username']);
     }
 
-    public function testFindConfig()
+    public function testFindConfig(): void
     {
         $resolver = new OrmResolver([
             'userModel' => 'AuthUsers',
@@ -51,7 +51,7 @@ class OrmResolverTest extends AuthenticationTestCase
         $this->assertNotEmpty($user->created);
     }
 
-    public function testFindAnd()
+    public function testFindAnd(): void
     {
         $resolver = new OrmResolver();
 
@@ -63,7 +63,7 @@ class OrmResolverTest extends AuthenticationTestCase
         $this->assertSame(1, $user['id']);
     }
 
-    public function testFindOr()
+    public function testFindOr(): void
     {
         $resolver = new OrmResolver();
 
@@ -75,7 +75,7 @@ class OrmResolverTest extends AuthenticationTestCase
         $this->assertSame(1, $user['id']);
     }
 
-    public function testFindMissing()
+    public function testFindMissing(): void
     {
         $resolver = new OrmResolver();
 
@@ -87,7 +87,7 @@ class OrmResolverTest extends AuthenticationTestCase
         $this->assertNull($user);
     }
 
-    public function testFindMultipleValues()
+    public function testFindMultipleValues(): void
     {
         $resolver = new OrmResolver();
 

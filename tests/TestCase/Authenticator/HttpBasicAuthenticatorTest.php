@@ -29,8 +29,6 @@ class HttpBasicAuthenticatorTest extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
@@ -50,7 +48,7 @@ class HttpBasicAuthenticatorTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -64,7 +62,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $object = new HttpBasicAuthenticator($this->identifier, [
             'userModel' => 'AuthUser',
@@ -83,7 +81,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateNoData()
+    public function testAuthenticateNoData(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             [
@@ -101,7 +99,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateNoUsername()
+    public function testAuthenticateNoUsername(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             [
@@ -120,7 +118,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateNoPassword()
+    public function testAuthenticateNoPassword(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             [
@@ -139,7 +137,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateInjection()
+    public function testAuthenticateInjection(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             [
@@ -159,7 +157,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateUsernameZero()
+    public function testAuthenticateUsernameZero(): void
     {
         $User = TableRegistry::getTableLocator()->get('Users');
         $User->updateAll(['username' => '0'], ['username' => 'mariano']);
@@ -201,7 +199,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateChallenge()
+    public function testAuthenticateChallenge(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             [
@@ -225,7 +223,7 @@ class HttpBasicAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateSuccess()
+    public function testAuthenticateSuccess(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             [

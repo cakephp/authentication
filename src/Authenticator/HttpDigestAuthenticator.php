@@ -76,7 +76,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         parent::__construct($identifier, $config);
 
         $secret = $this->getConfig('secret');
-        if (!is_string($secret) || strlen($secret) === 0) {
+        if (!is_string($secret) || $secret === '') {
             throw new InvalidArgumentException('Secret key must be a non-empty string.');
         }
     }
@@ -134,8 +134,8 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         $digest = empty($server['PHP_AUTH_DIGEST']) ? null : $server['PHP_AUTH_DIGEST'];
         if (!$digest && function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
-            if (!empty($headers['Authorization']) && substr($headers['Authorization'], 0, 7) === 'Digest ') {
-                $digest = substr($headers['Authorization'], 7);
+            if (!empty($headers['Authorization']) && str_starts_with((string)$headers['Authorization'], 'Digest ')) {
+                $digest = substr((string)$headers['Authorization'], 7);
             }
         }
         if (!$digest) {
@@ -153,7 +153,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      */
     public function parseAuthData(string $digest): ?array
     {
-        if (substr($digest, 0, 7) === 'Digest ') {
+        if (str_starts_with($digest, 'Digest ')) {
             $digest = substr($digest, 7);
         }
         $keys = $match = [];
@@ -217,7 +217,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             'realm' => $realm,
             'qop' => $this->_config['qop'],
             'nonce' => $this->generateNonce(),
-            'opaque' => $this->_config['opaque'] ?: md5($realm),
+            'opaque' => $this->_config['opaque'] ?: md5((string)$realm),
         ];
 
         $digest = $this->_getDigest($request);
@@ -247,7 +247,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     {
         $expiryTime = microtime(true) + $this->getConfig('nonceLifetime');
         $secret = $this->getConfig('secret');
-        $signatureValue = hash_hmac('sha1', $expiryTime . ':' . $secret, $secret);
+        $signatureValue = hash_hmac('sha1', $expiryTime . ':' . $secret, (string)$secret);
         $nonceValue = $expiryTime . ':' . $signatureValue;
 
         return base64_encode($nonceValue);
@@ -275,7 +275,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return false;
         }
         $secret = $this->getConfig('secret');
-        $check = hash_hmac('sha1', $expires . ':' . $secret, $secret);
+        $check = hash_hmac('sha1', $expires . ':' . $secret, (string)$secret);
 
         return hash_equals($check, $checksum);
     }

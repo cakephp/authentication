@@ -39,8 +39,6 @@ class IdentityHelper extends Helper
 
     /**
      * Identity Object
-     *
-     * @var \Authentication\IdentityInterface|null
      */
     protected ?IdentityInterface $_identity = null;
 
@@ -64,7 +62,7 @@ class IdentityHelper extends Helper
      */
     public function getId(): array|string|int|null
     {
-        if ($this->_identity === null) {
+        if (!$this->_identity instanceof IdentityInterface) {
             return null;
         }
 
@@ -78,7 +76,7 @@ class IdentityHelper extends Helper
      */
     public function isLoggedIn(): bool
     {
-        return $this->_identity !== null;
+        return $this->_identity instanceof IdentityInterface;
     }
 
     /**
@@ -114,7 +112,7 @@ class IdentityHelper extends Helper
      */
     public function get(?string $key = null): mixed
     {
-        if ($this->_identity === null) {
+        if (!$this->_identity instanceof IdentityInterface) {
             return null;
         }
 

@@ -47,8 +47,6 @@ class JwtAuthenticator extends TokenAuthenticator
 
     /**
      * Payload data.
-     *
-     * @var object|null
      */
     protected ?object $payload = null;
 
@@ -138,7 +136,7 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     public function getPayload(?ServerRequestInterface $request = null): ?object
     {
-        if (!$request) {
+        if (!$request instanceof ServerRequestInterface) {
             return $this->payload;
         }
 

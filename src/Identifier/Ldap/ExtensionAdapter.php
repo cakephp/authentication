@@ -32,8 +32,6 @@ class ExtensionAdapter implements AdapterInterface
 {
     /**
      * LDAP Object
-     *
-     * @var \LDAP\Connection|null
      */
     protected ?Connection $_connection = null;
 
@@ -77,7 +75,7 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function getConnection(): Connection
     {
-        if ($this->_connection === null) {
+        if (!$this->_connection instanceof Connection) {
             throw new RuntimeException('You are not connected to a LDAP server.');
         }
 
@@ -95,15 +93,13 @@ class ExtensionAdapter implements AdapterInterface
     public function connect(string $host, int $port, array $options): void
     {
         $this->_setErrorHandler();
-        $resource = ldap_connect("{$host}:{$port}");
+        $resource = ldap_connect(sprintf('%s:%d', $host, $port));
         if ($resource === false) {
             throw new RuntimeException('Unable to connect to LDAP server.');
         }
-        if (isset($options['tls']) && $options['tls']) {
-            //convert the connection to TLS
-            if (!ldap_start_tls($resource)) {
-                throw new RuntimeException('Starting TLS failed on connection to LDAP server.');
-            }
+        //convert the connection to TLS
+        if (isset($options['tls']) && $options['tls'] && !ldap_start_tls($resource)) {
+            throw new RuntimeException('Starting TLS failed on connection to LDAP server.');
         }
         unset($options['tls']); //don't pass through to PHP LDAP functions
         $this->_connection = $resource;
@@ -160,7 +156,7 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function unbind(): void
     {
-        if ($this->_connection === null) {
+        if (!$this->_connection instanceof Connection) {
             return;
         }
 

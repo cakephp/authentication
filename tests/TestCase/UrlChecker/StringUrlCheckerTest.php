@@ -30,7 +30,7 @@ class StringUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testCheckFailure()
+    public function testCheckFailure(): void
     {
         $checker = new StringUrlChecker();
 
@@ -47,7 +47,7 @@ class StringUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testCheckSimple()
+    public function testCheckSimple(): void
     {
         $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
@@ -65,7 +65,7 @@ class StringUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testCheckRegexp()
+    public function testCheckRegexp(): void
     {
         $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
@@ -83,7 +83,7 @@ class StringUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testCheckFull()
+    public function testCheckFull(): void
     {
         $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(
@@ -101,7 +101,7 @@ class StringUrlCheckerTest extends TestCase
      *
      * @return void
      */
-    public function testCheckBase()
+    public function testCheckBase(): void
     {
         $checker = new StringUrlChecker();
         $request = ServerRequestFactory::fromGlobals(

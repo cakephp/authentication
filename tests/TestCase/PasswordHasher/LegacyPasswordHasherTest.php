@@ -29,7 +29,7 @@ class LegacyPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +42,7 @@ class LegacyPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testNeedsRehash()
+    public function testNeedsRehash(): void
     {
         $hasher = new LegacyPasswordHasher();
         $this->assertTrue($hasher->needsRehash(md5('foo')));
@@ -59,10 +59,11 @@ class LegacyPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testHashAndCheck()
+    public function testHashAndCheck(): void
     {
         $hasher = new LegacyPasswordHasher();
         $hasher->setConfig('hashType', 'md5');
+
         $password = $hasher->hash('foo');
         $this->assertTrue($hasher->check('foo', $password));
         $this->assertFalse($hasher->check('bar', $password));

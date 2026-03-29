@@ -58,7 +58,7 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier === null) {
+        if (!$this->_identifier instanceof IdentifierInterface) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');
@@ -109,15 +109,11 @@ class FormAuthenticator extends AbstractAuthenticator
         $uri = $request->getUri();
         $base = $request->getAttribute('base');
         if ($base !== null) {
-            $uri = $uri->withPath((string)$base . $uri->getPath());
+            $uri = $uri->withPath($base . $uri->getPath());
         }
 
         $checkFullUrl = $this->getConfig('urlChecker.checkFullUrl', false);
-        if ($checkFullUrl) {
-            $uri = (string)$uri;
-        } else {
-            $uri = $uri->getPath();
-        }
+        $uri = $checkFullUrl ? (string)$uri : $uri->getPath();
 
         $loginUrls = (array)$this->getConfig('loginUrl');
         foreach ($loginUrls as $key => $loginUrl) {

@@ -31,8 +31,6 @@ class FormAuthenticatorTest extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
@@ -44,7 +42,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticate()
+    public function testAuthenticate(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -66,7 +64,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testCredentialsNotPresent()
+    public function testCredentialsNotPresent(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -90,7 +88,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testCredentialsEmpty()
+    public function testCredentialsEmpty(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -109,7 +107,7 @@ class FormAuthenticatorTest extends TestCase
         $this->assertEquals([0 => 'Login credentials not found'], $result->getErrors());
     }
 
-    public function testIdentityNotFound()
+    public function testIdentityNotFound(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -133,7 +131,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testSingleLoginUrlMismatch()
+    public function testSingleLoginUrlMismatch(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -159,7 +157,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testMultipleLoginUrlMismatch()
+    public function testMultipleLoginUrlMismatch(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -192,7 +190,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testLoginUrlMismatchWithBase()
+    public function testLoginUrlMismatchWithBase(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -219,7 +217,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testSingleLoginUrlSuccess()
+    public function testSingleLoginUrlSuccess(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -245,7 +243,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testMultipleLoginUrlSuccess()
+    public function testMultipleLoginUrlSuccess(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -275,7 +273,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testLoginUrlSuccessWithBase()
+    public function testLoginUrlSuccessWithBase(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -302,7 +300,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testRegexLoginUrlSuccess()
+    public function testRegexLoginUrlSuccess(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -332,7 +330,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testFullRegexLoginUrlFailure()
+    public function testFullRegexLoginUrlFailure(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -365,7 +363,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testFullRegexLoginUrlSuccess()
+    public function testFullRegexLoginUrlSuccess(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -399,7 +397,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testFullLoginUrlFailureWithoutCheckFullUrlOption()
+    public function testFullLoginUrlFailureWithoutCheckFullUrlOption(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -428,7 +426,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateCustomFields()
+    public function testAuthenticateCustomFields(): void
     {
         $identifier = $this->createMock(IdentifierInterface::class);
 
@@ -465,7 +463,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateValidData()
+    public function testAuthenticateValidData(): void
     {
         $identifier = $this->createMock(IdentifierInterface::class);
 
@@ -498,7 +496,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateMissingChecker()
+    public function testAuthenticateMissingChecker(): void
     {
         $identifier = $this->createMock(IdentifierInterface::class);
 
@@ -524,7 +522,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateInvalidChecker()
+    public function testAuthenticateInvalidChecker(): void
     {
         $identifier = $this->createMock(IdentifierInterface::class);
 
@@ -553,7 +551,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testDefaultPasswordIdentifier()
+    public function testDefaultPasswordIdentifier(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -562,7 +560,7 @@ class FormAuthenticatorTest extends TestCase
         );
 
         // FormAuthenticator should automatically configure a Password identifier when null is passed
-        $form = new FormAuthenticator(null);
+        $form = new FormAuthenticator();
         $result = $form->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -578,7 +576,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testExplicitIdentifierNotOverridden()
+    public function testExplicitIdentifierNotOverridden(): void
     {
         // Create an identifier explicitly
         $identifier = IdentifierFactory::create('Authentication.Password', [
@@ -600,7 +598,7 @@ class FormAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testDefaultIdentifierInheritsFieldsConfig()
+    public function testDefaultIdentifierInheritsFieldsConfig(): void
     {
         // Configure authenticator with custom fields mapping
         // Also set a loginUrl that won't match, so authenticate() returns early

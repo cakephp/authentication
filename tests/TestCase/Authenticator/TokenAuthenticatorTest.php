@@ -26,8 +26,6 @@ class TokenAuthenticatorTest extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
@@ -47,7 +45,7 @@ class TokenAuthenticatorTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -67,7 +65,7 @@ class TokenAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateViaHeaderToken()
+    public function testAuthenticateViaHeaderToken(): void
     {
         // Test without token
         $tokenAuth = new TokenAuthenticator($this->identifier, [
@@ -92,7 +90,7 @@ class TokenAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testViaQueryParamToken()
+    public function testViaQueryParamToken(): void
     {
         // Test with query param token
         $requestWithParams = $this->request->withQueryParams(['token' => 'mariano']);
@@ -118,7 +116,7 @@ class TokenAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testTokenPrefix()
+    public function testTokenPrefix(): void
     {
         //valid prefix
         $requestWithHeaders = $this->request->withAddedHeader('Token', 'identity mariano');
@@ -165,7 +163,7 @@ class TokenAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testWithoutQueryParamConfig()
+    public function testWithoutQueryParamConfig(): void
     {
         $tokenAuth = new TokenAuthenticator($this->identifier, [
             'header' => 'Token',
@@ -181,7 +179,7 @@ class TokenAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testWithoutHeaderConfig()
+    public function testWithoutHeaderConfig(): void
     {
         $tokenAuth = new TokenAuthenticator($this->identifier, [
             'queryParam' => 'token',
@@ -197,7 +195,7 @@ class TokenAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testWithoutAnyConfig()
+    public function testWithoutAnyConfig(): void
     {
         $tokenAuth = new TokenAuthenticator($this->identifier);
 

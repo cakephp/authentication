@@ -32,7 +32,7 @@ class PasswordHasherTraitTest extends TestCase
      *
      * @return void
      */
-    public function testGetPasswordHasher()
+    public function testGetPasswordHasher(): void
     {
         $object = new class {
             use PasswordHasherTrait;
@@ -47,7 +47,7 @@ class PasswordHasherTraitTest extends TestCase
      *
      * @return void
      */
-    public function testSetPasswordHasher()
+    public function testSetPasswordHasher(): void
     {
         $hasher = $this->createMock(PasswordHasherInterface::class);
         $object = new class {
@@ -55,6 +55,7 @@ class PasswordHasherTraitTest extends TestCase
         };
 
         $object->setPasswordHasher($hasher);
+
         $passwordHasher = $object->getPasswordHasher();
         $this->assertSame($hasher, $passwordHasher);
     }

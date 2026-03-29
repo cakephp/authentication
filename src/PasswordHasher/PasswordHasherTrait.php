@@ -7,16 +7,12 @@ trait PasswordHasherTrait
 {
     /**
      * Password hasher instance.
-     *
-     * @var \Authentication\PasswordHasher\PasswordHasherInterface|null
      */
     protected ?PasswordHasherInterface $_passwordHasher = null;
 
     /**
      * Whether the user authenticated by this class
      * requires their password to be rehashed with another algorithm.
-     *
-     * @var bool
      */
     protected bool $_needsPasswordRehash = false;
 

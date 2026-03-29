@@ -31,9 +31,9 @@ class CallbackIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentify()
+    public function testIdentify(): void
     {
-        $callback = function ($data) {
+        $callback = function (array $data): ?Entity {
             if (isset($data['username']) && $data['username'] === 'florian') {
                 return new Entity($data);
             }
@@ -60,10 +60,10 @@ class CallbackIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testValidCallable()
+    public function testValidCallable(): void
     {
         $identifier = new CallbackIdentifier([
-            'callback' => function () {
+            'callback' => function (): Entity {
                 return new Entity();
             },
         ]);
@@ -72,7 +72,7 @@ class CallbackIdentifierTest extends TestCase
         $this->assertInstanceOf(ArrayAccess::class, $result);
 
         $identifier = new CallbackIdentifier([
-            'callback' => [MyCallback::class, 'callme'],
+            'callback' => MyCallback::callme(...),
         ]);
         $result = $identifier->identify([]);
 
@@ -82,7 +82,7 @@ class CallbackIdentifierTest extends TestCase
     /**
      * testInvalidCallbackType
      */
-    public function testInvalidCallbackTypeString()
+    public function testInvalidCallbackTypeString(): void
     {
         $this->expectException('InvalidArgumentException');
         new CallbackIdentifier([
@@ -93,7 +93,7 @@ class CallbackIdentifierTest extends TestCase
     /**
      * testInvalidCallbackTypeObject
      */
-    public function testInvalidCallbackTypeObject()
+    public function testInvalidCallbackTypeObject(): void
     {
         $this->expectException('InvalidArgumentException');
         new CallbackIdentifier([
@@ -104,11 +104,11 @@ class CallbackIdentifierTest extends TestCase
     /**
      * testInvalidCallbackTypeObject
      */
-    public function testInvalidReturnValue()
+    public function testInvalidReturnValue(): void
     {
         $this->expectException('RuntimeException');
         $identifier = new CallbackIdentifier([
-            'callback' => function ($data) {
+            'callback' => function ($data): string {
                 return 'no';
             },
         ]);
@@ -120,10 +120,10 @@ class CallbackIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testResultReturn()
+    public function testResultReturn(): void
     {
         $identifier = new CallbackIdentifier([
-            'callback' => function ($data) {
+            'callback' => function (array $data): Result {
                 if (isset($data['username']) && $data['username'] === 'florian') {
                     return new Result(new Entity($data), Result::SUCCESS);
                 }
