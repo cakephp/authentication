@@ -67,7 +67,7 @@ class AuthenticationComponentTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -101,7 +101,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testGetAuthenticationService()
+    public function testGetAuthenticationService(): void
     {
         $service = new AuthenticationService();
         $request = $this->request->withAttribute('authentication', $service);
@@ -117,7 +117,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testGetAuthenticationServiceMissingServiceAttribute()
+    public function testGetAuthenticationServiceMissingServiceAttribute(): void
     {
         $this->expectException('Exception');
         $this->expectExceptionMessage('The request object does not contain the required `authentication` attribute');
@@ -132,7 +132,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testGetAuthenticationServiceInvalidServiceObject()
+    public function testGetAuthenticationServiceInvalidServiceObject(): void
     {
         $this->expectException('Exception');
         $this->expectExceptionMessage('Authentication service does not implement Authentication\AuthenticationServiceInterface');
@@ -164,7 +164,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testGetIdentity()
+    public function testGetIdentity(): void
     {
         $request = $this->request
             ->withAttribute('identity', $this->identity)
@@ -184,7 +184,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testGetIdentityWithCustomAttribute()
+    public function testGetIdentityWithCustomAttribute(): void
     {
         $this->request = $this->request->withAttribute('customIdentity', $this->identity);
         $this->request = $this->request->withAttribute('authentication', $this->service);
@@ -205,7 +205,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testSetIdentity()
+    public function testSetIdentity(): void
     {
         $request = $this->request->withAttribute('authentication', $this->service);
 
@@ -214,6 +214,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $component->setIdentity($this->identityData);
+
         $result = $component->getIdentity();
         $this->assertSame($this->identityData, $result->getOriginalData());
 
@@ -229,7 +230,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testSetIdentityInstance()
+    public function testSetIdentityInstance(): void
     {
         $request = $this->request->withAttribute('authentication', $this->service);
 
@@ -248,7 +249,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testSetIdentityOverwrite()
+    public function testSetIdentityOverwrite(): void
     {
         $request = $this->request->withAttribute('authentication', $this->service);
 
@@ -257,6 +258,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $component->setIdentity($this->identityData);
+
         $result = $component->getIdentity();
         $this->assertSame($this->identityData, $result->getOriginalData());
         $this->assertSame(
@@ -283,7 +285,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testGetIdentityData()
+    public function testGetIdentityData(): void
     {
         $request = $this->request
             ->withAttribute('identity', $this->identity)
@@ -302,7 +304,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testGetMissingIdentityData()
+    public function testGetMissingIdentityData(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('The identity has not been found.');
@@ -320,7 +322,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testGetResult()
+    public function testGetResult(): void
     {
         $request = $this->request
             ->withAttribute('identity', $this->identity)
@@ -337,10 +339,10 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testLogout()
+    public function testLogout(): void
     {
         $result = null;
-        EventManager::instance()->on('Authentication.logout', function (Event $event) use (&$result) {
+        EventManager::instance()->on('Authentication.logout', function (Event $event) use (&$result): void {
             $result = $event;
         });
 
@@ -364,7 +366,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @eturn void
      */
-    public function testGetLoginRedirect()
+    public function testGetLoginRedirect(): void
     {
         Configure::write('App.base', '/cakephp');
         $url = ['controller' => 'Users', 'action' => 'dashboard'];
@@ -400,10 +402,10 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testAfterIdentifyEvent()
+    public function testAfterIdentifyEvent(): void
     {
         $result = null;
-        EventManager::instance()->on('Authentication.afterIdentify', function (Event $event) use (&$result) {
+        EventManager::instance()->on('Authentication.afterIdentify', function (Event $event) use (&$result): void {
             $result = $event;
         });
 
@@ -430,7 +432,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedActions()
+    public function testUnauthenticatedActions(): void
     {
         $request = $this->request
             ->withParam('action', 'view')
@@ -461,7 +463,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedActionsOk()
+    public function testUnauthenticatedActionsOk(): void
     {
         $request = $this->request
             ->withParam('action', 'view')
@@ -480,7 +482,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedActionsMismatchAction()
+    public function testUnauthenticatedActionsMismatchAction(): void
     {
         $request = $this->request
             ->withParam('action', 'view')
@@ -500,7 +502,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedActionsNoActionsFails()
+    public function testUnauthenticatedActionsNoActionsFails(): void
     {
         $request = $this->request
             ->withParam('action', 'view')
@@ -519,7 +521,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedActionsDisabledOptions()
+    public function testUnauthenticatedActionsDisabledOptions(): void
     {
         $request = $this->request
             ->withParam('action', 'view')
@@ -541,7 +543,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedActionsDisabledOptionsCall()
+    public function testUnauthenticatedActionsDisabledOptionsCall(): void
     {
         $request = $this->request
             ->withParam('action', 'view')
@@ -562,7 +564,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testIdentityCheckInBeforeFilter()
+    public function testIdentityCheckInBeforeFilter(): void
     {
         $request = $this->request
             ->withAttribute('authentication', $this->service);
@@ -580,7 +582,7 @@ class AuthenticationComponentTest extends TestCase
         $component->beforeFilter();
     }
 
-    public function testCustomUnauthenticatedMessage()
+    public function testCustomUnauthenticatedMessage(): void
     {
         $request = $this->request
             ->withAttribute('authentication', $this->service);
@@ -605,7 +607,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonate()
+    public function testImpersonate(): void
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $impersonated = new ArrayObject(['username' => 'larry']);
@@ -635,7 +637,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonateDecoratorIgnored()
+    public function testImpersonateDecoratorIgnored(): void
     {
         $impersonator = ['username' => 'mariano'];
         $impersonated = new ArrayObject(['username' => 'larry']);
@@ -666,7 +668,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonateNoIdentity()
+    public function testImpersonateNoIdentity(): void
     {
         $impersonated = new ArrayObject(['username' => 'larry']);
         $request = $this->request
@@ -684,7 +686,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonateFailure()
+    public function testImpersonateFailure(): void
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $impersonated = new ArrayObject(['username' => 'larry']);
@@ -713,7 +715,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonating()
+    public function testStopImpersonating(): void
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $impersonated = new ArrayObject(['username' => 'larry']);
@@ -736,7 +738,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonatingFailure()
+    public function testStopImpersonatingFailure(): void
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $service = $this->getMockBuilder(AuthenticationService::class)
@@ -764,7 +766,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testIsImpersonating()
+    public function testIsImpersonating(): void
     {
         $impersonator = new ArrayObject(['username' => 'mariano']);
         $impersonated = new ArrayObject(['username' => 'larry']);
@@ -790,7 +792,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testGetImpersonationAuthenticationServiceFailure()
+    public function testGetImpersonationAuthenticationServiceFailure(): void
     {
         $service = $this->getMockBuilder(AuthenticationServiceInterface::class)->getMock();
 
@@ -803,8 +805,8 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $this->expectException(InvalidArgumentException::class);
-        $classname = get_class($service);
-        $this->expectExceptionMessage("The $classname must implement ImpersonationInterface in order to use impersonation.");
+        $classname = $service::class;
+        $this->expectExceptionMessage(sprintf('The %s must implement ImpersonationInterface in order to use impersonation.', $classname));
         $component->isImpersonating();
     }
 
@@ -813,7 +815,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return void
      */
-    public function testIsImpersonatingNotImpersonating()
+    public function testIsImpersonatingNotImpersonating(): void
     {
         $user = new ArrayObject(['username' => 'mariano']);
         $this->request->getSession()->write('Auth', $user);

@@ -15,8 +15,10 @@ declare(strict_types=1);
  */
 namespace Authentication\Test\TestCase\PasswordHasher;
 
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Authentication\PasswordHasher\PasswordHasherFactory;
 use Cake\TestSuite\TestCase;
+use TestPlugin\PasswordHasher\LegacyPasswordHasher;
 
 /**
  * Test case for PasswordHasherFactory
@@ -28,21 +30,21 @@ class PasswordHasherFactoryTest extends TestCase
      *
      * @return void
      */
-    public function testBuild()
+    public function testBuild(): void
     {
         $hasher = PasswordHasherFactory::build('Authentication.Default');
-        $this->assertInstanceof('Authentication\PasswordHasher\DefaultPasswordHasher', $hasher);
+        $this->assertInstanceof(DefaultPasswordHasher::class, $hasher);
 
         $hasher = PasswordHasherFactory::build([
             'className' => 'Authentication.Default',
             'hashOptions' => ['foo' => 'bar'],
         ]);
-        $this->assertInstanceof('Authentication\PasswordHasher\DefaultPasswordHasher', $hasher);
+        $this->assertInstanceof(DefaultPasswordHasher::class, $hasher);
         $this->assertEquals(['foo' => 'bar'], $hasher->getConfig('hashOptions'));
 
         $this->loadPlugins(['TestPlugin']);
         $hasher = PasswordHasherFactory::build('TestPlugin.Legacy');
-        $this->assertInstanceof('TestPlugin\PasswordHasher\LegacyPasswordHasher', $hasher);
+        $this->assertInstanceof(LegacyPasswordHasher::class, $hasher);
     }
 
     /**
@@ -50,7 +52,7 @@ class PasswordHasherFactoryTest extends TestCase
      *
      * @return void
      */
-    public function testBuildMissingHasher()
+    public function testBuildMissingHasher(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Password hasher class `FooBar` was not found.');
@@ -62,7 +64,7 @@ class PasswordHasherFactoryTest extends TestCase
      *
      * @return void
      */
-    public function testBuildInvalidHasher()
+    public function testBuildInvalidHasher(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Password hasher must implement PasswordHasherInterface.');

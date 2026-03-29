@@ -28,7 +28,7 @@ class TokenIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentify()
+    public function testIdentify(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
 
@@ -58,7 +58,7 @@ class TokenIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyMissingData()
+    public function testIdentifyMissingData(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
 
@@ -77,7 +77,7 @@ class TokenIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyHashed()
+    public function testIdentifyHashed(): void
     {
         $resolver = $this->createMock(ResolverInterface::class);
 

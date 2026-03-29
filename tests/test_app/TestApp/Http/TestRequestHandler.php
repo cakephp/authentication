@@ -21,13 +21,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class TestRequestHandler implements RequestHandlerInterface
 {
+    /**
+     * @var callable
+     */
     public $callable;
 
     public $request;
 
     public function __construct(?callable $callable = null)
     {
-        $this->callable = $callable ?: function ($request) {
+        $this->callable = $callable ?: function ($request): Response {
             return new Response();
         };
     }

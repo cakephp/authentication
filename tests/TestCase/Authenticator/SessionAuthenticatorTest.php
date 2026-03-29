@@ -25,6 +25,7 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Http\Session;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -32,20 +33,18 @@ class SessionAuthenticatorTest extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
         'core.Users',
     ];
 
-    protected $sessionMock;
+    protected MockObject|Session $sessionMock;
 
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,7 +59,7 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateSuccess()
+    public function testAuthenticateSuccess(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
@@ -86,7 +85,7 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateFailure()
+    public function testAuthenticateFailure(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
@@ -109,10 +108,11 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentity()
+    public function testPersistIdentity(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
         $authenticator = new SessionAuthenticator();
 
@@ -151,10 +151,11 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testClearIdentity()
+    public function testClearIdentity(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new SessionAuthenticator();
@@ -180,10 +181,11 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonate()
+    public function testImpersonate(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new SessionAuthenticator();
@@ -219,10 +221,11 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonateAlreadyImpersonating()
+    public function testImpersonateAlreadyImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new SessionAuthenticator();
@@ -253,10 +256,11 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonating()
+    public function testStopImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new SessionAuthenticator();
@@ -300,10 +304,11 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonatingNotImpersonating()
+    public function testStopImpersonatingNotImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new SessionAuthenticator();
@@ -338,7 +343,7 @@ class SessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testIsImpersonating()
+    public function testIsImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);

@@ -71,7 +71,7 @@ class OrmResolver implements ResolverInterface
         foreach ($conditions as $field => $value) {
             $field = $table->aliasField($field);
             if (is_array($value)) {
-                $field = $field . ' IN';
+                $field .= ' IN';
             }
             $where[$field] = $value;
         }

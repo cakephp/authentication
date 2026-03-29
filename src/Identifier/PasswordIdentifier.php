@@ -79,7 +79,7 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     public function getPasswordHasher(): PasswordHasherInterface
     {
-        if ($this->_passwordHasher === null) {
+        if (!$this->_passwordHasher instanceof PasswordHasherInterface) {
             $passwordHasher = $this->getConfig('passwordHasher');
             if ($passwordHasher !== null) {
                 $passwordHasher = PasswordHasherFactory::build($passwordHasher);

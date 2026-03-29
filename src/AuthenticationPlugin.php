@@ -24,22 +24,16 @@ class AuthenticationPlugin extends BasePlugin
 {
     /**
      * Do bootstrapping or not
-     *
-     * @var bool
      */
     protected bool $bootstrapEnabled = false;
 
     /**
      * Load routes or not
-     *
-     * @var bool
      */
     protected bool $routesEnabled = false;
 
     /**
      * Console middleware
-     *
-     * @var bool
      */
     protected bool $consoleEnabled = false;
 }

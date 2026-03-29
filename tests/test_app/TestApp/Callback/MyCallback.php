@@ -17,7 +17,7 @@ use Cake\ORM\Entity;
 
 class MyCallback
 {
-    public static function callme($data)
+    public static function callme($data): Entity
     {
         return new Entity();
     }

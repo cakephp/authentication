@@ -82,7 +82,7 @@ class StringUrlChecker implements UrlCheckerInterface
             return 'preg_match';
         }
 
-        return function ($validUrl, $url) {
+        return function ($validUrl, $url): bool {
             return $validUrl === $url;
         };
     }

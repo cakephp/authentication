@@ -40,22 +40,16 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
 
     /**
      * Authenticator collection
-     *
-     * @var \Authentication\Authenticator\AuthenticatorCollection|null
      */
     protected ?AuthenticatorCollection $_authenticators = null;
 
     /**
      * Authenticator that successfully authenticated the identity.
-     *
-     * @var \Authentication\Authenticator\AuthenticatorInterface|null
      */
     protected ?AuthenticatorInterface $_successfulAuthenticator = null;
 
     /**
      * Result of the last authenticate() call.
-     *
-     * @var \Authentication\Authenticator\ResultInterface|null
      */
     protected ?ResultInterface $_result = null;
 
@@ -129,7 +123,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function authenticators(): AuthenticatorCollection
     {
-        if ($this->_authenticators === null) {
+        if (!$this->_authenticators instanceof AuthenticatorCollection) {
             $authenticators = $this->getConfig('authenticators');
             $this->_authenticators = new AuthenticatorCollection($authenticators);
         }
@@ -259,7 +253,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function getIdentificationProvider(): ?IdentifierInterface
     {
-        if ($this->_successfulAuthenticator === null) {
+        if (!$this->_successfulAuthenticator instanceof AuthenticatorInterface) {
             return null;
         }
 
@@ -283,7 +277,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function getIdentity(): ?IdentityInterface
     {
-        if ($this->_result === null) {
+        if (!$this->_result instanceof ResultInterface) {
             return null;
         }
 
@@ -319,16 +313,12 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
 
         $class = $this->getConfig('identityClass');
 
-        if (is_callable($class)) {
-            $identity = $class($identityData);
-        } else {
-            $identity = new $class($identityData);
-        }
+        $identity = is_callable($class) ? $class($identityData) : new $class($identityData);
 
         if (!($identity instanceof IdentityInterface)) {
             throw new RuntimeException(sprintf(
                 'Object `%s` does not implement `%s`',
-                get_class($identity),
+                $identity::class,
                 IdentityInterface::class,
             ));
         }
@@ -373,17 +363,17 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         if ($uri->getQuery()) {
             $redirect .= '?' . $uri->getQuery();
         }
-        $query = urlencode($param) . '=' . urlencode($redirect);
+        $query = urlencode((string)$param) . '=' . urlencode($redirect);
 
         /** @var array<string, mixed> $url */
-        $url = parse_url($target);
-        if (isset($url['query']) && strlen($url['query'])) {
+        $url = parse_url((string)$target);
+        if (isset($url['query']) && strlen((string)$url['query'])) {
             $url['query'] .= '&' . $query;
         } else {
             $url['query'] = $query;
         }
         $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
-        $url['path'] = $url['path'] ?? '/';
+        $url['path'] ??= '/';
 
         return $url['path'] . '?' . $url['query'] . $fragment;
     }
@@ -404,12 +394,12 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         if (
             empty($redirectParam) ||
             !isset($params[$redirectParam]) ||
-            strlen($params[$redirectParam]) === 0
+            (string)$params[$redirectParam] === ''
         ) {
             return null;
         }
 
-        $parsed = parse_url($params[$redirectParam]);
+        $parsed = parse_url((string)$params[$redirectParam]);
         if ($parsed === false) {
             return null;
         }
@@ -418,10 +408,10 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         }
         $parsed += ['path' => '/', 'query' => ''];
         if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
-            $parsed['path'] = "/{$parsed['path']}";
+            $parsed['path'] = '/' . $parsed['path'];
         }
         if ($parsed['query']) {
-            $parsed['query'] = "?{$parsed['query']}";
+            $parsed['query'] = '?' . $parsed['query'];
         }
 
         $redirect = $parsed['path'] . $parsed['query'];
@@ -525,13 +515,13 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     protected function getImpersonationProvider(): ImpersonationInterface
     {
         $provider = $this->getAuthenticationProvider();
-        if ($provider === null) {
+        if (!$provider instanceof AuthenticatorInterface) {
             throw new InvalidArgumentException('No AuthenticationProvider present.');
         }
         if (!($provider instanceof ImpersonationInterface)) {
-            $className = get_class($provider);
+            $className = $provider::class;
             throw new InvalidArgumentException(
-                "The {$className} Provider must implement ImpersonationInterface in order to use impersonation.",
+                sprintf('The %s Provider must implement ImpersonationInterface in order to use impersonation.', $className),
             );
         }
 

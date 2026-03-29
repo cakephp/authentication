@@ -21,6 +21,7 @@ use ArrayAccess;
 interface ResolverInterface
 {
     public const TYPE_OR = 'OR';
+
     public const TYPE_AND = 'AND';
 
     /**

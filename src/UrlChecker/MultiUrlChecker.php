@@ -47,11 +47,7 @@ class MultiUrlChecker implements UrlCheckerInterface
         $options = $this->_mergeDefaultOptions($options);
 
         // For a single URL (string or array route), convert to array
-        if (is_string($loginUrls) || $this->_isSingleRoute($loginUrls)) {
-            $urls = [$loginUrls];
-        } else {
-            $urls = $loginUrls;
-        }
+        $urls = is_string($loginUrls) || $this->_isSingleRoute($loginUrls) ? [$loginUrls] : $loginUrls;
 
         if (!$urls) {
             return true;
@@ -81,11 +77,7 @@ class MultiUrlChecker implements UrlCheckerInterface
         if (!$value) {
             return false;
         }
-
-        // A single route has string keys like ['controller' => 'Users']
-        // An array of routes has numeric keys [0 => '/login', 1 => '/signin']
-        reset($value);
-        $firstKey = key($value);
+        $firstKey = array_key_first($value);
 
         return !is_int($firstKey);
     }

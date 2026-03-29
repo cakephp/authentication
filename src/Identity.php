@@ -32,8 +32,6 @@ class Identity implements IdentityInterface
      * Default configuration.
      *
      * - `fieldMap` Mapping of fields
-     *
-     * @var array
      */
     protected array $_defaultConfig = [
         'fieldMap' => [

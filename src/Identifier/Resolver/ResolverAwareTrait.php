@@ -24,8 +24,6 @@ trait ResolverAwareTrait
 {
     /**
      * Resolver instance.
-     *
-     * @var \Authentication\Identifier\Resolver\ResolverInterface|null
      */
     protected ?ResolverInterface $resolver = null;
 

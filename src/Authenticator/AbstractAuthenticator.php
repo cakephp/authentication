@@ -41,8 +41,6 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
 
     /**
      * Identifier instance.
-     *
-     * @var \Authentication\Identifier\IdentifierInterface|null
      */
     protected ?IdentifierInterface $_identifier = null;
 
@@ -69,7 +67,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier === null) {
+        if (!$this->_identifier instanceof IdentifierInterface) {
             throw new RuntimeException(
                 sprintf(
                     'Identifier is required for `%s`. Please provide an identifier instance.',

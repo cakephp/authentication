@@ -68,7 +68,7 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier === null) {
+        if (!$this->_identifier instanceof IdentifierInterface) {
             $this->_identifier = IdentifierFactory::create([
                 'className' => 'Authentication.Token',
                 'tokenField' => $this->getConfig('idField'),

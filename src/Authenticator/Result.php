@@ -26,15 +26,11 @@ class Result implements ResultInterface
 {
     /**
      * Authentication result status
-     *
-     * @var string
      */
     protected string $_status;
 
     /**
      * The identity data used in the authentication attempt
-     *
-     * @var \ArrayAccess|array|null
      */
     protected ArrayAccess|array|null $_data = null;
 
@@ -42,8 +38,6 @@ class Result implements ResultInterface
      * An array of string reasons why the authentication attempt was unsuccessful
      *
      * If authentication was successful, this should be an empty array.
-     *
-     * @var array
      */
     protected array $_errors = [];
 

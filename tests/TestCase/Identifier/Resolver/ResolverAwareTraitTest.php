@@ -25,12 +25,12 @@ use TestApp\Identifier\Resolver\TestResolver;
 #[AllowMockObjectsWithoutExpectations]
 class ResolverAwareTraitTest extends TestCase
 {
-    public function testBuildResolverFromClassName()
+    public function testBuildResolverFromClassName(): void
     {
         $object = new class {
             use ResolverAwareTrait;
 
-            public function getConfig()
+            public function getConfig(): string
             {
                 return 'Test';
             }
@@ -40,12 +40,12 @@ class ResolverAwareTraitTest extends TestCase
         $this->assertInstanceOf(TestResolver::class, $resolver);
     }
 
-    public function testBuildResolverFromArray()
+    public function testBuildResolverFromArray(): void
     {
         $object = new class {
             use ResolverAwareTrait;
 
-            public function getConfig()
+            public function getConfig(): array
             {
                 return [
                     'className' => 'Test',
@@ -57,14 +57,14 @@ class ResolverAwareTraitTest extends TestCase
         $this->assertInstanceOf(TestResolver::class, $resolver);
     }
 
-    public function testBuildResolverInvalid()
+    public function testBuildResolverInvalid(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Resolver must implement `Authentication\Identifier\Resolver\ResolverInterface`.');
         $object = new class {
             use ResolverAwareTrait;
 
-            public function getConfig()
+            public function getConfig(): string
             {
                 return 'Invalid';
             }
@@ -73,14 +73,14 @@ class ResolverAwareTraitTest extends TestCase
         $object->getResolver();
     }
 
-    public function testBuildResolverMissing()
+    public function testBuildResolverMissing(): void
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Resolver class `Missing` does not exist.');
         $object = new class {
             use ResolverAwareTrait;
 
-            public function getConfig()
+            public function getConfig(): string
             {
                 return 'Missing';
             }
@@ -89,14 +89,14 @@ class ResolverAwareTraitTest extends TestCase
         $object->getResolver();
     }
 
-    public function testBuildResolverMissingClassNameOption()
+    public function testBuildResolverMissingClassNameOption(): void
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('Option `className` is not present.');
         $object = new class {
             use ResolverAwareTrait;
 
-            public function getConfig()
+            public function getConfig(): array
             {
                 return [];
             }
@@ -105,7 +105,7 @@ class ResolverAwareTraitTest extends TestCase
         $object->getResolver();
     }
 
-    public function testGetResolverNotSet()
+    public function testGetResolverNotSet(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Resolver has not been set.');
@@ -121,7 +121,7 @@ class ResolverAwareTraitTest extends TestCase
         $object->getResolver();
     }
 
-    public function testSetResolver()
+    public function testSetResolver(): void
     {
         $object = new class {
             use ResolverAwareTrait;

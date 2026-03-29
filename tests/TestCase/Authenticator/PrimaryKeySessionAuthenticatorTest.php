@@ -20,12 +20,14 @@ use ArrayObject;
 use Authentication\Authenticator\PrimaryKeySessionAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierFactory;
+use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\TokenIdentifier;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -39,20 +41,14 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
         'core.Users',
     ];
 
-    /**
-     * @var \Authentication\Identifier\IdentifierInterface
-     */
-    protected $identifier;
+    protected IdentifierInterface $identifier;
 
-    /**
-     * @var \Cake\Http\Session&\PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $sessionMock;
+    protected MockObject|Session $sessionMock;
 
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +68,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateSuccess()
+    public function testAuthenticateSuccess(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
@@ -95,7 +91,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateSuccessWithDefaultIdentifier()
+    public function testAuthenticateSuccessWithDefaultIdentifier(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
@@ -107,7 +103,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
         $request = $request->withAttribute('session', $this->sessionMock);
 
         // No identifier passed - should use the default TokenIdentifier
-        $authenticator = new PrimaryKeySessionAuthenticator(null);
+        $authenticator = new PrimaryKeySessionAuthenticator();
         $result = $authenticator->authenticate($request);
 
         $this->assertInstanceOf(Result::class, $result);
@@ -119,9 +115,9 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentifierReturnsDefaultWhenNotConfigured()
+    public function testGetIdentifierReturnsDefaultWhenNotConfigured(): void
     {
-        $authenticator = new PrimaryKeySessionAuthenticator(null);
+        $authenticator = new PrimaryKeySessionAuthenticator();
         $identifier = $authenticator->getIdentifier();
 
         $this->assertInstanceOf(TokenIdentifier::class, $identifier);
@@ -134,7 +130,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentifierUsesCustomConfig()
+    public function testGetIdentifierUsesCustomConfig(): void
     {
         $authenticator = new PrimaryKeySessionAuthenticator(null, [
             'idField' => 'uuid',
@@ -152,7 +148,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateSuccessCustomFinder()
+    public function testAuthenticateSuccessCustomFinder(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
@@ -191,7 +187,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateFailure()
+    public function testAuthenticateFailure(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
@@ -214,7 +210,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testVerifyByDatabaseFailure()
+    public function testVerifyByDatabaseFailure(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
 
@@ -238,10 +234,11 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentity()
+    public function testPersistIdentity(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
         $authenticator = new PrimaryKeySessionAuthenticator($this->identifier);
 
@@ -280,10 +277,11 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testClearIdentity()
+    public function testClearIdentity(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new PrimaryKeySessionAuthenticator($this->identifier);
@@ -309,10 +307,11 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonate()
+    public function testImpersonate(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new PrimaryKeySessionAuthenticator($this->identifier);
@@ -322,6 +321,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
             'password' => 'password',
         ]);
         $impersonator->id = 123;
+
         $impersonated = $usersTable->newEntity(['username' => 'larry']);
         $impersonated->id = 456;
 
@@ -350,10 +350,11 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testImpersonateAlreadyImpersonating()
+    public function testImpersonateAlreadyImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new PrimaryKeySessionAuthenticator($this->identifier);
@@ -384,10 +385,11 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonating()
+    public function testStopImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new PrimaryKeySessionAuthenticator($this->identifier);
@@ -431,10 +433,11 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testStopImpersonatingNotImpersonating()
+    public function testStopImpersonatingNotImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);
+
         $response = new Response();
 
         $authenticator = new PrimaryKeySessionAuthenticator($this->identifier);
@@ -469,7 +472,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testIsImpersonating()
+    public function testIsImpersonating(): void
     {
         $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
         $request = $request->withAttribute('session', $this->sessionMock);

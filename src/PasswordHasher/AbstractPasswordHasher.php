@@ -28,8 +28,6 @@ abstract class AbstractPasswordHasher implements PasswordHasherInterface
      * Default config
      *
      * These are merged with user-provided config when the object is used.
-     *
-     * @var array
      */
     protected array $_defaultConfig = [];
 

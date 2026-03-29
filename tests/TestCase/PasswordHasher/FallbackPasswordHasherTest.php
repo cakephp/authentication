@@ -30,7 +30,7 @@ class FallbackPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testHash()
+    public function testHash(): void
     {
         $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Legacy', 'Authentication.Default']]);
         $legacy = new LegacyPasswordHasher();
@@ -46,7 +46,7 @@ class FallbackPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testCheck()
+    public function testCheck(): void
     {
         $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Legacy', 'Authentication.Default']]);
         $legacy = new LegacyPasswordHasher();
@@ -64,7 +64,7 @@ class FallbackPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testCheckWithConfigs()
+    public function testCheckWithConfigs(): void
     {
         $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Default', 'Authentication.Legacy' => ['hashType' => 'md5']]]);
         $legacy = new LegacyPasswordHasher(['hashType' => 'md5']);
@@ -82,7 +82,7 @@ class FallbackPasswordHasherTest extends TestCase
      *
      * @return void
      */
-    public function testNeedsRehash()
+    public function testNeedsRehash(): void
     {
         $hasher = new FallbackPasswordHasher(['hashers' => ['Authentication.Default', 'Authentication.Legacy']]);
         $legacy = new LegacyPasswordHasher();

@@ -29,7 +29,7 @@ class IdentityTest extends TestCase
      *
      * @return void
      */
-    public function testGetIdentifier()
+    public function testGetIdentifier(): void
     {
         $data = [
             'id' => 1,
@@ -66,7 +66,7 @@ class IdentityTest extends TestCase
      *
      * @return void
      */
-    public function testFieldMapping()
+    public function testFieldMapping(): void
     {
         $data = [
             'id' => 1,
@@ -99,7 +99,7 @@ class IdentityTest extends TestCase
      *
      * @return void
      */
-    public function testOffsetUnsetError()
+    public function testOffsetUnsetError(): void
     {
         $this->expectException(BadMethodCallException::class);
         $data = [
@@ -116,7 +116,7 @@ class IdentityTest extends TestCase
      *
      * @return void
      */
-    public function testOffsetSetError()
+    public function testOffsetSetError(): void
     {
         $this->expectException(BadMethodCallException::class);
         $data = [
@@ -129,7 +129,7 @@ class IdentityTest extends TestCase
     /**
      * Test array data.
      */
-    public function testBuildArray()
+    public function testBuildArray(): void
     {
         $data = ['username' => 'robert'];
         $identity = new Identity($data);
@@ -141,7 +141,7 @@ class IdentityTest extends TestCase
      *
      * @return void
      */
-    public function testGetOriginalData()
+    public function testGetOriginalData(): void
     {
         $data = new ArrayObject(['email' => 'info@cakephp.org']);
 

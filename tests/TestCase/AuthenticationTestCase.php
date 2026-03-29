@@ -18,13 +18,12 @@ namespace Authentication\Test\TestCase;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use TestApp\Model\Table\AuthUsersTable;
 
 class AuthenticationTestCase extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
@@ -34,7 +33,7 @@ class AuthenticationTestCase extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_setupUsersAndPasswords();
@@ -54,7 +53,7 @@ class AuthenticationTestCase extends TestCase
         $Users->updateAll(['password' => $password], []);
 
         $AuthUsers = TableRegistry::getTableLocator()->get('AuthUsers', [
-            'className' => 'TestApp\Model\Table\AuthUsersTable',
+            'className' => AuthUsersTable::class,
         ]);
         $AuthUsers->updateAll(['password' => $password], []);
     }

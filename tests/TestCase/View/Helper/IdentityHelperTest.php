@@ -32,7 +32,7 @@ class IdentityHelperTest extends TestCase
      *
      * @return void
      */
-    public function testWithIdentity()
+    public function testWithIdentity(): void
     {
         $identity = new Identity([
             'id' => 1,
@@ -56,7 +56,7 @@ class IdentityHelperTest extends TestCase
         $this->assertFalse($helper->is(2));
     }
 
-    public function testIdentityWithCustomAttribute()
+    public function testIdentityWithCustomAttribute(): void
     {
         $identity = new Identity([
             'id' => 1,
@@ -77,7 +77,7 @@ class IdentityHelperTest extends TestCase
      *
      * @return void
      */
-    public function testWithOutIdentity()
+    public function testWithOutIdentity(): void
     {
         $request = new ServerRequest();
         $view = new View($request);
@@ -94,7 +94,7 @@ class IdentityHelperTest extends TestCase
         $this->assertNull($helper->getIdentity());
     }
 
-    public function testGetIdentity()
+    public function testGetIdentity(): void
     {
         $identity = new Identity([
             'id' => 1,

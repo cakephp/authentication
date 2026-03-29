@@ -59,7 +59,7 @@ class AuthenticationMiddlewareTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->service = new AuthenticationService([
@@ -72,7 +72,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->application = new Application('config');
     }
 
-    public function testApplicationAuthentication()
+    public function testApplicationAuthentication(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -91,7 +91,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertTrue($service->authenticators()->has('Form'));
     }
 
-    public function testProviderAuthentication()
+    public function testProviderAuthentication(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -117,7 +117,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertTrue($service->authenticators()->has('Form'));
     }
 
-    public function testApplicationAuthenticationRequestResponse()
+    public function testApplicationAuthenticationRequestResponse(): void
     {
         $request = ServerRequestFactory::fromGlobals();
         $handler = new TestRequestHandler();
@@ -147,7 +147,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testSuccessfulAuthentication()
+    public function testSuccessfulAuthentication(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -171,7 +171,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticationAndClearIdentityInteraction()
+    public function testAuthenticationAndClearIdentityInteraction(): void
     {
         $request = ServerRequestFactory::fromGlobals([
             'REQUEST_URI' => '/testpath',
@@ -206,7 +206,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testSuccessfulAuthenticationWithCustomIdentityAttribute()
+    public function testSuccessfulAuthenticationWithCustomIdentityAttribute(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -221,6 +221,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->service);
 
         $middleware->process($request, $handler);
+
         $identity = $handler->request->getAttribute('customIdentity');
         $service = $handler->request->getAttribute('authentication');
 
@@ -234,7 +235,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testSuccessfulAuthenticationApplicationHook()
+    public function testSuccessfulAuthenticationApplicationHook(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -246,6 +247,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->application);
 
         $middleware->process($request, $handler);
+
         $identity = $handler->request->getAttribute('identity');
         $service = $handler->request->getAttribute('authentication');
 
@@ -259,7 +261,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testSuccessfulAuthenticationPersistIdentity()
+    public function testSuccessfulAuthenticationPersistIdentity(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -274,7 +276,7 @@ class AuthenticationMiddlewareTest extends TestCase
         ]);
         $middleware = new AuthenticationMiddleware($this->service);
 
-        $handler = new TestRequestHandler(function ($request) {
+        $handler = new TestRequestHandler(function ($request): Response {
             $request->getAttribute('authentication');
             $this->assertNull($request->getAttribute('session')->read('Auth'));
 
@@ -293,7 +295,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testNonSuccessfulAuthentication()
+    public function testNonSuccessfulAuthentication(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -305,6 +307,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->service);
 
         $middleware->process($request, $handler);
+
         $identity = $handler->request->getAttribute('identity');
         $service = $handler->request->getAttribute('authentication');
 
@@ -318,7 +321,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testNonSuccessfulAuthenticationWithChallenge()
+    public function testNonSuccessfulAuthenticationWithChallenge(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath', 'SERVER_NAME' => 'localhost'],
@@ -347,14 +350,14 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedNoRedirectMiddlewareConfiguration()
+    public function testUnauthenticatedNoRedirectMiddlewareConfiguration(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password'],
         );
-        $handler = new TestRequestHandler(function ($request) {
+        $handler = new TestRequestHandler(function ($request): void {
             throw new UnauthenticatedException();
         });
 
@@ -363,6 +366,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $service = $this->service;
         $service->setConfig(['unauthenticatedRedirect' => null]);
+
         $middleware = new AuthenticationMiddleware($service);
         $middleware->process($request, $handler);
     }
@@ -372,7 +376,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedNoRedirect()
+    public function testUnauthenticatedNoRedirect(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -383,7 +387,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->expectException(UnauthenticatedException::class);
         $this->expectExceptionCode(401);
 
-        $handler = new TestRequestHandler(function () {
+        $handler = new TestRequestHandler(function (): void {
             throw new UnauthenticatedException();
         });
         $middleware = new AuthenticationMiddleware($this->service);
@@ -395,14 +399,14 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedRedirect()
+    public function testUnauthenticatedRedirect(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password'],
         );
-        $handler = new TestRequestHandler(function ($request) {
+        $handler = new TestRequestHandler(function ($request): void {
             throw new UnauthenticatedException();
         });
 
@@ -421,14 +425,14 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedRedirectWithQueryBackwardsCompatible()
+    public function testUnauthenticatedRedirectWithQueryBackwardsCompatible(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password'],
         );
-        $handler = new TestRequestHandler(function ($request) {
+        $handler = new TestRequestHandler(function ($request): void {
             throw new UnauthenticatedException();
         });
 
@@ -449,14 +453,14 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedRedirectWithExistingQuery()
+    public function testUnauthenticatedRedirectWithExistingQuery(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
             [],
             ['username' => 'mariano', 'password' => 'password'],
         );
-        $handler = new TestRequestHandler(function ($request) {
+        $handler = new TestRequestHandler(function ($request): void {
             throw new UnauthenticatedException();
         });
 
@@ -477,7 +481,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedRedirectWithFragment()
+    public function testUnauthenticatedRedirectWithFragment(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -487,7 +491,7 @@ class AuthenticationMiddlewareTest extends TestCase
 
         $middleware = new AuthenticationMiddleware($this->service);
 
-        $handler = new TestRequestHandler(function ($request) {
+        $handler = new TestRequestHandler(function ($request): void {
             throw new UnauthenticatedException();
         });
 
@@ -511,7 +515,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedRedirectWithBase()
+    public function testUnauthenticatedRedirectWithBase(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -519,7 +523,8 @@ class AuthenticationMiddlewareTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
         $request = $request->withAttribute('base', '/base');
-        $handler = new TestRequestHandler(function ($request) {
+
+        $handler = new TestRequestHandler(function ($request): void {
             throw new UnauthenticatedException();
         });
 
@@ -540,7 +545,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testUnauthenticatedRedirectWithQueryStringData()
+    public function testUnauthenticatedRedirectWithQueryStringData(): void
     {
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath', 'QUERY_STRING' => 'a=b&c=d'],
@@ -553,7 +558,7 @@ class AuthenticationMiddlewareTest extends TestCase
             'queryParam' => 'redirect',
         ]);
 
-        $handler = new TestRequestHandler(function ($request) {
+        $handler = new TestRequestHandler(function ($request): void {
             throw new UnauthenticatedException();
         });
         $middleware = new AuthenticationMiddleware($this->service);
@@ -569,7 +574,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testJwtTokenAuthorizationThroughTheMiddlewareStack()
+    public function testJwtTokenAuthorizationThroughTheMiddlewareStack(): void
     {
         $data = [
             'sub' => 3,
@@ -598,6 +603,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->service);
 
         $middleware->process($request, $handler);
+
         $identity = $handler->request->getAttribute('identity');
         $service = $handler->request->getAttribute('authentication');
 
@@ -612,7 +618,7 @@ class AuthenticationMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function testCookieAuthorizationThroughTheMiddlewareStack()
+    public function testCookieAuthorizationThroughTheMiddlewareStack(): void
     {
         $this->service = new AuthenticationService([
             'authenticators' => [

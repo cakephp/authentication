@@ -19,6 +19,7 @@ namespace Authentication\Controller\Component;
 use ArrayAccess;
 use ArrayObject;
 use Authentication\AuthenticationServiceInterface;
+use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\ImpersonationInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
@@ -75,8 +76,6 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
     /**
      * Authentication service instance.
-     *
-     * @var \Authentication\AuthenticationServiceInterface|null
      */
     protected ?AuthenticationServiceInterface $_authentication = null;
 
@@ -103,7 +102,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $provider = $authentication->getAuthenticationProvider();
 
         if (
-            $provider !== null &&
+            $provider instanceof AuthenticatorInterface &&
             !$provider instanceof PersistenceInterface &&
             !$provider instanceof StatelessInterface
         ) {
@@ -141,7 +140,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function getAuthenticationService(): AuthenticationServiceInterface
     {
-        if ($this->_authentication !== null) {
+        if ($this->_authentication instanceof AuthenticationServiceInterface) {
             return $this->_authentication;
         }
 
@@ -269,9 +268,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     public function getIdentity(): ?IdentityInterface
     {
         $controller = $this->getController();
-        $identity = $controller->getRequest()->getAttribute($this->getConfig('identityAttribute'));
 
-        return $identity;
+        return $controller->getRequest()->getAttribute($this->getConfig('identityAttribute'));
     }
 
     /**
@@ -285,7 +283,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $identity = $this->getIdentity();
 
-        if ($identity === null) {
+        if (!$identity instanceof IdentityInterface) {
             throw new RuntimeException('The identity has not been found.');
         }
 
@@ -398,7 +396,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         $service = $this->getImpersonationAuthenticationService();
 
         $identity = $this->getIdentity();
-        if (!$identity) {
+        if (!$identity instanceof IdentityInterface) {
             throw new UnauthenticatedException('You must be logged in before impersonating a user.');
         }
         $impersonator = $identity->getOriginalData();
@@ -462,7 +460,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function isImpersonating(): bool
     {
-        if (!$this->getIdentity()) {
+        if (!$this->getIdentity() instanceof IdentityInterface) {
             return false;
         }
 
@@ -485,9 +483,9 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     {
         $service = $this->getAuthenticationService();
         if (!($service instanceof ImpersonationInterface)) {
-            $className = get_class($service);
+            $className = $service::class;
             throw new InvalidArgumentException(
-                "The {$className} must implement ImpersonationInterface in order to use impersonation.",
+                sprintf('The %s must implement ImpersonationInterface in order to use impersonation.', $className),
             );
         }
 

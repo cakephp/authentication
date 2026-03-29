@@ -32,8 +32,6 @@ class CookieAuthenticatorTest extends TestCase
 {
     /**
      * Fixtures
-     *
-     * @var array
      */
     protected array $fixtures = [
         'core.AuthUsers',
@@ -43,7 +41,7 @@ class CookieAuthenticatorTest extends TestCase
     /**
      * @inheritDoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->skipIf(!class_exists(Cookie::class));
 
@@ -57,7 +55,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateInvalidTokenMissingUsername()
+    public function testAuthenticateInvalidTokenMissingUsername(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -82,7 +80,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateSuccess()
+    public function testAuthenticateSuccess(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -108,7 +106,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateExpandedCookie()
+    public function testAuthenticateExpandedCookie(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -133,7 +131,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateNoSalt()
+    public function testAuthenticateNoSalt(): void
     {
         Configure::delete('Security.salt');
 
@@ -161,7 +159,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateInvalidSalt()
+    public function testAuthenticateInvalidSalt(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -185,7 +183,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateUnknownUser()
+    public function testAuthenticateUnknownUser(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -210,7 +208,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testCredentialsNotPresent()
+    public function testCredentialsNotPresent(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -230,7 +228,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testAuthenticateInvalidToken()
+    public function testAuthenticateInvalidToken(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -255,7 +253,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentity()
+    public function testPersistIdentity(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -329,7 +327,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testPersistIdentityLoginUrlMismatch()
+    public function testPersistIdentityLoginUrlMismatch(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -365,7 +363,7 @@ class CookieAuthenticatorTest extends TestCase
     /**
      * @return void
      */
-    public function testPersistIdentityInvalidConfig()
+    public function testPersistIdentityInvalidConfig(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 
@@ -396,7 +394,7 @@ class CookieAuthenticatorTest extends TestCase
      *
      * @return void
      */
-    public function testClearIdentity()
+    public function testClearIdentity(): void
     {
         $identifier = IdentifierFactory::create('Authentication.Password');
 

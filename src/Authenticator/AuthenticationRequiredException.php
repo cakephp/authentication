@@ -32,9 +32,6 @@ class AuthenticationRequiredException extends HttpException
      */
     protected array $headers = [];
 
-    /**
-     * @var string
-     */
     protected string $body = '';
 
     /**

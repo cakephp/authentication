@@ -29,8 +29,6 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      *   argument of `password_hash()`. Defaults to `PASSWORD_DEFAULT`
      * - `hashOptions` - Associative array of options. Check the PHP manual for
      *   supported options for each hash type. Defaults to empty array.
-     *
-     * @var array
      */
     protected array $_defaultConfig = [
         'hashType' => PASSWORD_DEFAULT,

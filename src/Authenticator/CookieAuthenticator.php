@@ -66,7 +66,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if ($this->_identifier === null) {
+        if (!$this->_identifier instanceof IdentifierInterface) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');
@@ -90,11 +90,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             ]);
         }
 
-        if (is_array($cookies[$cookieName])) {
-            $token = $cookies[$cookieName];
-        } else {
-            $token = json_decode($cookies[$cookieName], true);
-        }
+        $token = is_array($cookies[$cookieName]) ? $cookies[$cookieName] : json_decode((string)$cookies[$cookieName], true);
 
         if ($token === null || count($token) !== 2) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [

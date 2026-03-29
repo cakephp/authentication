@@ -33,10 +33,10 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentify()
+    public function testIdentify(): void
     {
         $host = 'ldap.example.com';
-        $bind = function ($username) {
+        $bind = function (string $username): string {
             return 'cn=' . $username . ',dc=example,dc=com';
         };
         $options = [
@@ -73,7 +73,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testIdentifyMissingCredentials()
+    public function testIdentifyMissingCredentials(): void
     {
         $ldap = $this->createMock(AdapterInterface::class);
         $ldap->method('bind')
@@ -81,7 +81,7 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
+            'bindDN' => function (): string {
                 return 'dc=example,dc=com';
             },
             'ldap' => $ldap,
@@ -102,13 +102,13 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testLdapExtensionAdapter()
+    public function testLdapExtensionAdapter(): void
     {
         $this->skipIf(!extension_loaded('ldap'), 'LDAP extension is not loaded.');
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
+            'bindDN' => function (): string {
                 return 'dc=example,dc=com';
             },
         ]);
@@ -121,7 +121,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testWrongLdapObject()
+    public function testWrongLdapObject(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Option `ldap` must implement `Authentication\Identifier\Ldap\AdapterInterface`.');
@@ -130,7 +130,7 @@ class LdapIdentifierTest extends TestCase
 
         new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
+            'bindDN' => function (): string {
                 return 'dc=example,dc=com';
             },
             'ldap' => $notLdap,
@@ -142,7 +142,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testMissingBindDN()
+    public function testMissingBindDN(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Config `bindDN` is not set.');
@@ -157,7 +157,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testUncallableDN()
+    public function testUncallableDN(): void
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('The `bindDN` config is not a callable. Got `string` instead.');
@@ -173,13 +173,13 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testMissingHost()
+    public function testMissingHost(): void
     {
         $this->expectException('RuntimeException');
         $this->expectExceptionMessage('Config `host` is not set.');
 
         new LdapIdentifier([
-            'bindDN' => function () {
+            'bindDN' => function (): string {
                 return 'dc=example,dc=com';
             },
         ]);
@@ -190,7 +190,7 @@ class LdapIdentifierTest extends TestCase
      *
      * @return void
      */
-    public function testHandleError()
+    public function testHandleError(): void
     {
         $ldap = $this->createMock(AdapterInterface::class);
         $ldap->method('bind')
@@ -200,7 +200,7 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function () {
+            'bindDN' => function (): string {
                 return 'dc=example,dc=com';
             },
             'ldap' => $ldap,
