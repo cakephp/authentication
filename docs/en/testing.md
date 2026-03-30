@@ -78,7 +78,7 @@ public function testGet()
 
 When testing Basic or Digest Authentication, you can add the environment
 variables that [PHP creates](https://php.net/manual/en/features.http-auth.php)
-automatically.:
+automatically:
 
 ``` php
 public function testGet()

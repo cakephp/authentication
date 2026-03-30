@@ -98,7 +98,7 @@ Configuration options:
   custom object/classname here if it implements the
   `AdapterInterface`.
 
-- **options**: Array of additional LDAP options, including  
+- **options**: Array of additional LDAP options, including
   `tls`: Boolean. If `true`, tries to start TLS on the connection.
   Also LDAP config options such as
   `LDAP_OPT_PROTOCOL_VERSION` or `LDAP_OPT_NETWORK_TIMEOUT`. See
@@ -152,7 +152,7 @@ $identifier = [
                 ['message' => 'Removed user.']
             );
         },
-    ];
+    ],
 ];
 ```
 
@@ -195,7 +195,7 @@ $identifier = [
             // Pass additional options to the resolver constructor.
             'option' => 'value',
         ],
-    ];
+    ],
 ];
 ```
 
@@ -213,6 +213,7 @@ As of 3.3.0, you should pass the constructed resolver into the identifier:
 $resolver = new \App\Identifier\Resolver\CustomResolver();
 $identifier = [
     'Authentication.Password' => [
-        'resolver' => $resolver;
+        'resolver' => $resolver,
+    ],
 ];
 ```
