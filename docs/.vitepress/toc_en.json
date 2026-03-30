@@ -1,0 +1,49 @@
+{
+  "/": [
+    {
+      "text": "Getting Started",
+      "collapsed": false,
+      "items": [
+        { "text": "Quick Start", "link": "/index" }
+      ]
+    },
+    {
+      "text": "Core Concepts",
+      "collapsed": false,
+      "items": [
+        { "text": "Authenticators", "link": "/authenticators" },
+        { "text": "Identifiers", "link": "/identifiers" },
+        { "text": "Identity Object", "link": "/identity-object" },
+        { "text": "Password Hashers", "link": "/password-hashers" }
+      ]
+    },
+    {
+      "text": "Integration",
+      "collapsed": false,
+      "items": [
+        { "text": "Middleware", "link": "/middleware" },
+        { "text": "Authentication Component", "link": "/authentication-component" },
+        { "text": "View Helper", "link": "/view-helper" },
+        { "text": "Testing", "link": "/testing" }
+      ]
+    },
+    {
+      "text": "Advanced Topics",
+      "collapsed": true,
+      "items": [
+        { "text": "User Impersonation", "link": "/impersonation" },
+        { "text": "Redirect Validation", "link": "/redirect-validation" },
+        { "text": "URL Checkers", "link": "/url-checkers" },
+        { "text": "Migration from the AuthComponent", "link": "/migration-from-the-authcomponent" }
+      ]
+    },
+    {
+      "text": "Upgrade Guides",
+      "collapsed": true,
+      "items": [
+        { "text": "Upgrading from 2.x to 3.x", "link": "/upgrade-2-to-3" },
+        { "text": "Upgrading from 3.x to 4.x", "link": "/upgrade-3-to-4" }
+      ]
+    }
+  ]
+}
