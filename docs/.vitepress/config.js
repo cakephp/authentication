@@ -7,7 +7,7 @@ const toc_en = require("./toc_en.json");
 const versions = {
   text: "4.x",
   items: [
-    { text: "4.x (current)", link: "https://book.cakephp.org/authentication/4/en/", target: '_self' },
+    { text: "4.x (current)", link: "https://book.cakephp.org/authentication/4/", target: '_self' },
     { text: "3.x", link: "https://book.cakephp.org/authentication/3/en/", target: '_self' },
     { text: "2.x", link: "https://book.cakephp.org/authentication/2/en/", target: '_self' },
   ],
@@ -19,12 +19,12 @@ export default {
   srcDir: 'en',
   title: 'Authentication plugin',
   description: 'Authentication - CakePHP Authentication Plugin Documentation',
-  base: "/authentication/4/en/",
+  base: "/authentication/4/",
   rewrites: {
     "en/:slug*": ":slug*",
   },
   sitemap: {
-    hostname: "https://book.cakephp.org/authentication/4/en/",
+    hostname: "https://book.cakephp.org/authentication/4/",
   },
   themeConfig: {
     socialLinks: [
