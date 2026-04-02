@@ -17,6 +17,7 @@ jobs:
     uses: cakephp/.github/.github/workflows/docs-validation.yml@doc-workflows
     with:
       docs-path: 'docs'
+      vitepress-path: 'docs/.vitepress'
       enable-config-js-check: true
       enable-json-lint: true
       enable-toc-check: true
