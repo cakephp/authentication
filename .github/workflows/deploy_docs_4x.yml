@@ -21,3 +21,4 @@ jobs:
         with:
           git_remote_url: 'ssh://dokku@apps.cakephp.org:22/authentication-docs-4'
           ssh_private_key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
+          branch: '4.x'
