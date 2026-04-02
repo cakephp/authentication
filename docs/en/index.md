@@ -36,7 +36,9 @@ use Psr\Http\Message\ServerRequestInterface;
 Next, add `AuthenticationServiceProviderInterface` to the implemented interfaces
 on your application:
 
-    class Application extends BaseApplication implements AuthenticationServiceProviderInterface
+```php
+class Application extends BaseApplication implements AuthenticationServiceProviderInterface
+```
 
 Then update your application's `middleware()` method to look like:
 
