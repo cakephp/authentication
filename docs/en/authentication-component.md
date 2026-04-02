@@ -4,7 +4,7 @@ You can use the `AuthenticationComponent` to access the result of
 authentication, get user identity and logout user. Load the component in your
 `AppController::initialize()` like any other component:
 
-``` php
+```php
 $this->loadComponent('Authentication.Authentication', [
     'logoutRedirect' => '/users/login'  // Default is false
 ]);
@@ -14,7 +14,7 @@ Once loaded, the `AuthenticationComponent` will require that all actions have an
 authenticated user present, but perform no other access control checks. You can
 disable this check for specific actions using `allowUnauthenticated()`:
 
-``` php
+```php
 // In your controller's beforeFilter method.
 $this->Authentication->allowUnauthenticated(['view']);
 ```
@@ -24,13 +24,13 @@ $this->Authentication->allowUnauthenticated(['view']);
 You can get the authenticated user identity data using the authentication
 component:
 
-``` php
+```php
 $user = $this->Authentication->getIdentity();
 ```
 
 You can also get the identity directly from the request instance:
 
-``` php
+```php
 $user = $request->getAttribute('identity');
 ```
 
@@ -39,7 +39,7 @@ $user = $request->getAttribute('identity');
 You can check if the authentication process was successful by accessing the
 result object:
 
-``` php
+```php
 // Using Authentication component
 $result = $this->Authentication->getResult();
 
@@ -73,7 +73,7 @@ the included authenticators don't put anything in here.
 
 To log an identity out just do:
 
-``` php
+```php
 $this->Authentication->logout();
 ```
 
@@ -83,13 +83,13 @@ in either case.
 
 Alternatively, instead of the component you can also use the service to log out:
 
-``` php
+```php
 $return = $request->getAttribute('authentication')->clearIdentity($request, $response);
 ```
 
 The result returned will contain an array like this:
 
-``` php
+```php
 [
     'response' => object(Cake\Http\Response) { ... },
     'request' => object(Cake\Http\ServerRequest) { ... },
@@ -108,7 +108,7 @@ By default `AuthenticationComponent` will automatically enforce an identity to
 be present during the `Controller.startup` event. You can have this check
 applied during the `Controller.initialize` event instead:
 
-``` php
+```php
 // In your controller's initialize() method.
 $this->loadComponent('Authentication.Authentication', [
     'identityCheckEvent' => 'Controller.initialize',
@@ -118,6 +118,6 @@ $this->loadComponent('Authentication.Authentication', [
 You can also disable identity checks entirely with the `requireIdentity`
 option or by calling `disableIdentityCheck` from the controller's `beforeFilter()` method itself:
 
-``` php
+```php
 $this->Authentication->disableIdentityCheck();
 ```

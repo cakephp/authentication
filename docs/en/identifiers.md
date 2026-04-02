@@ -5,7 +5,7 @@ that was extracted from the request by the authenticators. Identifiers
 can take options in the `loadIdentifier` method. A holistic example of
 using the Password Identifier looks like:
 
-``` php
+```php
 $identifier = [
     'Authentication.Password' => [
         'fields' => [
@@ -119,7 +119,7 @@ Configuration options:
 
 Callback identifiers can either return `null|ArrayAccess` for simple results, or an `Authentication\Authenticator\Result` if you want to forward error messages:
 
-``` php
+```php
 // A simple callback identifier
 $identifier = [
     'Authentication.Callback' => [
@@ -186,7 +186,7 @@ reside under `App\Identifier\Resolver` namespace.
 
 Resolver can be configured using `resolver` config option:
 
-``` php
+```php
 $identifier = [
     'Authentication.Password' => [
         'resolver' => [
@@ -201,7 +201,7 @@ $identifier = [
 
 Or injected using a setter:
 
-``` php
+```php
 $resolver = new \App\Identifier\Resolver\CustomResolver();
 $identifier = $service->loadIdentifier('Authentication.Password');
 $identifier->setResolver($resolver);
@@ -209,7 +209,7 @@ $identifier->setResolver($resolver);
 
 As of 3.3.0, you should pass the constructed resolver into the identifier:
 
-``` php
+```php
 $resolver = new \App\Identifier\Resolver\CustomResolver();
 $identifier = [
     'Authentication.Password' => [

@@ -14,7 +14,7 @@ To impersonate another user you can use the `impersonate()` method on the
 `AuthenticationComponent`. To impersonate a user you first need to load that
 user from your application's database:
 
-``` php
+```php
 // In a controller
 public function impersonate()
 {
@@ -48,7 +48,7 @@ Once you have started to impersonate a user, all subsequent requests will have
 Once you are done impersonating a user, you can then end impersonation and revert
 back to your previous identity using `AuthenticationComponent`:
 
-``` php
+```php
 // In a controller
 public function revertIdentity()
 {
@@ -66,6 +66,6 @@ public function revertIdentity()
 
 There are a few limitations to impersonation.
 
-1.  Your application must be using the `Session` authenticator.
-2.  You cannot impersonate another user while impersonation is active. Instead
+1. Your application must be using the `Session` authenticator.
+2. You cannot impersonate another user while impersonation is active. Instead
     you must `stopImpersonation()` and then start it again.

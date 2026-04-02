@@ -5,7 +5,7 @@ need to simulate authentication credentials in your integration tests. First,
 ensure that your controller or middleware tests are using the
 `IntegrationTestTrait`:
 
-``` php
+```php
 // In a controller test.
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
@@ -28,7 +28,7 @@ Session based authentication requires simulating the User data that
 normally would be found in the session. In your test cases you can
 define a helper method that lets you 'login':
 
-``` php
+```php
 protected function login($userId = 1)
 {
     $users = TableRegistry::getTableLocator()->get('Users');
@@ -40,7 +40,7 @@ protected function login($userId = 1)
 In your integration tests you can use `login()` to simulate a user
 being logged in:
 
-``` php
+```php
 public function testGet()
 {
     $this->login();
@@ -54,7 +54,7 @@ public function testGet()
 With token based authentication you need to simulate the
 `Authorization` header. After getting valid token setup the request:
 
-``` php
+```php
 protected function getToken(): string
 {
     // Get a token for a known user
@@ -80,7 +80,7 @@ When testing Basic or Digest Authentication, you can add the environment
 variables that [PHP creates](https://php.net/manual/en/features.http-auth.php)
 automatically:
 
-``` php
+```php
 public function testGet()
 {
      $this->configRequest([

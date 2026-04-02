@@ -36,7 +36,7 @@ algorithm to another, this is achieved through the
 Legacy password to the Default bcrypt hasher, you can configure the
 fallback hasher as follows:
 
-``` php
+```php
 $passwordIdentifier = [
     'Authentication.Password' => [
         // Other config options
@@ -59,7 +59,7 @@ Then in your login action you can use the authentication service to
 access the `Password` identifier and check if the current user’s
 password needs to be upgraded:
 
-``` php
+```php
 public function login()
 {
     $authentication = $this->request->getAttribute('authentication');
