@@ -26,7 +26,7 @@ imports:
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
-use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\Router;
@@ -93,8 +93,8 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
     ]);
 
     $fields = [
-        AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
-        AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
+        PasswordIdentifier::CREDENTIAL_USERNAME => 'email',
+        PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
     ];
 
     // Load the authenticators. Session should be first.
@@ -135,7 +135,7 @@ Next, in your `AppController` load the [Authentication Component](authentication
 
 ``` php
 // in src/Controller/AppController.php
-public function initialize()
+public function initialize(): void
 {
     parent::initialize();
 
@@ -156,7 +156,7 @@ $this->Authentication->allowUnauthenticated(['view', 'index']);
 ## Building a Login Action
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. Please ensure your database has been created with the Users table structure used in [tutorial](tutorials-and-examples/cms/database). First generate a Users model and controller with bake:
+users to login. Please ensure your database has been created with the Users table structure used in the [CMS tutorial](https://book.cakephp.org/5/en/tutorials-and-examples/cms/database.html). First generate a Users model and controller with bake:
 
 ``` bash
 bin/cake bake model Users
@@ -240,9 +240,10 @@ class User extends Entity
     // ... other methods
 
     // Automatically hash passwords when they are changed.
-    protected function _setPassword(string $password)
+    protected function _setPassword(string $password): string
     {
         $hasher = new DefaultPasswordHasher();
+
         return $hasher->hash($password);
     }
 }

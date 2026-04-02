@@ -75,7 +75,6 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 // Add the authentication interface.
@@ -101,7 +100,7 @@ Next add the `AuthenticationMiddleware` to your application:
 
 ``` php
 // in src/Application.php
-public function middleware($middlewareQueue)
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 {
     // Various other middlewares for error handling, routing etc. added here.
 
@@ -147,13 +146,11 @@ $service = new AuthenticationService();
      ],
  ];
 
- // Load the authenticators
- $service->loadAuthenticator('Authentication.Session', [
-     'identifier' => $passwordIdentifier,
- ]);
- $service->loadAuthenticator('Authentication.Form', [
-     'identifier' => $passwordIdentifier,
- ]);
+// Load the authenticators. Session should be first.
+$service->loadAuthenticator('Authentication.Session');
+$service->loadAuthenticator('Authentication.Form', [
+    'identifier' => $passwordIdentifier,
+]);
 ```
 
 If you have customized the `userModel` you can use the following

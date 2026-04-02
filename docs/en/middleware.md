@@ -37,7 +37,7 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
     $path = $request->getPath();
 
     $service = new AuthenticationService();
-    if (strpos($path, '/api') === 0) {
+    if (str_starts_with($path, '/api')) {
         // Accept API tokens only
         $service->loadAuthenticator('Authentication.Token', [
             'identifier' => 'Authentication.Token',

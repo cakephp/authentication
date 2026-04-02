@@ -267,9 +267,11 @@ $builder->connect('/.well-known/:controller/*', [
 ]); // connect /.well-known/jwks.json to JwksController
 
 // controller/JwksController.php
+use Firebase\JWT\JWT;
+
 public function index()
 {
-    $pubKey = file_get_contents(CONFIG . './jwt.pem');
+    $pubKey = file_get_contents(CONFIG . '/jwt.pem');
     $res = openssl_pkey_get_public($pubKey);
     $detail = openssl_pkey_get_details($res);
     $key = [
@@ -344,7 +346,7 @@ Configuration options:
   - **samesite**: String/null The value for the same site attribute.
 
   The defaults for the various options besides `cookie.name` will be those
-  set for the `Cake\Http\Cookie\Cookie` class. See [Cookie::setDefaults()](https://api.cakephp.org/4.0/class-Cake.Http.Cookie.Cookie.html#setDefaults)
+  set for the `Cake\Http\Cookie\Cookie` class. See [Cookie::setDefaults()](https://api.cakephp.org/5/class-Cake.Http.Cookie.Cookie.html#setDefaults)
   for the default values.
 
 - **fields**: Array that maps `username` and `password` to the
@@ -377,8 +379,8 @@ authentication cookie is **also destroyed**. An example configuration would be:
 
 // Reuse fields in multiple authenticators.
 $fields = [
-    AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
-    AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
+    PasswordIdentifier::CREDENTIAL_USERNAME => 'email',
+    PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
 ];
 
 // Put form authentication first so that users can re-login via
@@ -389,9 +391,7 @@ $service->loadAuthenticator('Authentication.Form', [
     'loginUrl' => '/users/login',
 ]);
 // Then use sessions if they are active.
-$service->loadAuthenticator('Authentication.Session', [
-    'identifier' => 'Authentication.Password',
-]);
+$service->loadAuthenticator('Authentication.Session');
 
 // If the user is on the login page, check for a cookie as well.
 $service->loadAuthenticator('Authentication.Cookie', [
@@ -441,9 +441,6 @@ $service->loadAuthenticator('Authentication.Environment', [
 ]);
 ```
 
-::: info Added in version 2.10.0
-`EnvironmentAuthenticator` was added.
-:::
 
 ## Events
 
@@ -549,9 +546,7 @@ $passwordIdentifier = [
 ];
 
 // Load the authenticators leaving Basic as the last one.
-$service->loadAuthenticator('Authentication.Session', [
-    'identifier' => $passwordIdentifier,
-]);
+$service->loadAuthenticator('Authentication.Session');
 $service->loadAuthenticator('Authentication.Form', [
     'identifier' => $passwordIdentifier,
 ]);
@@ -622,7 +617,7 @@ public function getAuthenticationService(
 
     // Configuration common to both the API and web goes here.
 
-    if ($request->getParam('prefix') == 'Api') {
+    if ($request->getParam('prefix') === 'Api') {
         // Include API specific authenticators
     } else {
         // Web UI specific authenticators.

@@ -1,9 +1,5 @@
 # User Impersonation
 
-::: info Added in version 2.10.0
-User impersonation was added.
-:::
-
 After deploying your application, you may occasionally need to
 'impersonate' another user in order to debug problems that your customers report
 or to see the application in the state that your customers are seeing it.
