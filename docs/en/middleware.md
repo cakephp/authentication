@@ -48,9 +48,7 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
 
     // Web authentication
     // Support sessions and form login.
-    $service->loadAuthenticator('Authentication.Session', [
-        'identifier' => 'Authentication.Password',
-    ]);
+    $service->loadAuthenticator('Authentication.Session');
     $service->loadAuthenticator('Authentication.Form', [
         'identifier' => 'Authentication.Password',
     ]);

@@ -38,9 +38,7 @@ authenticators.
 
 - **Authenticators** take the incoming request and try to extract
   identification credentials from it. If credentials are found, they
-  are passed to a collection of identifiers where the user is located.
-  For that reason authenticators take an IdentifierCollection as first
-  constructor argument.
+  are passed to an identifier where the user is located.
 - **Identifiers** verify identification credentials against a storage
   system. eg. (ORM tables, LDAP etc) and return identified user data.
 
@@ -84,10 +82,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * Returns a service provider instance.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
-     * @param \Psr\Http\Message\ResponseInterface $response Response
      * @return \Authentication\AuthenticationServiceInterface
      */
-    public function getAuthenticationService(ServerRequestInterface $request) : AuthenticationServiceInterface
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();
         // Configure the service. (see below for more details)
@@ -198,7 +195,7 @@ public function login()
     }
 
     // display error if user submitted and authentication failed
-    if ($this->request->is(['post'])) {
+    if ($this->request->is('post')) {
         $this->Flash->error('Invalid username or password');
     }
 }
@@ -235,7 +232,7 @@ use `setIdentity()`:
 
 ``` php
 // Assume you need to read a user by access token
-$user = $this->Users->find('byToken', ['token' => $token])->first();
+$user = $this->Users->find('byToken', token: $token)->first();
 
 // Persist the user into configured authenticators.
 $this->Authentication->setIdentity($user);

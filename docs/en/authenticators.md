@@ -182,7 +182,7 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
     // ...
     $service->loadAuthenticator('Authentication.Jwt', [
         'identifier' => 'Authentication.JwtSubject',
-        'secretKey' => file_get_contents(CONFIG . '/jwt.key'),
+        'secretKey' => file_get_contents(CONFIG . 'jwt.key'),
         'algorithm' => 'RS256',
         'returnPayload' => false
     ]);
@@ -200,7 +200,7 @@ public function login()
 {
     $result = $this->Authentication->getResult();
     if ($result->isValid()) {
-        $privateKey = file_get_contents(CONFIG . '/jwt.key');
+        $privateKey = file_get_contents(CONFIG . 'jwt.key');
         $user = $result->getData();
         $payload = [
             'iss' => 'myapp',
@@ -260,10 +260,11 @@ distribute it via a JWKS endpoint by configuring your app as follows:
 ``` php
 // config/routes.php
 $builder->setExtensions('json');
-$builder->connect('/.well-known/:controller/*', [
+$builder->connect('/.well-known/{controller}', [
     'action' => 'index',
 ], [
-    'controller' => '(jwks)',
+    'controller' => 'jwks',
+    'pass' => [],
 ]); // connect /.well-known/jwks.json to JwksController
 
 // controller/JwksController.php
@@ -271,7 +272,7 @@ use Firebase\JWT\JWT;
 
 public function index()
 {
-    $pubKey = file_get_contents(CONFIG . '/jwt.pem');
+    $pubKey = file_get_contents(CONFIG . 'jwt.pem');
     $res = openssl_pkey_get_public($pubKey);
     $detail = openssl_pkey_get_details($res);
     $key = [
@@ -315,7 +316,7 @@ Configuration options:
 
 - **realm**: Default is `null`
 - **qop**: Default is `auth`
-- **nonce**: Default is `uniqid(''),`
+- **nonce**: Default is `uniqid('')`
 - **opaque**: Default is `null`
 
 ## Cookie Authenticator aka "Remember Me"
@@ -371,7 +372,7 @@ Configuration options:
 The cookie authenticator can be added to a Form & Session based
 authentication system. Cookie authentication will automatically re-login users
 after their session expires for as long as the cookie is valid. If a user is
-explicity logged out via `AuthenticationComponent::logout()` the
+explicitly logged out via `AuthenticationComponent::logout()` the
 authentication cookie is **also destroyed**. An example configuration would be:
 
 ``` php
