@@ -184,20 +184,23 @@ upon a successful login, change your login action to check the new
 identity results:
 
 ``` php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
 
-    // regardless of POST or GET, redirect if user is logged in
+    // Regardless of POST or GET, redirect if user is logged in
     if ($result->isValid()) {
         $target = $this->Authentication->getLoginRedirect();
+
         return $this->redirect($target);
     }
 
-    // display error if user submitted and authentication failed
+    // Display error if user submitted and authentication failed
     if ($this->request->is('post')) {
         $this->Flash->error('Invalid username or password');
     }
+
+    return null;
 }
 ```
 
@@ -289,7 +292,7 @@ Then in your controller's login method you can use `getLoginRedirect()` to get
 the redirect target safely from the query string parameter:
 
 ``` php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
 
@@ -300,8 +303,11 @@ public function login()
         if (!$target) {
             $target = ['controller' => 'Pages', 'action' => 'display', 'home'];
         }
+
         return $this->redirect($target);
     }
+
+    return null;
 }
 ```
 
@@ -312,11 +318,11 @@ functionality. You can replicate that logic with this plugin by
 leveraging the `AuthenticationService`:
 
 ``` php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
 
-    // regardless of POST or GET, redirect if user is logged in
+    // Regardless of POST or GET, redirect if user is logged in
     if ($result->isValid()) {
         $authService = $this->Authentication->getAuthenticationService();
 
@@ -324,17 +330,21 @@ public function login()
         $identifier = $authService->getIdentificationProvider();
         if ($identifier !== null && $identifier->needsPasswordRehash()) {
             // Rehash happens on save.
-            $user = $this->Users->get($this->Authentication->getIdentityData('id'));
+            $user = $this->fetchTable('Users')->get(
+                $this->Authentication->getIdentityData('id')
+            );
             $user->password = $this->request->getData('password');
-            $this->Users->save($user);
+            $this->fetchTable('Users')->saveOrFail($user);
         }
 
         // Redirect to a logged in page
         return $this->redirect([
             'controller' => 'Pages',
             'action' => 'display',
-            'home'
+            'home',
         ]);
     }
+
+    return null;
 }
 ```

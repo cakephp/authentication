@@ -109,7 +109,7 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
         'fields' => $fields,
         'loginUrl' => Router::url([
             'prefix' => false,
-            'plugin' => null,
+            'plugin' => false,
             'controller' => 'Users',
             'action' => 'login',
         ]),
@@ -168,17 +168,20 @@ like:
 
 ``` php
 // in src/Controller/UsersController.php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
     // If the user is logged in send them away.
     if ($result && $result->isValid()) {
         $target = $this->Authentication->getLoginRedirect() ?? '/home';
+
         return $this->redirect($target);
     }
     if ($this->request->is('post')) {
         $this->Flash->error('Invalid username or password');
     }
+
+    return null;
 }
 ```
 
@@ -188,7 +191,7 @@ unauthenticated users are able to access it:
 
 ``` php
 // in src/Controller/UsersController.php
-public function beforeFilter(\Cake\Event\EventInterface $event)
+public function beforeFilter(\Cake\Event\EventInterface $event): void
 {
     parent::beforeFilter($event);
 
@@ -216,9 +219,10 @@ Then add a simple logout action:
 
 ``` php
 // in src/Controller/UsersController.php
-public function logout()
+public function logout(): \Cake\Http\Response
 {
     $this->Authentication->logout();
+
     return $this->redirect(['controller' => 'Users', 'action' => 'login']);
 }
 ```

@@ -196,7 +196,7 @@ In your `UsersController`:
 ``` php
 use Firebase\JWT\JWT;
 
-public function login()
+public function login(): void
 {
     $result = $this->Authentication->getResult();
     if ($result->isValid()) {
@@ -585,7 +585,7 @@ Then in your controller's login method you can use `getLoginRedirect()` to get
 the redirect target safely from the query string parameter:
 
 ``` php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
 
@@ -596,8 +596,11 @@ public function login()
         if (!$target) {
             $target = ['controller' => 'Pages', 'action' => 'display', 'home'];
         }
+
         return $this->redirect($target);
     }
+
+    return null;
 }
 ```
 

@@ -12,7 +12,7 @@ user from your application's database:
 
 ``` php
 // In a controller
-public function impersonate()
+public function impersonate(): \Cake\Http\Response
 {
     $this->request->allowMethod(['POST']);
 
@@ -25,9 +25,9 @@ public function impersonate()
     }
 
     // Fetch the user we want to impersonate.
-    $targetUser = $this->Users->findById(
-        $this->request->getData('user_id')
-    )->firstOrFail();
+    $targetUser = $this->fetchTable('Users')
+        ->findById($this->request->getData('user_id'))
+        ->firstOrFail();
 
     // Enable impersonation.
     $this->Authentication->impersonate($targetUser);
@@ -46,7 +46,7 @@ back to your previous identity using `AuthenticationComponent`:
 
 ``` php
 // In a controller
-public function revertIdentity()
+public function revertIdentity(): \Cake\Http\Response
 {
     $this->request->allowMethod(['POST']);
 
@@ -55,6 +55,8 @@ public function revertIdentity()
         throw new NotFoundException();
     }
     $this->Authentication->stopImpersonating();
+
+    return $this->redirect($this->referer());
 }
 ```
 
@@ -64,4 +66,4 @@ There are a few limitations to impersonation.
 
 1.  Your application must be using the `Session` authenticator.
 2.  You cannot impersonate another user while impersonation is active. Instead
-    you must `stopImpersonation()` and then start it again.
+    you must `stopImpersonating()` and then start it again.
