@@ -59,22 +59,27 @@ Then in your login action you can use the authentication service to
 access the `Password` identifier and check if the current user’s
 password needs to be upgraded:
 
-```php
-public function login()
+``` php
+public function login(): ?\Cake\Http\Response
 {
     $authentication = $this->request->getAttribute('authentication');
     $result = $authentication->getResult();
 
-    // regardless of POST or GET, redirect if user is logged in
+    // Regardless of POST or GET, redirect if user is logged in
     if ($result->isValid()) {
         if ($authentication->getIdentificationProvider()->needsPasswordRehash()) {
             // Rehash happens on save.
-            $user = $this->Users->get($authentication->getIdentity()->getIdentifier());
+            $user = $this->fetchTable('Users')->get(
+                $authentication->getIdentity()->getIdentifier()
+            );
             $user->password = $this->request->getData('password');
-            $this->Users->saveOrFail($user);
+            $this->fetchTable('Users')->saveOrFail($user);
         }
 
         // Redirect or display a template.
+        return $this->redirect('/');
     }
+
+    return null;
 }
 ```

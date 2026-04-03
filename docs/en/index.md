@@ -26,7 +26,7 @@ imports:
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
-use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\Router;
@@ -93,8 +93,8 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
     ]);
 
     $fields = [
-        AbstractIdentifier::CREDENTIAL_USERNAME => 'email',
-        AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
+        PasswordIdentifier::CREDENTIAL_USERNAME => 'email',
+        PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
     ];
 
     // Load the authenticators. Session should be first.
@@ -109,7 +109,7 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
         'fields' => $fields,
         'loginUrl' => Router::url([
             'prefix' => false,
-            'plugin' => null,
+            'plugin' => false,
             'controller' => 'Users',
             'action' => 'login',
         ]),
@@ -135,7 +135,7 @@ Next, in your `AppController` load the [Authentication Component](authentication
 
 ```php
 // in src/Controller/AppController.php
-public function initialize()
+public function initialize(): void
 {
     parent::initialize();
 
@@ -156,7 +156,7 @@ $this->Authentication->allowUnauthenticated(['view', 'index']);
 ## Building a Login Action
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. Please ensure your database has been created with the Users table structure used in [tutorial](https://book.cakephp.org/5/en/tutorials-and-examples/cms/database.html). First generate a Users model and controller with bake:
+users to login. Please ensure your database has been created with the Users table structure used in the [CMS tutorial](https://book.cakephp.org/5/en/tutorials-and-examples/cms/database.html). First generate a Users model and controller with bake:
 
 ```bash
 bin/cake bake model Users
@@ -168,17 +168,20 @@ like:
 
 ```php
 // in src/Controller/UsersController.php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
     // If the user is logged in send them away.
     if ($result && $result->isValid()) {
         $target = $this->Authentication->getLoginRedirect() ?? '/home';
+
         return $this->redirect($target);
     }
     if ($this->request->is('post')) {
         $this->Flash->error('Invalid username or password');
     }
+
+    return null;
 }
 ```
 
@@ -188,7 +191,7 @@ unauthenticated users are able to access it:
 
 ```php
 // in src/Controller/UsersController.php
-public function beforeFilter(\Cake\Event\EventInterface $event)
+public function beforeFilter(\Cake\Event\EventInterface $event): void
 {
     parent::beforeFilter($event);
 
@@ -216,9 +219,10 @@ Then add a simple logout action:
 
 ```php
 // in src/Controller/UsersController.php
-public function logout()
+public function logout(): \Cake\Http\Response
 {
     $this->Authentication->logout();
+
     return $this->redirect(['controller' => 'Users', 'action' => 'login']);
 }
 ```
@@ -240,9 +244,10 @@ class User extends Entity
     // ... other methods
 
     // Automatically hash passwords when they are changed.
-    protected function _setPassword(string $password)
+    protected function _setPassword(string $password): string
     {
         $hasher = new DefaultPasswordHasher();
+
         return $hasher->hash($password);
     }
 }

@@ -1,8 +1,7 @@
 # Identifiers
 
-Identifiers will identify an user or service based on the information
-that was extracted from the request by the authenticators. Identifiers
-can take options in the `loadIdentifier` method. A holistic example of
+Identifiers will identify a user or service based on the information
+that was extracted from the request by the authenticators. A holistic example of
 using the Password Identifier looks like:
 
 ```php
@@ -199,15 +198,7 @@ $identifier = [
 ];
 ```
 
-Or injected using a setter:
-
-```php
-$resolver = new \App\Identifier\Resolver\CustomResolver();
-$identifier = $service->loadIdentifier('Authentication.Password');
-$identifier->setResolver($resolver);
-```
-
-As of 3.3.0, you should pass the constructed resolver into the identifier:
+Or pass the constructed resolver directly into the identifier configuration:
 
 ```php
 $resolver = new \App\Identifier\Resolver\CustomResolver();

@@ -19,7 +19,7 @@ class ArticlesControllerTest extends TestCase
 ```
 
 Based on the type of authentication you're using you will need to
-simulate credentials differently. Lets review a few more common types of
+simulate credentials differently. Let's review a few more common types of
 authentication.
 
 ## Session based authentication
@@ -28,11 +28,10 @@ Session based authentication requires simulating the User data that
 normally would be found in the session. In your test cases you can
 define a helper method that lets you 'login':
 
-```php
-protected function login($userId = 1)
+``` php
+protected function login(int $userId = 1): void
 {
-    $users = TableRegistry::getTableLocator()->get('Users');
-    $user = $users->get($userId);
+    $user = $this->fetchTable('Users')->get($userId);
     $this->session(['Auth' => $user]);
 }
 ```
@@ -80,15 +79,15 @@ When testing Basic or Digest Authentication, you can add the environment
 variables that [PHP creates](https://php.net/manual/en/features.http-auth.php)
 automatically:
 
-```php
-public function testGet()
+``` php
+public function testGet(): void
 {
-     $this->configRequest([
-         'environment' => [
-             'PHP_AUTH_USER' => 'username',
-             'PHP_AUTH_PW' => 'password',
-         ]
-     ]);
+    $this->configRequest([
+        'environment' => [
+            'PHP_AUTH_USER' => 'username',
+            'PHP_AUTH_PW' => 'password',
+        ],
+    ]);
     $this->get('/api/bookmarks');
     $this->assertResponseOk();
 }
