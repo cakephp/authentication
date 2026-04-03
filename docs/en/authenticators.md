@@ -442,7 +442,6 @@ $service->loadAuthenticator('Authentication.Environment', [
 ]);
 ```
 
-
 ## Events
 
 There is only one event that is fired by authentication:
@@ -584,7 +583,7 @@ $service->setConfig([
 Then in your controller's login method you can use `getLoginRedirect()` to get
 the redirect target safely from the query string parameter:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();

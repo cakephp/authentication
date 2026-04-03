@@ -59,7 +59,7 @@ Then in your login action you can use the authentication service to
 access the `Password` identifier and check if the current user’s
 password needs to be upgraded:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $authentication = $this->request->getAttribute('authentication');

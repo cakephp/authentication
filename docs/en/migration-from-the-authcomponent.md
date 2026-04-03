@@ -183,7 +183,7 @@ identity based on your authenticators. Usually after logging in,
 upon a successful login, change your login action to check the new
 identity results:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
@@ -291,7 +291,7 @@ $service->setConfig([
 Then in your controller's login method you can use `getLoginRedirect()` to get
 the redirect target safely from the query string parameter:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
@@ -317,7 +317,7 @@ If your application uses `AuthComponent`’s hash upgrade
 functionality. You can replicate that logic with this plugin by
 leveraging the `AuthenticationService`:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();

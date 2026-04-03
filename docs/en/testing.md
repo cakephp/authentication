@@ -28,7 +28,7 @@ Session based authentication requires simulating the User data that
 normally would be found in the session. In your test cases you can
 define a helper method that lets you 'login':
 
-``` php
+```php
 protected function login(int $userId = 1): void
 {
     $user = $this->fetchTable('Users')->get($userId);
@@ -79,7 +79,7 @@ When testing Basic or Digest Authentication, you can add the environment
 variables that [PHP creates](https://php.net/manual/en/features.http-auth.php)
 automatically:
 
-``` php
+```php
 public function testGet(): void
 {
     $this->configRequest([

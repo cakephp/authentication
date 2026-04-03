@@ -64,6 +64,6 @@ public function revertIdentity(): \Cake\Http\Response
 
 There are a few limitations to impersonation.
 
-1.  Your application must be using the `Session` authenticator.
-2.  You cannot impersonate another user while impersonation is active. Instead
+1. Your application must be using the `Session` authenticator.
+2. You cannot impersonate another user while impersonation is active. Instead
     you must `stopImpersonating()` and then start it again.
