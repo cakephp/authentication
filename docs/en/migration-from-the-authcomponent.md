@@ -53,7 +53,7 @@ implement the `IdentifierInterface`.
 The first step to migrating your application is to load the authentication
 plugin in your application's bootstrap method:
 
-``` php
+```php
 public function bootstrap(): void
 {
     parent::bootstrap();
@@ -65,7 +65,7 @@ Then update your application to implement the authentication provider interface.
 This lets the AuthenticationMiddleware know how to get the authentication
 service from your application:
 
-``` php
+```php
 // in src/Application.php
 
 // Add the following use statements.
@@ -95,7 +95,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
 Next add the `AuthenticationMiddleware` to your application:
 
-``` php
+```php
 // in src/Application.php
 public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 {
@@ -114,7 +114,7 @@ The configuration array from `AuthComponent` needs to be split into
 identifiers and authenticators when configuring the service. So when you
 had your `AuthComponent` configured this way:
 
-``` php
+```php
 $this->loadComponent('Auth', [
     'authentication' => [
         'Form' => [
@@ -129,7 +129,7 @@ $this->loadComponent('Auth', [
 
 You’ll now have to configure it this way:
 
-``` php
+```php
 // Instantiate the service
 $service = new AuthenticationService();
 
@@ -153,7 +153,7 @@ $service->loadAuthenticator('Authentication.Form', [
 If you have customized the `userModel` you can use the following
 configuration:
 
-``` php
+```php
 // Instantiate the service
 $service = new AuthenticationService();
 
@@ -183,7 +183,7 @@ identity based on your authenticators. Usually after logging in,
 upon a successful login, change your login action to check the new
 identity results:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
@@ -212,7 +212,7 @@ After applying the middleware you can use identity data by using the
 user is unauthenticated or if the provided credentials were invalid, the
 `identity` attribute will be `null`:
 
-``` php
+```php
 $user = $request->getAttribute('identity');
 ```
 
@@ -220,7 +220,7 @@ For more details about the result of the authentication process you can
 access the result object that also comes with the request and is
 accessible on the `authentication` attribute:
 
-``` php
+```php
 $result = $request->getAttribute('authentication')->getResult();
 // Boolean if the result is valid
 $isValid = $result->isValid();
@@ -233,7 +233,7 @@ $errors = $result->getErrors();
 Any place you were calling `AuthComponent::setUser()`, you should now
 use `setIdentity()`:
 
-``` php
+```php
 // Assume you need to read a user by access token
 $user = $this->Users->find('byToken', token: $token)->first();
 
@@ -247,7 +247,7 @@ Like `AuthComponent` the `AuthenticationComponent` makes it easy to
 make specific actions ‘public’ and not require a valid identity to be
 present:
 
-``` php
+```php
 // In your controller's beforeFilter method.
 $this->Authentication->allowUnauthenticated(['view']);
 ```
@@ -257,7 +257,7 @@ action list.
 
 To mimic `$this->Auth->deny(['register']);` you can do:
 
-``` php
+```php
 $action = $this->getRequest()->getParam('action');
 if ($action !== 'register') {
     $this->Authentication->allowUnauthenticated([$action]);
@@ -276,7 +276,7 @@ You can also pass the current request target URI as a query parameter
 using the `queryParam` option. Note that the redirect parameter is only
 appended for GET requests to prevent redirecting to non-GET actions after login:
 
-``` php
+```php
 // In the getAuthenticationService() method of your src/Application.php
 
 $service = new AuthenticationService();
@@ -291,7 +291,7 @@ $service->setConfig([
 Then in your controller's login method you can use `getLoginRedirect()` to get
 the redirect target safely from the query string parameter:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
@@ -317,7 +317,7 @@ If your application uses `AuthComponent`’s hash upgrade
 functionality. You can replicate that logic with this plugin by
 leveraging the `AuthenticationService`:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();

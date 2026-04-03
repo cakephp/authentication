@@ -1,6 +1,6 @@
 # Contents
 
-### CakePHP Authentication
+## CakePHP Authentication
 
 - [Quick Start](index)
 - [Authenticators](authenticators)

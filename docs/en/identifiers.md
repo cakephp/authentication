@@ -4,7 +4,7 @@ Identifiers will identify a user or service based on the information
 that was extracted from the request by the authenticators. A holistic example of
 using the Password Identifier looks like:
 
-``` php
+```php
 $identifier = [
     'Authentication.Password' => [
         'fields' => [
@@ -118,7 +118,7 @@ Configuration options:
 
 Callback identifiers can either return `null|ArrayAccess` for simple results, or an `Authentication\Authenticator\Result` if you want to forward error messages:
 
-``` php
+```php
 // A simple callback identifier
 $identifier = [
     'Authentication.Callback' => [
@@ -185,7 +185,7 @@ reside under `App\Identifier\Resolver` namespace.
 
 Resolver can be configured using `resolver` config option:
 
-``` php
+```php
 $identifier = [
     'Authentication.Password' => [
         'resolver' => [
@@ -200,7 +200,7 @@ $identifier = [
 
 Or pass the constructed resolver directly into the identifier configuration:
 
-``` php
+```php
 $resolver = new \App\Identifier\Resolver\CustomResolver();
 $identifier = [
     'Authentication.Password' => [

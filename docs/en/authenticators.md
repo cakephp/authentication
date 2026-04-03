@@ -30,7 +30,7 @@ With only the ID stored, the invalidation due to objects being modified will als
 A default `TokenIdentifier` is provided that looks up users by their `id` field,
 so minimal configuration is required:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession');
 ```
 
@@ -43,7 +43,7 @@ Configuration options:
 For custom lookup fields, the `idField` and `identifierKey` options propagate
 to the default identifier automatically:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession', [
     'idField' => 'uuid',
 ]);
@@ -51,7 +51,7 @@ $service->loadAuthenticator('Authentication.PrimaryKeySession', [
 
 You can also provide a fully custom identifier configuration if needed:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession', [
     'identifier' => [
         'Authentication.Token' => [
@@ -109,7 +109,7 @@ Configuration options:
 
 An example of getting a token from a header, or query string would be:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Token', [
     'queryParam' => 'token',
     'header' => 'Authorization',
@@ -122,7 +122,7 @@ as long as the token was preceded by `Token` and a space.
 
 The token will always be passed to the configured identifier as follows:
 
-``` php
+```php
 [
     'token' => '{token-value}',
 ]
@@ -158,7 +158,7 @@ the value of `Cake\Utility\Security::salt()` as encryption key.
 For enhanced security one can instead use the `RS256` asymmetric key algorithm.
 You can generate the required keys for that as follows:
 
-``` text
+```text
 # generate private key
 openssl genrsa -out config/jwt.key 1024
 # generate public key
@@ -175,7 +175,7 @@ for token verification.
 
 Add the following to your `Application` class:
 
-``` php
+```php
 public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
 {
     $service = new AuthenticationService();
@@ -193,7 +193,7 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
 
 In your `UsersController`:
 
-``` php
+```php
 use Firebase\JWT\JWT;
 
 public function login(): void
@@ -221,7 +221,7 @@ public function login(): void
 
 Using a JWKS fetched from an external JWKS endpoint is supported as well:
 
-``` php
+```php
 // Application.php
 public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
 {
@@ -257,7 +257,7 @@ prepared to handle signing key rotations.
 Beside from sharing the public key file to external application, you can
 distribute it via a JWKS endpoint by configuring your app as follows:
 
-``` php
+```php
 // config/routes.php
 $builder->setExtensions('json');
 $builder->connect('/.well-known/{controller}', [
@@ -375,7 +375,7 @@ after their session expires for as long as the cookie is valid. If a user is
 explicitly logged out via `AuthenticationComponent::logout()` the
 authentication cookie is **also destroyed**. An example configuration would be:
 
-``` php
+```php
 // In Application::getAuthenticationService()
 
 // Reuse fields in multiple authenticators.
@@ -404,7 +404,7 @@ $service->loadAuthenticator('Authentication.Cookie', [
 
 You'll also need to add a checkbox to your login form to have cookies created:
 
-``` php
+```php
 // In your login view
 <?= $this->Form->control('remember_me', ['type' => 'checkbox']);
 ```
@@ -420,7 +420,7 @@ environment variables exposed by the webserver. This enables authentication via
 [Shibboleth](https://shibboleth.atlassian.net/wiki/spaces/CONCEPT/overview)
 and similar SAML 1.1 implementations. An example configuration is:
 
-``` php
+```php
 // Configure a token identifier that maps `USER_ID` to the
 // username column
 $identifier = [
@@ -441,7 +441,6 @@ $service->loadAuthenticator('Authentication.Environment', [
     ],
 ]);
 ```
-
 
 ## Events
 
@@ -505,7 +504,7 @@ page](url-checkers).
 After a user has been authenticated you may want to inspect or interact with the
 Authenticator that successfully authenticated the user:
 
-``` php
+```php
 // In a controller action
 $service = $this->request->getAttribute('authentication');
 
@@ -515,7 +514,7 @@ $authenticator = $service->getAuthenticationProvider();
 
 You can also get the identifier that identified the user as well:
 
-``` php
+```php
 // In a controller action
 $service = $this->request->getAttribute('authentication');
 
@@ -530,7 +529,7 @@ you should remember that these authenticators will halt the request when
 authentication credentials are missing or invalid. This is necessary as these
 authenticators must send specific challenge headers in the response:
 
-``` php
+```php
 use Authentication\AuthenticationService;
 
 // Instantiate the service
@@ -569,7 +568,7 @@ authenticated. You can convert this exception into a redirect using the
 You can also pass the current request target URI as a query parameter
 using the `queryParam` option:
 
-``` php
+```php
 // In the getAuthenticationService() method of your src/Application.php
 
 $service = new AuthenticationService();
@@ -584,7 +583,7 @@ $service->setConfig([
 Then in your controller's login method you can use `getLoginRedirect()` to get
 the redirect target safely from the query string parameter:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
@@ -613,7 +612,7 @@ authentication for your API, but sessions for your web interface. To support
 this flow you can return different authentication services based on the URL
 path, or any other request attribute:
 
-``` php
+```php
 public function getAuthenticationService(
     ServerRequestInterface $request
 ): AuthenticationServiceInterface {

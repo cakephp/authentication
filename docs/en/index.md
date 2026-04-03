@@ -3,7 +3,7 @@
 Install the plugin with [composer](https://getcomposer.org/) from your CakePHP
 Project's ROOT directory (where the **composer.json** file is located)
 
-``` bash
+```bash
 php composer.phar require cakephp/authentication
 ```
 
@@ -11,7 +11,7 @@ Version 4 of the Authentication Plugin is compatible with CakePHP 5.
 
 Load the plugin using the following command:
 
-``` shell
+```shell
 bin/cake plugin load Authentication
 ```
 
@@ -22,7 +22,7 @@ be used as a component to make unauthenticated access simpler. First, let's
 apply the middleware. In **src/Application.php**, add the following to the class
 imports:
 
-``` php
+```php
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
@@ -42,7 +42,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
 Then update your application's `middleware()` method to look like:
 
-``` php
+```php
 public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 {
     $middlewareQueue->add(new ErrorHandlerMiddleware(Configure::read('Error')))
@@ -70,7 +70,7 @@ it starts handling the request. This hook method allows your application to
 define the `AuthenticationService` it wants to use. Add the following method to your
 **src/Application.php**:
 
-``` php
+```php
 /**
  * Returns a service provider instance.
  *
@@ -133,7 +133,7 @@ the middleware will add the authentication service to the request object as an
 
 Next, in your `AppController` load the [Authentication Component](authentication-component):
 
-``` php
+```php
 // in src/Controller/AppController.php
 public function initialize(): void
 {
@@ -147,7 +147,7 @@ By default the component will require an authenticated user for **all** actions.
 You can disable this behavior in specific controllers using
 `allowUnauthenticated()`:
 
-``` php
+```php
 // in a controller beforeFilter or initialize
 // Make view and index not require a logged in user.
 $this->Authentication->allowUnauthenticated(['view', 'index']);
@@ -158,7 +158,7 @@ $this->Authentication->allowUnauthenticated(['view', 'index']);
 Once you have the middleware applied to your application you'll need a way for
 users to login. Please ensure your database has been created with the Users table structure used in the [CMS tutorial](https://book.cakephp.org/5/en/tutorials-and-examples/cms/database.html). First generate a Users model and controller with bake:
 
-``` bash
+```bash
 bin/cake bake model Users
 bin/cake bake controller Users
 ```
@@ -166,7 +166,7 @@ bin/cake bake controller Users
 Then, we'll add a basic login action to your `UsersController`. It should look
 like:
 
-``` php
+```php
 // in src/Controller/UsersController.php
 public function login(): ?\Cake\Http\Response
 {
@@ -189,7 +189,7 @@ Make sure that you allow access to the `login` action in your controller's
 `beforeFilter()` callback as mentioned in the previous section, so that
 unauthenticated users are able to access it:
 
-``` php
+```php
 // in src/Controller/UsersController.php
 public function beforeFilter(\Cake\Event\EventInterface $event): void
 {
@@ -201,7 +201,7 @@ public function beforeFilter(\Cake\Event\EventInterface $event): void
 
 Next we'll add a view template for our login form:
 
-``` php
+```php
 // in templates/Users/login.php
 <div class="users form content">
     <?= $this->Form->create() ?>
@@ -217,7 +217,7 @@ Next we'll add a view template for our login form:
 
 Then add a simple logout action:
 
-``` php
+```php
 // in src/Controller/UsersController.php
 public function logout(): \Cake\Http\Response
 {
@@ -235,7 +235,7 @@ In order to login your users will need to have hashed passwords. You can
 automatically hash passwords when users update their password using an entity
 setter method:
 
-``` php
+```php
 // in src/Model/Entity/User.php
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 

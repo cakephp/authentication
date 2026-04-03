@@ -15,7 +15,7 @@ routing notation. Uses CakePHP Router and works with named routes.
 
 Single URL (string):
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Form', [
     'loginUrl' => '/users/login',
 ]);
@@ -23,7 +23,7 @@ $service->loadAuthenticator('Authentication.Form', [
 
 Single URL (CakePHP route array):
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Form', [
     'loginUrl' => [
         'prefix' => false,
@@ -43,7 +43,7 @@ Options:
 
 Checker for string URLs. Supports regex matching.
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Form', [
     'urlChecker' => 'Authentication.String',
     'loginUrl' => '/users/login',
@@ -52,7 +52,7 @@ $service->loadAuthenticator('Authentication.Form', [
 
 Using regex:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Form', [
     'urlChecker' => [
         'className' => 'Authentication.String',
@@ -76,7 +76,7 @@ You must explicitly configure this checker - it is not auto-detected.
 
 Multiple string URLs:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Form', [
     'urlChecker' => 'Authentication.Multi',
     'loginUrl' => [
@@ -88,7 +88,7 @@ $service->loadAuthenticator('Authentication.Form', [
 
 Multiple CakePHP route arrays:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Form', [
     'urlChecker' => 'Authentication.Multi',
     'loginUrl' => [

@@ -11,7 +11,7 @@ By default, the authentication service does not validate redirect URLs beyond ch
 are relative (not external). This means that malicious actors or misconfigured bots could create
 deeply nested redirect chains like:
 
-``` text
+```text
 /login?redirect=/login?redirect=/login?redirect=/protected/page
 ```
 
@@ -23,7 +23,7 @@ exploits.
 To enable redirect validation, configure the `redirectValidation` option in your
 `AuthenticationService`:
 
-``` php
+```php
 // In src/Application.php getAuthenticationService() method
 $service = new AuthenticationService();
 $service->setConfig([
@@ -66,7 +66,7 @@ via excessively long URLs.
 
 Here's a complete example with custom configuration:
 
-``` php
+```php
 $service = new AuthenticationService();
 $service->setConfig([
     'unauthenticatedRedirect' => '/users/login',
@@ -86,7 +86,7 @@ When redirect validation is enabled and a redirect URL fails validation, `getLog
 will return `null` instead of the invalid URL. Your application should handle this by
 redirecting to a default location:
 
-``` php
+```php
 // In your controller
 $target = $this->Authentication->getLoginRedirect() ?? '/';
 return $this->redirect($target);
@@ -96,9 +96,9 @@ return $this->redirect($target);
 
 The validation performs the following checks in order:
 
-1.  **Redirect Depth**: Counts occurrences of `redirect=` in the decoded URL
-2.  **Encoding Level**: Counts occurrences of `%25` (percent-encoded percent sign)
-3.  **URL Length**: Checks total character count
+1. **Redirect Depth**: Counts occurrences of `redirect=` in the decoded URL
+2. **Encoding Level**: Counts occurrences of `%25` (percent-encoded percent sign)
+3. **URL Length**: Checks total character count
 
 If any check fails, the URL is rejected.
 
@@ -107,7 +107,7 @@ If any check fails, the URL is rejected.
 You can extend `AuthenticationService` and override the `validateRedirect()` method
 to implement custom validation logic, such as blocking specific URL patterns:
 
-``` php
+```php
 namespace App\Auth;
 
 use Authentication\AuthenticationService;
@@ -159,7 +159,7 @@ security strategy that includes:
 In production environments, bots (especially AI crawlers like GPTBot) have been observed
 creating redirect chains with 6-7 levels of nesting:
 
-``` text
+```text
 /login?redirect=%2Flogin%3Fredirect%3D%252Flogin%253Fredirect%253D...
 ```
 

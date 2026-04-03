@@ -31,7 +31,7 @@ of the application for example the API and Web UI. You can do so by using condit
 logic in your applications `getAuthenticationService()` hook method. By
 inspecting the request object you can configure authentication appropriately:
 
-``` php
+```php
 public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
 {
     $path = $request->getPath();

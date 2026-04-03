@@ -12,7 +12,7 @@ accept a nullable `IdentifierInterface` directly.
 
 **Before (3.x):**
 
-``` php
+```php
 use Authentication\Identifier\IdentifierCollection;
 
 $identifiers = new IdentifierCollection([
@@ -24,7 +24,7 @@ $authenticator = new FormAuthenticator($identifiers);
 
 **After (4.x):**
 
-``` php
+```php
 use Authentication\Identifier\IdentifierFactory;
 
 // Option 1: Pass identifier directly
@@ -47,7 +47,7 @@ Identifiers are now managed by individual authenticators.
 
 **Before (3.x):**
 
-``` php
+```php
 $service = new AuthenticationService();
 $service->loadIdentifier('Authentication.Password');
 $service->loadAuthenticator('Authentication.Form');
@@ -55,7 +55,7 @@ $service->loadAuthenticator('Authentication.Form');
 
 **After (4.x):**
 
-``` php
+```php
 $service = new AuthenticationService();
 $service->loadAuthenticator('Authentication.Form', [
     'identifier' => 'Authentication.Password',
@@ -69,7 +69,7 @@ moved from `AbstractIdentifier` to specific identifier implementations.
 
 **Before (3.x):**
 
-``` php
+```php
 use Authentication\Identifier\AbstractIdentifier;
 
 $fields = [
@@ -80,7 +80,7 @@ $fields = [
 
 **After (4.x):**
 
-``` php
+```php
 use Authentication\Identifier\PasswordIdentifier;
 
 $fields = [
@@ -91,7 +91,7 @@ $fields = [
 
 For LDAP authentication:
 
-``` php
+```php
 use Authentication\Identifier\LdapIdentifier;
 
 $fields = [
@@ -108,7 +108,7 @@ data from the database on each request.
 
 **Before (3.x):**
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Session', [
     'identify' => true,
     'identifier' => 'Authentication.Password',
@@ -117,7 +117,7 @@ $service->loadAuthenticator('Authentication.Session', [
 
 **After (4.x):**
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession');
 ```
 
@@ -131,7 +131,7 @@ URL checkers have been completely restructured:
 
 **Before (3.x):**
 
-``` php
+```php
 // Using CakeRouterUrlChecker explicitly
 $service->loadAuthenticator('Authentication.Form', [
     'urlChecker' => 'Authentication.CakeRouter',
@@ -155,7 +155,7 @@ $service->loadAuthenticator('Authentication.Form', [
 
 **After (4.x):**
 
-``` php
+```php
 // DefaultUrlChecker is now hardcoded (formerly CakeRouterUrlChecker)
 $service->loadAuthenticator('Authentication.Form', [
     'loginUrl' => [
@@ -178,7 +178,7 @@ For multiple URLs, you must explicitly use `MultiUrlChecker`.
 
 **Multiple URLs - Before (3.x):**
 
-``` php
+```php
 // This would auto-select the appropriate checker
 $service->loadAuthenticator('Authentication.Form', [
     'loginUrl' => [
@@ -190,7 +190,7 @@ $service->loadAuthenticator('Authentication.Form', [
 
 **Multiple URLs - After (4.x):**
 
-``` php
+```php
 // Must explicitly configure MultiUrlChecker
 $service->loadAuthenticator('Authentication.Form', [
     'urlChecker' => 'Authentication.Multi',
@@ -203,7 +203,7 @@ $service->loadAuthenticator('Authentication.Form', [
 
 Single URLs work the same in both versions:
 
-``` php
+```php
 // String URL
 $service->loadAuthenticator('Authentication.Form', [
     'loginUrl' => '/users/login',
@@ -232,7 +232,7 @@ It requires CakePHP Router and supports both string and array URLs.
 
 The 3.x `DefaultUrlChecker` has been renamed to `StringUrlChecker`.
 
-``` php
+```php
 // DefaultUrlChecker now requires CakePHP Router
 $checker = new DefaultUrlChecker();
 $checker->check($request, ['controller' => 'Users', 'action' => 'login']);  // Works
@@ -250,7 +250,7 @@ $checker->check($request, ['controller' => 'Users']);  // Throws exception
 
 New factory class for creating identifiers from configuration:
 
-``` php
+```php
 use Authentication\Identifier\IdentifierFactory;
 
 // Create from string
@@ -272,7 +272,7 @@ $identifier = IdentifierFactory::create($existingIdentifier);
 
 New dedicated checker for multiple login URLs:
 
-``` php
+```php
 $service->loadAuthenticator('Authentication.Form', [
     'urlChecker' => 'Authentication.Multi',
     'loginUrl' => [
@@ -285,12 +285,12 @@ $service->loadAuthenticator('Authentication.Form', [
 
 ## Migration Tips
 
-1.  **Session Identify**:
+1. **Session Identify**:
 
     If you used `'identify' => true` on `SessionAuthenticator`, switch to
     `PrimaryKeySessionAuthenticator` which always fetches fresh data.
 
-2.  **Search and Replace**:
+2. **Search and Replace**:
 
     - `AbstractIdentifier::CREDENTIAL_` → `PasswordIdentifier::CREDENTIAL_`
     - `IdentifierCollection` → `IdentifierFactory`
@@ -298,29 +298,29 @@ $service->loadAuthenticator('Authentication.Form', [
     - `CakeRouterUrlChecker` → `DefaultUrlChecker`
     - Old 3.x `DefaultUrlChecker` → `StringUrlChecker`
 
-3.  **String URL Checking**:
+3. **String URL Checking**:
 
     If you want to use string-only URL checking, explicitly configure
     `StringUrlChecker`:
 
-    ``` php
+    ```php
     $service->loadAuthenticator('Authentication.Form', [
         'urlChecker' => 'Authentication.String',
         'loginUrl' => '/users/login',
     ]);
     ```
 
-4.  **Multiple Login URLs**:
+4. **Multiple Login URLs**:
 
     If you have multiple login URLs, add `'urlChecker' => 'Authentication.Multi'`
     to your authenticator configuration.
 
-5.  **Custom Identifier Setup**:
+5. **Custom Identifier Setup**:
 
     If you were passing `IdentifierCollection` to authenticators, switch to
     either passing a single identifier or null (to use defaults).
 
-6.  **Test Thoroughly**:
+6. **Test Thoroughly**:
 
     The changes to identifier management and URL checking are significant.
     Test all authentication flows after upgrading.

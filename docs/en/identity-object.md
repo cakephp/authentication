@@ -7,7 +7,7 @@ called to get the primary id value of the current log in identity.
 The reason this object exists is to provide an interface that makes it
 implementations/sources:
 
-``` php
+```php
 // Service
 $authenticationService
     ->getIdentity()
@@ -28,7 +28,7 @@ The identity object provides ArrayAccess but as well a `get()` method to
 access data. It is strongly recommended to use the `get()` method over array
 access because the get method is aware of the field mapping:
 
-``` php
+```php
 $identity->get('email');
 $identity->get('username');
 ```
@@ -38,7 +38,7 @@ The `get()` method can also be type-hinted via IDE meta file, e.g. through
 
 If you want, you can use property access, however:
 
-``` text
+```text
 $identity->email;
 $identity->username;
 ```
@@ -48,7 +48,7 @@ is pretty useful if the identifier of the identity is a non-conventional
 `id` field or if you want to map other fields to more generic and
 common names:
 
-``` php
+```php
 $identity = new Identity($data, [
     'fieldMap' => [
         'id' => 'uid',
@@ -69,7 +69,7 @@ create your own identity object, your object must implement the
 If you’d like to continue using your existing User class with this
 plugin you can implement the `Authentication\IdentityInterface`:
 
-``` php
+```php
 namespace App\Model\Entity;
 
 use Authentication\IdentityInterface;
@@ -103,7 +103,7 @@ If your identifiers cannot have their resulting objects modified to
 implement the `IdentityInterface` you can implement a custom decorator
 that implements the required interface:
 
-``` php
+```php
 // You can use a callable...
 $identityResolver = function ($data) {
     return new MyCustomIdentity($data);

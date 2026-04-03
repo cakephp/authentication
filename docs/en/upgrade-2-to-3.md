@@ -1,6 +1,6 @@
 # Upgrading from 2.x to 3.x
 
-``` bash
+```bash
 composer require cakephp/authentication:^3.0 -W
 ```
 
