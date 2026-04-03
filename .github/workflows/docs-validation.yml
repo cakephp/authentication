@@ -14,7 +14,7 @@ on:
 
 jobs:
   validate:
-    uses: cakephp/.github/.github/workflows/docs-validation.yml@doc-workflows
+    uses: cakephp/.github/.github/workflows/docs-validation.yml@5.x
     with:
       docs-path: 'docs'
       vitepress-path: 'docs/.vitepress'
@@ -24,4 +24,4 @@ jobs:
       enable-spell-check: true
       enable-markdown-lint: true
       enable-link-check: true
-      tools-ref: 'doc-workflows'
+      tools-ref: '5.x'
