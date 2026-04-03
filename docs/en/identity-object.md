@@ -80,7 +80,7 @@ class User extends Entity implements IdentityInterface
     /**
      * Authentication\IdentityInterface method
      */
-    public function getIdentifier()
+    public function getIdentifier(): array|string|int|null
     {
         return $this->id;
     }
@@ -88,7 +88,7 @@ class User extends Entity implements IdentityInterface
     /**
      * Authentication\IdentityInterface method
      */
-    public function getOriginalData()
+    public function getOriginalData(): \ArrayAccess|array
     {
         return $this;
     }

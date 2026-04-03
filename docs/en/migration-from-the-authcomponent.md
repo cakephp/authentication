@@ -38,9 +38,7 @@ authenticators.
 
 - **Authenticators** take the incoming request and try to extract
   identification credentials from it. If credentials are found, they
-  are passed to a collection of identifiers where the user is located.
-  For that reason authenticators take an IdentifierCollection as first
-  constructor argument.
+  are passed to an identifier where the user is located.
 - **Identifiers** verify identification credentials against a storage
   system. eg. (ORM tables, LDAP etc) and return identified user data.
 
@@ -75,7 +73,6 @@ use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 // Add the authentication interface.
@@ -85,10 +82,9 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      * Returns a service provider instance.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request
-     * @param \Psr\Http\Message\ResponseInterface $response Response
      * @return \Authentication\AuthenticationServiceInterface
      */
-    public function getAuthenticationService(ServerRequestInterface $request) : AuthenticationServiceInterface
+    public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();
         // Configure the service. (see below for more details)
@@ -101,7 +97,7 @@ Next add the `AuthenticationMiddleware` to your application:
 
 ``` php
 // in src/Application.php
-public function middleware($middlewareQueue)
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 {
     // Various other middlewares for error handling, routing etc. added here.
 
@@ -147,13 +143,11 @@ $service = new AuthenticationService();
      ],
  ];
 
- // Load the authenticators
- $service->loadAuthenticator('Authentication.Session', [
-     'identifier' => $passwordIdentifier,
- ]);
- $service->loadAuthenticator('Authentication.Form', [
-     'identifier' => $passwordIdentifier,
- ]);
+// Load the authenticators. Session should be first.
+$service->loadAuthenticator('Authentication.Session');
+$service->loadAuthenticator('Authentication.Form', [
+    'identifier' => $passwordIdentifier,
+]);
 ```
 
 If you have customized the `userModel` you can use the following
@@ -190,20 +184,23 @@ upon a successful login, change your login action to check the new
 identity results:
 
 ``` php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
 
-    // regardless of POST or GET, redirect if user is logged in
+    // Regardless of POST or GET, redirect if user is logged in
     if ($result->isValid()) {
         $target = $this->Authentication->getLoginRedirect();
+
         return $this->redirect($target);
     }
 
-    // display error if user submitted and authentication failed
-    if ($this->request->is(['post'])) {
+    // Display error if user submitted and authentication failed
+    if ($this->request->is('post')) {
         $this->Flash->error('Invalid username or password');
     }
+
+    return null;
 }
 ```
 
@@ -238,7 +235,7 @@ use `setIdentity()`:
 
 ``` php
 // Assume you need to read a user by access token
-$user = $this->Users->find('byToken', ['token' => $token])->first();
+$user = $this->Users->find('byToken', token: $token)->first();
 
 // Persist the user into configured authenticators.
 $this->Authentication->setIdentity($user);
@@ -295,7 +292,7 @@ Then in your controller's login method you can use `getLoginRedirect()` to get
 the redirect target safely from the query string parameter:
 
 ``` php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
 
@@ -306,8 +303,11 @@ public function login()
         if (!$target) {
             $target = ['controller' => 'Pages', 'action' => 'display', 'home'];
         }
+
         return $this->redirect($target);
     }
+
+    return null;
 }
 ```
 
@@ -318,11 +318,11 @@ functionality. You can replicate that logic with this plugin by
 leveraging the `AuthenticationService`:
 
 ``` php
-public function login()
+public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
 
-    // regardless of POST or GET, redirect if user is logged in
+    // Regardless of POST or GET, redirect if user is logged in
     if ($result->isValid()) {
         $authService = $this->Authentication->getAuthenticationService();
 
@@ -330,17 +330,21 @@ public function login()
         $identifier = $authService->getIdentificationProvider();
         if ($identifier !== null && $identifier->needsPasswordRehash()) {
             // Rehash happens on save.
-            $user = $this->Users->get($this->Authentication->getIdentityData('id'));
+            $user = $this->fetchTable('Users')->get(
+                $this->Authentication->getIdentityData('id')
+            );
             $user->password = $this->request->getData('password');
-            $this->Users->save($user);
+            $this->fetchTable('Users')->saveOrFail($user);
         }
 
         // Redirect to a logged in page
         return $this->redirect([
             'controller' => 'Pages',
             'action' => 'display',
-            'home'
+            'home',
         ]);
     }
+
+    return null;
 }
 ```
