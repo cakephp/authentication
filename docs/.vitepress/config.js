@@ -27,6 +27,8 @@ export default {
     hostname: "https://book.cakephp.org/authentication/4/",
   },
   themeConfig: {
+    siteTitle: false,
+    pluginName: "Authentication",
     socialLinks: [
       { icon: "github", link: "https://github.com/cakephp/authentication" },
     ],
