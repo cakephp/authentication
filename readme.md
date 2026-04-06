@@ -33,7 +33,7 @@ bin/cake plugin load Authentication
 
 ## Documentation
 
-Documentation for this plugin can be found in the [CakePHP Cookbook](https://book.cakephp.org/authentication/4/en/).
+Documentation for this plugin can be found in the [CakePHP Cookbook](https://book.cakephp.org/authentication/4/).
 
 ## IDE compatibility improvements
 
