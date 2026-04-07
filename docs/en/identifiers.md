@@ -6,23 +6,22 @@ using the Password Identifier looks like:
 
 ```php
 $identifier = [
-    'Authentication.Password' => [
-        'fields' => [
-           'username' => 'email',
-           'password' => 'passwd',
-       ],
-       'resolver' => [
-           'className' => 'Authentication.Orm',
-           'userModel' => 'Users',
-           'finder' => 'active', // default: 'all'
-       ],
-       'passwordHasher' => [
-           'className' => 'Authentication.Fallback',
-           'hashers' => [
-                'Authentication.Default' => [
-                    'className' => 'Authentication.Legacy',
-                    'hashType' => 'md5',
-                ],
+    'className' => 'Authentication.Password',
+    'fields' => [
+        'username' => 'email',
+        'password' => 'passwd',
+    ],
+    'resolver' => [
+        'className' => 'Authentication.Orm',
+        'userModel' => 'Users',
+        'finder' => 'active', // default: 'all'
+    ],
+    'passwordHasher' => [
+        'className' => 'Authentication.Fallback',
+        'hashers' => [
+            'Authentication.Default' => [
+                'className' => 'Authentication.Legacy',
+                'hashType' => 'md5',
             ],
         ],
     ],
@@ -121,37 +120,35 @@ Callback identifiers can either return `null|ArrayAccess` for simple results, or
 ```php
 // A simple callback identifier
 $identifier = [
-    'Authentication.Callback' => [
-        'callback' => function($data) {
-            // do identifier logic
+    'className' => 'Authentication.Callback',
+    'callback' => function($data) {
+        // do identifier logic
 
-            // Return an array of the identified user or null for failure.
-            if ($result) {
-                return $result;
-            }
+        // Return an array of the identified user or null for failure.
+        if ($result) {
+            return $result;
+        }
 
-            return null;
-        },
-    ]
+        return null;
+    },
 ];
 
 // Using a result object to return error messages.
 $identifier = [
-    'Authentication.Callback' => [
-        'callback' => function($data) {
-            // do identifier logic
+    'className' => 'Authentication.Callback',
+    'callback' => function($data) {
+        // do identifier logic
 
-            if ($result) {
-                return new Result($result, Result::SUCCESS);
-            }
+        if ($result) {
+            return new Result($result, Result::SUCCESS);
+        }
 
-            return new Result(
-                null,
-                Result::FAILURE_OTHER,
-                ['message' => 'Removed user.']
-            );
-        },
-    ],
+        return new Result(
+            null,
+            Result::FAILURE_OTHER,
+            ['message' => 'Removed user.']
+        );
+    },
 ];
 ```
 
@@ -187,13 +184,12 @@ Resolver can be configured using `resolver` config option:
 
 ```php
 $identifier = [
-    'Authentication.Password' => [
-        'resolver' => [
-            // can be a full class name: \Some\Other\Custom\Resolver::class
-            'className' => 'MyResolver',
-            // Pass additional options to the resolver constructor.
-            'option' => 'value',
-        ],
+    'className' => 'Authentication.Password',
+    'resolver' => [
+        // can be a full class name: \Some\Other\Custom\Resolver::class
+        'className' => 'MyResolver',
+        // Pass additional options to the resolver constructor.
+        'option' => 'value',
     ],
 ];
 ```
@@ -203,8 +199,7 @@ Or pass the constructed resolver directly into the identifier configuration:
 ```php
 $resolver = new \App\Identifier\Resolver\CustomResolver();
 $identifier = [
-    'Authentication.Password' => [
-        'resolver' => $resolver,
-    ],
+    'className' => 'Authentication.Password',
+    'resolver' => $resolver,
 ];
 ```

@@ -102,9 +102,8 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
     $service->loadAuthenticator('Authentication.Session');
     $service->loadAuthenticator('Authentication.Form', [
         'identifier' => [
-            'Authentication.Password' => [
-                'fields' => $fields,
-            ],
+            'className' => 'Authentication.Password',
+            'fields' => $fields,
         ],
         'fields' => $fields,
         'loginUrl' => Router::url([
