@@ -38,6 +38,17 @@ $authenticator = new FormAuthenticator(null);
 $service->loadAuthenticator('Authentication.Form', [
     'identifier' => 'Authentication.Password',
 ]);
+
+// Option 4: Configure identifier in authenticator config with identifier options
+$service->loadAuthenticator('Authentication.Form', [
+    'identifier' => [
+        'className' => 'Authentication.Password',
+        'fields' => [
+            'username' => 'email',
+            'password' => 'password',
+        ],
+    ],
+]);
 ```
 
 #### AuthenticationService Changes
@@ -59,6 +70,21 @@ $service->loadAuthenticator('Authentication.Form');
 $service = new AuthenticationService();
 $service->loadAuthenticator('Authentication.Form', [
     'identifier' => 'Authentication.Password',
+]);
+```
+
+or
+
+```php
+$service = new AuthenticationService();
+$service->loadAuthenticator('Authentication.Form', [
+    'identifier' => [
+        'className' => 'Authentication.Password',
+        'fields' => [
+            'username' => 'email',
+            'password' => 'password',
+        ],
+    ],
 ]);
 ```
 

@@ -54,11 +54,10 @@ You can also provide a fully custom identifier configuration if needed:
 ```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession', [
     'identifier' => [
-        'Authentication.Token' => [
-            'tokenField' => 'id',
-            'dataField' => 'key',
-            'resolver' => 'Authentication.Orm',
-        ],
+        'className' => 'Authentication.Token',
+        'tokenField' => 'id',
+        'dataField' => 'key',
+        'resolver' => 'Authentication.Orm',
     ],
 ]);
 ```
@@ -424,10 +423,9 @@ and similar SAML 1.1 implementations. An example configuration is:
 // Configure a token identifier that maps `USER_ID` to the
 // username column
 $identifier = [
-    'Authentication.Token' => [
-        'tokenField' => 'username',
-        'dataField' => 'USER_NAME',
-    ],
+    'className' => 'Authentication.Token',
+    'tokenField' => 'username',
+    'dataField' => 'USER_NAME',
 ];
 
 $service->loadAuthenticator('Authentication.Environment', [
@@ -537,12 +535,9 @@ $service = new AuthenticationService();
 
 // Define identifiers
 $passwordIdentifier = [
-    'Authentication.Password' => [
-        'fields' => [
-            'username' => 'email',
-            'password' => 'password'
-        ]
-    ],
+    'className' => 'Authentication.Password',
+    'username' => 'email',
+    'password' => 'password'
 ];
 
 // Load the authenticators leaving Basic as the last one.
