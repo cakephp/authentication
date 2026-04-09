@@ -84,10 +84,10 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
     // Define where users should be redirected to when they are not authenticated
     $service->setConfig([
         'unauthenticatedRedirect' => [
-                'prefix' => false,
-                'plugin' => false,
-                'controller' => 'Users',
-                'action' => 'login',
+            'prefix' => false,
+            'plugin' => false,
+            'controller' => 'Users',
+            'action' => 'login',
         ],
         'queryParam' => 'redirect',
     ]);
