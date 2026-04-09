@@ -38,19 +38,18 @@ fallback hasher as follows:
 
 ```php
 $passwordIdentifier = [
-    'Authentication.Password' => [
-        // Other config options
-        'passwordHasher' => [
-            'className' => 'Authentication.Fallback',
-            'hashers' => [
-                'Authentication.Default',
-                [
-                    'className' => 'Authentication.Legacy',
-                    'hashType' => 'md5',
-                    'salt' => false, // turn off default usage of salt
-                ],
-            ]
-        ]
+    'className' => 'Authentication.Password',
+    // Other config options
+    'passwordHasher' => [
+        'className' => 'Authentication.Fallback',
+        'hashers' => [
+            'Authentication.Default',
+            [
+                'className' => 'Authentication.Legacy',
+                'hashType' => 'md5',
+                'salt' => false, // turn off default usage of salt
+            ],
+        ],
     ],
 ];
 ```

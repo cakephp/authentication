@@ -134,14 +134,13 @@ You’ll now have to configure it this way:
 $service = new AuthenticationService();
 
 // Define identifier
- $passwordIdentifier = [
-     'Authentication.Password' => [
-         'fields' => [
-             'username' => 'email',
-             'password' => 'password'
-         ]
-     ],
- ];
+$passwordIdentifier = [
+    'className' => 'Authentication.Password',
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password',
+    ],
+];
 
 // Load the authenticators. Session should be first.
 $service->loadAuthenticator('Authentication.Session');
@@ -159,15 +158,14 @@ $service = new AuthenticationService();
 
 // Define identifier
 $passwordIdentifier = [
-    'Authentication.Password' => [
-         'resolver' => [
-            'className' => 'Authentication.Orm',
-            'userModel' => 'Employees',
-        ],
-        'fields' => [
-            'username' => 'email',
-            'password' => 'password'
-        ]
+    'className' => 'Authentication.Password',
+    'resolver' => [
+        'className' => 'Authentication.Orm',
+        'userModel' => 'Employees',
+    ],
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password',
     ],
 ];
 ```

@@ -536,8 +536,10 @@ $service = new AuthenticationService();
 // Define identifiers
 $passwordIdentifier = [
     'className' => 'Authentication.Password',
-    'username' => 'email',
-    'password' => 'password'
+    'fields' => [
+        'username' => 'email',
+        'password' => 'password',
+    ],
 ];
 
 // Load the authenticators leaving Basic as the last one.
