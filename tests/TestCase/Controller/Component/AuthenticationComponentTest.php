@@ -398,6 +398,84 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * testRedirectAfterLogin
+     *
+     * @return void
+     */
+    public function testRedirectAfterLogin(): void
+    {
+        Configure::write('App.base', '/cakephp');
+        $url = ['controller' => 'Users', 'action' => 'dashboard'];
+        Router::createRouteBuilder('/')
+            ->connect('/dashboard', $url);
+
+        $this->service->setConfig('queryParam', 'redirect');
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service)
+            ->withQueryParams(['redirect' => 'ok/path?value=key']);
+
+        $controller = new Controller($request);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $response = $component->redirectAfterLogin($url);
+        $this->assertSame('/ok/path?value=key', $response?->getHeaderLine('Location'));
+
+        Configure::delete('App.base');
+    }
+
+    /**
+     * testRedirectAfterLoginFallsBackToDefaultForAbsoluteUrls
+     *
+     * @return void
+     */
+    public function testRedirectAfterLoginFallsBackToDefaultForAbsoluteUrls(): void
+    {
+        $url = ['controller' => 'Users', 'action' => 'dashboard'];
+        Router::createRouteBuilder('/')
+            ->connect('/dashboard', $url);
+
+        $this->service->setConfig('queryParam', 'redirect');
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service)
+            ->withQueryParams(['redirect' => 'https://evil.example/phish']);
+
+        $controller = new Controller($request);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $response = $component->redirectAfterLogin($url);
+        $this->assertSame('/dashboard', $response?->getHeaderLine('Location'));
+    }
+
+    /**
+     * testRedirectAfterLoginFallsBackToDefaultForProtocolRelativeUrls
+     *
+     * @return void
+     */
+    public function testRedirectAfterLoginFallsBackToDefaultForProtocolRelativeUrls(): void
+    {
+        $url = ['controller' => 'Users', 'action' => 'dashboard'];
+        Router::createRouteBuilder('/')
+            ->connect('/dashboard', $url);
+
+        $this->service->setConfig('queryParam', 'redirect');
+        $request = $this->request
+            ->withAttribute('identity', $this->identity)
+            ->withAttribute('authentication', $this->service)
+            ->withQueryParams(['redirect' => '//evil.example/phish']);
+
+        $controller = new Controller($request);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $response = $component->redirectAfterLogin($url);
+        $this->assertSame('/dashboard', $response?->getHeaderLine('Location'));
+    }
+
+    /**
      * testAfterIdentifyEvent
      *
      * @return void
