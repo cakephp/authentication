@@ -420,7 +420,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $response = $component->redirectAfterLogin($url);
-        $this->assertSame('/ok/path?value=key', $response?->getHeaderLine('Location'));
+        $this->assertSame('/cakephp/ok/path?value=key', $response?->getHeaderLine('Location'));
 
         Configure::delete('App.base');
     }
