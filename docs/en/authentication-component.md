@@ -121,3 +121,34 @@ option or by calling `disableIdentityCheck` from the controller's `beforeFilter(
 ``` php
 $this->Authentication->disableIdentityCheck();
 ```
+
+## Redirecting after login
+
+For the common post-login redirect flow, use `redirectAfterLogin()`:
+
+``` php
+public function login(): ?\Cake\Http\Response
+{
+    $result = $this->Authentication->getResult();
+
+    if ($result && $result->isValid()) {
+        return $this->Authentication->redirectAfterLogin('/home');
+    }
+
+    return null;
+}
+```
+
+This uses the plugin's validated login redirect target from the current
+request when available and falls back to the default you provide.
+
+If you need to inspect the validated target before redirecting, use
+`getLoginRedirect()` instead:
+
+``` php
+$target = $this->Authentication->getLoginRedirect('/home');
+return $this->redirect($target);
+```
+
+Avoid reading raw `redirect` query string parameters and passing them directly
+to the controller's `redirect()` method.
