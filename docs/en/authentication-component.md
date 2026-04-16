@@ -126,7 +126,7 @@ $this->Authentication->disableIdentityCheck();
 
 For the common post-login redirect flow, use `redirectAfterLogin()`:
 
-``` php
+```php
 public function login(): ?\Cake\Http\Response
 {
     $result = $this->Authentication->getResult();
@@ -145,7 +145,7 @@ request when available and falls back to the default you provide.
 If you need to inspect the validated target before redirecting, use
 `getLoginRedirect()` instead:
 
-``` php
+```php
 $target = $this->Authentication->getLoginRedirect('/home');
 return $this->redirect($target);
 ```
