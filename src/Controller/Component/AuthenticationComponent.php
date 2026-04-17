@@ -379,15 +379,12 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * controller's redirect method so applications can use the plugin's
      * existing safe redirect parsing without manually reading query params.
      *
-     * @param array|string|null $default Default URL to use when no valid login redirect is available.
+     * @param array|string $default Default URL to use when no valid login redirect is available.
      * @return \Cake\Http\Response|null
      */
-    public function redirectAfterLogin(array|string|null $default = '/'): ?Response
+    public function redirectAfterLogin(array|string $default = '/'): ?Response
     {
         $target = $this->getLoginRedirect($default) ?? $default;
-        if ($target === null) {
-            return null;
-        }
 
         return $this->getController()->redirect($target);
     }
