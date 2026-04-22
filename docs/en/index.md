@@ -172,9 +172,7 @@ public function login(): ?\Cake\Http\Response
     $result = $this->Authentication->getResult();
     // If the user is logged in send them away.
     if ($result && $result->isValid()) {
-        $target = $this->Authentication->getLoginRedirect() ?? '/home';
-
-        return $this->redirect($target);
+        return $this->Authentication->redirectAfterLogin('/home');
     }
     if ($this->request->is('post')) {
         $this->Flash->error('Invalid username or password');

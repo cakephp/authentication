@@ -29,6 +29,7 @@ use Authentication\IdentityInterface;
 use Cake\Controller\Component;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Http\Response;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
@@ -368,6 +369,24 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         }
 
         return $this->getAuthenticationService()->getLoginRedirect($this->getController()->getRequest()) ?? $default;
+    }
+
+    /**
+     * Redirect after a successful login using the validated login redirect
+     * target from the current request when available.
+     *
+     * This is a convenience wrapper around `getLoginRedirect()` plus the
+     * controller's redirect method so applications can use the plugin's
+     * existing safe redirect parsing without manually reading query params.
+     *
+     * @param array|string $default Default URL to use when no valid login redirect is available.
+     * @return \Cake\Http\Response|null
+     */
+    public function redirectAfterLogin(array|string $default = '/'): ?Response
+    {
+        $target = $this->getLoginRedirect($default) ?? $default;
+
+        return $this->getController()->redirect($target);
     }
 
     /**

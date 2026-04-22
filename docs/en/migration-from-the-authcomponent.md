@@ -286,8 +286,8 @@ $service->setConfig([
 ]);
 ```
 
-Then in your controller's login method you can use `getLoginRedirect()` to get
-the redirect target safely from the query string parameter:
+Then in your controller's login method you can use
+`redirectAfterLogin()` for the common safe post-login redirect flow:
 
 ```php
 public function login(): ?\Cake\Http\Response
@@ -296,18 +296,19 @@ public function login(): ?\Cake\Http\Response
 
     // Regardless of POST or GET, redirect if user is logged in
     if ($result->isValid()) {
-        // Use the redirect parameter if present.
-        $target = $this->Authentication->getLoginRedirect();
-        if (!$target) {
-            $target = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        }
-
-        return $this->redirect($target);
+        return $this->Authentication->redirectAfterLogin([
+            'controller' => 'Pages',
+            'action' => 'display',
+            'home',
+        ]);
     }
 
     return null;
 }
 ```
+
+If you need to inspect the validated target before redirecting, you can still
+use `getLoginRedirect()` directly and then call `redirect()` yourself.
 
 ## Migrating Hashing Upgrade Logic
 
