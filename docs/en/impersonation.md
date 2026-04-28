@@ -67,3 +67,25 @@ There are a few limitations to impersonation.
 1. Your application must be using the `Session` authenticator.
 2. You cannot impersonate another user while impersonation is active. Instead
     you must `stopImpersonating()` and then start it again.
+3. Calling `setIdentity()` or `clearIdentity()` (and therefore `logout()`)
+    ends impersonation. The service's `clearIdentity()` actively calls
+    `stopImpersonating()` on impersonation-aware authenticators, so any code
+    path that swaps the persisted identity will revert you to the original
+    user. To refresh the in-request identity object without disturbing
+    impersonation - for example, to eager-load associations on the active
+    user in `beforeFilter()` - write to the request attribute directly:
+
+    ```php
+    use Authentication\Identity;
+
+    $identity = $this->Authentication->getIdentity();
+    $reloaded = $this->fetchTable('Users')
+        ->get($identity->getIdentifier(), finder: 'fullProfile');
+
+    $this->setRequest(
+        $this->getRequest()->withAttribute('identity', new Identity($reloaded))
+    );
+    ```
+
+    This updates the identity for the remainder of the current request only
+    and leaves the session - and any active impersonation - untouched.

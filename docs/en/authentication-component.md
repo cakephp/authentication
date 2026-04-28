@@ -102,6 +102,24 @@ The result returned will contain an array like this:
 > context you're working in you'll have to use these instances from now on if you
 > want to continue to work with the modified response and request objects.
 
+## Replacing the current identity
+
+Use `setIdentity()` to change which user is logged in (e.g. after registration
+or social-login first-touch). It clears all persisted identity data and writes
+the new identity through every persisting authenticator:
+
+```php
+$this->Authentication->setIdentity($user);
+```
+
+> [!WARNING]
+> `setIdentity()` ends an active impersonation session because it goes through
+> `clearIdentity()` first, which calls `stopImpersonating()` on
+> impersonation-aware authenticators. If you only need to refresh the active
+> identity object on the current request (for example, to eager-load
+> associations), set the `identity` request attribute directly instead - see
+> [User Impersonation](impersonation.md) for an example.
+
 ## Configure Automatic Identity Checks
 
 By default `AuthenticationComponent` will automatically enforce an identity to
