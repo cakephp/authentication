@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace Authentication;
 
+use ArrayAccess;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
@@ -68,6 +69,17 @@ interface AuthenticationServiceInterface extends PersistenceInterface
      * @return string
      */
     public function getIdentityAttribute(): string;
+
+    /**
+     * Build an identity object from raw identity data.
+     *
+     * If the supplied data is already an `IdentityInterface`, it is returned
+     * unchanged.
+     *
+     * @param \ArrayAccess<string, mixed>|array<string, mixed> $identityData Identity data.
+     * @return \Authentication\IdentityInterface
+     */
+    public function buildIdentity(ArrayAccess|array $identityData): IdentityInterface;
 
     /**
      * Return the URL to redirect unauthenticated users to.
