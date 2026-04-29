@@ -102,6 +102,60 @@ The result returned will contain an array like this:
 > context you're working in you'll have to use these instances from now on if you
 > want to continue to work with the modified response and request objects.
 
+## Replacing the current identity
+
+Use `setIdentity()` to change which user is logged in (e.g. after registration
+or social-login first-touch). It clears all persisted identity data and writes
+the new identity through every persisting authenticator:
+
+```php
+$this->Authentication->setIdentity($user);
+```
+
+> [!WARNING]
+> `setIdentity()` ends an active impersonation session by default, because it
+> goes through `clearIdentity()` first, which calls `stopImpersonating()` on
+> impersonation-aware authenticators. See the two methods below for the
+> non-default cases.
+
+### Refresh the active identity for the current request only
+
+When you only need to swap the in-request identity (for example to attach
+eager-loaded associations or computed flags in `beforeFilter()`) without
+touching the session or persistence, use `replaceIdentity()`:
+
+```php
+// AppController::beforeFilter()
+$identity = $this->Authentication->getIdentity();
+if ($identity && !$identity->some_association) {
+    $reloaded = $this->fetchTable('Users')
+        ->get($identity->getIdentifier(), finder: 'fullProfile');
+    $this->Authentication->replaceIdentity($reloaded);
+}
+```
+
+This rewrites only the request attribute. The session is not touched, so an
+active impersonation is preserved and no privilege-escalation side effects
+(like session rotation) occur.
+
+### Persist a refreshed identity while impersonating
+
+If the refresh has to survive into subsequent requests but you still want to
+keep an active impersonation alive, pass `preserveImpersonation: true` to
+`setIdentity()`:
+
+```php
+$this->Authentication->setIdentity($reloaded, preserveImpersonation: true);
+```
+
+The new identity is persisted into the session as usual, but the
+impersonation slot (`AuthImpersonate`) and the active authenticator are left
+intact. Note that this also skips the session rotation that the default
+`setIdentity()` flow performs - it is a refresh, not a privilege transition,
+so do not use it for login or role changes.
+
+See [User Impersonation](impersonation.md) for the broader context.
+
 ## Configure Automatic Identity Checks
 
 By default `AuthenticationComponent` will automatically enforce an identity to
