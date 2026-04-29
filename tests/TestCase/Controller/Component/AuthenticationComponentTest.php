@@ -371,6 +371,83 @@ class AuthenticationComponentTest extends TestCase
     }
 
     /**
+     * Ensure setIdentity($identity, preserveImpersonation: true) persists the
+     * new identity into the session but does not end an active impersonation,
+     * unlike the default flow.
+     *
+     * @return void
+     */
+    public function testSetIdentityPreserveImpersonation(): void
+    {
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $this->request->getSession()->write('Auth', $impersonator);
+        $this->service->authenticate($this->request);
+        $identity = new Identity($impersonator);
+        $request = $this->request
+            ->withAttribute('identity', $identity)
+            ->withAttribute('authentication', $this->service);
+        $controller = new Controller($request);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->impersonate($impersonated);
+        $this->assertEquals($impersonated, $controller->getRequest()->getSession()->read('Auth'));
+        $this->assertEquals($impersonator, $controller->getRequest()->getSession()->read('AuthImpersonate'));
+
+        $reloaded = new ArrayObject(['username' => 'larry', 'profile' => 'loaded']);
+        $component->setIdentity($reloaded, preserveImpersonation: true);
+
+        $this->assertSame(
+            $reloaded,
+            $component->getIdentity()->getOriginalData(),
+            'Request identity should reflect the reloaded user.',
+        );
+        $this->assertEquals(
+            $reloaded,
+            $controller->getRequest()->getSession()->read('Auth'),
+            'Session Auth slot must be persisted with the reloaded user.',
+        );
+        $this->assertEquals(
+            $impersonator,
+            $controller->getRequest()->getSession()->read('AuthImpersonate'),
+            'Impersonation must survive setIdentity() when preserveImpersonation is set.',
+        );
+        $this->assertTrue($component->isImpersonating());
+    }
+
+    /**
+     * Ensure that `setIdentity()` with the default behavior still ends an
+     * active impersonation - we do not want to silently change BC.
+     *
+     * @return void
+     */
+    public function testSetIdentityDefaultEndsImpersonation(): void
+    {
+        $impersonator = new ArrayObject(['username' => 'mariano']);
+        $impersonated = new ArrayObject(['username' => 'larry']);
+        $this->request->getSession()->write('Auth', $impersonator);
+        $this->service->authenticate($this->request);
+        $identity = new Identity($impersonator);
+        $request = $this->request
+            ->withAttribute('identity', $identity)
+            ->withAttribute('authentication', $this->service);
+        $controller = new Controller($request);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->impersonate($impersonated);
+
+        $reloaded = new ArrayObject(['username' => 'larry', 'profile' => 'loaded']);
+        $component->setIdentity($reloaded);
+
+        $this->assertNull(
+            $controller->getRequest()->getSession()->read('AuthImpersonate'),
+            'Default setIdentity() must end an active impersonation.',
+        );
+    }
+
+    /**
      * testGetIdentity
      *
      * @eturn void
