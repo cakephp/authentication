@@ -89,6 +89,8 @@ public function getAuthenticationService(ServerRequestInterface $request): Authe
             'controller' => 'Users',
             'action' => 'login',
         ],
+        // or just a simple string
+        'unauthenticatedRedirect' => '/users/login',
         'queryParam' => 'redirect',
     ]);
 
