@@ -134,7 +134,7 @@ if ($identity && !$identity->some_association) {
 }
 ```
 
-This rewrites only the request attribute. The session is not touched, so an
+This rewrites only the request attribute. The session is not modified, so an
 active impersonation is preserved and no privilege-escalation side effects
 (like session rotation) occur.
 

@@ -445,6 +445,7 @@ class AuthenticationComponentTest extends TestCase
             $controller->getRequest()->getSession()->read('AuthImpersonate'),
             'Default setIdentity() must end an active impersonation.',
         );
+        $this->assertFalse($component->isImpersonating());
     }
 
     /**
