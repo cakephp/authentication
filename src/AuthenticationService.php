@@ -515,6 +515,10 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function isImpersonating(ServerRequestInterface $request): bool
     {
+        if (!$this->getAuthenticationProvider() instanceof AuthenticatorInterface) {
+            return false;
+        }
+
         $provider = $this->getImpersonationProvider();
 
         return $provider->isImpersonating($request);
