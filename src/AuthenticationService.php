@@ -413,8 +413,19 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         ) {
             return null;
         }
+        $value = (string)$params[$redirectParam];
 
-        $parsed = parse_url($params[$redirectParam]);
+        // In the `Location` header, Browsers normalize \ to /
+        // (see WHATWG URL Standard).
+        // We do the same to prevent injection via \ sequences.
+        $normalized = str_replace('\\', '/', $value);
+
+        // A leading run of `//` or `\\` are rejected
+        if (str_starts_with($normalized, '//')) {
+            return null;
+        }
+
+        $parsed = parse_url($normalized);
         if ($parsed === false) {
             return null;
         }
@@ -422,6 +433,9 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             return null;
         }
         $parsed += ['path' => '/', 'query' => ''];
+        if (str_contains($parsed['path'], '\\')) {
+            return null;
+        }
         if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
             $parsed['path'] = "/{$parsed['path']}";
         }
