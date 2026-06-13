@@ -822,7 +822,7 @@ class AuthenticationServiceTest extends TestCase
         );
     }
 
-    public function testGetLoginRedirect(): void
+    public function testGetLoginRedirectInvalid(): void
     {
         $service = new AuthenticationService([
             'unauthenticatedRedirect' => '/users/login',
@@ -861,6 +861,39 @@ class AuthenticationServiceTest extends TestCase
         );
         $this->assertSame(
             '/path/with?query=string',
+            $service->getLoginRedirect($request),
+        );
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/login'],
+            ['redirect' => '/\\evil.com'],
+        );
+        $this->assertNull(
+            $service->getLoginRedirect($request),
+        );
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/login'],
+            ['redirect' => '\\/\\evil.com'],
+        );
+        $this->assertNull(
+            $service->getLoginRedirect($request),
+        );
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/login'],
+            ['redirect' => '\\evil.com/path'],
+        );
+        $this->assertSame(
+            '/evil.com/path',
+            $service->getLoginRedirect($request),
+        );
+
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/login'],
+            ['redirect' => '\\\\evil.com/path'],
+        );
+        $this->assertNull(
             $service->getLoginRedirect($request),
         );
     }
