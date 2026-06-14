@@ -61,6 +61,11 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         },
+        "policy": {
+            "advisories": {
+                "ignore": ["PKSA-y2cr-5h3j-g3ys"]
+            }
+        },
         "sort-packages": true
     },
     "scripts": {
