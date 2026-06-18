@@ -184,26 +184,14 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @param bool $stopImpersonation Whether to stop an active impersonation
-     *  before clearing each authenticator. Defaults to true (existing
-     *  behavior). Pass false to keep the impersonation session intact - the
-     *  authenticator's `clearIdentity()` is still called, but
-     *  `stopImpersonating()` is not.
      * @return array Return an array containing the request and response objects.
      * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
-    public function clearIdentity(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        bool $stopImpersonation = true,
-    ): array {
+    public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
+    {
         foreach ($this->authenticators() as $authenticator) {
             if ($authenticator instanceof PersistenceInterface) {
-                if (
-                    $stopImpersonation
-                    && $authenticator instanceof ImpersonationInterface
-                    && $authenticator->isImpersonating($request)
-                ) {
+                if ($authenticator instanceof ImpersonationInterface && $authenticator->isImpersonating($request)) {
                     $stopImpersonationResult = $authenticator->stopImpersonating($request, $response);
                     ['request' => $request, 'response' => $response] = $stopImpersonationResult;
                 }
@@ -211,9 +199,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
                 ['request' => $request, 'response' => $response] = $result;
             }
         }
-        if ($stopImpersonation) {
-            $this->_successfulAuthenticator = null;
-        }
+        $this->_successfulAuthenticator = null;
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),

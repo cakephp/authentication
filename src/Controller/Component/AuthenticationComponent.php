@@ -18,7 +18,6 @@ namespace Authentication\Controller\Component;
 
 use ArrayAccess;
 use ArrayObject;
-use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\ImpersonationInterface;
@@ -300,34 +299,15 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * is cleared and then set to ensure that privilege escalation
      * and de-escalation include side effects like session rotation.
      *
-     * Pass `$preserveImpersonation = true` to keep an active impersonation
-     * session alive while replacing the identity. The active authenticators'
-     * `clearIdentity()` is still called (so the new identity properly
-     * overwrites the existing one in storage), but the impersonation slot is
-     * left intact. Use this when refreshing the active impersonated user
-     * (for example, attaching eager-loaded associations) without ending the
-     * impersonation.
-     *
      * @param \ArrayAccess|array $identity Identity data to persist.
-     * @param bool $preserveImpersonation Whether to keep an active
-     *  impersonation alive while replacing the identity. Defaults to false
-     *  (existing behavior).
      * @return $this
      */
-    public function setIdentity(ArrayAccess|array $identity, bool $preserveImpersonation = false)
+    public function setIdentity(ArrayAccess|array $identity)
     {
         $controller = $this->getController();
         $service = $this->getAuthenticationService();
 
-        if ($preserveImpersonation && $service instanceof AuthenticationService) {
-            $service->clearIdentity(
-                $controller->getRequest(),
-                $controller->getResponse(),
-                stopImpersonation: false,
-            );
-        } else {
-            $service->clearIdentity($controller->getRequest(), $controller->getResponse());
-        }
+        $service->clearIdentity($controller->getRequest(), $controller->getResponse());
 
         /** @var array{request: \Cake\Http\ServerRequest, response: \Cake\Http\Response} $result */
         $result = $service->persistIdentity(

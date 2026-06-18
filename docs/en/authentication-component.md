@@ -115,8 +115,8 @@ $this->Authentication->setIdentity($user);
 > [!WARNING]
 > `setIdentity()` ends an active impersonation session by default, because it
 > goes through `clearIdentity()` first, which calls `stopImpersonating()` on
-> impersonation-aware authenticators. See the two methods below for the
-> non-default cases.
+> impersonation-aware authenticators. Use `replaceIdentity()` below for the
+> request-only refresh case.
 
 ### Refresh the active identity for the current request only
 
@@ -137,22 +137,6 @@ if ($identity && !$identity->some_association) {
 This rewrites only the request attribute. The session is not modified, so an
 active impersonation is preserved and no privilege-escalation side effects
 (like session rotation) occur.
-
-### Persist a refreshed identity while impersonating
-
-If the refresh has to survive into subsequent requests but you still want to
-keep an active impersonation alive, pass `preserveImpersonation: true` to
-`setIdentity()`:
-
-```php
-$this->Authentication->setIdentity($reloaded, preserveImpersonation: true);
-```
-
-The new identity is persisted into the session as usual, but the
-impersonation slot (`AuthImpersonate`) and the active authenticator are left
-intact. Note that this also skips the session rotation that the default
-`setIdentity()` flow performs - it is a refresh, not a privilege transition,
-so do not use it for login or role changes.
 
 See [User Impersonation](impersonation.md) for the broader context.
 

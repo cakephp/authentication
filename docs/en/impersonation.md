@@ -73,17 +73,11 @@ There are a few limitations to impersonation.
     code path that swaps the persisted identity will revert to the original
     user.
 
-    To refresh the active identity without disturbing impersonation, use one
-    of the dedicated methods on `AuthenticationComponent`:
-
-    - `replaceIdentity($identity)` updates the in-request identity attribute
-      only. The session is not touched. Use this for the common
-      `beforeFilter()` case of attaching eager-loaded associations to the
-      active user for the rest of the request.
-    - `setIdentity($identity, preserveImpersonation: true)` persists the new
-      identity into the session like the default flow, but keeps the
-      impersonation slot intact. Use this when the refresh has to survive
-      into subsequent requests.
+    To refresh the active identity without disturbing impersonation, use
+    `replaceIdentity($identity)` on `AuthenticationComponent`. It updates the
+    in-request identity attribute only - the session is not touched. Use this
+    for the common `beforeFilter()` case of attaching eager-loaded
+    associations to the active user for the rest of the request.
 
     See [Replacing the current identity](authentication-component.md#replacing-the-current-identity)
     for examples.
