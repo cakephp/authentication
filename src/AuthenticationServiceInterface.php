@@ -21,6 +21,9 @@ use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @method \Authentication\IdentityInterface buildIdentity(\ArrayAccess<string, mixed>|array<string, mixed> $identityData) Build an identity object from raw identity data.
+ */
 interface AuthenticationServiceInterface extends PersistenceInterface
 {
     /**

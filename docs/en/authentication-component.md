@@ -102,6 +102,44 @@ The result returned will contain an array like this:
 > context you're working in you'll have to use these instances from now on if you
 > want to continue to work with the modified response and request objects.
 
+## Replacing the current identity
+
+Use `setIdentity()` to change which user is logged in (e.g. after registration
+or social-login first-touch). It clears all persisted identity data and writes
+the new identity through every persisting authenticator:
+
+```php
+$this->Authentication->setIdentity($user);
+```
+
+> [!WARNING]
+> `setIdentity()` ends an active impersonation session by default, because it
+> goes through `clearIdentity()` first, which calls `stopImpersonating()` on
+> impersonation-aware authenticators. Use `replaceIdentity()` below for the
+> request-only refresh case.
+
+### Refresh the active identity for the current request only
+
+When you only need to swap the in-request identity (for example to attach
+eager-loaded associations or computed flags in `beforeFilter()`) without
+touching the session or persistence, use `replaceIdentity()`:
+
+```php
+// AppController::beforeFilter()
+$identity = $this->Authentication->getIdentity();
+if ($identity && !$identity->some_association) {
+    $reloaded = $this->fetchTable('Users')
+        ->get($identity->getIdentifier(), finder: 'fullProfile');
+    $this->Authentication->replaceIdentity($reloaded);
+}
+```
+
+This rewrites only the request attribute. The session is not modified, so an
+active impersonation is preserved and no privilege-escalation side effects
+(like session rotation) occur.
+
+See [User Impersonation](impersonation.md) for the broader context.
+
 ## Configure Automatic Identity Checks
 
 By default `AuthenticationComponent` will automatically enforce an identity to

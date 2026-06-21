@@ -323,6 +323,38 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     }
 
     /**
+     * Replace the in-request identity object without persisting it.
+     *
+     * Use this when you only need to swap the identity attribute on the
+     * current request - for example, to attach eager-loaded associations
+     * or computed flags to the active user for the rest of the request -
+     * without going through `clearIdentity()` and `persistIdentity()`.
+     *
+     * Unlike `setIdentity()`, this does not touch the session and does not
+     * end an active impersonation, because no authenticator's
+     * `clearIdentity()` is invoked.
+     *
+     * @param \ArrayAccess|array $identity Identity data or an identity object.
+     * @return $this
+     */
+    public function replaceIdentity(ArrayAccess|array $identity)
+    {
+        $controller = $this->getController();
+        $service = $this->getAuthenticationService();
+
+        $identity = $service->buildIdentity($identity);
+
+        $controller->setRequest(
+            $controller->getRequest()->withAttribute(
+                $service->getIdentityAttribute(),
+                $identity,
+            ),
+        );
+
+        return $this;
+    }
+
+    /**
      * Log a user out.
      *
      * Triggers the `Authentication.logout` event.

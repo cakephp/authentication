@@ -67,3 +67,17 @@ There are a few limitations to impersonation.
 1. Your application must be using the `Session` authenticator.
 2. You cannot impersonate another user while impersonation is active. Instead
     you must `stopImpersonating()` and then start it again.
+3. Calling `setIdentity()` or `clearIdentity()` (and therefore `logout()`)
+    ends impersonation by default. The service's `clearIdentity()` actively
+    calls `stopImpersonating()` on impersonation-aware authenticators, so any
+    code path that swaps the persisted identity will revert to the original
+    user.
+
+    To refresh the active identity without disturbing impersonation, use
+    `replaceIdentity($identity)` on `AuthenticationComponent`. It updates the
+    in-request identity attribute only - the session is not touched. Use this
+    for the common `beforeFilter()` case of attaching eager-loaded
+    associations to the active user for the rest of the request.
+
+    See [Replacing the current identity](authentication-component.md#replacing-the-current-identity)
+    for examples.
