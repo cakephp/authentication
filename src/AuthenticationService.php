@@ -421,7 +421,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         $normalized = str_replace('\\', '/', $value);
 
         // A leading run of `//` or `\\` are rejected
-        if (str_starts_with($normalized, '//')) {
+        if (strpos($normalized, '//') === 0) {
             return null;
         }
 
@@ -433,7 +433,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             return null;
         }
         $parsed += ['path' => '/', 'query' => ''];
-        if (str_contains($parsed['path'], '\\')) {
+        if (strpos($parsed['path'], '\\') !== false) {
             return null;
         }
         if (strlen($parsed['path']) && $parsed['path'][0] !== '/') {
