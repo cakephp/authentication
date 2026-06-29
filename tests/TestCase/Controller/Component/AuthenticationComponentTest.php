@@ -258,6 +258,63 @@ class AuthenticationComponentTest extends TestCase
         );
     }
 
+    public function testSetIdentityWithCookieAuthDoNotRememberMe()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+                'Authentication.Form',
+                'Authentication.Cookie',
+            ],
+        ]);
+        $request = $this->request->withAttribute('authentication', $service)
+            ->withData('remember_me', 0);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->setIdentity($this->identityData);
+        $result = $component->getIdentity();
+        $this->assertSame($this->identityData, $result->getOriginalData());
+        $expectedCookieHeader = [
+            'CookieAuth=; expires=Thu, 01-Jan-1970 00:00:01 GMT+0000; path=/',
+        ];
+        $actualCookieHeader = $controller->getResponse()->getHeader('Set-Cookie');
+        $this->assertSame($expectedCookieHeader, $actualCookieHeader);
+    }
+
+    public function testSetIdentityWithCookieAuthRememberMe()
+    {
+        $service = new AuthenticationService([
+            'identifiers' => [
+                'Authentication.Password',
+            ],
+            'authenticators' => [
+                'Authentication.Session',
+                'Authentication.Form',
+                'Authentication.Cookie',
+            ],
+        ]);
+        $request = $this->request->withAttribute('authentication', $service)
+            ->withData('remember_me', 1);
+
+        $controller = new Controller($request, $this->response);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $component->setIdentity($this->identityData);
+        $result = $component->getIdentity();
+        $this->assertSame($this->identityData, $result->getOriginalData());
+        $actualCookieHeader = $controller->getResponse()->getHeader('Set-Cookie');
+        $this->assertCount(2, $actualCookieHeader);
+        $this->assertStringContainsString('CookieAuth=', $actualCookieHeader[1]);
+        $this->assertStringNotContainsString('expires=Thu, 01-Jan-1970 00:00:01 GMT+0000;', $actualCookieHeader[1]);
+    }
+
     /**
      * testGetIdentity
      *
