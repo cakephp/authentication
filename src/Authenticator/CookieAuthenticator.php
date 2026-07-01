@@ -33,6 +33,9 @@ use Psr\Http\Message\ServerRequestInterface;
  * Cookie Authenticator
  *
  * Authenticates an identity based on a cookie data.
+ *
+ * You *must* enable encrypted cookies with `EncryptedCookieMiddleware` before using CookieAuthenticator.
+ * Without encryption remember-me cookie values can be tampered with.
  */
 class CookieAuthenticator extends AbstractAuthenticator implements PersistenceInterface
 {

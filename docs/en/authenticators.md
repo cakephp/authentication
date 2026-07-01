@@ -326,9 +326,10 @@ feature for your login forms.
 Just make sure your login form has a field that matches the field name
 that is configured in this authenticator.
 
-To encrypt and decrypt your cookie make sure you added the
-EncryptedCookieMiddleware to your app *before* the
-AuthenticationMiddleware.
+> [!WARNING]
+> You must enable `EncryptedCookieMiddleware` and add the cookie authenticator `name`
+> to the encrypted cookie list before using `CookieAuthenticator`.
+> Without encryption, remember me cookie values can be tampered with.
 
 Configuration options:
 
@@ -372,7 +373,19 @@ The cookie authenticator can be added to a Form & Session based
 authentication system. Cookie authentication will automatically re-login users
 after their session expires for as long as the cookie is valid. If a user is
 explicitly logged out via `AuthenticationComponent::logout()` the
-authentication cookie is **also destroyed**. An example configuration would be:
+authentication cookie is **also destroyed**.  Before enabling CookieAuthentication, first
+enable `EncryptedCookieMiddleware`:
+
+```php
+// In Application::middleware()
+use Cake\Http\Middleware\EncryptedCookieMiddleware;
+
+$middlewareQueue->add(
+    new EncryptedCookieMiddleware(['CookieAuth'], Configure::read('Security.cookieKey'))
+);
+```
+
+Then add `CookieAuthenticator` to your authentication service configuration:
 
 ```php
 // In Application::getAuthenticationService()
