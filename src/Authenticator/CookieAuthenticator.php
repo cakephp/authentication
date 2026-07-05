@@ -253,11 +253,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         if (isset($options['memory_cost']) && $options['memory_cost'] > $limits['memory_cost']) {
             return false;
         }
-        if (isset($options['time_cost']) && $options['time_cost'] > $limits['time_cost']) {
-            return false;
-        }
-
-        return true;
+        return !(isset($options['time_cost']) && $options['time_cost'] > $limits['time_cost']);
     }
 
     /**
@@ -307,7 +303,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function getPasswordHasher(): PasswordHasherInterface
     {
-        if ($this->_passwordHasher === null) {
+        if (!$this->_passwordHasher instanceof \Authentication\PasswordHasher\PasswordHasherInterface) {
             $this->_passwordHasher = PasswordHasherFactory::build($this->getConfig('passwordHasher'));
         }
 

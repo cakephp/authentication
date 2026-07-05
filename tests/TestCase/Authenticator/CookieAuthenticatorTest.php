@@ -73,8 +73,8 @@ class CookieAuthenticatorTest extends TestCase
     protected function createToken(string $username, ?int $expires = null, ?string $key = null): array
     {
         $user = $this->getUser($username);
-        $expires = $expires ?? time() + 60 * 60 * 24;
-        $key = $key ?? Security::getSalt();
+        $expires ??= time() + 60 * 60 * 24;
+        $key ??= Security::getSalt();
         $hash = hash_hmac('sha256', $user->username . $user->password . $expires, $key);
 
         return [$user->username, $expires, $hash];
@@ -568,7 +568,7 @@ class CookieAuthenticatorTest extends TestCase
         $identifier = IdentifierFactory::create('Authentication.Password');
 
         $token = $this->createToken('mariano');
-        $token[1] = $token[1] + 1;
+        $token[1] += 1;
 
         $request = ServerRequestFactory::fromGlobals(
             ['REQUEST_URI' => '/testpath'],
@@ -778,6 +778,7 @@ class CookieAuthenticatorTest extends TestCase
             ['REQUEST_URI' => '/testpath'],
         );
         $request = $request->withParsedBody([]);
+
         $response = new Response();
 
         $authenticator = new CookieAuthenticator($identifier);
