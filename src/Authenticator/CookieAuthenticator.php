@@ -361,7 +361,6 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * value falls back to the application salt — the HMAC key cannot be
      * disabled.
      *
-     * @param array|\ArrayAccess $identity Identity data.
      * @return string
      */
     protected function _hmacKey(): string
