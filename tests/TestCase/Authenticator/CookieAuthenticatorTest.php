@@ -20,7 +20,6 @@ use Authentication\Authenticator\CookieAuthenticator;
 use Authentication\Authenticator\Result;
 use Authentication\Identifier\IdentifierCollection;
 use Cake\Core\Configure;
-use Authentication\Identifier\IdentifierFactory;
 use Cake\Http\Cookie\Cookie;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
@@ -761,9 +760,9 @@ class CookieAuthenticatorTest extends TestCase
     /**
      * testPersistIdentity
      *
-     * @dataProvider validExpiresProvider
      * @return void
      */
+    #[DataProvider('validExpiresProvider')]
     public function testPersistIdentity(DateTimeImmutable|string|int $expires)
     {
         $identifiers = new IdentifierCollection([
