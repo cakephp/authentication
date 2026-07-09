@@ -167,7 +167,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
 
         $identity = $this->_identifier->identify(compact('username'));
         if (!$identity) {
-            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $identifier->getErrors());
+            return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $this->_identifier->getErrors());
         }
 
         $usernameField = $this->getConfig('fields.username');
@@ -264,7 +264,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
      * @return string
      */
-    protected function _createLegacyPlainToken(ArrayAccess|array $identity): string
+    protected function _createLegacyPlainToken($identity): string
     {
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');

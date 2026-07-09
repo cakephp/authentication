@@ -28,7 +28,6 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use DateTimeImmutable;
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use UnexpectedValueException;
@@ -674,9 +673,9 @@ class CookieAuthenticatorTest extends TestCase
     /**
      * Malformed cookies produce an invalid result, never a TypeError.
      *
+     * @dataProvider malformedCookieProvider
      * @return void
      */
-    #[DataProvider('malformedCookieProvider')]
     public function testAuthenticateMalformedCookie(string $cookieValue): void
     {
         $identifiers = new IdentifierCollection([
@@ -760,9 +759,9 @@ class CookieAuthenticatorTest extends TestCase
     /**
      * testPersistIdentity
      *
+     * @dataProvider validExpiresProvider
      * @return void
      */
-    #[DataProvider('validExpiresProvider')]
     public function testPersistIdentity(DateTimeImmutable|string|int $expires)
     {
         $identifiers = new IdentifierCollection([
