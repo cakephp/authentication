@@ -120,7 +120,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             ? $cookies[$cookieName]
             : json_decode((string)$cookies[$cookieName], true);
 
-        if (!is_array($token) || !array_is_list($token)) {
+        if (!is_array($token) || array_keys($token) !== range(0, count($token) - 1)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
                 'Cookie token is invalid.',
             ]);
