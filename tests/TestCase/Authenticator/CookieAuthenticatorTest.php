@@ -762,7 +762,7 @@ class CookieAuthenticatorTest extends TestCase
      * @dataProvider validExpiresProvider
      * @return void
      */
-    public function testPersistIdentity(DateTimeImmutable|string|int $expires)
+    public function testPersistIdentity($expires)
     {
         $identifiers = new IdentifierCollection([
             'Authentication.Password',
