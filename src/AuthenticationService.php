@@ -20,6 +20,7 @@ use ArrayAccess;
 use Authentication\Authenticator\AuthenticatorCollection;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\ImpersonationInterface;
+use Authentication\Authenticator\MissingIdentifierException;
 use Authentication\Authenticator\PersistenceInterface;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Authenticator\StatelessInterface;
@@ -257,7 +258,16 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             return null;
         }
 
-        return $this->_successfulAuthenticator->getIdentifier();
+        try {
+            return $this->_successfulAuthenticator->getIdentifier();
+        } catch (MissingIdentifierException) {
+            // Authenticators may operate without an identifier (e.g. session
+            // based authentication with `identify` disabled), in which case
+            // getIdentifier() throws. There is no identification provider then.
+            // Other runtime failures (e.g. an invalid identifier config) are
+            // intentionally not caught here so they still surface.
+            return null;
+        }
     }
 
     /**

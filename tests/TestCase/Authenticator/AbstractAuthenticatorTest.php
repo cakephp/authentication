@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Test\TestCase\Authenticator;
 
 use Authentication\Authenticator\AbstractAuthenticator;
+use Authentication\Authenticator\MissingIdentifierException;
 use Authentication\Authenticator\Result;
 use Authentication\Authenticator\ResultInterface;
 use Authentication\Identifier\IdentifierInterface;
@@ -63,5 +64,23 @@ class AbstractAuthenticatorTest extends TestCase
         $authenticator->setIdentifier($otherIdentifier);
 
         $this->assertSame($otherIdentifier, $authenticator->getIdentifier());
+    }
+
+    /**
+     * getIdentifier() throws a MissingIdentifierException when none is set.
+     *
+     * @return void
+     */
+    public function testGetIdentifierWithoutIdentifierThrows(): void
+    {
+        $authenticator = new class (null) extends AbstractAuthenticator {
+            public function authenticate($request): Result
+            {
+                return new Result([], ResultInterface::SUCCESS);
+            }
+        };
+
+        $this->expectException(MissingIdentifierException::class);
+        $authenticator->getIdentifier();
     }
 }
