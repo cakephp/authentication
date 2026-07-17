@@ -22,6 +22,7 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\FormAuthenticator;
 use Authentication\Authenticator\Result;
+use Authentication\Authenticator\SessionAuthenticator;
 use Authentication\Identifier\PasswordIdentifier;
 use Authentication\Identity;
 use Authentication\IdentityInterface;
@@ -1326,5 +1327,30 @@ class AuthenticationServiceTest extends TestCase
 
         $authenticator = $service->getAuthenticationProvider();
         $this->assertInstanceOf(FormAuthenticator::class, $authenticator);
+
+        // The lazily created default identifier must still be reported.
+        $this->assertInstanceOf(PasswordIdentifier::class, $service->getIdentificationProvider());
+    }
+
+    /**
+     * Authenticators without an identifier (e.g. the session authenticator with
+     * the default `identify` => false) must report no identification provider
+     * instead of throwing when getIdentificationProvider() is called.
+     *
+     * @return void
+     */
+    public function testGetIdentificationProviderWithoutIdentifier(): void
+    {
+        $request = ServerRequestFactory::fromGlobals(['REQUEST_URI' => '/']);
+        $request->getSession()->write('Auth', ['username' => 'mariano']);
+
+        $service = new AuthenticationService();
+        $service->loadAuthenticator('Authentication.Session');
+
+        $result = $service->authenticate($request);
+        $this->assertTrue($result->isValid());
+
+        $this->assertInstanceOf(SessionAuthenticator::class, $service->getAuthenticationProvider());
+        $this->assertNull($service->getIdentificationProvider());
     }
 }
