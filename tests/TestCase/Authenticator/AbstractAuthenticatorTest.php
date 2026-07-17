@@ -73,7 +73,7 @@ class AbstractAuthenticatorTest extends TestCase
      */
     public function testGetIdentifierWithoutIdentifierThrows(): void
     {
-        $authenticator = new class (null) extends AbstractAuthenticator {
+        $authenticator = new class extends AbstractAuthenticator {
             public function authenticate($request): Result
             {
                 return new Result([], ResultInterface::SUCCESS);
