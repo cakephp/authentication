@@ -73,6 +73,6 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      */
     public function check($password, string $hashedPassword): bool
     {
-        return $hashedPassword === $this->hash($password);
+        return hash_equals($hashedPassword, $this->hash($password));
     }
 }
