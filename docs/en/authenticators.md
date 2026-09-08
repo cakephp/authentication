@@ -1,34 +1,35 @@
 # Authenticators
 
 Authenticators handle converting request data into an authentication
-operations. They leverage [Identifiers](identifiers) to find a
-known [Identity Objects](identity-object).
+operation. They leverage [Identifiers](identifiers) to find a
+known [Identity](identity-object). During an authentication operation, each
+configured authenticator is called in order, until a successful result is found,
+or all authenticators do not accept the request.
 
 ## Session
 
-This authenticator will check the session if it contains user data or
-credentials. When using any stateful authenticators like `Form` listed
-below, be sure to load `Session` authenticator first so that once
-logged in user data is fetched from session itself on subsequent
-requests.
+This authenticator will check the session for an identity or credentials. When
+using any stateful authenticators like `Form` listed below, be sure to load
+`Session` authenticator first so that once logged in user data is fetched from
+session itself on subsequent requests.
 
 Configuration options:
 
-- **sessionKey**: The session key for the user data, default is
-  `Auth`
+- **sessionKey**: The key in the session where the identity is stored. Default
+  is `Auth`.
+- **identify**: Whether or not the identity should be reloaded via the linked
+  identifier on each request. This option is deprecated in favour of using
+  `PrimaryKeySession`.
 
 ## PrimaryKeySession
 
-This is an improved version of Session that will only store the primary key.
-This way the data will always be fetched fresh from the DB and issues like
-having to update the identity when updating account data should be gone.
+This is an improved version of Session authentication that only stores the
+primary key of the identity. On each request, the identity is looked up via the
+configured identifier. This ensures that data in the request's `identity` is
+always current.
 
-It also helps to avoid session invalidation.
-Session itself stores the entity object including nested objects like DateTime or enums.
-With only the ID stored, the invalidation due to objects being modified will also dissolve.
-
-A default `TokenIdentifier` is provided that looks up users by their `id` field,
-so minimal configuration is required:
+By default a `TokenIdentifier` that looks up users by their `id` field is
+configured for this authenticator. The minimal configuration is required:
 
 ```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession');
@@ -36,8 +37,11 @@ $service->loadAuthenticator('Authentication.PrimaryKeySession');
 
 Configuration options:
 
-- **idField**: The field in the database table to look up. Default is `id`.
-- **identifierKey**: The key used to store/retrieve the primary key from session data.
+- **idField**: The field of the entity that is stored in the session under
+  `sessionKey`.
+- **sessionKey**: The key in the session where the identifier is stored. Default
+  is `Auth`.
+- **identifierKey**: The key used to build data used to `identify()` the user.
   Default is `key`.
 
 For custom lookup fields, the `idField` and `identifierKey` options propagate
@@ -46,17 +50,22 @@ to the default identifier automatically:
 ```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession', [
     'idField' => 'uuid',
+    'identifierKey' => 'key',
 ]);
 ```
 
-You can also provide a fully custom identifier configuration if needed:
+This will store the ``uuid`` field of your identity objects in the session, and supply
+`['key' => $uuid]` to the identifier linked to `PrimaryKeySessionAuthenticator`.
+
+You can customize the identifier configuration if needed:
 
 ```php
 $service->loadAuthenticator('Authentication.PrimaryKeySession', [
+    'idField' => 'uuid',
     'identifier' => [
         'className' => 'Authentication.Token',
-        'tokenField' => 'id',
-        'dataField' => 'key',
+        'tokenField' => 'uuid',
+        'dataField' => 'token',
         'resolver' => 'Authentication.Orm',
     ],
 ]);
