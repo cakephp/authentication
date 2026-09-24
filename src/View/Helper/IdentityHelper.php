@@ -33,14 +33,14 @@ class IdentityHelper extends Helper
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'identityAttribute' => 'identity',
     ];
 
     /**
      * Identity Object
      */
-    protected ?IdentityInterface $_identity = null;
+    protected ?IdentityInterface $identity = null;
 
     /**
      * Constructor hook method.
@@ -52,7 +52,7 @@ class IdentityHelper extends Helper
      */
     public function initialize(array $config): void
     {
-        $this->_identity = $this->_View->getRequest()->getAttribute($this->getConfig('identityAttribute'));
+        $this->identity = $this->View->getRequest()->getAttribute($this->getConfig('identityAttribute'));
     }
 
     /**
@@ -62,11 +62,11 @@ class IdentityHelper extends Helper
      */
     public function getId(): array|string|int|null
     {
-        if (!$this->_identity instanceof IdentityInterface) {
+        if (!$this->identity instanceof IdentityInterface) {
             return null;
         }
 
-        return $this->_identity->getIdentifier();
+        return $this->identity->getIdentifier();
     }
 
     /**
@@ -76,7 +76,7 @@ class IdentityHelper extends Helper
      */
     public function isLoggedIn(): bool
     {
-        return $this->_identity instanceof IdentityInterface;
+        return $this->identity instanceof IdentityInterface;
     }
 
     /**
@@ -112,15 +112,15 @@ class IdentityHelper extends Helper
      */
     public function get(?string $key = null): mixed
     {
-        if (!$this->_identity instanceof IdentityInterface) {
+        if (!$this->identity instanceof IdentityInterface) {
             return null;
         }
 
         if ($key === null) {
-            return $this->_identity->getOriginalData();
+            return $this->identity->getOriginalData();
         }
 
-        return Hash::get($this->_identity, $key);
+        return Hash::get($this->identity, $key);
     }
 
     /**
@@ -130,6 +130,6 @@ class IdentityHelper extends Helper
      */
     public function getIdentity(): ?IdentityInterface
     {
-        return $this->_identity;
+        return $this->identity;
     }
 }

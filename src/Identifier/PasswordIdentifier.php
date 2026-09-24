@@ -63,7 +63,7 @@ class PasswordIdentifier extends AbstractIdentifier
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'fields' => [
             self::CREDENTIAL_USERNAME => 'username',
             self::CREDENTIAL_PASSWORD => 'password',
@@ -79,17 +79,17 @@ class PasswordIdentifier extends AbstractIdentifier
      */
     public function getPasswordHasher(): PasswordHasherInterface
     {
-        if (!$this->_passwordHasher instanceof PasswordHasherInterface) {
+        if (!$this->passwordHasher instanceof PasswordHasherInterface) {
             $passwordHasher = $this->getConfig('passwordHasher');
             if ($passwordHasher !== null) {
                 $passwordHasher = PasswordHasherFactory::build($passwordHasher);
             } else {
                 $passwordHasher = $this->_getPasswordHasher();
             }
-            $this->_passwordHasher = $passwordHasher;
+            $this->passwordHasher = $passwordHasher;
         }
 
-        return $this->_passwordHasher;
+        return $this->passwordHasher;
     }
 
     /**
@@ -101,10 +101,10 @@ class PasswordIdentifier extends AbstractIdentifier
             return null;
         }
 
-        $identity = $this->_findIdentity($credentials[self::CREDENTIAL_USERNAME]);
+        $identity = $this->findIdentity($credentials[self::CREDENTIAL_USERNAME]);
         if (array_key_exists(self::CREDENTIAL_PASSWORD, $credentials)) {
             $password = $credentials[self::CREDENTIAL_PASSWORD];
-            if (!$this->_checkPassword($identity, $password)) {
+            if (!$this->checkPassword($identity, $password)) {
                 return null;
             }
         }
@@ -121,15 +121,13 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string|null $password The password.
      * @return bool
      */
-    protected function _checkPassword(ArrayAccess|array|null $identity, ?string $password): bool
+    protected function checkPassword(ArrayAccess|array|null $identity, ?string $password): bool
     {
         $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
 
-        if ($identity === null) {
-            $identity = [
-                $passwordField => '',
-            ];
-        }
+        $identity ??= [
+            $passwordField => '',
+        ];
 
         $hasher = $this->getPasswordHasher();
         $hashedPassword = $identity[$passwordField];
@@ -140,7 +138,7 @@ class PasswordIdentifier extends AbstractIdentifier
             return false;
         }
 
-        $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
+        $this->needsPasswordRehash = $hasher->needsRehash($hashedPassword);
 
         return true;
     }
@@ -151,7 +149,7 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string $identifier The username/identifier.
      * @return \ArrayAccess|array|null
      */
-    protected function _findIdentity(string $identifier): ArrayAccess|array|null
+    protected function findIdentity(string $identifier): ArrayAccess|array|null
     {
         $fields = $this->getConfig('fields.' . self::CREDENTIAL_USERNAME);
         $conditions = [];

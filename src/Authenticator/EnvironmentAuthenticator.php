@@ -40,7 +40,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'loginUrl' => null,
         'urlChecker' => 'Authentication.Default',
         'fields' => [],
@@ -68,7 +68,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      */
     protected function _getData(ServerRequestInterface $request): ?array
     {
-        $fields = $this->_config['fields'];
+        $fields = $this->config['fields'];
         $params = $request->getServerParams();
 
         $data = [];
@@ -96,7 +96,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      */
     protected function _getOptionalData(ServerRequestInterface $request): array
     {
-        $fields = $this->_config['optionalFields'];
+        $fields = $this->config['optionalFields'];
         $params = $request->getServerParams();
 
         $data = [];
@@ -115,7 +115,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    protected function _buildLoginUrlErrorResult(ServerRequestInterface $request): ResultInterface
+    protected function buildLoginUrlErrorResult(ServerRequestInterface $request): ResultInterface
     {
         $uri = $request->getUri();
         $base = $request->getAttribute('base');
@@ -152,8 +152,8 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request): ResultInterface
     {
-        if (!$this->_checkUrl($request)) {
-            return $this->_buildLoginUrlErrorResult($request);
+        if (!$this->checkUrl($request)) {
+            return $this->buildLoginUrlErrorResult($request);
         }
         $data = $this->_getData($request);
         if (!$data) {

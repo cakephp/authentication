@@ -49,7 +49,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     /**
      * @inheritDoc
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'loginUrl' => null,
         'urlChecker' => 'Authentication.Default',
         'rememberMeField' => 'remember_me',
@@ -94,15 +94,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if (!$this->_identifier instanceof IdentifierInterface) {
+        if (!$this->identifier instanceof IdentifierInterface) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $this->_identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
+            $this->identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
         }
 
-        return $this->_identifier;
+        return $this->identifier;
     }
 
     /**
@@ -129,11 +129,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         }
 
         if (count($token) === 3) {
-            return $this->_authenticateToken($token);
+            return $this->authenticateToken($token);
         }
 
         if (count($token) === 2 && $this->getConfig('legacyTokens')) {
-            return $this->_authenticateLegacyToken($token);
+            return $this->authenticateLegacyToken($token);
         }
 
         return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
@@ -151,7 +151,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param array $token The decoded token parts.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    protected function _authenticateToken(array $token): ResultInterface
+    protected function authenticateToken(array $token): ResultInterface
     {
         [$username, $expires, $tokenHash] = $token;
         if (!is_string($username) || !is_numeric($expires) || !is_string($tokenHash)) {
@@ -177,7 +177,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $passwordField = $this->getConfig('fields.password');
         $plain = $identity[$usernameField] . $identity[$passwordField] . $expires;
 
-        if (!hash_equals(hash_hmac('sha256', $plain, $this->_hmacKey()), $tokenHash)) {
+        if (!hash_equals(hash_hmac('sha256', $plain, $this->hmacKey()), $tokenHash)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
                 'Cookie token does not match',
             ]);
@@ -198,7 +198,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param array $token The decoded token parts.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    protected function _authenticateLegacyToken(array $token): ResultInterface
+    protected function authenticateLegacyToken(array $token): ResultInterface
     {
         [$username, $tokenHash] = $token;
         if (!is_string($username) || !is_string($tokenHash)) {
@@ -208,7 +208,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         }
 
         $info = password_get_info($tokenHash);
-        if ($info['algoName'] === 'unknown' || !$this->_legacyHashWithinLimits($info)) {
+        if ($info['algoName'] === 'unknown' || !$this->legacyHashWithinLimits($info)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
                 'Cookie token is invalid.',
             ]);
@@ -220,7 +220,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             return new Result(null, Result::FAILURE_IDENTITY_NOT_FOUND, $identifier->getErrors());
         }
 
-        $plain = $this->_createLegacyPlainToken($identity);
+        $plain = $this->createLegacyPlainToken($identity);
         if (!$this->getPasswordHasher()->check($plain, $tokenHash)) {
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID, [
                 'Cookie token does not match',
@@ -242,7 +242,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param array $info Result of password_get_info() for the token hash.
      * @return bool
      */
-    protected function _legacyHashWithinLimits(array $info): bool
+    protected function legacyHashWithinLimits(array $info): bool
     {
         $limits = $this->getConfig('legacyHashLimits');
         $options = $info['options'] ?? [];
@@ -267,7 +267,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
      * @return string
      */
-    protected function _createLegacyPlainToken(ArrayAccess|array $identity): string
+    protected function createLegacyPlainToken(ArrayAccess|array $identity): string
     {
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
@@ -304,11 +304,11 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function getPasswordHasher(): PasswordHasherInterface
     {
-        if (!$this->_passwordHasher instanceof PasswordHasherInterface) {
-            $this->_passwordHasher = PasswordHasherFactory::build($this->getConfig('passwordHasher'));
+        if (!$this->passwordHasher instanceof PasswordHasherInterface) {
+            $this->passwordHasher = PasswordHasherFactory::build($this->getConfig('passwordHasher'));
         }
 
-        return $this->_passwordHasher;
+        return $this->passwordHasher;
     }
 
     /**
@@ -322,15 +322,15 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
         $field = $this->getConfig('rememberMeField');
         $bodyData = $request->getParsedBody();
 
-        if (!$this->_checkUrl($request) || !is_array($bodyData) || empty($bodyData[$field])) {
+        if (!$this->checkUrl($request) || !is_array($bodyData) || empty($bodyData[$field])) {
             return [
                 'request' => $request,
                 'response' => $response,
             ];
         }
 
-        $value = $this->_createToken($identity);
-        $cookie = $this->_createCookie($value);
+        $value = $this->createToken($identity);
+        $cookie = $this->createCookie($value);
 
         return [
             'request' => $request,
@@ -348,7 +348,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @return string
      * @throws \JsonException
      */
-    protected function _createToken(ArrayAccess|array $identity): string
+    protected function createToken(ArrayAccess|array $identity): string
     {
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
@@ -359,9 +359,9 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             );
         }
 
-        $expires = $this->_expiryTimestamp();
+        $expires = $this->expiryTimestamp();
         $plain = $identity[$usernameField] . $identity[$passwordField] . $expires;
-        $hash = hash_hmac('sha256', $plain, $this->_hmacKey());
+        $hash = hash_hmac('sha256', $plain, $this->hmacKey());
 
         return json_encode([$identity[$usernameField], $expires, $hash], JSON_THROW_ON_ERROR);
     }
@@ -375,7 +375,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * @return string
      */
-    protected function _hmacKey(): string
+    protected function hmacKey(): string
     {
         $salt = $this->getConfig('salt');
         if (is_string($salt)) {
@@ -398,7 +398,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      *
      * @return int Timestamp the token will expire at.
      */
-    protected function _expiryTimestamp(): int
+    protected function expiryTimestamp(): int
     {
         $expires = $this->getConfig('cookie.expires');
         if ($expires instanceof DateTimeInterface) {
@@ -422,7 +422,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array
     {
-        $cookie = $this->_createCookie('')->withExpired();
+        $cookie = $this->createCookie('')->withExpired();
 
         return [
             'request' => $request,
@@ -436,7 +436,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param mixed $value Cookie value.
      * @return \Cake\Http\Cookie\CookieInterface
      */
-    protected function _createCookie(mixed $value): CookieInterface
+    protected function createCookie(mixed $value): CookieInterface
     {
         $options = $this->getConfig('cookie');
         $name = $options['name'];

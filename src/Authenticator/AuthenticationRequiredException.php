@@ -28,24 +28,15 @@ use function Cake\I18n\__d;
 class AuthenticationRequiredException extends HttpException
 {
     /**
-     * @var array<non-empty-string, array<string>|string>
-     */
-    protected array $headers = [];
-
-    protected string $body = '';
-
-    /**
      * Constructor
      *
      * @param array<non-empty-string, array<string>|string> $headers The headers that should be sent in the unauthorized challenge response.
      * @param string $body The response body that should be sent in the challenge response.
      * @param int $code The exception code that will be used as a HTTP status code
      */
-    public function __construct(array $headers, string $body = '', int $code = 401)
+    public function __construct(protected array $headers, protected string $body = '', int $code = 401)
     {
         parent::__construct(__d('authentication', 'Authentication is required to continue'), $code);
-        $this->headers = $headers;
-        $this->body = $body;
     }
 
     /**

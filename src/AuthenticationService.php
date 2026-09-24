@@ -42,17 +42,17 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     /**
      * Authenticator collection
      */
-    protected ?AuthenticatorCollection $_authenticators = null;
+    protected ?AuthenticatorCollection $authenticators = null;
 
     /**
      * Authenticator that successfully authenticated the identity.
      */
-    protected ?AuthenticatorInterface $_successfulAuthenticator = null;
+    protected ?AuthenticatorInterface $successfulAuthenticator = null;
 
     /**
      * Result of the last authenticate() call.
      */
-    protected ?ResultInterface $_result = null;
+    protected ?ResultInterface $result = null;
 
     /**
      * Default configuration
@@ -93,7 +93,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'authenticators' => [],
         'identityClass' => Identity::class,
         'identityAttribute' => 'identity',
@@ -124,12 +124,12 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function authenticators(): AuthenticatorCollection
     {
-        if (!$this->_authenticators instanceof AuthenticatorCollection) {
+        if (!$this->authenticators instanceof AuthenticatorCollection) {
             $authenticators = $this->getConfig('authenticators');
-            $this->_authenticators = new AuthenticatorCollection($authenticators);
+            $this->authenticators = new AuthenticatorCollection($authenticators);
         }
 
-        return $this->_authenticators;
+        return $this->authenticators;
     }
 
     /**
@@ -159,9 +159,9 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         foreach ($this->authenticators() as $authenticator) {
             $result = $authenticator->authenticate($request);
             if ($result->isValid()) {
-                $this->_successfulAuthenticator = $authenticator;
+                $this->successfulAuthenticator = $authenticator;
 
-                return $this->_result = $result;
+                return $this->result = $result;
             }
 
             if ($authenticator instanceof StatelessInterface) {
@@ -175,9 +175,9 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
             );
         }
 
-        $this->_successfulAuthenticator = null;
+        $this->successfulAuthenticator = null;
 
-        return $this->_result = $result;
+        return $this->result = $result;
     }
 
     /**
@@ -200,7 +200,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
                 ['request' => $request, 'response' => $response] = $result;
             }
         }
-        $this->_successfulAuthenticator = null;
+        $this->successfulAuthenticator = null;
 
         return [
             'request' => $request->withoutAttribute($this->getConfig('identityAttribute')),
@@ -244,7 +244,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function getAuthenticationProvider(): ?AuthenticatorInterface
     {
-        return $this->_successfulAuthenticator;
+        return $this->successfulAuthenticator;
     }
 
     /**
@@ -254,12 +254,12 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function getIdentificationProvider(): ?IdentifierInterface
     {
-        if (!$this->_successfulAuthenticator instanceof AuthenticatorInterface) {
+        if (!$this->successfulAuthenticator instanceof AuthenticatorInterface) {
             return null;
         }
 
         try {
-            return $this->_successfulAuthenticator->getIdentifier();
+            return $this->successfulAuthenticator->getIdentifier();
         } catch (MissingIdentifierException) {
             // Authenticators may operate without an identifier (e.g. session
             // based authentication with `identify` disabled), in which case
@@ -277,7 +277,7 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function getResult(): ?ResultInterface
     {
-        return $this->_result;
+        return $this->result;
     }
 
     /**
@@ -287,12 +287,12 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      */
     public function getIdentity(): ?IdentityInterface
     {
-        if (!$this->_result instanceof ResultInterface) {
+        if (!$this->result instanceof ResultInterface) {
             return null;
         }
 
-        $identityData = $this->_result->getData();
-        if (!$this->_result->isValid() || $identityData === null) {
+        $identityData = $this->result->getData();
+        if (!$this->result->isValid() || $identityData === null) {
             return null;
         }
 
@@ -548,9 +548,10 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         }
         if (!($provider instanceof ImpersonationInterface)) {
             $className = $provider::class;
-            throw new InvalidArgumentException(
-                sprintf('The %s Provider must implement ImpersonationInterface in order to use impersonation.', $className),
-            );
+            throw new InvalidArgumentException(sprintf(
+                'The %s Provider must implement ImpersonationInterface in order to use impersonation.',
+                $className,
+            ));
         }
 
         return $provider;

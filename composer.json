@@ -23,9 +23,9 @@
         "docs": "https://book.cakephp.org/authentication/4/en/"
     },
     "require": {
-        "php": ">=8.1",
-        "cakephp/http": "^5.0",
-        "cakephp/utility": "^5.0",
+        "php": ">=8.4",
+        "cakephp/http": "^6.0",
+        "cakephp/utility": "^6.0",
         "laminas/laminas-diactoros": "^3.0",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.1 || ^2.0",
@@ -33,10 +33,10 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "cakephp/cakephp": "^5.1.0",
-        "cakephp/cakephp-codesniffer": "^5.0",
+        "cakephp/cakephp": "^6.0",
+        "cakephp/cakephp-codesniffer": "^6.0",
         "firebase/php-jwt": "^7.0",
-        "phpunit/phpunit": "^10.5.58 || ^11.5.3 || ^12.4 || ^13.0"
+        "phpunit/phpunit": "^12.4 || ^13.0"
     },
     "suggest": {
         "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP adapter for \"LdapIdentifier\".",
@@ -75,10 +75,12 @@
         "stan": "@phpstan",
         "stan-baseline": "tools/phpstan --generate-baseline",
         "stan-setup": "phive install",
-        "rector-setup": "cp composer.json composer.backup && composer require --dev rector/rector:\"~2.3.1\" && mv composer.backup composer.json",
+        "rector-setup": "cp composer.json composer.backup && composer require --dev rector/rector:\"~2.6.0\" && mv composer.backup composer.json",
         "rector-check": "vendor/bin/rector process --dry-run",
         "rector-fix": "vendor/bin/rector process",
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-clover=clover.xml"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

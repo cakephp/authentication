@@ -35,7 +35,7 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'fields' => [
             PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
             PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
@@ -52,15 +52,15 @@ class HttpBasicAuthenticator extends AbstractAuthenticator implements StatelessI
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if (!$this->_identifier instanceof IdentifierInterface) {
+        if (!$this->identifier instanceof IdentifierInterface) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $this->_identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
+            $this->identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
         }
 
-        return $this->_identifier;
+        return $this->identifier;
     }
 
     /**

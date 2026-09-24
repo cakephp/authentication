@@ -24,7 +24,7 @@ use Authentication\Authenticator\UnauthenticatedException;
 use Authentication\IdentityInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authentication\Test\TestCase\AuthenticationTestCase as TestCase;
-use Cake\Core\Container;
+use Cake\Container\Container;
 use Cake\Core\TestSuite\ContainerStubTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;

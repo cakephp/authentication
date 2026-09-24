@@ -32,7 +32,7 @@ class StringUrlChecker implements UrlCheckerInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultOptions = [
+    protected array $defaultOptions = [
         'useRegex' => false,
         'checkFullUrl' => false,
     ];
@@ -48,9 +48,9 @@ class StringUrlChecker implements UrlCheckerInterface
             );
         }
 
-        $options = $this->_mergeDefaultOptions($options);
-        $checker = $this->_getChecker($options);
-        $url = $this->_getUrlFromRequest($request, $options['checkFullUrl']);
+        $options = $this->mergeDefaultOptions($options);
+        $checker = $this->getChecker($options);
+        $url = $this->getUrlFromRequest($request, $options['checkFullUrl']);
 
         return (bool)$checker($loginUrls, $url);
     }
@@ -65,9 +65,9 @@ class StringUrlChecker implements UrlCheckerInterface
      * @param array<string, mixed> $options Options to merge in
      * @return array
      */
-    protected function _mergeDefaultOptions(array $options): array
+    protected function mergeDefaultOptions(array $options): array
     {
-        return $options + $this->_defaultOptions;
+        return $options + $this->defaultOptions;
     }
 
     /**
@@ -76,7 +76,7 @@ class StringUrlChecker implements UrlCheckerInterface
      * @param array<string, mixed> $options Array of options
      * @return callable
      */
-    protected function _getChecker(array $options): callable
+    protected function getChecker(array $options): callable
     {
         if (!empty($options['useRegex'])) {
             return 'preg_match';
@@ -94,7 +94,7 @@ class StringUrlChecker implements UrlCheckerInterface
      * @param bool $getFullUrl Get the full URL or just the path
      * @return string
      */
-    protected function _getUrlFromRequest(ServerRequestInterface $request, bool $getFullUrl = false): string
+    protected function getUrlFromRequest(ServerRequestInterface $request, bool $getFullUrl = false): string
     {
         $uri = $request->getUri();
 

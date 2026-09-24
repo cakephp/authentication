@@ -27,37 +27,29 @@ class Result implements ResultInterface
     /**
      * Authentication result status
      */
-    protected string $_status;
+    protected string $status;
 
     /**
      * The identity data used in the authentication attempt
      */
-    protected ArrayAccess|array|null $_data = null;
-
-    /**
-     * An array of string reasons why the authentication attempt was unsuccessful
-     *
-     * If authentication was successful, this should be an empty array.
-     */
-    protected array $_errors = [];
+    protected ArrayAccess|array|null $data = null;
 
     /**
      * Sets the result status, identity, and failure messages
      *
      * @param \ArrayAccess|array|null $data The identity data
      * @param string $status Status constant equivalent.
-     * @param array $messages Messages.
+     * @param array $errors Messages.
      * @throws \InvalidArgumentException When invalid identity data is passed.
      */
-    public function __construct(ArrayAccess|array|null $data, string $status, array $messages = [])
+    public function __construct(ArrayAccess|array|null $data, string $status, protected array $errors = [])
     {
         if ($status === self::SUCCESS && empty($data)) {
             throw new InvalidArgumentException('Identity data can not be empty with status success.');
         }
 
-        $this->_status = $status;
-        $this->_data = $data;
-        $this->_errors = $messages;
+        $this->status = $status;
+        $this->data = $data;
     }
 
     /**
@@ -67,7 +59,7 @@ class Result implements ResultInterface
      */
     public function isValid(): bool
     {
-        return $this->_status === ResultInterface::SUCCESS;
+        return $this->status === ResultInterface::SUCCESS;
     }
 
     /**
@@ -77,7 +69,7 @@ class Result implements ResultInterface
      */
     public function getStatus(): string
     {
-        return $this->_status;
+        return $this->status;
     }
 
     /**
@@ -87,7 +79,7 @@ class Result implements ResultInterface
      */
     public function getData(): ArrayAccess|array|null
     {
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -99,6 +91,6 @@ class Result implements ResultInterface
      */
     public function getErrors(): array
     {
-        return $this->_errors;
+        return $this->errors;
     }
 }
