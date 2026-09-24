@@ -25,16 +25,6 @@ use InvalidArgumentException;
 class Result implements ResultInterface
 {
     /**
-     * Authentication result status
-     */
-    protected string $status;
-
-    /**
-     * The identity data used in the authentication attempt
-     */
-    protected ArrayAccess|array|null $data = null;
-
-    /**
      * Sets the result status, identity, and failure messages
      *
      * @param \ArrayAccess|array|null $data The identity data
@@ -42,14 +32,14 @@ class Result implements ResultInterface
      * @param array $errors Messages.
      * @throws \InvalidArgumentException When invalid identity data is passed.
      */
-    public function __construct(ArrayAccess|array|null $data, string $status, protected array $errors = [])
-    {
+    public function __construct(
+        protected ArrayAccess|array|null $data,
+        protected string $status,
+        protected array $errors = [],
+    ) {
         if ($status === self::SUCCESS && empty($data)) {
             throw new InvalidArgumentException('Identity data can not be empty with status success.');
         }
-
-        $this->status = $status;
-        $this->data = $data;
     }
 
     /**
