@@ -5,9 +5,10 @@ const require = createRequire(import.meta.url);
 const toc_en = require("./toc_en.json");
 
 const versions = {
-  text: "4.x",
+  text: "5.x",
   items: [
-    { text: "4.x (current)", link: "https://book.cakephp.org/authentication/4/", target: '_self' },
+    { text: "5.x (current)", link: "https://book.cakephp.org/authentication/5/", target: '_self' },
+    { text: "4.x", link: "https://book.cakephp.org/authentication/4/", target: '_self' },
     { text: "3.x", link: "https://book.cakephp.org/authentication/3/en/", target: '_self' },
     { text: "2.x", link: "https://book.cakephp.org/authentication/2/en/", target: '_self' },
   ],
@@ -19,12 +20,12 @@ export default {
   srcDir: 'en',
   title: 'Authentication plugin',
   description: 'Authentication - CakePHP Authentication Plugin Documentation',
-  base: "/authentication/4/",
+  base: "/authentication/5/",
   rewrites: {
     "en/:slug*": ":slug*",
   },
   sitemap: {
-    hostname: "https://book.cakephp.org/authentication/4/",
+    hostname: "https://book.cakephp.org/authentication/5/",
   },
   themeConfig: {
     siteTitle: false,
@@ -33,7 +34,7 @@ export default {
       { icon: "github", link: "https://github.com/cakephp/authentication" },
     ],
     editLink: {
-      pattern: "https://github.com/cakephp/authentication/edit/4.x/docs/:path",
+      pattern: "https://github.com/cakephp/authentication/edit/5.x/docs/:path",
       text: "Edit this page on GitHub",
     },
     sidebar: toc_en,

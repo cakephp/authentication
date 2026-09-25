@@ -20,7 +20,7 @@
         "issues": "https://github.com/cakephp/authentication/issues",
         "forum": "https://discourse.cakephp.org/",
         "source": "https://github.com/cakephp/authentication",
-        "docs": "https://book.cakephp.org/authentication/4/en/"
+        "docs": "https://book.cakephp.org/authentication/5/"
     },
     "require": {
         "php": ">=8.4",

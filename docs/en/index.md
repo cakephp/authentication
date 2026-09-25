@@ -7,7 +7,7 @@ Project's ROOT directory (where the **composer.json** file is located)
 php composer.phar require cakephp/authentication
 ```
 
-Version 4 of the Authentication Plugin is compatible with CakePHP 5.
+Version 5 of the Authentication Plugin is compatible with CakePHP 6.
 
 Load the plugin using the following command:
 
@@ -17,7 +17,7 @@ bin/cake plugin load Authentication
 
 ## Getting Started
 
-The authentication plugin integrates with your application as a [middleware](https://book.cakephp.org/5/en/controllers/middleware.html). It can also
+The authentication plugin integrates with your application as a [middleware](https://book.cakephp.org/6/en/controllers/middleware.html). It can also
 be used as a component to make unauthenticated access simpler. First, let's
 apply the middleware. In **src/Application.php**, add the following to the class
 imports:
@@ -157,7 +157,7 @@ $this->Authentication->allowUnauthenticated(['view', 'index']);
 ## Building a Login Action
 
 Once you have the middleware applied to your application you'll need a way for
-users to login. Please ensure your database has been created with the Users table structure used in the [CMS tutorial](https://book.cakephp.org/5/en/tutorials-and-examples/cms/database.html). First generate a Users model and controller with bake:
+users to login. Please ensure your database has been created with the Users table structure used in the [CMS tutorial](https://book.cakephp.org/6/en/tutorials-and-examples/cms/database.html). First generate a Users model and controller with bake:
 
 ```bash
 bin/cake bake model Users

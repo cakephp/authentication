@@ -356,7 +356,7 @@ Configuration options:
   - **samesite**: String/null The value for the same site attribute.
 
   The defaults for the various options besides `cookie.name` will be those
-  set for the `Cake\Http\Cookie\Cookie` class. See [Cookie::setDefaults()](https://api.cakephp.org/5/class-Cake.Http.Cookie.Cookie.html#setDefaults)
+  set for the `Cake\Http\Cookie\Cookie` class. See [Cookie::setDefaults()](https://api.cakephp.org/6.0/class-Cake.Http.Cookie.Cookie.html#setDefaults)
   for the default values.
 
 - **fields**: Array that maps `username` and `password` to the
@@ -468,7 +468,7 @@ There is only one event that is fired by authentication:
 `Authentication.afterIdentify`.
 
 If you don’t know what events are and how to use them [check the
-documentation](https://book.cakephp.org/5/en/core-libraries/events.html).
+documentation](https://book.cakephp.org/6/en/core-libraries/events.html).
 
 The `Authentication.afterIdentify` event is fired by the
 `AuthenticationComponent` after an identity was successfully
