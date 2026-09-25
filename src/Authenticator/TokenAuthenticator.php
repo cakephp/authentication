@@ -31,7 +31,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
     /**
      * @inheritDoc
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'header' => null,
         'queryParam' => null,
         'tokenPrefix' => null,
@@ -46,7 +46,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      */
     public function getIdentifier(): IdentifierInterface
     {
-        return $this->_identifier ??= IdentifierFactory::create('Authentication.Token');
+        return $this->identifier ??= IdentifierFactory::create('Authentication.Token');
     }
 
     /**

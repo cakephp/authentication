@@ -33,7 +33,7 @@ class ExtensionAdapter implements AdapterInterface
     /**
      * LDAP Object
      */
-    protected ?Connection $_connection = null;
+    protected ?Connection $connection = null;
 
     /**
      * Constructor
@@ -60,9 +60,9 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function bind(string $bind, string $password): bool
     {
-        $this->_setErrorHandler();
+        $this->setErrorHandler();
         $result = ldap_bind($this->getConnection(), $bind, $password);
-        $this->_unsetErrorHandler();
+        $this->unsetErrorHandler();
 
         return $result;
     }
@@ -75,11 +75,11 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function getConnection(): Connection
     {
-        if (!$this->_connection instanceof Connection) {
+        if (!$this->connection instanceof Connection) {
             throw new RuntimeException('You are not connected to a LDAP server.');
         }
 
-        return $this->_connection;
+        return $this->connection;
     }
 
     /**
@@ -92,7 +92,7 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function connect(string $host, int $port, array $options): void
     {
-        $this->_setErrorHandler();
+        $this->setErrorHandler();
         $resource = ldap_connect(sprintf('%s:%d', $host, $port));
         if ($resource === false) {
             throw new RuntimeException('Unable to connect to LDAP server.');
@@ -102,8 +102,8 @@ class ExtensionAdapter implements AdapterInterface
             throw new RuntimeException('Starting TLS failed on connection to LDAP server.');
         }
         unset($options['tls']); //don't pass through to PHP LDAP functions
-        $this->_connection = $resource;
-        $this->_unsetErrorHandler();
+        $this->connection = $resource;
+        $this->unsetErrorHandler();
 
         foreach ($options as $option => $value) {
             $this->setOption((int)$option, $value);
@@ -119,9 +119,9 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function setOption(int $option, mixed $value): void
     {
-        $this->_setErrorHandler();
+        $this->setErrorHandler();
         ldap_set_option($this->getConnection(), $option, $value);
-        $this->_unsetErrorHandler();
+        $this->unsetErrorHandler();
     }
 
     /**
@@ -132,9 +132,9 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function getOption(int $option): mixed
     {
-        $this->_setErrorHandler();
+        $this->setErrorHandler();
         ldap_get_option($this->getConnection(), $option, $returnValue);
-        $this->_unsetErrorHandler();
+        $this->unsetErrorHandler();
 
         return $returnValue;
     }
@@ -156,16 +156,16 @@ class ExtensionAdapter implements AdapterInterface
      */
     public function unbind(): void
     {
-        if (!$this->_connection instanceof Connection) {
+        if (!$this->connection instanceof Connection) {
             return;
         }
 
-        $this->_setErrorHandler();
+        $this->setErrorHandler();
         /** @phpstan-ignore-next-line */
-        ldap_unbind($this->_connection);
-        $this->_unsetErrorHandler();
+        ldap_unbind($this->connection);
+        $this->unsetErrorHandler();
 
-        $this->_connection = null;
+        $this->connection = null;
     }
 
     /**
@@ -174,7 +174,7 @@ class ExtensionAdapter implements AdapterInterface
      * @return void
      * @throws \ErrorException
      */
-    protected function _setErrorHandler(): void
+    protected function setErrorHandler(): void
     {
         set_error_handler(
             function ($errorNumber, $errorText): void {
@@ -189,7 +189,7 @@ class ExtensionAdapter implements AdapterInterface
      *
      * @return void
      */
-    protected function _unsetErrorHandler(): void
+    protected function unsetErrorHandler(): void
     {
         restore_error_handler();
     }

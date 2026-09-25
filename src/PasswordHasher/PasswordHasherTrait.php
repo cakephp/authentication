@@ -8,13 +8,13 @@ trait PasswordHasherTrait
     /**
      * Password hasher instance.
      */
-    protected ?PasswordHasherInterface $_passwordHasher = null;
+    protected ?PasswordHasherInterface $passwordHasher = null;
 
     /**
      * Whether the user authenticated by this class
      * requires their password to be rehashed with another algorithm.
      */
-    protected bool $_needsPasswordRehash = false;
+    protected bool $needsPasswordRehash = false;
 
     /**
      * Return password hasher object.
@@ -24,11 +24,9 @@ trait PasswordHasherTrait
      */
     public function getPasswordHasher(): PasswordHasherInterface
     {
-        if ($this->_passwordHasher === null) {
-            $this->_passwordHasher = new DefaultPasswordHasher();
-        }
+        $this->passwordHasher ??= new DefaultPasswordHasher();
 
-        return $this->_passwordHasher;
+        return $this->passwordHasher;
     }
 
     /**
@@ -37,9 +35,9 @@ trait PasswordHasherTrait
      * @param \Authentication\PasswordHasher\PasswordHasherInterface $passwordHasher Password hasher instance.
      * @return $this
      */
-    public function setPasswordHasher(PasswordHasherInterface $passwordHasher)
+    public function setPasswordHasher(PasswordHasherInterface $passwordHasher): static
     {
-        $this->_passwordHasher = $passwordHasher;
+        $this->passwordHasher = $passwordHasher;
 
         return $this;
     }
@@ -52,6 +50,6 @@ trait PasswordHasherTrait
      */
     public function needsPasswordRehash(): bool
     {
-        return $this->_needsPasswordRehash;
+        return $this->needsPasswordRehash;
     }
 }

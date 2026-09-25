@@ -31,7 +31,7 @@ class CallbackIdentifier extends AbstractIdentifier
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'callback' => null,
     ];
 
@@ -72,7 +72,7 @@ class CallbackIdentifier extends AbstractIdentifier
 
         $result = $callback($credentials);
         if ($result instanceof Result) {
-            $this->_errors = $result->getErrors();
+            $this->errors = $result->getErrors();
 
             return $result->getData();
         }

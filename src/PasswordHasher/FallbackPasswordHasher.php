@@ -25,14 +25,14 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
     /**
      * Default config for this object.
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'hashers' => [],
     ];
 
     /**
      * Holds the list of password hasher objects that will be used
      */
-    protected array $_hashers = [];
+    protected array $hashers = [];
 
     /**
      * Constructor
@@ -44,11 +44,11 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
     public function __construct(array $config = [])
     {
         parent::__construct($config);
-        foreach ($this->_config['hashers'] as $key => $hasher) {
+        foreach ($this->config['hashers'] as $key => $hasher) {
             if (is_array($hasher) && !isset($hasher['className'])) {
                 $hasher['className'] = $key;
             }
-            $this->_hashers[] = PasswordHasherFactory::build($hasher);
+            $this->hashers[] = PasswordHasherFactory::build($hasher);
         }
     }
 
@@ -62,7 +62,7 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      */
     public function hash(string $password): string
     {
-        return $this->_hashers[0]->hash($password);
+        return $this->hashers[0]->hash($password);
     }
 
     /**
@@ -77,13 +77,7 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      */
     public function check(string $password, string $hashedPassword): bool
     {
-        foreach ($this->_hashers as $hasher) {
-            if ($hasher->check($password, $hashedPassword)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->hashers, fn($hasher) => $hasher->check($password, $hashedPassword));
     }
 
     /**
@@ -95,6 +89,6 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      */
     public function needsRehash(string $password): bool
     {
-        return $this->_hashers[0]->needsRehash($password);
+        return $this->hashers[0]->needsRehash($password);
     }
 }

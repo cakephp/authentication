@@ -36,7 +36,7 @@ class AuthenticationTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->_setupUsersAndPasswords();
+        $this->setupUsersAndPasswords();
     }
 
     /**
@@ -44,7 +44,7 @@ class AuthenticationTestCase extends TestCase
      *
      * @return void
      */
-    protected function _setupUsersAndPasswords()
+    protected function setupUsersAndPasswords()
     {
         $password = password_hash('password', PASSWORD_DEFAULT);
         TableRegistry::getTableLocator()->clear();

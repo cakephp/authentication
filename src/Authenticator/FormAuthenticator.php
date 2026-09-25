@@ -40,7 +40,7 @@ class FormAuthenticator extends AbstractAuthenticator
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'loginUrl' => null,
         'urlChecker' => null,
         'fields' => [
@@ -58,15 +58,15 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if (!$this->_identifier instanceof IdentifierInterface) {
+        if (!$this->identifier instanceof IdentifierInterface) {
             $identifierConfig = [];
             if ($this->getConfig('fields')) {
                 $identifierConfig['fields'] = $this->getConfig('fields');
             }
-            $this->_identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
+            $this->identifier = IdentifierFactory::create('Authentication.Password', $identifierConfig);
         }
 
-        return $this->_identifier;
+        return $this->identifier;
     }
 
     /**
@@ -75,9 +75,9 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return array<string, mixed>|null Username and password retrieved from a request body.
      */
-    protected function _getData(ServerRequestInterface $request): ?array
+    protected function getData(ServerRequestInterface $request): ?array
     {
-        $fields = $this->_config['fields'];
+        $fields = $this->config['fields'];
         /** @var array<string, mixed> $body */
         $body = $request->getParsedBody();
 
@@ -104,7 +104,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    protected function _buildLoginUrlErrorResult(ServerRequestInterface $request): ResultInterface
+    protected function buildLoginUrlErrorResult(ServerRequestInterface $request): ResultInterface
     {
         $uri = $request->getUri();
         $base = $request->getAttribute('base');
@@ -146,11 +146,11 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(ServerRequestInterface $request): ResultInterface
     {
-        if (!$this->_checkUrl($request)) {
-            return $this->_buildLoginUrlErrorResult($request);
+        if (!$this->checkUrl($request)) {
+            return $this->buildLoginUrlErrorResult($request);
         }
 
-        $data = $this->_getData($request);
+        $data = $this->getData($request);
         if ($data === null) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Login credentials not found',
