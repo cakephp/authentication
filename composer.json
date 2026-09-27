@@ -26,7 +26,7 @@
         "php": ">=8.4",
         "cakephp/http": "^6.0",
         "cakephp/utility": "^6.0",
-        "laminas/laminas-diactoros": "^3.0",
+        "laminas/laminas-diactoros": "^3.8",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.1 || ^2.0",
         "psr/http-server-handler": "^1.0",
@@ -35,8 +35,8 @@
     "require-dev": {
         "cakephp/cakephp": "^6.0",
         "cakephp/cakephp-codesniffer": "^6.0",
-        "firebase/php-jwt": "^7.0",
-        "phpunit/phpunit": "^12.4 || ^13.0"
+        "firebase/php-jwt": "^7.2",
+        "phpunit/phpunit": "^13.0"
     },
     "suggest": {
         "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP adapter for \"LdapIdentifier\".",
