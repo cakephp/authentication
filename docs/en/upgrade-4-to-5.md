@@ -92,34 +92,34 @@ The same rename applies to the plugin's protected methods.
 
 | Old (4.x) | New (5.x) | Class |
 | --------- | --------- | ----- |
-| `$_authenticateLegacyToken()` | `authenticateLegacyToken()` | `CookieAuthenticator` |
-| `$_authenticateToken()` | `authenticateToken()` | `CookieAuthenticator` |
-| `$_bindUser()` | `bindUser()` | `LdapIdentifier` |
-| `$_buildLdapObject()` | `buildLdapObject()` | `LdapIdentifier` |
-| `$_buildLoginUrlErrorResult()` | `buildLoginUrlErrorResult()` | `EnvironmentAuthenticator`, `FormAuthenticator` |
-| `$_checkLdapConfig()` | `checkLdapConfig()` | `LdapIdentifier` |
-| `$_checkPassword()` | `checkPassword()` | `PasswordIdentifier` |
-| `$_checkSingleUrl()` | `checkSingleUrl()` | `MultiUrlChecker` |
-| `$_checkUrl()` | `checkUrl()` | `UrlCheckerTrait` |
-| `$_connectLdap()` | `connectLdap()` | `LdapIdentifier` |
-| `$_create()` | `create()` | `AuthenticatorCollection` |
-| `$_createCookie()` | `createCookie()` | `CookieAuthenticator` |
-| `$_createLegacyPlainToken()` | `createLegacyPlainToken()` | `CookieAuthenticator` |
-| `$_createToken()` | `createToken()` | `CookieAuthenticator` |
-| `$_expiryTimestamp()` | `expiryTimestamp()` | `CookieAuthenticator` |
-| `$_findIdentity()` | `findIdentity()` | `PasswordIdentifier` |
-| `$_getChecker()` | `getChecker()` | `StringUrlChecker` |
-| `$_getData()` | `getData()` | `FormAuthenticator` |
-| `$_getUrlFromRequest()` | `getUrlFromRequest()` | `DefaultUrlChecker`, `StringUrlChecker` |
-| `$_handleLdapError()` | `handleLdapError()` | `LdapIdentifier` |
-| `$_hmacKey()` | `hmacKey()` | `CookieAuthenticator` |
-| `$_isSingleRoute()` | `isSingleRoute()` | `MultiUrlChecker` |
-| `$_legacyHashWithinLimits()` | `legacyHashWithinLimits()` | `CookieAuthenticator` |
-| `$_mergeDefaultOptions()` | `mergeDefaultOptions()` | `DefaultUrlChecker`, `MultiUrlChecker`, `StringUrlChecker` |
-| `$_resolveClassName()` | `resolveClassName()` | `AuthenticatorCollection` |
-| `$_setErrorHandler()` | `setErrorHandler()` | `ExtensionAdapter` |
-| `$_throwMissingClassError()` | `throwMissingClassError()` | `AuthenticatorCollection` |
-| `$_unsetErrorHandler()` | `unsetErrorHandler()` | `ExtensionAdapter` |
+| `_authenticateLegacyToken()` | `authenticateLegacyToken()` | `CookieAuthenticator` |
+| `_authenticateToken()` | `authenticateToken()` | `CookieAuthenticator` |
+| `_bindUser()` | `bindUser()` | `LdapIdentifier` |
+| `_buildLdapObject()` | `buildLdapObject()` | `LdapIdentifier` |
+| `_buildLoginUrlErrorResult()` | `buildLoginUrlErrorResult()` | `EnvironmentAuthenticator`, `FormAuthenticator` |
+| `_checkLdapConfig()` | `checkLdapConfig()` | `LdapIdentifier` |
+| `_checkPassword()` | `checkPassword()` | `PasswordIdentifier` |
+| `_checkSingleUrl()` | `checkSingleUrl()` | `MultiUrlChecker` |
+| `_checkUrl()` | `checkUrl()` | `UrlCheckerTrait` |
+| `_connectLdap()` | `connectLdap()` | `LdapIdentifier` |
+| `_create()` | `create()` | `AuthenticatorCollection` |
+| `_createCookie()` | `createCookie()` | `CookieAuthenticator` |
+| `_createLegacyPlainToken()` | `createLegacyPlainToken()` | `CookieAuthenticator` |
+| `_createToken()` | `createToken()` | `CookieAuthenticator` |
+| `_expiryTimestamp()` | `expiryTimestamp()` | `CookieAuthenticator` |
+| `_findIdentity()` | `findIdentity()` | `PasswordIdentifier` |
+| `_getChecker()` | `getChecker()` | `StringUrlChecker` |
+| `_getData()` | `getData()` | `FormAuthenticator` |
+| `_getUrlFromRequest()` | `getUrlFromRequest()` | `DefaultUrlChecker`, `StringUrlChecker` |
+| `_handleLdapError()` | `handleLdapError()` | `LdapIdentifier` |
+| `_hmacKey()` | `hmacKey()` | `CookieAuthenticator` |
+| `_isSingleRoute()` | `isSingleRoute()` | `MultiUrlChecker` |
+| `_legacyHashWithinLimits()` | `legacyHashWithinLimits()` | `CookieAuthenticator` |
+| `_mergeDefaultOptions()` | `mergeDefaultOptions()` | `DefaultUrlChecker`, `MultiUrlChecker`, `StringUrlChecker` |
+| `_resolveClassName()` | `resolveClassName()` | `AuthenticatorCollection` |
+| `_setErrorHandler()` | `setErrorHandler()` | `ExtensionAdapter` |
+| `_throwMissingClassError()` | `throwMissingClassError()` | `AuthenticatorCollection` |
+| `_unsetErrorHandler()` | `unsetErrorHandler()` | `ExtensionAdapter` |
 
 The [cakephp/upgrade](https://github.com/cakephp/upgrade) tool knows about the
 CakePHP 6 renames and can apply most of them for you.
@@ -188,7 +188,7 @@ class CustomComponent extends AuthenticationComponent
     - `$_identifier` → `$identifier`
     - `$_config` → `$config`
     - `$this->_checkUrl(` → `$this->checkUrl(`
-    - Any other `$_method()` or `$_property` of the plugin's classes
+    - Any other `_method()` or `_property` of the plugin's classes
 
 3. **Add return types** to overridden fluent methods so they match the new
    `static` return types.
