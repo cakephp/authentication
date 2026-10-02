@@ -23,8 +23,8 @@ use Authentication\Authenticator\AuthenticationRequiredException;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
+use Cake\Container\ContainerInterface;
 use Cake\Core\ContainerApplicationInterface;
-use Cake\Core\ContainerInterface;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Diactoros\Stream;
@@ -39,27 +39,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 class AuthenticationMiddleware implements MiddlewareInterface
 {
     /**
-     * Authentication service or application instance.
-     */
-    protected AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject;
-
-    /**
-     * The container instance from the application
-     */
-    protected ?ContainerInterface $container;
-
-    /**
      * Constructor
      *
      * @param \Authentication\AuthenticationServiceInterface|\Authentication\AuthenticationServiceProviderInterface $subject Authentication service or application instance.
-     * @param \Cake\Core\ContainerInterface|null $container The container instance from the application.
+     * @param \Cake\Container\ContainerInterface|null $container The container instance from the application.
      */
     public function __construct(
-        AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject,
-        ?ContainerInterface $container = null,
+        protected AuthenticationServiceInterface|AuthenticationServiceProviderInterface $subject,
+        protected ?ContainerInterface $container = null,
     ) {
-        $this->subject = $subject;
-        $this->container = $container;
     }
 
     /**
@@ -76,7 +64,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         if ($this->subject instanceof ContainerApplicationInterface) {
             $container = $this->subject->getContainer();
             $container->add(AuthenticationService::class, $service);
-        } elseif ($this->container) {
+        } elseif ($this->container instanceof ContainerInterface) {
             $this->container->add(AuthenticationService::class, $service);
         }
 
@@ -103,7 +91,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $response = $handler->handle($request);
             $authenticator = $service->getAuthenticationProvider();
 
-            if ($authenticator instanceof AuthenticatorInterface && !$authenticator instanceof StatelessInterface && $result->getData()) {
+            if (
+                $authenticator instanceof AuthenticatorInterface
+                && !$authenticator instanceof StatelessInterface
+                && $result->getData()
+            ) {
                 $return = $service->persistIdentity($request, $response, $result->getData());
                 $response = $return['response'];
             }

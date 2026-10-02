@@ -34,7 +34,7 @@ class SessionAuthenticator extends AbstractAuthenticator implements PersistenceI
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'fields' => [],
         'sessionKey' => 'Auth',
         'impersonateSessionKey' => 'AuthImpersonate',

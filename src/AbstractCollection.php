@@ -32,7 +32,7 @@ abstract class AbstractCollection extends ObjectRegistry
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [];
+    protected array $defaultConfig = [];
 
     /**
      * Constructor
@@ -60,6 +60,6 @@ abstract class AbstractCollection extends ObjectRegistry
      */
     public function isEmpty(): bool
     {
-        return $this->_loaded === [];
+        return $this->loaded === [];
     }
 }

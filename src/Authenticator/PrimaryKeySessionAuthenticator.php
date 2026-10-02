@@ -49,7 +49,7 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'fields' => [],
         'sessionKey' => 'Auth',
         'impersonateSessionKey' => 'AuthImpersonate',
@@ -68,15 +68,15 @@ class PrimaryKeySessionAuthenticator extends SessionAuthenticator
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if (!$this->_identifier instanceof IdentifierInterface) {
-            $this->_identifier = IdentifierFactory::create([
+        if (!$this->identifier instanceof IdentifierInterface) {
+            $this->identifier = IdentifierFactory::create([
                 'className' => 'Authentication.Token',
                 'tokenField' => $this->getConfig('idField'),
                 'dataField' => $this->getConfig('identifierKey'),
             ]);
         }
 
-        return $this->_identifier;
+        return $this->identifier;
     }
 
     /**

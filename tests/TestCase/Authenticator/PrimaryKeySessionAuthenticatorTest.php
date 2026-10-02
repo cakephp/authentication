@@ -27,6 +27,7 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Http\Session;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -115,6 +116,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testGetIdentifierReturnsDefaultWhenNotConfigured(): void
     {
         $authenticator = new PrimaryKeySessionAuthenticator();
@@ -130,6 +132,7 @@ class PrimaryKeySessionAuthenticatorTest extends TestCase
      *
      * @return void
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testGetIdentifierUsesCustomConfig(): void
     {
         $authenticator = new PrimaryKeySessionAuthenticator(null, [

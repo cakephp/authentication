@@ -27,14 +27,14 @@ abstract class AbstractIdentifier implements IdentifierInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [];
+    protected array $defaultConfig = [];
 
     /**
      * Errors
      *
      * @var array<string>
      */
-    protected array $_errors = [];
+    protected array $errors = [];
 
     /**
      * Constructor
@@ -53,6 +53,6 @@ abstract class AbstractIdentifier implements IdentifierInterface
      */
     public function getErrors(): array
     {
-        return $this->_errors;
+        return $this->errors;
     }
 }

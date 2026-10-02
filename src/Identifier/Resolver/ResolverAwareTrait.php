@@ -53,7 +53,7 @@ trait ResolverAwareTrait
      * @param \Authentication\Identifier\Resolver\ResolverInterface $resolver Resolver instance.
      * @return $this
      */
-    public function setResolver(ResolverInterface $resolver)
+    public function setResolver(ResolverInterface $resolver): static
     {
         $this->resolver = $resolver;
 

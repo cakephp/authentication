@@ -106,13 +106,11 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             return new Result(null, Result::FAILURE_CREDENTIALS_INVALID);
         }
 
-        $field = $this->_config['fields'][PasswordIdentifier::CREDENTIAL_PASSWORD];
+        $field = $this->config['fields'][PasswordIdentifier::CREDENTIAL_PASSWORD];
         $password = $user[$field];
 
         $server = $request->getServerParams();
-        if (!isset($server['ORIGINAL_REQUEST_METHOD'])) {
-            $server['ORIGINAL_REQUEST_METHOD'] = $server['REQUEST_METHOD'];
-        }
+        $server['ORIGINAL_REQUEST_METHOD'] ??= $server['REQUEST_METHOD'];
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
         if (hash_equals($hash, $digest['response'])) {
@@ -156,7 +154,8 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         if (str_starts_with($digest, 'Digest ')) {
             $digest = substr($digest, 7);
         }
-        $keys = $match = [];
+        $keys = [];
+        $match = [];
         $req = ['nonce' => 1, 'nc' => 1, 'cnonce' => 1, 'qop' => 1, 'username' => 1, 'uri' => 1, 'response' => 1];
         preg_match_all('/(\w+)=([\'"]?)([a-zA-Z0-9\:\#\%\?\&@=\.\/_-]+)\2/', $digest, $match, PREG_SET_ORDER);
 
@@ -165,7 +164,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
             unset($req[$i[1]]);
         }
 
-        if (!$req) {
+        if ($req === []) {
             return $keys;
         }
 
@@ -211,13 +210,13 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
     protected function loginHeaders(ServerRequestInterface $request): array
     {
         $server = $request->getServerParams();
-        $realm = $this->_config['realm'] ?: $server['SERVER_NAME'];
+        $realm = $this->config['realm'] ?: $server['SERVER_NAME'];
 
         $options = [
             'realm' => $realm,
-            'qop' => $this->_config['qop'],
+            'qop' => $this->config['qop'],
             'nonce' => $this->generateNonce(),
-            'opaque' => $this->_config['opaque'] ?: md5((string)$realm),
+            'opaque' => $this->config['opaque'] ?: md5((string)$realm),
         ];
 
         $digest = $this->_getDigest($request);

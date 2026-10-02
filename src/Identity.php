@@ -33,18 +33,11 @@ class Identity implements IdentityInterface
      *
      * - `fieldMap` Mapping of fields
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'fieldMap' => [
             'id' => 'id',
         ],
     ];
-
-    /**
-     * Identity data
-     *
-     * @var \ArrayAccess<string, mixed>|array<string, mixed>
-     */
-    protected ArrayAccess|array $data;
 
     /**
      * Constructor
@@ -52,10 +45,9 @@ class Identity implements IdentityInterface
      * @param \ArrayAccess<string, mixed>|array<string, mixed> $data Identity data
      * @param array<string, mixed> $config Config options
      */
-    public function __construct(ArrayAccess|array $data, array $config = [])
+    public function __construct(protected ArrayAccess|array $data, array $config = [])
     {
         $this->setConfig($config);
-        $this->data = $data;
     }
 
     /**
@@ -104,7 +96,7 @@ class Identity implements IdentityInterface
             return $this->data;
         }
 
-        $map = $this->_config['fieldMap'];
+        $map = $this->config['fieldMap'];
         if (isset($map[$field])) {
             $field = $map[$field];
         }
@@ -179,7 +171,7 @@ class Identity implements IdentityInterface
     public function __debugInfo(): array
     {
         return [
-            'config' => $this->_config,
+            'config' => $this->config,
             'data' => $this->data,
         ];
     }

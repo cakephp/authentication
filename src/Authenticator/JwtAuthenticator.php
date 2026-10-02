@@ -34,7 +34,7 @@ class JwtAuthenticator extends TokenAuthenticator
     /**
      * @inheritDoc
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'header' => 'Authorization',
         'queryParam' => 'token',
         'tokenPrefix' => 'bearer',
@@ -57,7 +57,7 @@ class JwtAuthenticator extends TokenAuthenticator
     {
         parent::__construct($identifier, $config);
 
-        if (empty($this->_config['secretKey'])) {
+        if (empty($this->config['secretKey'])) {
             if (!class_exists(Security::class)) {
                 throw new RuntimeException('You must set the `secretKey` config key for JWT authentication.');
             }
@@ -74,7 +74,7 @@ class JwtAuthenticator extends TokenAuthenticator
      */
     public function getIdentifier(): IdentifierInterface
     {
-        return $this->_identifier ??= IdentifierFactory::create('Authentication.JwtSubject');
+        return $this->identifier ??= IdentifierFactory::create('Authentication.JwtSubject');
     }
 
     /**

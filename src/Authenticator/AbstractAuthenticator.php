@@ -31,7 +31,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'fields' => [
             PasswordIdentifier::CREDENTIAL_USERNAME => 'username',
             PasswordIdentifier::CREDENTIAL_PASSWORD => 'password',
@@ -39,19 +39,13 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     ];
 
     /**
-     * Identifier instance.
-     */
-    protected ?IdentifierInterface $_identifier = null;
-
-    /**
      * Constructor
      *
      * @param \Authentication\Identifier\IdentifierInterface|null $identifier Identifier instance.
      * @param array<string, mixed> $config Configuration settings.
      */
-    public function __construct(?IdentifierInterface $identifier = null, array $config = [])
+    public function __construct(protected ?IdentifierInterface $identifier = null, array $config = [])
     {
-        $this->_identifier = $identifier;
         $this->setConfig($config);
     }
 
@@ -66,7 +60,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     public function getIdentifier(): IdentifierInterface
     {
-        if (!$this->_identifier instanceof IdentifierInterface) {
+        if (!$this->identifier instanceof IdentifierInterface) {
             throw new MissingIdentifierException(
                 sprintf(
                     'Identifier is required for `%s`. Please provide an identifier instance.',
@@ -75,7 +69,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
             );
         }
 
-        return $this->_identifier;
+        return $this->identifier;
     }
 
     /**
@@ -84,9 +78,9 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      * @param \Authentication\Identifier\IdentifierInterface $identifier IdentifierInterface instance.
      * @return $this
      */
-    public function setIdentifier(IdentifierInterface $identifier)
+    public function setIdentifier(IdentifierInterface $identifier): static
     {
-        $this->_identifier = $identifier;
+        $this->identifier = $identifier;
 
         return $this;
     }

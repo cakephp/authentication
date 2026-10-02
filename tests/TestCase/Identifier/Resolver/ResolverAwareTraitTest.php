@@ -112,7 +112,7 @@ class ResolverAwareTraitTest extends TestCase
         $object = new class {
             use ResolverAwareTrait;
 
-            public function getConfig()
+            public function getConfig(): null
             {
                 return null;
             }

@@ -31,7 +31,7 @@ trait UrlCheckerTrait
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return bool
      */
-    protected function _checkUrl(ServerRequestInterface $request): bool
+    protected function checkUrl(ServerRequestInterface $request): bool
     {
         $loginUrl = $this->getConfig('loginUrl');
         if ($loginUrl === null) {

@@ -24,4 +24,5 @@ jobs:
       enable-spell-check: true
       enable-markdown-lint: true
       enable-link-check: true
+      cspell-config: 'docs/cspell.json'
       tools-ref: '5.x'

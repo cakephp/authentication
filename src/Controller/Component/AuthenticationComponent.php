@@ -39,14 +39,9 @@ use UnexpectedValueException;
 
 /**
  * Controller Component for interacting with Authentication.
- *
- * @implements \Cake\Event\EventDispatcherInterface<\Cake\Controller\Controller>
  */
 class AuthenticationComponent extends Component implements EventDispatcherInterface
 {
-    /**
-     * @use \Cake\Event\EventDispatcherTrait<\Cake\Controller\Controller>
-     */
     use EventDispatcherTrait;
 
     /**
@@ -60,7 +55,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'logoutRedirect' => false,
         'requireIdentity' => true,
         'identityAttribute' => 'identity',
@@ -78,7 +73,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
     /**
      * Authentication service instance.
      */
-    protected ?AuthenticationServiceInterface $_authentication = null;
+    protected ?AuthenticationServiceInterface $authentication = null;
 
     /**
      * Initialize component.
@@ -141,8 +136,8 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      */
     public function getAuthenticationService(): AuthenticationServiceInterface
     {
-        if ($this->_authentication instanceof AuthenticationServiceInterface) {
-            return $this->_authentication;
+        if ($this->authentication instanceof AuthenticationServiceInterface) {
+            return $this->authentication;
         }
 
         $controller = $this->getController();
@@ -158,7 +153,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             throw new Exception('Authentication service does not implement ' . AuthenticationServiceInterface::class);
         }
 
-        $this->_authentication = $service;
+        $this->authentication = $service;
 
         return $service;
     }
@@ -210,7 +205,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @param array<string> $actions The action list.
      * @return $this
      */
-    public function allowUnauthenticated(array $actions)
+    public function allowUnauthenticated(array $actions): static
     {
         $this->unauthenticatedActions = $actions;
 
@@ -223,7 +218,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @param array<string> $actions The action or actions to append.
      * @return $this
      */
-    public function addUnauthenticatedActions(array $actions)
+    public function addUnauthenticatedActions(array $actions): static
     {
         $this->unauthenticatedActions = array_merge($this->unauthenticatedActions, $actions);
         $this->unauthenticatedActions = array_values(array_unique($this->unauthenticatedActions));
@@ -302,7 +297,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @param \ArrayAccess|array $identity Identity data to persist.
      * @return $this
      */
-    public function setIdentity(ArrayAccess|array $identity)
+    public function setIdentity(ArrayAccess|array $identity): static
     {
         $controller = $this->getController();
         $service = $this->getAuthenticationService();
@@ -337,7 +332,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @param \ArrayAccess|array $identity Identity data or an identity object.
      * @return $this
      */
-    public function replaceIdentity(ArrayAccess|array $identity)
+    public function replaceIdentity(ArrayAccess|array $identity): static
     {
         $controller = $this->getController();
         $service = $this->getAuthenticationService();
@@ -442,7 +437,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @throws \Exception
      * @see https://book.cakephp.org/authentication/3/en/impersonation.html
      */
-    public function impersonate(ArrayAccess $impersonated)
+    public function impersonate(ArrayAccess $impersonated): static
     {
         $service = $this->getImpersonationAuthenticationService();
 
@@ -480,7 +475,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
      * @throws \Exception
      * @see https://book.cakephp.org/authentication/3/en/impersonation.html
      */
-    public function stopImpersonating()
+    public function stopImpersonating(): static
     {
         $service = $this->getImpersonationAuthenticationService();
 

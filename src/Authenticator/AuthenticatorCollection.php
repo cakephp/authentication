@@ -35,7 +35,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return \Authentication\Authenticator\AuthenticatorInterface
      * @throws \RuntimeException
      */
-    protected function _create(object|string $class, string $alias, array $config): AuthenticatorInterface
+    protected function create(object|string $class, string $alias, array $config): AuthenticatorInterface
     {
         if (is_string($class)) {
             $identifier = null;
@@ -55,7 +55,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @param string $class Class name to be resolved.
      * @return class-string<\Authentication\Authenticator\AuthenticatorInterface>|null
      */
-    protected function _resolveClassName(string $class): ?string
+    protected function resolveClassName(string $class): ?string
     {
         /** @var class-string<\Authentication\Authenticator\AuthenticatorInterface>|null */
         return App::className($class, 'Authenticator', 'Authenticator');
@@ -67,7 +67,7 @@ class AuthenticatorCollection extends AbstractCollection
      * @return void
      * @throws \RuntimeException
      */
-    protected function _throwMissingClassError(string $class, ?string $plugin): void
+    protected function throwMissingClassError(string $class, ?string $plugin): void
     {
         if ($plugin) {
             $class = $plugin . '.' . $class;

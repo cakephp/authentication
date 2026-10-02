@@ -34,7 +34,7 @@ class MultiUrlChecker implements UrlCheckerInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultOptions = [
+    protected array $defaultOptions = [
         'useRegex' => false,
         'checkFullUrl' => false,
     ];
@@ -44,22 +44,19 @@ class MultiUrlChecker implements UrlCheckerInterface
      */
     public function check(ServerRequestInterface $request, array|string $loginUrls, array $options = []): bool
     {
-        $options = $this->_mergeDefaultOptions($options);
+        $options = $this->mergeDefaultOptions($options);
 
         // For a single URL (string or array route), convert to array
-        $urls = is_string($loginUrls) || $this->_isSingleRoute($loginUrls) ? [$loginUrls] : $loginUrls;
+        $urls = is_string($loginUrls) || $this->isSingleRoute($loginUrls) ? [$loginUrls] : $loginUrls;
 
-        if (!$urls) {
+        if ($urls === []) {
             return true;
         }
 
-        foreach ($urls as $url) {
-            if ($this->_checkSingleUrl($request, $url, $options)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $urls,
+            fn($url) => $this->checkSingleUrl($request, $url, $options),
+        );
     }
 
     /**
@@ -68,13 +65,13 @@ class MultiUrlChecker implements UrlCheckerInterface
      * @param array|string $value The value to check
      * @return bool
      */
-    protected function _isSingleRoute(array|string $value): bool
+    protected function isSingleRoute(array|string $value): bool
     {
         if (!is_array($value)) {
             return false;
         }
 
-        if (!$value) {
+        if ($value === []) {
             return false;
         }
         $firstKey = array_key_first($value);
@@ -90,7 +87,7 @@ class MultiUrlChecker implements UrlCheckerInterface
      * @param array<string, mixed> $options Options array.
      * @return bool
      */
-    protected function _checkSingleUrl(ServerRequestInterface $request, array|string $url, array $options): bool
+    protected function checkSingleUrl(ServerRequestInterface $request, array|string $url, array $options): bool
     {
         $checker = new DefaultUrlChecker();
 
@@ -103,8 +100,8 @@ class MultiUrlChecker implements UrlCheckerInterface
      * @param array<string, mixed> $options The options to merge.
      * @return array<string, mixed>
      */
-    protected function _mergeDefaultOptions(array $options): array
+    protected function mergeDefaultOptions(array $options): array
     {
-        return $options + $this->_defaultOptions;
+        return $options + $this->defaultOptions;
     }
 }

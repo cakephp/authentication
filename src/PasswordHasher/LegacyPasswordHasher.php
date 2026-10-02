@@ -32,7 +32,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      * - `hashType` String identifier of the hash type to use on the password. (e.g 'sha256' or 'md5')
      * - `salt` Boolean flag for salting the password in a hash, or check.
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'hashType' => null,
         'salt' => true,
     ];
@@ -59,7 +59,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      */
     public function hash(string $password): string
     {
-        return Security::hash($password, $this->_config['hashType'], $this->_config['salt']);
+        return Security::hash($password, $this->config['hashType'], $this->config['salt']);
     }
 
     /**

@@ -42,7 +42,8 @@
       "collapsed": true,
       "items": [
         { "text": "Upgrading from 2.x to 3.x", "link": "/upgrade-2-to-3" },
-        { "text": "Upgrading from 3.x to 4.x", "link": "/upgrade-3-to-4" }
+        { "text": "Upgrading from 3.x to 4.x", "link": "/upgrade-3-to-4" },
+        { "text": "Upgrading from 4.x to 5.x", "link": "/upgrade-4-to-5" }
       ]
     }
   ]

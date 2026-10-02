@@ -17,3 +17,4 @@
 - [Migration from the AuthComponent](migration-from-the-authcomponent)
 - [Upgrading from 2.x to 3.x](upgrade-2-to-3)
 - [Upgrading from 3.x to 4.x](upgrade-3-to-4)
+- [Upgrading from 4.x to 5.x](upgrade-4-to-5)

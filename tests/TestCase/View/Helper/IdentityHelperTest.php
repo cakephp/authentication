@@ -41,7 +41,7 @@ class IdentityHelperTest extends TestCase
                 'first_name' => 'cake',
             ],
         ]);
-        $request = (new ServerRequest())->withAttribute('identity', $identity);
+        $request = new ServerRequest()->withAttribute('identity', $identity);
         $view = new View($request);
 
         $helper = new IdentityHelper($view);
@@ -65,7 +65,7 @@ class IdentityHelperTest extends TestCase
                 'first_name' => 'cake',
             ],
         ]);
-        $request = (new ServerRequest())->withAttribute('customIdentity', $identity);
+        $request = new ServerRequest()->withAttribute('customIdentity', $identity);
         $view = new View($request);
 
         $helper = new IdentityHelper($view, ['identityAttribute' => 'customIdentity']);
@@ -99,7 +99,7 @@ class IdentityHelperTest extends TestCase
         $identity = new Identity([
             'id' => 1,
         ]);
-        $request = (new ServerRequest())->withAttribute('identity', $identity);
+        $request = new ServerRequest()->withAttribute('identity', $identity);
         $view = new View($request);
 
         $helper = new IdentityHelper($view);
