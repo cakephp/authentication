@@ -110,9 +110,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         $password = $user[$field];
 
         $server = $request->getServerParams();
-        if (!isset($server['ORIGINAL_REQUEST_METHOD'])) {
-            $server['ORIGINAL_REQUEST_METHOD'] = $server['REQUEST_METHOD'];
-        }
+        $server['ORIGINAL_REQUEST_METHOD'] ??= $server['REQUEST_METHOD'];
 
         $hash = $this->generateResponseHash($digest, $password, $server['ORIGINAL_REQUEST_METHOD']);
         if (hash_equals($hash, $digest['response'])) {

@@ -254,7 +254,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             return false;
         }
 
-        return !(isset($options['time_cost']) && $options['time_cost'] > $limits['time_cost']);
+        return !isset($options['time_cost']) || $options['time_cost'] <= $limits['time_cost'];
     }
 
     /**
