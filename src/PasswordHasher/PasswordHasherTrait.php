@@ -24,9 +24,7 @@ trait PasswordHasherTrait
      */
     public function getPasswordHasher(): PasswordHasherInterface
     {
-        if ($this->_passwordHasher === null) {
-            $this->_passwordHasher = new DefaultPasswordHasher();
-        }
+        $this->_passwordHasher ??= new DefaultPasswordHasher();
 
         return $this->_passwordHasher;
     }

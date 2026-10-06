@@ -125,11 +125,9 @@ class PasswordIdentifier extends AbstractIdentifier
     {
         $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
 
-        if ($identity === null) {
-            $identity = [
-                $passwordField => '',
-            ];
-        }
+        $identity ??= [
+            $passwordField => '',
+        ];
 
         $hasher = $this->getPasswordHasher();
         $hashedPassword = $identity[$passwordField];
