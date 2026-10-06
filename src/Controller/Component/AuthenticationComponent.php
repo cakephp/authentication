@@ -39,14 +39,9 @@ use UnexpectedValueException;
 
 /**
  * Controller Component for interacting with Authentication.
- *
- * @implements \Cake\Event\EventDispatcherInterface<\Cake\Controller\Controller>
  */
 class AuthenticationComponent extends Component implements EventDispatcherInterface
 {
-    /**
-     * @use \Cake\Event\EventDispatcherTrait<\Cake\Controller\Controller>
-     */
     use EventDispatcherTrait;
 
     /**
