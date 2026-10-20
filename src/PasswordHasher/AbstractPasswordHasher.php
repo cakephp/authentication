@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Authentication\PasswordHasher;
 
 use Cake\Core\InstanceConfigTrait;
+use SensitiveParameter;
 
 /**
  * Abstract password hashing class
@@ -51,7 +52,7 @@ abstract class AbstractPasswordHasher implements PasswordHasherInterface
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash(string $password): bool
+    public function needsRehash(#[SensitiveParameter] string $password): bool
     {
         return password_needs_rehash($password, PASSWORD_DEFAULT);
     }

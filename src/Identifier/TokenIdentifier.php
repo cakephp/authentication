@@ -19,6 +19,7 @@ namespace Authentication\Identifier;
 use ArrayAccess;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Cake\Utility\Security;
+use SensitiveParameter;
 
 /**
  * Token Identifier
@@ -44,7 +45,7 @@ class TokenIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials): ArrayAccess|array|null
+    public function identify(#[SensitiveParameter] array $credentials): ArrayAccess|array|null
     {
         $dataField = $this->getConfig('dataField');
         if (!isset($credentials[$dataField])) {

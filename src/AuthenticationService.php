@@ -555,4 +555,37 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
 
         return $provider;
     }
+
+    /**
+     * Debug info.
+     *
+     * Nested authenticator configuration can contain secrets such as the
+     * JWT `secretKey`, the digest `secret` or a string `salt` HMAC key.
+     * Those keys are redacted so debug output never contains them.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        $config = $this->_config;
+        if (isset($config['authenticators']) && is_array($config['authenticators'])) {
+            foreach ($config['authenticators'] as $name => $authenticatorConfig) {
+                if (!is_array($authenticatorConfig)) {
+                    continue;
+                }
+                foreach (['secretKey', 'secret', 'salt'] as $secretKey) {
+                    if (isset($authenticatorConfig[$secretKey])) {
+                        $config['authenticators'][$name][$secretKey] = '*****';
+                    }
+                }
+            }
+        }
+
+        return [
+            'config' => $config,
+            'authenticators' => $this->_authenticators,
+            'successfulAuthenticator' => $this->_successfulAuthenticator,
+            'result' => $this->_result,
+        ];
+    }
 }
