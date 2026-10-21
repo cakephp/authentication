@@ -27,6 +27,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use SensitiveParameter;
 use stdClass;
 
 class JwtAuthenticator extends TokenAuthenticator
@@ -158,7 +159,7 @@ class JwtAuthenticator extends TokenAuthenticator
      * @param string $token JWT token to decode.
      * @return object|null The JWT's payload as a PHP object, null on failure.
      */
-    protected function decodeToken(string $token): ?object
+    protected function decodeToken(#[SensitiveParameter] string $token): ?object
     {
         $jsonWebKeySet = $this->getConfig('jwks');
         if ($jsonWebKeySet) {
@@ -173,5 +174,28 @@ class JwtAuthenticator extends TokenAuthenticator
         $key = new Key($this->getConfig('secretKey'), $this->getConfig('algorithm'));
 
         return JWT::decode($token, $key);
+    }
+
+    /**
+     * Debug info.
+     *
+     * Redacts the `secretKey` configuration value so that debug output
+     * never contains the full signing secret. The last 4 bytes are kept
+     * visible so the configured key can be verified.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        $config = $this->_config;
+        if (isset($config['secretKey']) && is_string($config['secretKey'])) {
+            $config['secretKey'] = static::redactSecret($config['secretKey']);
+        }
+
+        return [
+            'config' => $config,
+            'identifier' => $this->_identifier,
+            'payload' => $this->payload,
+        ];
     }
 }

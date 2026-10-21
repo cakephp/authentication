@@ -22,6 +22,7 @@ use Authentication\Identifier\Resolver\ResolverInterface;
 use Authentication\PasswordHasher\PasswordHasherFactory;
 use Authentication\PasswordHasher\PasswordHasherInterface;
 use Authentication\PasswordHasher\PasswordHasherTrait;
+use SensitiveParameter;
 
 /**
  * Password Identifier
@@ -95,7 +96,7 @@ class PasswordIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials): ArrayAccess|array|null
+    public function identify(#[SensitiveParameter] array $credentials): ArrayAccess|array|null
     {
         if (!isset($credentials[self::CREDENTIAL_USERNAME])) {
             return null;
@@ -121,8 +122,10 @@ class PasswordIdentifier extends AbstractIdentifier
      * @param string|null $password The password.
      * @return bool
      */
-    protected function _checkPassword(ArrayAccess|array|null $identity, ?string $password): bool
-    {
+    protected function _checkPassword(
+        #[SensitiveParameter] ArrayAccess|array|null $identity,
+        #[SensitiveParameter] ?string $password,
+    ): bool {
         $passwordField = $this->getConfig('fields.' . self::CREDENTIAL_PASSWORD);
 
         $identity ??= [

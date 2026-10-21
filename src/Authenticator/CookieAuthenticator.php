@@ -31,6 +31,7 @@ use DateTimeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use SensitiveParameter;
 use UnexpectedValueException;
 
 /**
@@ -151,7 +152,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param array $token The decoded token parts.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    protected function _authenticateToken(array $token): ResultInterface
+    protected function _authenticateToken(#[SensitiveParameter] array $token): ResultInterface
     {
         [$username, $expires, $tokenHash] = $token;
         if (!is_string($username) || !is_numeric($expires) || !is_string($tokenHash)) {
@@ -198,7 +199,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param array $token The decoded token parts.
      * @return \Authentication\Authenticator\ResultInterface
      */
-    protected function _authenticateLegacyToken(array $token): ResultInterface
+    protected function _authenticateLegacyToken(#[SensitiveParameter] array $token): ResultInterface
     {
         [$username, $tokenHash] = $token;
         if (!is_string($username) || !is_string($tokenHash)) {
@@ -267,7 +268,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @param \ArrayAccess<string, mixed>|array<string, mixed> $identity Identity data.
      * @return string
      */
-    protected function _createLegacyPlainToken(ArrayAccess|array $identity): string
+    protected function _createLegacyPlainToken(#[SensitiveParameter] ArrayAccess|array $identity): string
     {
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
@@ -348,7 +349,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * @return string
      * @throws \JsonException
      */
-    protected function _createToken(ArrayAccess|array $identity): string
+    protected function _createToken(#[SensitiveParameter] ArrayAccess|array $identity): string
     {
         $usernameField = $this->getConfig('fields.username');
         $passwordField = $this->getConfig('fields.password');
@@ -447,5 +448,29 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
             $value,
             $options,
         );
+    }
+
+    /**
+     * Debug info.
+     *
+     * Redacts the `salt` configuration value when it is a string as a
+     * string salt is used as the HMAC key for remember-me tokens. The
+     * last 4 bytes are kept visible so the configured salt can be
+     * verified.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        $config = $this->_config;
+        if (isset($config['salt']) && is_string($config['salt'])) {
+            $config['salt'] = static::redactSecret($config['salt']);
+        }
+
+        return [
+            'config' => $config,
+            'identifier' => $this->_identifier,
+            'passwordHasher' => $this->_passwordHasher,
+        ];
     }
 }
