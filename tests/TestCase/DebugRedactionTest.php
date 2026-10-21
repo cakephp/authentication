@@ -22,10 +22,12 @@ use Authentication\Authenticator\HttpDigestAuthenticator;
 use Authentication\Authenticator\JwtAuthenticator;
 use Cake\Error\Debugger;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Ensures secrets are redacted from debug output (`var_dump()` and
- * CakePHP's `Debugger::exportVar()`) via `__debugInfo()`.
+ * CakePHP's `Debugger::exportVar()`) via `__debugInfo()`, while keeping
+ * the last 4 bytes visible so configured values can be verified.
  */
 class DebugRedactionTest extends TestCase
 {
@@ -44,6 +46,38 @@ class DebugRedactionTest extends TestCase
         return $varDump . Debugger::exportVar($object);
     }
 
+    /**
+     * Secrets and the redacted value expected for them.
+     *
+     * Secrets longer than 8 bytes keep their last 4 bytes visible, shorter
+     * ones are masked entirely.
+     *
+     * @return array<string, array{string, string}>
+     */
+    public static function secretProvider(): array
+    {
+        return [
+            'long secret keeps last 4 bytes' => ['planted-hmac-salt-2f9c', '*****2f9c'],
+            'secret of 9 bytes keeps last 4 bytes' => ['123456789', '*****6789'],
+            'secret of 8 bytes is fully masked' => ['12345678', '*****'],
+            'secret of 4 bytes is fully masked' => ['1234', '*****'],
+            'empty secret' => ['', '*****'],
+        ];
+    }
+
+    /**
+     * @param string $secret Configured secret
+     * @param string $expected Expected redacted value
+     * @return void
+     */
+    #[DataProvider('secretProvider')]
+    public function testRedactedSecretFormat(string $secret, string $expected): void
+    {
+        $authenticator = new CookieAuthenticator(null, ['salt' => $secret]);
+
+        $this->assertSame($expected, $authenticator->__debugInfo()['config']['salt']);
+    }
+
     public function testJwtAuthenticatorRedactsSecretKey(): void
     {
         $authenticator = new JwtAuthenticator(null, [
@@ -54,21 +88,21 @@ class DebugRedactionTest extends TestCase
         $output = $this->debugOutput($authenticator);
 
         $this->assertStringNotContainsString('planted-jwt-secret', $output);
-        $this->assertSame('*****', $authenticator->__debugInfo()['config']['secretKey']);
+        $this->assertSame('*****cret', $authenticator->__debugInfo()['config']['secretKey']);
         $this->assertStringContainsString('HS256', $output, 'Non sensitive config keys must stay visible.');
     }
 
     public function testHttpDigestAuthenticatorRedactsSecret(): void
     {
         $authenticator = new HttpDigestAuthenticator(null, [
-            'secret' => 'planted-digest-secret',
+            'secret' => 'planted-digest-nonce-4f2e',
             'qop' => 'auth',
         ]);
 
         $output = $this->debugOutput($authenticator);
 
-        $this->assertStringNotContainsString('planted-digest-secret', $output);
-        $this->assertSame('*****', $authenticator->__debugInfo()['config']['secret']);
+        $this->assertStringNotContainsString('planted-digest-nonce-4f2e', $output);
+        $this->assertSame('*****4f2e', $authenticator->__debugInfo()['config']['secret']);
         $this->assertStringContainsString('qop', $output, 'Non sensitive config keys must stay visible.');
     }
 
@@ -82,7 +116,7 @@ class DebugRedactionTest extends TestCase
         $output = $this->debugOutput($authenticator);
 
         $this->assertStringNotContainsString('planted-hmac-salt', $output);
-        $this->assertSame('*****', $authenticator->__debugInfo()['config']['salt']);
+        $this->assertSame('*****salt', $authenticator->__debugInfo()['config']['salt']);
         $this->assertStringContainsString('remember_me', $output, 'Non sensitive config keys must stay visible.');
     }
 
@@ -98,29 +132,36 @@ class DebugRedactionTest extends TestCase
         $service = new AuthenticationService([
             'authenticators' => [
                 'Authentication.Jwt' => [
-                    'secretKey' => 'planted-service-jwt-secret',
+                    'secretKey' => 'planted-service-jwt-key-a1b2',
                 ],
                 'Authentication.HttpDigest' => [
-                    'secret' => 'planted-service-digest-secret',
+                    'secret' => 'planted-service-digest-c3d4',
                 ],
                 'Authentication.Cookie' => [
                     'salt' => 'planted-service-cookie-salt',
                     'rememberMeField' => 'remember_me',
+                ],
+                'Authentication.Session' => [
+                    'salt' => true,
                 ],
             ],
         ]);
 
         $output = $this->debugOutput($service);
 
-        $this->assertStringNotContainsString('planted-service-jwt-secret', $output);
-        $this->assertStringNotContainsString('planted-service-digest-secret', $output);
+        $this->assertStringNotContainsString('planted-service-jwt-key-a1b2', $output);
+        $this->assertStringNotContainsString('planted-service-digest-c3d4', $output);
         $this->assertStringNotContainsString('planted-service-cookie-salt', $output);
 
         $nested = $service->__debugInfo()['config']['authenticators'];
-        $this->assertSame('*****', $nested['Authentication.Jwt']['secretKey']);
-        $this->assertSame('*****', $nested['Authentication.HttpDigest']['secret']);
-        $this->assertSame('*****', $nested['Authentication.Cookie']['salt']);
+        $this->assertSame('*****a1b2', $nested['Authentication.Jwt']['secretKey']);
+        $this->assertSame('*****c3d4', $nested['Authentication.HttpDigest']['secret']);
+        $this->assertSame('*****salt', $nested['Authentication.Cookie']['salt']);
         $this->assertSame('remember_me', $nested['Authentication.Cookie']['rememberMeField'], 'Non sensitive config keys must stay visible.');
+        $this->assertTrue(
+            $nested['Authentication.Session']['salt'],
+            'A boolean salt flag is not a secret and must stay visible.',
+        );
 
         $this->assertStringContainsString('remember_me', $output, 'Non sensitive config keys must stay visible.');
         $this->assertStringContainsString('identityClass', $output, 'Top level config keys must stay visible.');

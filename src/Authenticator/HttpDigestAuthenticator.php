@@ -289,15 +289,16 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * Debug info.
      *
      * Redacts the `secret` configuration value so that debug output
-     * never contains the nonce signing secret.
+     * never contains the full nonce signing secret. The last 4 bytes are
+     * kept visible so the configured secret can be verified.
      *
      * @return array<string, mixed>
      */
     public function __debugInfo(): array
     {
         $config = $this->_config;
-        if (isset($config['secret'])) {
-            $config['secret'] = '*****';
+        if (isset($config['secret']) && is_string($config['secret'])) {
+            $config['secret'] = static::redactSecret($config['secret']);
         }
 
         return [

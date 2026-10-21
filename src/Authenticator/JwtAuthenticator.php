@@ -180,15 +180,16 @@ class JwtAuthenticator extends TokenAuthenticator
      * Debug info.
      *
      * Redacts the `secretKey` configuration value so that debug output
-     * never contains the signing secret.
+     * never contains the full signing secret. The last 4 bytes are kept
+     * visible so the configured key can be verified.
      *
      * @return array<string, mixed>
      */
     public function __debugInfo(): array
     {
         $config = $this->_config;
-        if (isset($config['secretKey'])) {
-            $config['secretKey'] = '*****';
+        if (isset($config['secretKey']) && is_string($config['secretKey'])) {
+            $config['secretKey'] = static::redactSecret($config['secretKey']);
         }
 
         return [

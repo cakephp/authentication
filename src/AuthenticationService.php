@@ -38,6 +38,7 @@ use RuntimeException;
 class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface
 {
     use InstanceConfigTrait;
+    use RedactionTrait;
 
     /**
      * Authenticator collection
@@ -574,8 +575,9 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
                     continue;
                 }
                 foreach (['secretKey', 'secret', 'salt'] as $secretKey) {
-                    if (isset($authenticatorConfig[$secretKey])) {
-                        $config['authenticators'][$name][$secretKey] = '*****';
+                    $value = $authenticatorConfig[$secretKey] ?? null;
+                    if (is_string($value)) {
+                        $config['authenticators'][$name][$secretKey] = static::redactSecret($value);
                     }
                 }
             }

@@ -454,7 +454,9 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
      * Debug info.
      *
      * Redacts the `salt` configuration value when it is a string as a
-     * string salt is used as the HMAC key for remember-me tokens.
+     * string salt is used as the HMAC key for remember-me tokens. The
+     * last 4 bytes are kept visible so the configured salt can be
+     * verified.
      *
      * @return array<string, mixed>
      */
@@ -462,7 +464,7 @@ class CookieAuthenticator extends AbstractAuthenticator implements PersistenceIn
     {
         $config = $this->_config;
         if (isset($config['salt']) && is_string($config['salt'])) {
-            $config['salt'] = '*****';
+            $config['salt'] = static::redactSecret($config['salt']);
         }
 
         return [
