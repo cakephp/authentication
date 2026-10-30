@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Authentication\Identifier;
 
 use ArrayAccess;
+use SensitiveParameter;
 
 interface IdentifierInterface
 {
@@ -26,7 +27,7 @@ interface IdentifierInterface
      * @param array<string, mixed> $credentials Authentication credentials
      * @return \ArrayAccess<string, mixed>|array<string, mixed>|null
      */
-    public function identify(array $credentials): ArrayAccess|array|null;
+    public function identify(#[SensitiveParameter] array $credentials): ArrayAccess|array|null;
 
     /**
      * Gets a list of errors happened in the identification process

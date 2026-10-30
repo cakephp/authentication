@@ -15,6 +15,8 @@ declare(strict_types=1);
  */
 namespace Authentication\PasswordHasher;
 
+use SensitiveParameter;
+
 /**
  * PasswordHasherInterface
  */
@@ -26,7 +28,7 @@ interface PasswordHasherInterface
      * @param string $password Plain text password to hash.
      * @return string Password hash
      */
-    public function hash(string $password): string;
+    public function hash(#[SensitiveParameter] string $password): string;
 
     /**
      * Check hash. Generate hash from user provided password string or data array
@@ -36,7 +38,10 @@ interface PasswordHasherInterface
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check(string $password, string $hashedPassword): bool;
+    public function check(
+        #[SensitiveParameter] string $password,
+        #[SensitiveParameter] string $hashedPassword,
+    ): bool;
 
     /**
      * Returns true if the password need to be rehashed, due to the password being
@@ -48,5 +53,5 @@ interface PasswordHasherInterface
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash(string $password): bool;
+    public function needsRehash(#[SensitiveParameter] string $password): bool;
 }

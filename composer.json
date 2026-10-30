@@ -23,7 +23,7 @@
         "docs": "https://book.cakephp.org/authentication/4/en/"
     },
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "cakephp/http": "^5.0",
         "cakephp/utility": "^5.0",
         "laminas/laminas-diactoros": "^3.0",

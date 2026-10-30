@@ -16,6 +16,8 @@ declare(strict_types=1);
  */
 namespace Authentication\Identifier\Ldap;
 
+use SensitiveParameter;
+
 interface AdapterInterface
 {
     /**
@@ -25,7 +27,7 @@ interface AdapterInterface
      * @param string $password Bind password
      * @return bool
      */
-    public function bind(string $bind, string $password): bool;
+    public function bind(string $bind, #[SensitiveParameter] string $password): bool;
 
     /**
      * Connect to an LDAP server
