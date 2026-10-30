@@ -122,7 +122,7 @@ class SensitiveParameterTest extends TestCase
                 'identify',
                 ['credentials'],
             ],
-            'PasswordIdentifier::_checkPassword' => [
+            'PasswordIdentifier::checkPassword' => [
                 PasswordIdentifier::class,
                 'checkPassword',
                 ['identity', 'password'],
@@ -137,7 +137,7 @@ class SensitiveParameterTest extends TestCase
                 'identify',
                 ['credentials'],
             ],
-            'LdapIdentifier::_bindUser' => [
+            'LdapIdentifier::bindUser' => [
                 LdapIdentifier::class,
                 'bindUser',
                 ['password'],
@@ -182,22 +182,22 @@ class SensitiveParameterTest extends TestCase
                 'decodeToken',
                 ['token'],
             ],
-            'CookieAuthenticator::_authenticateToken' => [
+            'CookieAuthenticator::authenticateToken' => [
                 CookieAuthenticator::class,
                 'authenticateToken',
                 ['token'],
             ],
-            'CookieAuthenticator::_authenticateLegacyToken' => [
+            'CookieAuthenticator::authenticateLegacyToken' => [
                 CookieAuthenticator::class,
                 'authenticateLegacyToken',
                 ['token'],
             ],
-            'CookieAuthenticator::_createLegacyPlainToken' => [
+            'CookieAuthenticator::createLegacyPlainToken' => [
                 CookieAuthenticator::class,
                 'createLegacyPlainToken',
                 ['identity'],
             ],
-            'CookieAuthenticator::_createToken' => [
+            'CookieAuthenticator::createToken' => [
                 CookieAuthenticator::class,
                 'createToken',
                 ['identity'],
@@ -213,7 +213,7 @@ class SensitiveParameterTest extends TestCase
     public static function plainParametersProvider(): array
     {
         return [
-            'LdapIdentifier::_bindUser username' => [
+            'LdapIdentifier::bindUser username' => [
                 LdapIdentifier::class,
                 'bindUser',
                 ['username'],
