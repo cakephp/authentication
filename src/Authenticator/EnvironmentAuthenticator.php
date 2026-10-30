@@ -66,7 +66,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return array<string, mixed>|null server params defined by `fields` or null if a field is missing.
      */
-    protected function _getData(ServerRequestInterface $request): ?array
+    protected function getData(ServerRequestInterface $request): ?array
     {
         $fields = $this->config['fields'];
         $params = $request->getServerParams();
@@ -94,7 +94,7 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
      * @param \Psr\Http\Message\ServerRequestInterface $request The request that contains login information.
      * @return array<string, mixed> server params defined by optionalFields.
      */
-    protected function _getOptionalData(ServerRequestInterface $request): array
+    protected function getOptionalData(ServerRequestInterface $request): array
     {
         $fields = $this->config['optionalFields'];
         $params = $request->getServerParams();
@@ -155,14 +155,14 @@ class EnvironmentAuthenticator extends AbstractAuthenticator
         if (!$this->checkUrl($request)) {
             return $this->buildLoginUrlErrorResult($request);
         }
-        $data = $this->_getData($request);
+        $data = $this->getData($request);
         if (!$data) {
             return new Result(null, Result::FAILURE_CREDENTIALS_MISSING, [
                 'Environment credentials not found',
             ]);
         }
 
-        $data = array_merge($this->_getOptionalData($request), $data);
+        $data = array_merge($this->getOptionalData($request), $data);
 
         $identifier = $this->getIdentifier();
         $user = $identifier->identify($data);

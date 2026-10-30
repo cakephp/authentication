@@ -71,6 +71,8 @@ class AuthenticationComponentTest extends TestCase
     {
         parent::setUp();
 
+        Router::fullBaseUrl('http://localhost');
+
         $this->identityData = new Entity([
             'username' => 'florian',
             'profession' => 'developer',
@@ -542,7 +544,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $response = $component->redirectAfterLogin($url);
-        $this->assertSame(Router::url('/ok/path?value=key'), $response?->getHeaderLine('Location'));
+        $this->assertSame(Router::url('http://localhost/cakephp/ok/path?value=key'), $response?->getHeaderLine('Location'));
 
         Configure::delete('App.base');
     }
@@ -569,7 +571,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $response = $component->redirectAfterLogin($url);
-        $this->assertSame('/dashboard', $response?->getHeaderLine('Location'));
+        $this->assertSame('http://localhost/dashboard', $response?->getHeaderLine('Location'));
     }
 
     /**
@@ -594,7 +596,7 @@ class AuthenticationComponentTest extends TestCase
         $component = new AuthenticationComponent($registry);
 
         $response = $component->redirectAfterLogin($url);
-        $this->assertSame('/dashboard', $response?->getHeaderLine('Location'));
+        $this->assertSame('http://localhost/dashboard', $response?->getHeaderLine('Location'));
     }
 
     /**

@@ -38,7 +38,7 @@ trait UrlCheckerTrait
             return true;
         }
 
-        return $this->_getUrlChecker()->check(
+        return $this->getUrlChecker()->check(
             $request,
             $loginUrl,
             (array)$this->getConfig('urlChecker'),
@@ -50,7 +50,7 @@ trait UrlCheckerTrait
      *
      * @return \Authentication\UrlChecker\UrlCheckerInterface
      */
-    protected function _getUrlChecker(): UrlCheckerInterface
+    protected function getUrlChecker(): UrlCheckerInterface
     {
         $options = $this->getConfig('urlChecker');
 
