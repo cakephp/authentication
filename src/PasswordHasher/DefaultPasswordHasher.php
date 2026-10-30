@@ -15,6 +15,8 @@ declare(strict_types=1);
  */
 namespace Authentication\PasswordHasher;
 
+use SensitiveParameter;
+
 /**
  * Default password hashing class.
  */
@@ -41,7 +43,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * @param string $password Plain text password to hash.
      * @return string Password hash or false on failure.
      */
-    public function hash(string $password): string
+    public function hash(#[SensitiveParameter] string $password): string
     {
         return password_hash(
             $password,
@@ -57,8 +59,10 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check(string $password, string $hashedPassword): bool
-    {
+    public function check(
+        #[SensitiveParameter] string $password,
+        #[SensitiveParameter] string $hashedPassword,
+    ): bool {
         return password_verify($password, $hashedPassword);
     }
 
@@ -69,7 +73,7 @@ class DefaultPasswordHasher extends AbstractPasswordHasher
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash(string $password): bool
+    public function needsRehash(#[SensitiveParameter] string $password): bool
     {
         return password_needs_rehash($password, $this->config['hashType'], $this->config['hashOptions']);
     }

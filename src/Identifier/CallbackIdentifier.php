@@ -20,6 +20,7 @@ use ArrayAccess;
 use Authentication\Authenticator\Result;
 use InvalidArgumentException;
 use RuntimeException;
+use SensitiveParameter;
 
 /**
  * Callback Identifier
@@ -66,7 +67,7 @@ class CallbackIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials): ArrayAccess|array|null
+    public function identify(#[SensitiveParameter] array $credentials): ArrayAccess|array|null
     {
         $callback = $this->getConfig('callback');
 

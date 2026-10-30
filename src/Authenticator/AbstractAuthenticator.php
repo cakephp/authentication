@@ -18,12 +18,14 @@ namespace Authentication\Authenticator;
 
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\PasswordIdentifier;
+use Authentication\RedactionTrait;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
     use InstanceConfigTrait;
+    use RedactionTrait;
 
     /**
      * Default config for this object.

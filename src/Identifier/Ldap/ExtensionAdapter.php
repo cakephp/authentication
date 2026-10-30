@@ -19,6 +19,7 @@ namespace Authentication\Identifier\Ldap;
 use ErrorException;
 use LDAP\Connection;
 use RuntimeException;
+use SensitiveParameter;
 
 /**
  * Provides a very thin OOP wrapper around the ldap_* functions.
@@ -58,7 +59,7 @@ class ExtensionAdapter implements AdapterInterface
      * @param string $password Bind password
      * @return bool
      */
-    public function bind(string $bind, string $password): bool
+    public function bind(string $bind, #[SensitiveParameter] string $password): bool
     {
         $this->setErrorHandler();
         $result = ldap_bind($this->getConnection(), $bind, $password);

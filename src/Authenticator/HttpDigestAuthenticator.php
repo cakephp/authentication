@@ -20,6 +20,7 @@ use Authentication\Identifier\PasswordIdentifier;
 use Cake\Utility\Security;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
+use SensitiveParameter;
 
 /**
  * HttpDigest Authenticator
@@ -149,7 +150,7 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * @param string $digest The raw digest authentication headers.
      * @return array<string>|null An array of digest authentication headers
      */
-    public function parseAuthData(string $digest): ?array
+    public function parseAuthData(#[SensitiveParameter] string $digest): ?array
     {
         if (str_starts_with($digest, 'Digest ')) {
             $digest = substr($digest, 7);
@@ -179,8 +180,11 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * @param string $method Request method
      * @return string Response hash
      */
-    public function generateResponseHash(array $digest, string $password, string $method): string
-    {
+    public function generateResponseHash(
+        #[SensitiveParameter] array $digest,
+        #[SensitiveParameter] string $password,
+        string $method,
+    ): string {
         return md5(
             $password .
             ':' . $digest['nonce'] . ':' . $digest['nc'] . ':' . $digest['cnonce'] . ':' . $digest['qop'] . ':' .
@@ -196,8 +200,11 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
      * @param string $realm The realm the password is for.
      * @return string the hashed password that can later be used with Digest authentication.
      */
-    public static function password(string $username, string $password, string $realm): string
-    {
+    public static function password(
+        string $username,
+        #[SensitiveParameter] string $password,
+        string $realm,
+    ): string {
         return md5($username . ':' . $realm . ':' . $password);
     }
 
@@ -277,5 +284,27 @@ class HttpDigestAuthenticator extends HttpBasicAuthenticator
         $check = hash_hmac('sha1', $expires . ':' . $secret, (string)$secret);
 
         return hash_equals($check, $checksum);
+    }
+
+    /**
+     * Debug info.
+     *
+     * Redacts the `secret` configuration value so that debug output
+     * never contains the full nonce signing secret. The last 4 bytes are
+     * kept visible so the configured secret can be verified.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        $config = $this->config;
+        if (isset($config['secret']) && is_string($config['secret'])) {
+            $config['secret'] = static::redactSecret($config['secret']);
+        }
+
+        return [
+            'config' => $config,
+            'identifier' => $this->identifier,
+        ];
     }
 }

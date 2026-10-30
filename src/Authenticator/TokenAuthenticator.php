@@ -20,6 +20,7 @@ use Authentication\Identifier\IdentifierFactory;
 use Authentication\Identifier\IdentifierInterface;
 use Authentication\Identifier\TokenIdentifier;
 use Psr\Http\Message\ServerRequestInterface;
+use SensitiveParameter;
 
 /**
  * Token Authenticator
@@ -75,7 +76,7 @@ class TokenAuthenticator extends AbstractAuthenticator implements StatelessInter
      * @param string $prefix Prefix to strip
      * @return string
      */
-    protected function stripTokenPrefix(string $token, string $prefix): string
+    protected function stripTokenPrefix(#[SensitiveParameter] string $token, string $prefix): string
     {
         $prefixLength = mb_strlen($prefix);
         if (mb_substr(mb_strtolower($token), 0, $prefixLength) === mb_strtolower($prefix)) {

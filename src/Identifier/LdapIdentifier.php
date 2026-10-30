@@ -24,6 +24,7 @@ use Cake\Core\App;
 use ErrorException;
 use InvalidArgumentException;
 use RuntimeException;
+use SensitiveParameter;
 
 /**
  * LDAP Identifier
@@ -145,7 +146,7 @@ class LdapIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials): ArrayAccess|array|null
+    public function identify(#[SensitiveParameter] array $credentials): ArrayAccess|array|null
     {
         $this->connectLdap();
         $fields = $this->getConfig('fields');
@@ -195,8 +196,10 @@ class LdapIdentifier extends AbstractIdentifier
      * @param string $password The password
      * @return \ArrayAccess|null
      */
-    protected function bindUser(string $username, string $password): ?ArrayAccess
-    {
+    protected function bindUser(
+        string $username,
+        #[SensitiveParameter] string $password,
+    ): ?ArrayAccess {
         $config = $this->getConfig();
         try {
             $ldapBind = $this->ldap->bind($config['bindDN']($username), $password);

@@ -38,6 +38,7 @@ use RuntimeException;
 class AuthenticationService implements AuthenticationServiceInterface, ImpersonationInterface
 {
     use InstanceConfigTrait;
+    use RedactionTrait;
 
     /**
      * Authenticator collection
@@ -555,5 +556,39 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
         }
 
         return $provider;
+    }
+
+    /**
+     * Debug info.
+     *
+     * Nested authenticator configuration can contain secrets such as the
+     * JWT `secretKey`, the digest `secret` or a string `salt` HMAC key.
+     * Those keys are redacted so debug output never contains them.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        $config = $this->config;
+        if (isset($config['authenticators']) && is_array($config['authenticators'])) {
+            foreach ($config['authenticators'] as $name => $authenticatorConfig) {
+                if (!is_array($authenticatorConfig)) {
+                    continue;
+                }
+                foreach (['secretKey', 'secret', 'salt'] as $secretKey) {
+                    $value = $authenticatorConfig[$secretKey] ?? null;
+                    if (is_string($value)) {
+                        $config['authenticators'][$name][$secretKey] = static::redactSecret($value);
+                    }
+                }
+            }
+        }
+
+        return [
+            'config' => $config,
+            'authenticators' => $this->authenticators,
+            'successfulAuthenticator' => $this->successfulAuthenticator,
+            'result' => $this->result,
+        ];
     }
 }

@@ -19,6 +19,7 @@ use Cake\Core\Configure;
 use Cake\Error\Debugger;
 use Cake\Utility\Security;
 use RuntimeException;
+use SensitiveParameter;
 
 /**
  * Password hashing class that use weak hashing algorithms. This class is
@@ -57,7 +58,7 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      * @param string $password Plain text password to hash.
      * @return string Password hash
      */
-    public function hash(string $password): string
+    public function hash(#[SensitiveParameter] string $password): string
     {
         return Security::hash($password, $this->config['hashType'], $this->config['salt']);
     }
@@ -69,8 +70,10 @@ class LegacyPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check(string $password, string $hashedPassword): bool
-    {
+    public function check(
+        #[SensitiveParameter] string $password,
+        #[SensitiveParameter] string $hashedPassword,
+    ): bool {
         return $hashedPassword === $this->hash($password);
     }
 }
