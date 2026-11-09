@@ -280,6 +280,73 @@ class AuthenticationComponentTest extends TestCase
         );
     }
 
+    public function testSetIdentityWithCookieAuthDoNotRememberMe(): void
+    {
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Session' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+                'Authentication.Form' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+                'Authentication.Cookie' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+            ],
+        ]);
+        $request = $this->request->withAttribute('authentication', $service)
+            ->withData('remember_me', 0);
+
+        $controller = new Controller($request);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+        $component->setIdentity($this->identityData);
+
+        $result = $component->getIdentity();
+        $this->assertSame($this->identityData, $result->getOriginalData());
+        $expectedCookieHeader = [
+            'CookieAuth=; expires=Thu, 01-Jan-1970 00:00:01 GMT+0000; path=/',
+        ];
+        $actualCookieHeader = $controller->getResponse()->getHeader('Set-Cookie');
+        $this->assertSame($expectedCookieHeader, $actualCookieHeader);
+    }
+
+    public function testSetIdentityWithCookieAuthRememberMe(): void
+    {
+        $service = new AuthenticationService([
+            'authenticators' => [
+                'Authentication.Session' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+                'Authentication.Form' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+                'Authentication.Cookie' => [
+                    'identifier' => 'Authentication.Password',
+                ],
+            ],
+        ]);
+        $request = $this->request->withAttribute('authentication', $service)
+            ->withData('remember_me', 1);
+
+        $controller = new Controller($request);
+        $registry = new ComponentRegistry($controller);
+        $component = new AuthenticationComponent($registry);
+
+        $identityData = new Entity([
+            'username' => 'florian',
+            'password' => '$2y$10$u05j8FjsvLBNdfhBhc21LOuVMpzpabVXQ9OpC2wO3pSO0q6t7HHMO',
+        ]);
+        $component->setIdentity($identityData);
+        $result = $component->getIdentity();
+        $this->assertSame($identityData, $result->getOriginalData());
+        $actualCookieHeader = $controller->getResponse()->getHeader('Set-Cookie');
+        $this->assertCount(2, $actualCookieHeader);
+        $this->assertStringContainsString('CookieAuth=', $actualCookieHeader[1]);
+        $this->assertStringNotContainsString('expires=Thu, 01-Jan-1970 00:00:01 GMT+0000;', $actualCookieHeader[1]);
+    }
+
     /**
      * Ensure replaceIdentity() swaps the request attribute without
      * touching the session.
