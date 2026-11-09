@@ -76,7 +76,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         if ($this->subject instanceof ContainerApplicationInterface) {
             $container = $this->subject->getContainer();
             $container->add(AuthenticationService::class, $service);
-        } elseif ($this->container) {
+        } elseif ($this->container instanceof ContainerInterface) {
             $this->container->add(AuthenticationService::class, $service);
         }
 
