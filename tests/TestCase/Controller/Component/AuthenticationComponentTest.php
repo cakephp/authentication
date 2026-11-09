@@ -301,8 +301,8 @@ class AuthenticationComponentTest extends TestCase
         $controller = new Controller($request);
         $registry = new ComponentRegistry($controller);
         $component = new AuthenticationComponent($registry);
-
         $component->setIdentity($this->identityData);
+
         $result = $component->getIdentity();
         $this->assertSame($this->identityData, $result->getOriginalData());
         $expectedCookieHeader = [
