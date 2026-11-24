@@ -30,6 +30,7 @@ use Cake\Controller\Component;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Exception;
@@ -311,7 +312,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             $identity,
         );
 
-        $controller->setRequest($result['request']);
+        $this->updateRequest($result['request']);
         $controller->setResponse($result['response']);
 
         return $this;
@@ -339,7 +340,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $identity = $service->buildIdentity($identity);
 
-        $controller->setRequest(
+        $this->updateRequest(
             $controller->getRequest()->withAttribute(
                 $service->getIdentityAttribute(),
                 $identity,
@@ -365,7 +366,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             $controller->getResponse(),
         );
 
-        $controller->setRequest($result['request']);
+        $this->updateRequest($result['request']);
         $controller->setResponse($result['response']);
 
         $this->dispatchEvent('Authentication.logout', [], $controller);
@@ -462,7 +463,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             throw new UnexpectedValueException('An error has occurred impersonating user.');
         }
 
-        $controller->setRequest($result['request']);
+        $this->updateRequest($result['request']);
         $controller->setResponse($result['response']);
 
         return $this;
@@ -491,7 +492,7 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
             throw new UnexpectedValueException('An error has occurred stopping impersonation.');
         }
 
-        $controller->setRequest($result['request']);
+        $this->updateRequest($result['request']);
         $controller->setResponse($result['response']);
 
         return $this;
@@ -536,5 +537,20 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
         }
 
         return $service;
+    }
+
+    /**
+     * Set the request on the controller and on the Router.
+     *
+     * Keeping Router in sync ensures that errors raised later in the request
+     * are rendered with the current identity.
+     *
+     * @param \Cake\Http\ServerRequest $request The request.
+     * @return void
+     */
+    protected function updateRequest(ServerRequest $request): void
+    {
+        $this->getController()->setRequest($request);
+        Router::setRequest($request);
     }
 }
