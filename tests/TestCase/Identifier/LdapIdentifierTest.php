@@ -36,7 +36,7 @@ class LdapIdentifierTest extends TestCase
     public function testIdentify(): void
     {
         $host = 'ldap.example.com';
-        $bind = (fn(string $username): string => 'cn=' . $username . ',dc=example,dc=com');
+        $bind = fn(string $username): string => 'cn=' . $username . ',dc=example,dc=com';
         $options = [
             'foo' => 3,
             'tls' => false,

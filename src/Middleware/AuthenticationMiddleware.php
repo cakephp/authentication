@@ -25,11 +25,10 @@ use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Container\ContainerInterface;
 use Cake\Core\ContainerApplicationInterface;
+use Cake\Http\Response;
+use Cake\Http\Response\RedirectResponse;
 use Cake\Http\ServerRequest;
 use Cake\Routing\Router;
-use Laminas\Diactoros\Response;
-use Laminas\Diactoros\Response\RedirectResponse;
-use Laminas\Diactoros\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -73,11 +72,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
         try {
             $result = $service->authenticate($request);
         } catch (AuthenticationRequiredException $e) {
-            $body = new Stream('php://memory', 'rw');
-            $body->write($e->getBody());
             $response = new Response();
             $response = $response->withStatus($e->getCode())
-                ->withBody($body);
+                ->withStringBody($e->getBody());
             foreach ($e->getHeaders() as $header => $value) {
                 $response = $response->withHeader($header, $value);
             }
