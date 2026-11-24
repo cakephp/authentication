@@ -47,10 +47,7 @@ class LegacyPasswordHasherTest extends TestCase
         $hasher = new LegacyPasswordHasher();
         $this->assertTrue($hasher->needsRehash(md5('foo')));
         $this->assertTrue($hasher->needsRehash('bar'));
-        $hashCost = '10';
-        if (PHP_VERSION_ID >= 80400) {
-            $hashCost = '12';
-        }
+        $hashCost = '12';
         $this->assertFalse($hasher->needsRehash('$2y$' . $hashCost . '$juOA0XVFpvZa0KTxRxEYVuX5kIS7U1fKDRcxyYhhUQECN1oHYnBMy'));
     }
 

@@ -55,7 +55,7 @@ class MultiUrlChecker implements UrlCheckerInterface
 
         return array_any(
             $urls,
-            fn($url) => $this->checkSingleUrl($request, $url, $options),
+            fn($url): bool => $this->checkSingleUrl($request, $url, $options),
         );
     }
 

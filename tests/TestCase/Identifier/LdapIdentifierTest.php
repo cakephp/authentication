@@ -36,9 +36,7 @@ class LdapIdentifierTest extends TestCase
     public function testIdentify(): void
     {
         $host = 'ldap.example.com';
-        $bind = function (string $username): string {
-            return 'cn=' . $username . ',dc=example,dc=com';
-        };
+        $bind = (fn(string $username): string => 'cn=' . $username . ',dc=example,dc=com');
         $options = [
             'foo' => 3,
             'tls' => false,
@@ -81,9 +79,7 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function (): string {
-                return 'dc=example,dc=com';
-            },
+            'bindDN' => fn(): string => 'dc=example,dc=com',
             'ldap' => $ldap,
         ]);
 
@@ -108,9 +104,7 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function (): string {
-                return 'dc=example,dc=com';
-            },
+            'bindDN' => fn(): string => 'dc=example,dc=com',
         ]);
 
         $this->assertInstanceOf(ExtensionAdapter::class, $identifier->getAdapter());
@@ -130,9 +124,7 @@ class LdapIdentifierTest extends TestCase
 
         new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function (): string {
-                return 'dc=example,dc=com';
-            },
+            'bindDN' => fn(): string => 'dc=example,dc=com',
             'ldap' => $notLdap,
         ]);
     }
@@ -179,9 +171,7 @@ class LdapIdentifierTest extends TestCase
         $this->expectExceptionMessage('Config `host` is not set.');
 
         new LdapIdentifier([
-            'bindDN' => function (): string {
-                return 'dc=example,dc=com';
-            },
+            'bindDN' => fn(): string => 'dc=example,dc=com',
         ]);
     }
 
@@ -200,9 +190,7 @@ class LdapIdentifierTest extends TestCase
 
         $identifier = new LdapIdentifier([
             'host' => 'ldap.example.com',
-            'bindDN' => function (): string {
-                return 'dc=example,dc=com';
-            },
+            'bindDN' => fn(): string => 'dc=example,dc=com',
             'ldap' => $ldap,
         ]);
 

@@ -63,9 +63,7 @@ class CallbackIdentifierTest extends TestCase
     public function testValidCallable(): void
     {
         $identifier = new CallbackIdentifier([
-            'callback' => function (): Entity {
-                return new Entity();
-            },
+            'callback' => fn(): Entity => new Entity(),
         ]);
         $result = $identifier->identify([]);
 
@@ -108,9 +106,7 @@ class CallbackIdentifierTest extends TestCase
     {
         $this->expectException('RuntimeException');
         $identifier = new CallbackIdentifier([
-            'callback' => function ($data): string {
-                return 'no';
-            },
+            'callback' => fn($data): string => 'no',
         ]);
         $identifier->identify([]);
     }

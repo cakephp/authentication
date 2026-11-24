@@ -625,11 +625,9 @@ class AuthenticationServiceTest extends TestCase
             ['username' => 'mariano', 'password' => 'password'],
         );
 
-        $callable = function (): Identity {
-            return new Identity(new ArrayObject([
-                'id' => 'by-callable',
-            ]));
-        };
+        $callable = (fn(): Identity => new Identity(new ArrayObject([
+            'id' => 'by-callable',
+        ])));
 
         $service = new AuthenticationService([
             'identityClass' => $callable,
