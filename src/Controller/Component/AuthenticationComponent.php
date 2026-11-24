@@ -318,9 +318,6 @@ class AuthenticationComponent extends Component implements EventDispatcherInterf
 
         $this->updateRequest($result['request']);
         $controller->setResponse($result['response']);
-        // Keep the request in Router up to date, so that e.g. the error page rendered after an exception thrown
-        // later in the same request knows the new identity.
-        Router::setRequest($result['request']);
 
         return $this;
     }
