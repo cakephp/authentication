@@ -11,7 +11,6 @@ use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\CodeQuality\Rector\If_\ArrayExplicitBoolCompareRector;
-use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
@@ -104,7 +103,6 @@ return RectorConfig::configure()
         NewlineAfterStatementRector::class,
         TypedPropertyFromCreateMockAssignRector::class,
         ArrayExplicitBoolCompareRector::class,
-        ObjectExplicitBoolCompareRector::class,
         RemoveUselessUnionReturnDocblockRector::class,
         RemoveMixedDocblockOverruledByNativeTypeRector::class,
     ]);
