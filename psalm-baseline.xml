@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="7.16.0@708bf98874d359acbdcedb84f8624e9ec215867d">
+  <file src="src/AbstractCollection.php">
+    <InvalidArgument>
+      <code><![CDATA[$configOptions]]></code>
+    </InvalidArgument>
+  </file>
+  <file src="src/Authenticator/AuthenticationRequiredException.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[array<string, mixed>]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="src/Authenticator/HttpDigestAuthenticator.php">
+    <LessSpecificImplementedReturnType>
+      <code><![CDATA[array<string, string>]]></code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="src/Controller/Component/AuthenticationComponent.php">
+    <InvalidArgument>
+      <code><![CDATA[$identity]]></code>
+    </InvalidArgument>
+    <InvalidReturnStatement>
+      <code><![CDATA[$controller->getRequest()->getAttribute($this->getConfig('identityAttribute'))]]></code>
+    </InvalidReturnStatement>
+  </file>
+  <file src="src/Identity.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$this->data]]></code>
+    </PossiblyInvalidArgument>
+  </file>
+  <file src="src/Middleware/AuthenticationMiddleware.php">
+    <PossiblyNullArgument>
+      <code><![CDATA[$result->getData()]]></code>
+    </PossiblyNullArgument>
+  </file>
+  <file src="src/View/Helper/IdentityHelper.php">
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$this->identity->getOriginalData()]]></code>
+    </PossiblyInvalidArgument>
+  </file>
+</files>

@@ -156,7 +156,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
     public function authenticate(ServerRequestInterface $request): ResultInterface
     {
         $result = null;
-        /** @var \Authentication\Authenticator\AuthenticatorInterface $authenticator */
         foreach ($this->authenticators() as $authenticator) {
             $result = $authenticator->authenticate($request);
             if ($result->isValid()) {
@@ -186,7 +185,6 @@ class AuthenticationService implements AuthenticationServiceInterface, Impersona
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
-     * @return array Return an array containing the request and response objects.
      * @return array{request: \Psr\Http\Message\ServerRequestInterface, response: \Psr\Http\Message\ResponseInterface}
      */
     public function clearIdentity(ServerRequestInterface $request, ResponseInterface $response): array

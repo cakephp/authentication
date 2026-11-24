@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 namespace Authentication\View\Helper;
 
+use Authentication\Identity;
 use Authentication\IdentityInterface;
 use Cake\Utility\Hash;
 use Cake\View\Helper;
@@ -23,6 +24,8 @@ use Cake\View\Helper;
  * Identity Helper
  *
  * A convenience helper to access the identity data
+ *
+ * @extends \Cake\View\Helper<\Cake\View\View>
  */
 class IdentityHelper extends Helper
 {
@@ -112,7 +115,7 @@ class IdentityHelper extends Helper
      */
     public function get(?string $key = null): mixed
     {
-        if (!$this->identity instanceof IdentityInterface) {
+        if ($this->identity === null) {
             return null;
         }
 
@@ -120,7 +123,11 @@ class IdentityHelper extends Helper
             return $this->identity->getOriginalData();
         }
 
-        return Hash::get($this->identity, $key);
+        if ($this->identity instanceof Identity) {
+            return $this->identity->get($key);
+        }
+
+        return Hash::get($this->identity->getOriginalData(), $key);
     }
 
     /**
