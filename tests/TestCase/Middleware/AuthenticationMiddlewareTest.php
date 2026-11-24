@@ -28,6 +28,7 @@ use Cake\Core\Container;
 use Cake\Core\TestSuite\ContainerStubTrait;
 use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
+use Cake\Routing\Router;
 use Firebase\JWT\JWT;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use TestApp\Application;
@@ -89,6 +90,30 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->assertInstanceOf(AuthenticationService::class, $service);
 
         $this->assertTrue($service->authenticators()->has('Form'));
+    }
+
+    /**
+     * Test that the authenticated request is stored in Router so that errors
+     * thrown by later middleware are rendered with the identity.
+     */
+    public function testRouterRequestIsUpdated(): void
+    {
+        $request = ServerRequestFactory::fromGlobals(
+            ['REQUEST_URI' => '/testpath'],
+            [],
+            ['username' => 'mariano', 'password' => 'password'],
+        );
+        Router::setRequest($request);
+        $handler = new TestRequestHandler();
+
+        $middleware = new AuthenticationMiddleware($this->service);
+        $middleware->process($request, $handler);
+
+        $routerRequest = Router::getRequest();
+        $this->assertSame($handler->request, $routerRequest);
+        $this->assertSame($this->service, $routerRequest->getAttribute('authentication'));
+        $this->assertSame('mariano', $routerRequest->getAttribute('identity')->username);
+        $this->assertNotNull($routerRequest->getAttribute('authenticationResult'));
     }
 
     public function testProviderAuthentication(): void

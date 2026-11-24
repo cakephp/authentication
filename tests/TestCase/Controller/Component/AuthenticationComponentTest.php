@@ -222,6 +222,7 @@ class AuthenticationComponentTest extends TestCase
         $component->setIdentity($identityData);
         $result = $component->getIdentity();
         $this->assertSame($identityData, $result->getOriginalData());
+        $this->assertSame($controller->getRequest(), Router::getRequest());
     }
 
     /**
@@ -370,6 +371,7 @@ class AuthenticationComponentTest extends TestCase
             $controller->getRequest()->getSession()->read('Auth'),
             'Session must not be written by replaceIdentity().',
         );
+        $this->assertSame($controller->getRequest(), Router::getRequest());
     }
 
     /**
@@ -546,6 +548,7 @@ class AuthenticationComponentTest extends TestCase
         $this->assertSame('florian', $controller->getRequest()->getAttribute('identity')->username);
         $component->logout();
         $this->assertNull($controller->getRequest()->getAttribute('identity'));
+        $this->assertSame($controller->getRequest(), Router::getRequest());
         $this->assertInstanceOf(Event::class, $result);
         $this->assertSame('Authentication.logout', $result->getName());
     }

@@ -25,6 +25,8 @@ use Authentication\Authenticator\StatelessInterface;
 use Authentication\Authenticator\UnauthenticatedException;
 use Cake\Core\ContainerApplicationInterface;
 use Cake\Core\ContainerInterface;
+use Cake\Http\ServerRequest;
+use Cake\Routing\Router;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Diactoros\Stream;
@@ -76,7 +78,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         if ($this->subject instanceof ContainerApplicationInterface) {
             $container = $this->subject->getContainer();
             $container->add(AuthenticationService::class, $service);
-        } elseif ($this->container) {
+        } elseif ($this->container instanceof ContainerInterface) {
             $this->container->add(AuthenticationService::class, $service);
         }
 
@@ -98,6 +100,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $request = $request->withAttribute($service->getIdentityAttribute(), $service->getIdentity());
         $request = $request->withAttribute('authentication', $service);
         $request = $request->withAttribute('authenticationResult', $result);
+        if ($request instanceof ServerRequest && class_exists(Router::class)) {
+            // Keep Router in sync so that errors raised by later middleware
+            // are rendered for the authenticated request.
+            Router::setRequest($request);
+        }
 
         try {
             $response = $handler->handle($request);
